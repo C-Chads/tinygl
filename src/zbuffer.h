@@ -61,7 +61,6 @@ typedef unsigned char PIXEL;
 
 #define RGB_TO_PIXEL(r,g,b) \
   ((((b) << 8) & 0xff0000) | ((g) & 0xff00) | ((r) >> 8))
-//  ((((r) << 8) & 0xff0000) | ((g) & 0xff00) | ((b) >> 8))
 typedef unsigned int PIXEL;
 #define PSZB 4
 #define PSZSH 5

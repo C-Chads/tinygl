@@ -311,7 +311,7 @@ int main(int argc, char **argv) {
         // draw scene:
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         draw();
-
+		glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x00FFffFF);
         // swap buffers:
         if ( SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen)<0) ) {
             fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());

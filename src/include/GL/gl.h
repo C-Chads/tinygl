@@ -677,6 +677,7 @@ typedef int GLsizei;
 void glEnable(int code);
 void glDisable(int code);
 
+
 void glShadeModel(int mode);
 void glCullFace(int mode);
 void glPolygonMode(int face,int mode);
@@ -687,6 +688,8 @@ void glEnd(void);
 //NEW functions added by GEK!!!
 void glSetEnableSpecular(int s); //Toggle specular rendering (Speedup!!!)
 void* glGetTexturePixmap(int text, int level, int* xsize, int* ysize); //Get the raw data of a texture!
+void glDrawText(const unsigned char* text, int x, int y, unsigned int pixel); //Blit 8x8 text to he screen
+void glPlotPixel(int x, int y, unsigned int pixel); //plot a pixel to the screen.
 
 #define PROTO_GL1(name)				\
 void gl ## name ## 1f(float);	\

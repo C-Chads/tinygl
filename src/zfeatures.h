@@ -38,9 +38,9 @@
 /* enable various convertion code from internal pixel format (usually
    16 bits per pixel) to any external format */
 //CURRENT MAINTAINER'S NOTE: Only FEATURE_32_BITS is being maintained.
-#define TGL_FEATURE_16_BITS        1
-#define TGL_FEATURE_8_BITS         1
-#define TGL_FEATURE_24_BITS        1
+#define TGL_FEATURE_16_BITS        0
+#define TGL_FEATURE_8_BITS         0
+#define TGL_FEATURE_24_BITS        0
 #define TGL_FEATURE_32_BITS        1
 
 //MAINTAINER'S NOTE: Only TGL_FEATURE_RENDER_BITS 32 is maintained.

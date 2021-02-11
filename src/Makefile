@@ -4,7 +4,7 @@ OBJS= api.o list.o vertex.o init.o matrix.o texture.o \
       misc.o clear.o light.o clip.o select.o get.o error.o \
       zbuffer.o zline.o zdither.o ztriangle.o \
       zmath.o image_util.o oscontext.o msghandling.o \
-      arrays.o specbuf.o memory.o
+      arrays.o specbuf.o memory.o ztext.o
 ifdef TINYGL_USE_GLX
 #OBJS += glx.o
 endif
