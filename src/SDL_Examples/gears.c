@@ -188,7 +188,7 @@ void initScene() {
     glEnable( GL_LIGHTING );
     glEnable( GL_LIGHT0 );
     glEnable( GL_DEPTH_TEST );
-
+	glTextSize(GL_TEXT_SIZE16x16);
     /* make the gears */
     gear1 = glGenLists(1);
     glNewList(gear1, GL_COMPILE);

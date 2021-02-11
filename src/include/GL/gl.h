@@ -633,6 +633,16 @@ enum {
 
 };
 
+typedef enum {
+	GL_TEXT_SIZE8x8 = 1,
+	GL_TEXT_SIZE16x16 = 2,
+	GL_TEXT_SIZE24x24 = 3,
+	GL_TEXT_SIZE32x32 = 4,
+	GL_TEXT_SIZE40x40 = 5,
+	GL_TEXT_SIZE48x48 = 6,
+	GL_TEXT_SIZE56x56 = 7,
+	GL_TEXT_SIZE64x64 = 8
+} GLTEXTSIZE;
 enum {
 	GL_CURRENT_BIT		= 0x00000001,
 	GL_POINT_BIT		= 0x00000002,
@@ -689,6 +699,7 @@ void glEnd(void);
 void glSetEnableSpecular(int s); //Toggle specular rendering (Speedup!!!)
 void* glGetTexturePixmap(int text, int level, int* xsize, int* ysize); //Get the raw data of a texture!
 void glDrawText(const unsigned char* text, int x, int y, unsigned int pixel); //Blit 8x8 text to he screen
+void glTextSize(GLTEXTSIZE mode); //Set text size
 void glPlotPixel(int x, int y, unsigned int pixel); //plot a pixel to the screen.
 
 #define PROTO_GL1(name)				\
