@@ -185,12 +185,12 @@ void initScene() {
     static GLfloat red[4] = {1.0, 0.0, 0.0, 0.0 };
     static GLfloat green[4] = {0.0, 1.0, 0.0, 0.0 };
     static GLfloat blue[4] = {0.0, 0.0, 1.0, 0.0 };
-    static GLfloat white[4] = {10.0, 10.0, 10.0, 0.0 };
+    static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0 };
 
     glLightfv( GL_LIGHT0, GL_POSITION, pos );
     glLightfv( GL_LIGHT0, GL_DIFFUSE, white);
     //glLightfv( GL_LIGHT0, GL_AMBIENT, white);
-    glLightfv( GL_LIGHT0, GL_SPECULAR, white);
+    //glLightfv( GL_LIGHT0, GL_SPECULAR, white);
     glEnable( GL_CULL_FACE );
     glEnable( GL_LIGHTING );
     //glDisable( GL_LIGHTING );
