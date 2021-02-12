@@ -4,7 +4,8 @@
 #include <string.h>
 typedef float f_;
 typedef unsigned int uint;
-
+#define MAX(x,y) (x>y?x:y)
+#define MIN(x,y) (x<y?x:y)
 typedef struct {f_ d[3];} vec3;
 typedef struct {int d[3];} ivec3;
 typedef struct {f_ d[4];} vec4;
@@ -60,7 +61,7 @@ typedef aabb colshape; //c.d[3] determines if it's a sphere or box. 0 or less = 
 vec4 spherevsphere(vec4 s1, vec4 s2);
 vec4 boxvbox(aabb b1, aabb b2);
 vec3 closestpointAABB(aabb b, vec3 p);
-vec4 aabbvsphere(aabb box,vec4 sph);
+vec4 spherevaabb(vec4 sph,aabb box);
 
 
 #ifdef CHAD_MATH_IMPL
@@ -496,18 +497,22 @@ vec3 downv4(vec4 in){
 //if depth of penetration is zero or lower then there is no penetration.
 vec4 spherevsphere(vec4 s1, vec4 s2){ //x,y,z,radius
 	vec4 ret;
+	vec3 diff = subv3(
+				downv4(s2),
+				downv4(s1)
+			);
+	float lv3 = lengthv3(diff);
+	float l = (s1.d[3] + s2.d[3]-lv3);
+	
+	if(l < 0) {
+		ret.d[3] = 0;return ret;
+	}
 	ret = upv3(
-		subv3(
-			downv4(s1),
-			downv4(s2)
+		scalev3(
+			l/lv3,diff
 		)
-		,0.0
+		,l
 	);
-	ret.d[3]= -1 * sqrtf(
-		(s1.d[0]-s2.d[0])*(s1.d[0]-s2.d[0])+
-		(s1.d[1]-s2.d[1])*(s1.d[1]-s2.d[1])+
-		(s1.d[2]-s2.d[2])*(s1.d[2]-s2.d[2])
-	) + s1.d[3] + s2.d[3];
 	return ret;
 }
 vec4 boxvbox(aabb b1, aabb b2){ //Just points along the minimum separating axis, Nothing fancy.
@@ -517,46 +522,41 @@ vec4 boxvbox(aabb b1, aabb b2){ //Just points along the minimum separating axis,
 		.d[2]=0,
 		.d[3]=0
 	};
-	//vec3 sumextents = addv3(b1.e,b2.e);
-	vec3 b1min = subv3(downv4(b1.c),b1.e);
-	vec3 b2min = subv3(downv4(b2.c),b2.e);
-	vec3 b1max = addv3(downv4(b1.c),b1.e);
-	vec3 b2max = addv3(downv4(b2.c),b2.e);
-	vec3 axispen[2];
-	//For any overlap, these are negative.
-	//These ones point toward b2 in an intersection, so they need to be inverted.
-	axispen[0].d[0] = b1min.d[0] - b2max.d[0];
-	axispen[0].d[1] = b1min.d[1] - b2max.d[1];
-	axispen[0].d[2] = b1min.d[2] - b2max.d[2];
-	//These ones point toward b1 in an intersection. They can be left alone.
-	axispen[1].d[0] = b2min.d[0] - b1max.d[0];
-	axispen[1].d[1] = b2min.d[1] - b1max.d[1];
-	axispen[1].d[2] = b2min.d[2] - b1max.d[2];
-	//if they are not intersecting...
-	if(!(
-		(axispen[0].d[0] < 0 && axispen[1].d[0] < 0) &&
-		(axispen[0].d[1] < 0 && axispen[1].d[1] < 0) &&
-		(axispen[0].d[2] < 0 && axispen[1].d[2] < 0)
-	)){
+	vec3 sumextents = addv3(b1.e,b2.e);
+	vec3 b1c = downv4(b1.c);
+	vec3 b2c = downv4(b2.c);
+
+	vec3 b1min = subv3(b1c,b1.e);
+	vec3 b2min = subv3(b2c,b2.e);
+
+	vec3 b1max = addv3(b1c,b1.e);
+	vec3 b2max = addv3(b2c,b2.e);
+	
+	if(
+		!(
+			(fabs(b1c.d[0] - b2c.d[0]) <= sumextents.d[0]) &&
+			(fabs(b1c.d[1] - b2c.d[1]) <= sumextents.d[1]) &&
+			(fabs(b1c.d[2] - b2c.d[2]) <= sumextents.d[2])
+		)
+	){
 		return ret;
 	}
-	axispen[0] = scalev3(-1,axispen[0]); //invert these to point toward b1
-	int minimum = 0; 
-	f_ mindist = fabsf(axispen[0].d[0]);
-	for(int i = 1; i < 6;i++){
-		f_ d = fabsf(axispen[i/3].d[i%3]);
-		if(d < mindist){
-			minimum = i;
-			mindist = d;
+	vec3 axispen[2];
+	axispen[0] = subv3(b1max,b2min);
+	axispen[1] = subv3(b1min,b2max);
+	ret.d[3] = axispen[0].d[0];
+	ret.d[0] = axispen[0].d[0];
+	for(int i = 1; i < 6; i++){
+		if(fabs(axispen[i/3].d[i%3]) < fabs(ret.d[3])){
+			ret = (vec4){
+						.d[0]=0,
+						.d[1]=0,
+						.d[2]=0,
+						.d[3]=axispen[i/3].d[i%3]
+					};
+			ret.d[i%3] = ret.d[3];
 		}
 	}
-	ret = 
-	(vec4){
-		.d[0]=(minimum%3==0)?axispen[minimum/3].d[minimum%3]:0,
-		.d[1]=(minimum%3==1)?axispen[minimum/3].d[minimum%3]:0,
-		.d[2]=(minimum%3==2)?axispen[minimum/3].d[minimum%3]:0,
-		.d[3]=mindist
-	};
 	return ret;
 }
 vec3 closestpointAABB(aabb b, vec3 p){
@@ -564,7 +564,7 @@ vec3 closestpointAABB(aabb b, vec3 p){
 	vec3 b1max = addv3(downv4(b.c),b.e);
 	return clampvec3(p,b1min,b1max);
 }
-vec4 aabbvsphere(aabb box,vec4 sph){
+vec4 spherevaabb(vec4 sph, aabb box){
 	vec4 ret;
 	vec3 p = closestpointAABB(box,downv4(sph));
 	vec3 v = subv3(p,downv4(sph));
@@ -572,8 +572,20 @@ vec4 aabbvsphere(aabb box,vec4 sph){
 	
 	if(d2 <= sph.d[3] * sph.d[3]){
 		f_ len = lengthv3(v);
-		ret = upv3(v,len);
-		return ret;
+		f_ diff = (sph.d[3] - len);
+		if(len > 0){
+			f_ factor = diff/len;
+			vec3 bruh = scalev3(factor, v);
+			ret = upv3(bruh, diff);
+			return ret;
+		} else {
+			aabb virt;
+			virt.c = sph;
+			virt.e.d[0] = sph.d[3];
+			virt.e.d[1] = sph.d[3];
+			virt.e.d[2] = sph.d[3];
+			return boxvbox(virt,box);
+		}
 	}
 	else
 		return (vec4){
