@@ -11,6 +11,8 @@
 #include <string.h>
 
 #include "../include/GL/gl.h"
+#define CHAD_API_IMPL
+#include "include/api_audio.h"
 #include <SDL/SDL.h>
 #include "../zbuffer.h"
 
@@ -188,7 +190,7 @@ void initScene() {
     glEnable( GL_LIGHTING );
     glEnable( GL_LIGHT0 );
     glEnable( GL_DEPTH_TEST );
-	glTextSize(GL_TEXT_SIZE16x16);
+	glTextSize(GL_TEXT_SIZE24x24);
     /* make the gears */
     gear1 = glGenLists(1);
     glNewList(gear1, GL_COMPILE);
@@ -212,17 +214,21 @@ void initScene() {
 
 int main(int argc, char **argv) {
     // initialize SDL video:
-    int winSizeX=320;
+    int winSizeX=640;
     int winSizeY=480;
-    if(SDL_Init(SDL_INIT_VIDEO)<0) {
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)<0) {
         fprintf(stderr,"ERROR: cannot initialize SDL video.\n");
         return 1;
     }
+    ainit(0);
     SDL_Surface* screen = NULL;
     if((screen=SDL_SetVideoMode( winSizeX, winSizeY, 32, SDL_SWSURFACE)) == 0 ) {
         fprintf(stderr,"ERROR: Video mode set failed.\n");
         return 1;
     }
+    track* myTrack = NULL;
+    myTrack = lmus("WWGW.mp3");
+    mplay(myTrack, -1, 1000);
     SDL_ShowCursor(SDL_DISABLE);
     SDL_WM_SetCaption(argv[0],0);
 
@@ -339,6 +345,9 @@ int main(int argc, char **argv) {
     ZB_close(frameBuffer);
     if(SDL_WasInit(SDL_INIT_VIDEO))
         SDL_QuitSubSystem(SDL_INIT_VIDEO);
+    mhalt();
+    Mix_FreeMusic(myTrack);
+    acleanup();
     SDL_Quit();
     return 0;
 }

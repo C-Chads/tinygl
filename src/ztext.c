@@ -6,7 +6,7 @@
 #include "include/GL/gl.h"
 #include "zgl.h"
 #include "font8x8_basic.h"
-GLTEXTSIZE textsize;
+GLTEXTSIZE textsize = 1;
 
 void glTextSize(GLTEXTSIZE mode){textsize = mode;}//Set text size
 void renderchar(char *bitmap, int _x, int _y, PIXEL p) {
