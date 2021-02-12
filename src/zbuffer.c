@@ -127,24 +127,6 @@ inline PIXEL pxReverse(PIXEL x)
     // Return value is in format:  0xBBGGRRAA
 }
 
-inline PIXEL pxARGB(PIXEL x)
-{
-
-    return
-    // Source is in format: 0xAABBGGRR
-        ((x & 0xFF000000) >>  0) | //______BB
-        ((x & 0x00FF0000) >> 16) | //____RR__
-        ((x & 0x0000FF00) <<  0) | //__GG____
-        ((x & 0x000000FF) << 16);  //AA______
-    // Return value is in format:  0xAARRGGBB
-}
-/*
-static void ZB_ARGB(Zbuffer* zb){
-	for(int i = 0; i < zb->xsize * zb->ysize; i++){
-		zb->pbuf[i] = pxARGB()
-	}
-}
-*/
 static void ZB_copyBuffer(ZBuffer * zb,
                           void *buf,
                           int linesize)
