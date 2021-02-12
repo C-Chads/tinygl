@@ -12,39 +12,44 @@ The changelog is as such:
 
 NEW FUNCTIONS
 
-# glSetEnableSpecular(int shouldenablespecular);
+### glSetEnableSpecular(int shouldenablespecular);
 
-	Allows you to configure specular rendering. Turn it off
-	if you want to use GL_LIGHTING but don't plan on using
-	specular lighting. it will save cycles.
+Allows you to configure specular rendering. Turn it off
+if you want to use GL_LIGHTING but don't plan on using
+specular lighting. it will save cycles.
 
-# glGetTexturePixmap(int text, int level, int* xsize, int* ysize)
+### glGetTexturePixmap(int text, int level, int* xsize, int* ysize)
 
-	Allows the user to retrieve the raw pixel data of a texture, for their own modification.
+Allows the user to retrieve the raw pixel data of a texture, for their own modification.
 
-# glDrawText(const unsigned char* text, int x, int y, unsigned int pixel)
+### glDrawText(const unsigned char* text, int x, int y, unsigned int pixel)
 
-	Draws a pre-made 8x8 font to the screen. You can change its displayed size with...
+Draws a pre-made 8x8 font to the screen. You can change its displayed size with...
 
-# glTextSize(GLTEXTSIZE mode)
+### glTextSize(GLTEXTSIZE mode)
 
-	Set size of text drawn to the buffer in aforementioned function.
+Set size of text drawn to the buffer in aforementioned function.
 
-# glPlotPixel(int x, int y, unsigned int pixel)
+### glPlotPixel(int x, int y, unsigned int pixel)
 
-	Plot pixel directly to the buffer.
+Plot pixel directly to the buffer.
 
 
-FIXED BUGS FROM THE ORIGINAL!
-  TinyGL 0.4 had incorrect color interpolation and issues with
-  GL_FLAT, causing the hello world triangle to look rather...
-  wrong. Additionally, per vertex color is just cool.
+## FIXED BUGS FROM THE ORIGINAL!
 
-  It's fixed.
-FULLY COMPATIBLE WITH RGBA!
-  The library is now configured properly for RGBA rendering.
+TinyGL 0.4 by Bellard had incorrect color interpolation and issues with
+GL_FLAT, causing the hello world triangle to look rather...
+wrong. Additionally, per vertex color is just cool.
 
-General Description:
+It's fixed.
+  
+## FULLY COMPATIBLE WITH RGBA!
+
+The library is now configured properly for RGBA rendering.
+
+# Here is the old description of TinyGL, saved for historical/attribution purposes:
+
+### General Description:
 --------------------
 
 TinyGL is intended to be a very small implementation of a subset of
