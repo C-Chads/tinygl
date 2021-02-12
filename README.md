@@ -1,5 +1,6 @@
 # TinyGL- New and Improved
 ![GIF Video of demo](capture.gif)
+![GIF Video of demo](capture2.gif)
 
 TinyGL 0.6 (c) 1997-2021 Fabrice Bellard, C-Chads, Gek (see License, it's free software)
 
