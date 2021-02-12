@@ -9,18 +9,29 @@ It is a small, suckless Software-only partial GL 1.1 implementation.
 The original project was by Fabrice Bellard. We have forked it.
 The changelog is as such:
 * Disabled all non-RGBA rendering modes. The only supported mode is now RGBA.
+
 NEW FUNCTIONS
-glSetEnableSpecular(int shouldenablespecular);
+
+# glSetEnableSpecular(int shouldenablespecular);
+
 	Allows you to configure specular rendering. Turn it off
 	if you want to use GL_LIGHTING but don't plan on using
 	specular lighting. it will save cycles.
-glGetTexturePixmap(int text, int level, int* xsize, int* ysize)
+
+# glGetTexturePixmap(int text, int level, int* xsize, int* ysize)
+
 	Allows the user to retrieve the raw pixel data of a texture, for their own modification.
-void glDrawText(const unsigned char* text, int x, int y, unsigned int pixel)
+
+# glDrawText(const unsigned char* text, int x, int y, unsigned int pixel)
+
 	Draws a pre-made 8x8 font to the screen. You can change its displayed size with...
-void glTextSize(GLTEXTSIZE mode)
+
+# glTextSize(GLTEXTSIZE mode)
+
 	Set size of text drawn to the buffer in aforementioned function.
-void glPlotPixel(int x, int y, unsigned int pixel)
+
+# glPlotPixel(int x, int y, unsigned int pixel)
+
 	Plot pixel directly to the buffer.
 
 
