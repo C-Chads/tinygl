@@ -13,7 +13,7 @@
 #define TGL_NO_COPY_COLOR 0xff00ff
 //NOTE: fc02fc is what you'll get if you set glColor3f to 1,0,1. 
 //^ solid debug pink.
-#define TGL_COLOR_MASK 0xffffff
+#define TGL_COLOR_MASK 0xffffffff
 //^ mask to check for copybuffer. This is configured for the default mode.
 
 /*

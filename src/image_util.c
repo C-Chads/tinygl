@@ -18,6 +18,8 @@ void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,unsigned char *rgb,
   }
 }
 
+//This actually converts to ABGR!!!
+//This is the format of the entire engine!!!
 void gl_convertRGB_to_8A8R8G8B(unsigned int *pixmap, unsigned char *rgb,
                                int xsize, int ysize)
 {
@@ -29,7 +31,7 @@ void gl_convertRGB_to_8A8R8G8B(unsigned int *pixmap, unsigned char *rgb,
     for(i=0;i<n;i++) {
         pixmap[i]=(((unsigned int)p[2])<<16) | 
             (((unsigned int)p[1])<<8) | 
-            (((unsigned int)p[0])); 
+            (((unsigned int)p[0]) ); 
         p+=3;
     }
 }

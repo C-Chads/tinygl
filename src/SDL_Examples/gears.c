@@ -181,32 +181,42 @@ void draw() {
 
 void initScene() {
     static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0 };
-    static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0 };
-    static GLfloat green[4] = {0.0, 0.8, 0.2, 1.0 };
-    static GLfloat blue[4] = {0.2, 0.2, 1.0, 1.0 };
+    
+    static GLfloat red[4] = {1.0, 0.0, 0.0, 0.0 };
+    static GLfloat green[4] = {0.0, 1.0, 0.0, 0.0 };
+    static GLfloat blue[4] = {0.0, 0.0, 1.0, 0.0 };
+    static GLfloat white[4] = {10.0, 10.0, 10.0, 0.0 };
 
     glLightfv( GL_LIGHT0, GL_POSITION, pos );
+    glLightfv( GL_LIGHT0, GL_DIFFUSE, white);
+    //glLightfv( GL_LIGHT0, GL_AMBIENT, white);
+    glLightfv( GL_LIGHT0, GL_SPECULAR, white);
     glEnable( GL_CULL_FACE );
     glEnable( GL_LIGHTING );
+    //glDisable( GL_LIGHTING );
     glEnable( GL_LIGHT0 );
     glEnable( GL_DEPTH_TEST );
+    glShadeModel( GL_SMOOTH );
 	glTextSize(GL_TEXT_SIZE24x24);
     /* make the gears */
     gear1 = glGenLists(1);
     glNewList(gear1, GL_COMPILE);
-    glMaterialfv( GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red );
+    glMaterialfv( GL_FRONT, GL_DIFFUSE, blue );
+    //glColor3fv(red);
     gear( 1.0, 4.0, 1.0, 20, 0.7 );
     glEndList();
 
     gear2 = glGenLists(1);
     glNewList(gear2, GL_COMPILE);
-    glMaterialfv( GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green );
+    glMaterialfv( GL_FRONT, GL_DIFFUSE, red );
+    //glColor3fv(green);
     gear( 0.5, 2.0, 2.0, 10, 0.7 );
     glEndList();
 
     gear3 = glGenLists(1);
     glNewList(gear3, GL_COMPILE);
-    glMaterialfv( GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue );
+    glMaterialfv( GL_FRONT, GL_DIFFUSE, green );
+    //glColor3fv(blue);
     gear( 1.3, 2.0, 0.5, 10, 0.7 );
     glEndList();
     glEnable( GL_NORMALIZE );
@@ -216,7 +226,7 @@ int main(int argc, char **argv) {
     // initialize SDL video:
     int winSizeX=640;
     int winSizeY=480;
-
+	unsigned int fps =0;
     if(argc > 2){
     	char* larg = argv[1];
     	for(int i = 0; i < argc; i++){
@@ -224,6 +234,8 @@ int main(int argc, char **argv) {
 				winSizeX = atoi(argv[i]);
     		if(!strcmp(larg,"-h"))
 				winSizeY = atoi(argv[i]);
+			if(!strcmp(larg,"-fps"))
+				fps = strtoull(argv[i],0,10);
 			larg = argv[i];
     	}
     }
@@ -233,10 +245,21 @@ int main(int argc, char **argv) {
     }
     ainit(0);
     SDL_Surface* screen = NULL;
-    if((screen=SDL_SetVideoMode( winSizeX, winSizeY, 32, SDL_SWSURFACE)) == 0 ) {
+    if((screen=SDL_SetVideoMode( winSizeX, winSizeY, 32, SDL_HWSURFACE | SDL_DOUBLEBUF)) == 0 ) {
         fprintf(stderr,"ERROR: Video mode set failed.\n");
         return 1;
     }
+    printf("\nRMASK IS %u",screen->format->Rmask);
+    printf("\nGMASK IS %u",screen->format->Gmask);
+    printf("\nBMASK IS %u",screen->format->Bmask);
+    printf("\nAMASK IS %u",screen->format->Amask);
+
+
+    printf("\nRSHIFT IS %u",screen->format->Rshift);
+    printf("\nGSHIFT IS %u",screen->format->Gshift);
+    printf("\nBSHIFT IS %u",screen->format->Bshift);
+    printf("\nASHIFT IS %u",screen->format->Ashift);
+    fflush(stdout);
     track* myTrack = NULL;
     myTrack = lmus("WWGW.mp3");
     mplay(myTrack, -1, 1000);
@@ -255,11 +278,13 @@ int main(int argc, char **argv) {
         pitch = screen->pitch;
         fprintf(stderr,"\nUnsupported by maintainer!!!");
         mode = ZB_MODE_5R6G5B;
+        return 1;
         break;
     case 24:
         pitch = ( screen->pitch * 2 ) / 3;
         fprintf(stderr,"\nUnsupported by maintainer!!!");
         mode = ZB_MODE_RGB24;
+        return 1;
         break;
     case 32:
         pitch = screen->pitch / 2;
@@ -328,16 +353,33 @@ int main(int argc, char **argv) {
         // draw scene:
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         draw();
-		glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x00FFffFF);
+		glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x000000FF);
         // swap buffers:
         if ( SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen)<0) ) {
             fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
             return 1;
         }
+        /*
+		printf("\nRMASK IS %u",screen->format->Rmask);
+		printf("\nGMASK IS %u",screen->format->Gmask);
+		printf("\nBMASK IS %u",screen->format->Bmask);
+		printf("\nAMASK IS %u",screen->format->Amask);
+        */
+        //Quickly convert all pixels to the correct format
+        for(int i = 0; i < frameBuffer->xsize* frameBuffer->ysize;i++){
+#define DATONE (frameBuffer->pbuf[i])
+			DATONE = ((DATONE & 0x000000FF)     ) << screen->format->Rshift | 
+					 ((DATONE & 0x0000FF00) >> 8) << screen->format->Gshift |
+					 ((DATONE & 0x00FF0000) >>16) << screen->format->Bshift;
+        }
         ZB_copyFrameBuffer(frameBuffer, screen->pixels, screen->pitch);
         if ( SDL_MUSTLOCK(screen) ) SDL_UnlockSurface(screen);
         SDL_Flip(screen);
-
+        if(fps>0)
+			if((1000/fps)>(SDL_GetTicks()-tNow))
+			{
+				SDL_Delay((1000/fps)-(SDL_GetTicks()-tNow)); //Yay stable framerate!
+			}
         // check for error conditions:
         char* sdl_error = SDL_GetError( );
         if( sdl_error[0] != '\0' ) {

@@ -34,9 +34,9 @@ void glopColor(GLContext * c, GLParam * p)
     c->current_color.Y = p[2].f;
     c->current_color.Z = p[3].f;
     c->current_color.W = p[4].f;
-    c->longcurrent_color[0] = p[5].ui;
-    c->longcurrent_color[1] = p[6].ui;
-    c->longcurrent_color[2] = p[7].ui;
+    c->longcurrent_color[0] = p[5].ui; //MARKED
+    c->longcurrent_color[1] = p[6].ui; //MARKED
+    c->longcurrent_color[2] = p[7].ui; //MARKED
 
     if (c->color_material_enabled) {
 	GLParam q[7];
@@ -241,11 +241,14 @@ void glopVertex(GLContext * c, GLParam * p)
     /* color */
 
     if (c->lighting_enabled) {
-	gl_shade_vertex(c, v);
+		gl_shade_vertex(c, v);
     } else {
-	v->color = c->current_color;
+		v->color = c->current_color;
     }
-
+	/* Added by Gek to fix bug with rendering*/
+		v->zp.r=(unsigned int)(v->color.v[0] * 65535) & 65535;
+		v->zp.g=(unsigned int)(v->color.v[1] * 65535) & 65535;
+		v->zp.b=(unsigned int)(v->color.v[2] * 65535) & 65535;
     /* tex coords */
 
     if (c->texture_2d_enabled) {

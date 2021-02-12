@@ -5,7 +5,11 @@ void glopMaterial(GLContext *c,GLParam *p)
 {
   int mode=p[1].i;
   int type=p[2].i;
-  float *v=&p[3].f;
+  float v[4]; 
+  v[0]= p[3].f;
+  v[1]= p[4].f;
+  v[2]= p[5].f;
+  v[3]= p[6].f;
   int i;
   GLMaterial *m;
 
@@ -25,10 +29,19 @@ void glopMaterial(GLContext *c,GLParam *p)
   case GL_AMBIENT:
     for(i=0;i<4;i++)
       m->ambient.v[i]=v[i];
+    //c->current_color.X=v[0];
+    //c->current_color.Y=v[1];
+    //c->current_color.Z=v[2];
+    //c->current_color.W=v[3];
     break;
   case GL_DIFFUSE:
     for(i=0;i<4;i++)
       m->diffuse.v[i]=v[i];
+
+    //c->current_color.X=v[0];
+    //c->current_color.Y=v[1];
+    //c->current_color.Z=v[2];
+    //c->current_color.W=v[3];
     break;
   case GL_SPECULAR:
     for(i=0;i<4;i++)
@@ -39,12 +52,22 @@ void glopMaterial(GLContext *c,GLParam *p)
     m->shininess_i = (v[0]/128.0f)*SPECULAR_BUFFER_RESOLUTION;
     break;
   case GL_AMBIENT_AND_DIFFUSE:
+  printf("\nRECEIVED AMBIENT AND DIFFUSE COLOR %f, %f, %f, %f", v[0], v[1], v[2], v[3]);
     for(i=0;i<4;i++)
       m->diffuse.v[i]=v[i];
+    //c->current_color.X=v[0];
+    //c->current_color.Y=v[1];
+    //c->current_color.Z=v[2];
+    //c->current_color.W=v[3];
+    
     for(i=0;i<4;i++)
       m->ambient.v[i]=v[i];
     break;
   default:
+    c->current_color.X=v[0];
+    c->current_color.Y=v[1];
+    c->current_color.Z=v[2];
+    c->current_color.W=v[3];
     assert(0);
   }
 }
@@ -307,6 +330,6 @@ void gl_shade_vertex(GLContext *c,GLVertex *v)
   v->color.v[0]=clampf(R,0,1);
   v->color.v[1]=clampf(G,0,1);
   v->color.v[2]=clampf(B,0,1);
-  v->color.v[3]=A;
+  v->color.v[3]=clampf(A,0,1);
 }
 
