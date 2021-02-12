@@ -504,7 +504,7 @@ vec4 spherevsphere(vec4 s1, vec4 s2){ //x,y,z,radius
 	float lv3 = lengthv3(diff);
 	float l = (s1.d[3] + s2.d[3]-lv3);
 	
-	if(l < 0) {
+	if(l < 0 || lv3 == 0) {
 		ret.d[3] = 0;return ret;
 	}
 	ret = upv3(
