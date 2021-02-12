@@ -216,6 +216,17 @@ int main(int argc, char **argv) {
     // initialize SDL video:
     int winSizeX=640;
     int winSizeY=480;
+
+    if(argc > 2){
+    	char* larg = argv[1];
+    	for(int i = 0; i < argc; i++){
+    		if(!strcmp(larg,"-w"))
+				winSizeX = atoi(argv[i]);
+    		if(!strcmp(larg,"-h"))
+				winSizeY = atoi(argv[i]);
+			larg = argv[i];
+    	}
+    }
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)<0) {
         fprintf(stderr,"ERROR: cannot initialize SDL video.\n");
         return 1;
