@@ -1,5 +1,8 @@
 # TinyGL- New and Improved
 
+A rework of Fabrice Bellard's TinyGL (still compiling with -std=c99) to be
+more useful as a software rasterizer.
+
 Without Polygon Stipple:
 
 ![GIF Video of demo](capture.gif)
@@ -24,14 +27,38 @@ This is a maintained fork of TinyGL, by the C-Chads.
 It is a small, suckless Software-only partial GL 1.1 implementation.
 
 The original project was by Fabrice Bellard. We have forked it.
+
 The changelog is as such:
+
 * Disabled all non-RGBA rendering modes. The only supported mode is now RGBA.
 
 * Implemented new functions and some of GL 1.1's prototypes including polygon stipple.
 
-* Fixed a myriad of bugs
-NEW FUNCTIONS
-###
+* Fixed a myriad of bugs and... weirdnesses
+
+
+
+Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
+
+You *will* have to tweak your code to work with this library. That said, once you have, it will run anywhere that you can get
+C99. TinyGL has very few external dependencies.
+
+
+
+Notable limitations:
+
+* The only supported texture size and format is RGB 256x256
+
+* there is no GL_BLEND compatibility whatsoever
+
+* A lot of prototypes are missing.
+
+* 
+
+
+### NEW FUNCTIONS 
+
+These are functions not in the GL 1.1 spec that i've added to make this library more useful.
 
 ### glDeleteList
 
@@ -76,9 +103,7 @@ wrong. Additionally, per vertex color is just cool.
 
 * Little endian was assumed in a thousand places in the code
 
-* Lack of screen door transparency support (GL_POLYGON_STIPLE) even though it is virtually zero cost.
-
-* Missing easy-to-implement prototypes
+* 
 
 
   
@@ -86,6 +111,10 @@ wrong. Additionally, per vertex color is just cool.
 
 The library is now configured properly for RGBA rendering. Note that the output *is actually ABGR* 
 but adjusting it is easy, see the SDL examples under SDL_EXAMPLES (They require SDL 1.2 and Mixer to compile)
+
+It is a notable loss in this version of TinyGL that 16 bit color support was removed. The only supported mode is 32 bit
+
+This was done to keep this library maintainable.
 
 # Here is the old description of TinyGL, saved for historical/attribution purposes:
 
