@@ -163,7 +163,7 @@ void glopLightModel(GLContext *c,GLParam *p)
   switch(pname) {
   case GL_LIGHT_MODEL_AMBIENT:
     for(i=0;i<4;i++) 
-      c->ambient_light_model.v[i]=v[i];
+      c->ambient_light_model.v[i] = p[2+i].f;
     break;
   case GL_LIGHT_MODEL_LOCAL_VIEWER:
     c->local_light_model=(int)v[0];
