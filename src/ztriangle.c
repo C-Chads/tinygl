@@ -7,7 +7,7 @@
 #if TGL_FEATURE_RENDER_BITS == 32
 
 
-#define THE_X (((unsigned short)(pp-pp1)))
+
 
 #else
 
@@ -16,15 +16,24 @@
 #endif
 
 
+
+#if TGL_FEATURE_POLYGON_STIPPLE
+
+#define THE_X (((unsigned short)(pp-pp1)))
 #define XSTIP(_a) ((THE_X+_a)& 31)
 #define YSTIP (the_y & 31)
 #define STIPBIT(_a) (zb->stipplepattern[(XSTIP(_a) + (YSTIP<<5))>>3] & (1<<(XSTIP(_a) & 7)))
 #define STIPTEST(_a) !(zb->dostipple && !STIPBIT(_a))
-#if TGL_FEATURE_POLYGON_STIPPLE
 #define ZCMP(z,zpix,_a) ((z) >= (zpix) && STIPTEST(_a))
+
 #else
+
 #define ZCMP(z,zpix,_a) ((z) >= (zpix))
+
 #endif
+
+
+
 void ZB_fillTriangleFlat(ZBuffer *zb,
 			 ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2)
 {

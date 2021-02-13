@@ -10,8 +10,9 @@
   int part,update_left,update_right;
 
   int nb_lines,dx1,dy1,tmp,dx2,dy2;
+#if TGL_FEATURE_POLYGON_STIPPLE
   unsigned short the_y;
-
+#endif
   int error,derror;
   int x1,dxdy_min,dxdy_max;
 /* warning: x2 is multiplied by 2^16 */
@@ -134,7 +135,9 @@
   /* screen coordinates */
 
   pp1 = (PIXEL *) ((char *) zb->pbuf + zb->linesize * p0->y); 
+  #if TGL_FEATURE_POLYGON_STIPPLE
   the_y = p0->y;
+  #endif
   pz1 = zb->zbuf + p0->y * zb->xsize;
 
   DRAW_INIT();
@@ -300,7 +303,8 @@
               pp=(PIXEL *)((char *)pp + PSZB);
               n-=1;
           }
-      }//the_y++;
+      }
+      //the_y++;
 #else
       DRAW_LINE();//the_y++;
 #endif
@@ -351,7 +355,9 @@
 
       /* screen coordinates */
       pp1=(PIXEL *)((char *)pp1 + zb->linesize);
+#if TGL_FEATURE_POLYGON_STIPPLE
       the_y++;
+#endif
       pz1+=zb->xsize;
     }
   }

@@ -298,7 +298,7 @@ void gl_shade_vertex(GLContext *c,GLVertex *v)
 	        s.Y=d.Y;
 	        s.Z=d.Z+1.0;
 	      }
-	      dot_spec=n.X*s.X+n.Y*s.Y+n.Z*s.Z;
+	      dot_spec=n.X*s.X + n.Y*s.Y + n.Z*s.Z;
 	      if (twoside && dot_spec < 0) dot_spec = -dot_spec;
 	      if (dot_spec>0) {
 	        GLSpecBuf *specbuf;

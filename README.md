@@ -1,6 +1,16 @@
 # TinyGL- New and Improved
+
+Without Polygon Stipple:
+
 ![GIF Video of demo](capture.gif)
+
+With Polygon Stipple:
+
 ![GIF Video of demo](capture2.gif)
+
+Texturing Test: 
+
+![Screenshot of Texture test](texture_test.png)
 
 TinyGL 0.6 (c) 1997-2021 Fabrice Bellard, C-Chads, Gek (see License, it's free software)
 
