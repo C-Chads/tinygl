@@ -32,6 +32,7 @@ static GLList *find_list(GLContext *c,unsigned int list)
   return c->shared_state.lists[list];
 }
 
+
 static void delete_list(GLContext *c,int list)
 {
   GLParamBuffer *pb,*pb1;
@@ -50,6 +51,9 @@ static void delete_list(GLContext *c,int list)
   
   gl_free(l);
   c->shared_state.lists[list]=NULL;
+}
+void glDeleteList(int list){
+	delete_list(gl_get_context(), list);
 }
 
 static GLList *alloc_list(GLContext *c,int list)

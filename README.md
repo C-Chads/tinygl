@@ -27,6 +27,10 @@ The changelog is as such:
 NEW FUNCTIONS
 ###
 
+### glDeleteList
+
+Replaces glDeleteLists. Allows you to delete display lists.
+
 ### glSetEnableSpecular(int shouldenablespecular);
 
 Allows you to configure specular rendering. Turn it off

@@ -439,6 +439,9 @@ int main(int argc, char **argv) {
     }
     printf("%i frames in %f secs, %f frames per second.\n",frames,(float)(tNow-tLastFps)*0.001f,(float)frames*1000.0f/(float)(tNow-tLastFps));
     // cleanup:
+    glDeleteList(gear1);
+    glDeleteList(gear2);
+    glDeleteList(gear3);
     ZB_close(frameBuffer);
     if(SDL_WasInit(SDL_INIT_VIDEO))
         SDL_QuitSubSystem(SDL_INIT_VIDEO);
