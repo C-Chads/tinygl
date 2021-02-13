@@ -12,6 +12,7 @@ The changelog is as such:
 * Disabled all non-RGBA rendering modes. The only supported mode is now RGBA.
 
 NEW FUNCTIONS
+###
 
 ### glSetEnableSpecular(int shouldenablespecular);
 
@@ -42,11 +43,24 @@ TinyGL 0.4 by Bellard had incorrect color interpolation and issues with
 GL_FLAT, causing the hello world triangle to look rather...
 wrong. Additionally, per vertex color is just cool.
 
-It's fixed.
+## Notorious bugs from the original that have been fixed
+
+* GLParam is a union of float, int, uint, and void* which is assumed to be 32 bit... but isn't on 64 bit systems
+
+* Per vertex color is broken due to a faulty optimization in clip.c
+
+* The convention for 32 bit color were RGBA for textured triangles and ABGR for non-textured. Now both render as ABGR.
+
+* Little endian was assumed in a thousand places in the code
+
+* Lack of screen door transparency support (GL_POLYGON_STIPLE) even though it is virtually zero cost.
+
+* 
   
 ## FULLY COMPATIBLE WITH RGBA!
 
-The library is now configured properly for RGBA rendering.
+The library is now configured properly for RGBA rendering. Note that the output *is actually ABGR* 
+but adjusting it is easy, see the SDL examples under SDL_EXAMPLES (They require SDL 1.2 and Mixer to compile)
 
 # Here is the old description of TinyGL, saved for historical/attribution purposes:
 
