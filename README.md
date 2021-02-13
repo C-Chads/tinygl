@@ -29,7 +29,7 @@ NEW FUNCTIONS
 
 ### glDeleteList
 
-Replaces glDeleteLists. Allows you to delete display lists.
+An easier to use version of glDeleteLists. glDeleteLists is also implemented.
 
 ### glSetEnableSpecular(int shouldenablespecular);
 

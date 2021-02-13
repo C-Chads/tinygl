@@ -20,6 +20,14 @@ GL_POLYGON_OFFSET_LINE
 ************ glPolygonStipple
 OK. (Implemented by Gek! The variables for it are stored per zBuffer rather than per context.)
 
+************ glDeleteList(GLuint list)
+
+OK.
+
+************ glDeleteLists(GLuint list, GLuint range)
+
+OK.
+
 ************ glShadeModel
 
 OK.

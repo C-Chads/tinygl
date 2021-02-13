@@ -763,7 +763,8 @@ int glIsList(unsigned int list);
 void glNewList(unsigned int list,int mode);
 void glEndList(void);
 void glCallList(unsigned int list);
-void glDeleteList(int list);
+void glDeleteList(unsigned int list);
+void glDeleteLists(unsigned int list, unsigned int range);
 /* clear */
 void glClear(int mask);
 void glClearColor(float r,float g,float b,float a);
