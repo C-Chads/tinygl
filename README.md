@@ -21,6 +21,9 @@ The original project was by Fabrice Bellard. We have forked it.
 The changelog is as such:
 * Disabled all non-RGBA rendering modes. The only supported mode is now RGBA.
 
+* Implemented new functions and some of GL 1.1's prototypes including polygon stipple.
+
+* Fixed a myriad of bugs
 NEW FUNCTIONS
 ###
 
