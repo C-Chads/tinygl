@@ -12,7 +12,9 @@ Texturing Test:
 
 ![Screenshot of Texture test](texture_test.png)
 
-Model loading test:
+Model loading tests:
+
+![model loading demo](model2.gif)
 
 ![model loading demo](model.gif)
 
@@ -70,13 +72,15 @@ wrong. Additionally, per vertex color is just cool.
 
 * Per vertex color is broken due to a faulty optimization in clip.c
 
-* The convention for 32 bit color were RGBA for textured triangles and ABGR for non-textured. Now both render as ABGR.
+* The conventions for 32 bit color were RGBA for textured triangles and ABGR for non-textured. Now both render as ABGR.
 
 * Little endian was assumed in a thousand places in the code
 
 * Lack of screen door transparency support (GL_POLYGON_STIPLE) even though it is virtually zero cost.
 
-* 
+* Missing easy-to-implement prototypes
+
+
   
 ## FULLY COMPATIBLE WITH RGBA!
 
