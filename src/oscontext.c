@@ -1,5 +1,5 @@
 #include "include/GL/oscontext.h"
-#include "zbuffer.h"
+#include "include/zbuffer.h"
 #include "zgl.h"
 #include "include/GL/gl.h"
 #include <stdlib.h>

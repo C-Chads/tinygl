@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../include/GL/gl.h"
+#include "../src/include/GL/gl.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "include/stb_image.h"
 #define CHAD_MATH_IMPL
@@ -19,7 +19,7 @@
 #define CHAD_API_IMPL
 #include "include/api_audio.h"
 #include <SDL/SDL.h>
-#include "../zbuffer.h"
+#include "../src/include/zbuffer.h"
 #include <time.h>
 
 #ifndef M_PI

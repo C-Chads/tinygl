@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "zbuffer.h"
+#include "include/zbuffer.h"
 
 ZBuffer *ZB_open(int xsize, int ysize, int mode,
 		 int nb_colors,

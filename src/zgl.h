@@ -6,9 +6,9 @@
 #include <math.h>
 #include <assert.h>
 #include "include/GL/gl.h"
-#include "zbuffer.h"
+#include "include/zbuffer.h"
 #include "zmath.h"
-#include "zfeatures.h"
+#include "include/zfeatures.h"
 #ifndef M_PI
 #define M_PI 3.14159265358979323
 #endif

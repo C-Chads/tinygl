@@ -10,11 +10,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../include/GL/gl.h"
+#include "../src/include/GL/gl.h"
 #define CHAD_API_IMPL
 #include "include/api_audio.h"
 #include <SDL/SDL.h>
-#include "../zbuffer.h"
+#include "../src/include/zbuffer.h"
 
 #ifndef M_PI
 #  define M_PI 3.14159265
