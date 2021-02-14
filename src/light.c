@@ -116,7 +116,6 @@ void glopLight(GLContext *c,GLParam *p)
         l->norm_position.X=pos.X;
         l->norm_position.Y=pos.Y;
         l->norm_position.Z=pos.Z;
-        
         gl_V3_Norm(&l->norm_position);
       }
     }
@@ -238,9 +237,10 @@ void gl_shade_vertex(GLContext *c,GLVertex *v)
 
     if (l->position.v[3] == 0) {
       /* light at infinity */
-      d.X=l->position.v[0];
-      d.Y=l->position.v[1];
-      d.Z=l->position.v[2];
+      //Fixed by Gek, it used to use the unnormalized position?
+      d.X=l->norm_position.v[0];
+      d.Y=l->norm_position.v[1];
+      d.Z=l->norm_position.v[2];
       att=1;
     } else {
       /* distance attenuation */
@@ -280,6 +280,8 @@ void gl_shade_vertex(GLContext *c,GLVertex *v)
             att=att*pow(dot_spot,l->spot_exponent);
           }
         }
+		//GEK SAYS TO REMOVE THIS
+        //printf("\nThis should not be being called.");
       }
 
       /* specular light */

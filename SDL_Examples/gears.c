@@ -219,7 +219,8 @@ void draw() {
 
 
 void initScene() {
-    static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0 };
+    //static GLfloat pos[4] = {0.408248290463863, 0.408248290463863, 0.816496580927726, 0.0 }; //Light at infinity.
+    static GLfloat pos[4] = {5, 5, 10, 0.0 }; //Light at infinity.
     
     static GLfloat red[4] = {1.0, 0.0, 0.0, 0.0 };
     static GLfloat green[4] = {0.0, 1.0, 0.0, 0.0 };
@@ -263,7 +264,7 @@ void initScene() {
     //glColor3fv(blue);
     gear( 1.3, 2.0, 0.5, 10, 0.7 ); //The small gear above with the large hole.
     glEndList();
-    glEnable( GL_NORMALIZE );
+    //glEnable( GL_NORMALIZE );
 }
 
 int main(int argc, char **argv) {

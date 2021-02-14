@@ -23,33 +23,19 @@ void gl_transform_to_viewport(GLContext *c,GLVertex *v)
   v->zp.z= (int) ( v->pc.Z * winv * c->viewport.scale.Z 
                    + c->viewport.trans.Z );
   /* color */
-  if (c->lighting_enabled) {
+  //if (c->lighting_enabled) {
   	
       v->zp.r=(unsigned int)(v->color.v[0] * 65535) & 65535;
       v->zp.g=(unsigned int)(v->color.v[1] * 65535) & 65535;
       v->zp.b=(unsigned int)(v->color.v[2] * 65535) & 65535;
-  } else {
-      /* no need to convert to integer if no lighting : take current color */
-      /* OLD CODE
-      v->zp_r = c->longcurrent_color[0]; //MARKED, NOT USED
-      v->zp.g = c->longcurrent_color[1]; //MARKED, NOT USED
-      v->zp.b = c->longcurrent_color[2]; //MARKED, NOT USED
 
-      */
-      /*
-      v->zp_r=(int)(v->color.v[0] * (ZB_POINT_RED_MAX - ZB_POINT_RED_MIN) 
-                          + ZB_POINT_RED_MIN);
-      v->zp.g=(int)(v->color.v[1] * (ZB_POINT_GREEN_MAX - ZB_POINT_GREEN_MIN) 
-                    + ZB_POINT_GREEN_MIN);
-      v->zp.b=(int)(v->color.v[2] * (ZB_POINT_BLUE_MAX - ZB_POINT_BLUE_MIN) 
-                    + ZB_POINT_BLUE_MIN);
-      */
+  //} else {
       //printf("\nRECEIVED COLOR %f, %f, %f, %f", v->color.v[0], v->color.v[1], v->color.v[2], v->color.v[3]);
-      v->zp.r=(unsigned int)(v->color.v[0] * 65535) & 65535;
-      v->zp.g=(unsigned int)(v->color.v[1] * 65535) & 65535;
-      v->zp.b=(unsigned int)(v->color.v[2] * 65535) & 65535;
+    //  v->zp.r=(unsigned int)(v->color.v[0] * 65535) & 65535;
+    //  v->zp.g=(unsigned int)(v->color.v[1] * 65535) & 65535;
+    //  v->zp.b=(unsigned int)(v->color.v[2] * 65535) & 65535;
       //printf("\nCOLORS ARE %d, %d, %d", v->zp.r,v->zp.g,v->zp.b);
-  }
+ // }
   
   /* texture */
 

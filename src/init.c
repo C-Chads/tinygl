@@ -107,9 +107,9 @@ void glInit(void *zbuffer1)
   c->current_color.Z=1.0;
   c->current_color.W=0.0;
   //Shouldn't ever be used.
-  c->longcurrent_color[0] = 65280;
-  c->longcurrent_color[1] = 65280;
-  c->longcurrent_color[2] = 65280;
+  //c->longcurrent_color[0] = 65280;
+  //c->longcurrent_color[1] = 65280;
+  //c->longcurrent_color[2] = 65280;
 
   c->current_normal.X=1.0;
   c->current_normal.Y=0.0;

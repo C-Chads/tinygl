@@ -390,6 +390,7 @@ int main(int argc, char **argv) {
 	//tex = 
 	}
 	glDisable(GL_LIGHTING);
+	//glEnable( GL_NORMALIZE );
     // variables for timing:
     unsigned int frames=0;
     unsigned int tNow=SDL_GetTicks();

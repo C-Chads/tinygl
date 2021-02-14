@@ -34,20 +34,20 @@ void glopColor(GLContext * c, GLParam * p)
     c->current_color.Y = p[2].f;
     c->current_color.Z = p[3].f;
     c->current_color.W = p[4].f;
-    c->longcurrent_color[0] = p[5].ui; //MARKED
-    c->longcurrent_color[1] = p[6].ui; //MARKED
-    c->longcurrent_color[2] = p[7].ui; //MARKED
+    //c->longcurrent_color[0] = p[5].ui; //MARKED
+    //c->longcurrent_color[1] = p[6].ui; //MARKED
+    //c->longcurrent_color[2] = p[7].ui; //MARKED
 
     if (c->color_material_enabled) {
-	GLParam q[7];
-	q[0].op = OP_Material;
-	q[1].i = c->current_color_material_mode;
-	q[2].i = c->current_color_material_type;
-	q[3].f = p[1].f;
-	q[4].f = p[2].f;
-	q[5].f = p[3].f;
-	q[6].f = p[4].f;
-	glopMaterial(c, q);
+		GLParam q[7];
+		q[0].op = OP_Material;
+		q[1].i = c->current_color_material_mode;
+		q[2].i = c->current_color_material_type;
+		q[3].f = p[1].f;
+		q[4].f = p[2].f;
+		q[5].f = p[3].f;
+		q[6].f = p[4].f;
+		glopMaterial(c, q);
     }
 }
 

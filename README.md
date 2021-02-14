@@ -112,7 +112,9 @@ wrong. Additionally, per vertex color is just cool.
 
 * Little endian was assumed in a thousand places in the code
 
-* 
+* Non-normalized position was used for lights at infinity.
+
+* Insert unknown bugs here.
 
 
   
