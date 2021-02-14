@@ -9,7 +9,7 @@
 GLTEXTSIZE textsize = 1;
 
 void glTextSize(GLTEXTSIZE mode){textsize = mode;}//Set text size
-void renderchar(char *bitmap, int _x, int _y, PIXEL p) {
+void renderchar(char *bitmap, int _x, int _y, unsigned int p) {
     int x,y;
     int set;
     //int mask;
@@ -24,7 +24,15 @@ void renderchar(char *bitmap, int _x, int _y, PIXEL p) {
         }
     }
 }
-void glPlotPixel(int x, int y, PIXEL p){
+
+
+void glPlotPixel(int x, int y, unsigned int p){
+//	int x = p[1].i;
+//	int y = p[2].i;
+//	unsigned int p = p[3].ui;
+#if TGL_FEATURE_RENDER_BITS == 16
+	p = RGB_TO_PIXEL( ( (p & 255) << 8) , ( p & 65280) , ( (p >>16)<<8 ) );
+#endif
 	PIXEL* pbuf = gl_get_context()->zb->pbuf;
 	int w = gl_get_context()->zb->xsize;
 	int h = gl_get_context()->zb->ysize;
@@ -32,7 +40,7 @@ void glPlotPixel(int x, int y, PIXEL p){
 	if(x>0 && x<w && y>0 && y < h)
 		pbuf[x+y*w] = p;
 }
-void glDrawText(const unsigned char* text, int x, int y, PIXEL p){
+void glDrawText(const unsigned char* text, int x, int y, unsigned int p){
 	if(!text)return;
 	//PIXEL* pbuf = gl_get_context()->zb->pbuf;
 	int w = gl_get_context()->zb->xsize;

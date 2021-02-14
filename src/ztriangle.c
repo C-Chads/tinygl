@@ -7,7 +7,7 @@
 #if TGL_FEATURE_RENDER_BITS == 32
 
 
-
+#elif TGL_FEATURE_RENDER_BITS == 16
 
 #else
 
@@ -42,7 +42,7 @@ void ZB_fillTriangleFlat(ZBuffer *zb,
 
 
 
-    unsigned int color;
+    PIXEL color;
 
 
 #define INTERP_Z
@@ -75,7 +75,9 @@ void ZB_fillTriangleFlat(ZBuffer *zb,
 void ZB_fillTriangleSmooth(ZBuffer *zb,
 			   ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2)
 {
-
+#if TGL_FEATURE_RENDER_BITS == 16
+	int _drgbdx;
+#endif
 //unsigned int color;
 #define INTERP_Z
 #define INTERP_RGB
@@ -83,7 +85,7 @@ void ZB_fillTriangleSmooth(ZBuffer *zb,
 #define SAR_RND_TO_ZERO(v,n) (v / (1<<n))
 
 
-
+#if TGL_FEATURE_RENDER_BITS == 32
 #define DRAW_INIT()				\
 {						\
   	\
@@ -102,6 +104,62 @@ void ZB_fillTriangleSmooth(ZBuffer *zb,
     ob1+=dbdx;					\
 }
 
+//END OF 32 bit mode 
+#elif TGL_FEATURE_RENDER_BITS == 16
+
+
+#define DRAW_INIT()                                       \
+{                                                         \
+_drgbdx=(SAR_RND_TO_ZERO(drdx, 6) << 22) & 0xFFC00000;     \
+_drgbdx|=SAR_RND_TO_ZERO(dgdx,5) & 0x000007FF;             \
+_drgbdx|=(SAR_RND_TO_ZERO(dbdx,7) << 12) & 0x001FF000;     \
+}
+
+#define PUT_PIXEL(_a)				\
+{						\
+    zz=z >> ZB_POINT_Z_FRAC_BITS;		\
+    if (ZCMP(zz,pz[_a],_a)) {				\
+      tmp=rgb&0xF81F07E0;				\
+      pp[_a] = tmp | (tmp >> 16);\
+      pz[_a]=zz;				\
+    }\
+    z+=dzdx;					\
+    rgb=(rgb+drgbdx) & ( ~ 0x00200800);\
+}
+
+#define DRAW_LINE()							   \
+{									   \
+  register unsigned short *pz;					   \
+  register PIXEL *pp;					   \
+  register unsigned int tmp,z,zz,rgb,drgbdx;				   \
+  register int n;							   \
+  n=(x2 >> 16) - x1;							   \
+  pp=pp1+x1;								   \
+  pz=pz1+x1;								   \
+  z=z1;									   \
+  rgb=(r1 << 16) & 0xFFC00000;						   \
+  rgb|=(g1 >> 5) & 0x000007FF;						   \
+  rgb|=(b1 << 5) & 0x001FF000;						   \
+  drgbdx=_drgbdx;							   \
+  while (n>=3) {							   \
+    PUT_PIXEL(0);							   \
+    PUT_PIXEL(1);							   \
+    PUT_PIXEL(2);							   \
+    PUT_PIXEL(3);							   \
+    pz+=4;								   \
+    pp+=4;								   \
+    n-=4;								   \
+  }									   \
+  while (n>=0) {							   \
+    PUT_PIXEL(0);							   \
+    pz+=1;								   \
+    pp+=1;								   \
+    n-=1;								   \
+  }									   \
+}
+
+#endif 
+//^ End of 16 bit mode stuff
 #include "ztriangle.h"
 } //EOF smooth fill triangle
 

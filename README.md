@@ -109,12 +109,23 @@ wrong. Additionally, per vertex color is just cool.
   
 ## FULLY COMPATIBLE WITH RGBA!
 
-The library is now configured properly for RGBA rendering. Note that the output *is actually ABGR* 
+The library is now able to be configured properly for RGBA rendering. Note that the output *is actually ABGR* 
 but adjusting it is easy, see the SDL examples under SDL_EXAMPLES (They require SDL 1.2 and Mixer to compile)
 
-It is a notable loss in this version of TinyGL that 16 bit color support was removed. The only supported mode is 32 bit
+The library is sometimes by default configured for RGBA or 5R6G5B, check zfeatures.h and change the values in this table:
+```c
+#define TGL_FEATURE_8_BITS         0
+#define TGL_FEATURE_24_BITS        0
+//These are the only maintained modes.
+#define TGL_FEATURE_16_BITS        1
+#define TGL_FEATURE_32_BITS        0
+```
 
-This was done to keep this library maintainable.
+make sure that only ONE of these values is 1.
+
+
+## ALSO COMPATIBLE WITH 16 BIT 
+
 
 # Here is the old description of TinyGL, saved for historical/attribution purposes:
 

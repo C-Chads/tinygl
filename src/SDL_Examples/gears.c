@@ -289,7 +289,7 @@ int main(int argc, char **argv) {
     }
     ainit(0);
     SDL_Surface* screen = NULL;
-    if((screen=SDL_SetVideoMode( winSizeX, winSizeY, 32, SDL_HWSURFACE | SDL_DOUBLEBUF)) == 0 ) {
+    if((screen=SDL_SetVideoMode( winSizeX, winSizeY, TGL_FEATURE_RENDER_BITS, SDL_SWSURFACE)) == 0 ) {
         fprintf(stderr,"ERROR: Video mode set failed.\n");
         return 1;
     }
@@ -320,9 +320,9 @@ int main(int argc, char **argv) {
         return 1;
     case 16:
         pitch = screen->pitch;
-        fprintf(stderr,"\nUnsupported by maintainer!!!");
+        //fprintf(stderr,"\nUnsupported by maintainer!!!");
         mode = ZB_MODE_5R6G5B;
-        return 1;
+        //return 1;
         break;
     case 24:
         pitch = ( screen->pitch * 2 ) / 3;
@@ -397,7 +397,12 @@ int main(int argc, char **argv) {
         // draw scene:
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         draw();
-		glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x000000FF);
+        
+		glDrawText((unsigned char*)"RED text", 0, 0,   0x000000FF);
+
+		glDrawText((unsigned char*)"GREEN text", 0, 24,0x0000FF00);
+
+		glDrawText((unsigned char*)"BLUE text", 0, 48,  0x00FF0000);
         // swap buffers:
         if ( SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen)<0) ) {
             fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
@@ -410,12 +415,14 @@ int main(int argc, char **argv) {
 		printf("\nAMASK IS %u",screen->format->Amask);
         */
         //Quickly convert all pixels to the correct format
+#if TGL_FEATURE_RENDER_BITS == 32
         for(int i = 0; i < frameBuffer->xsize* frameBuffer->ysize;i++){
 #define DATONE (frameBuffer->pbuf[i])
 			DATONE = ((DATONE & 0x000000FF)     ) << screen->format->Rshift | 
 					 ((DATONE & 0x0000FF00) >> 8) << screen->format->Gshift |
 					 ((DATONE & 0x00FF0000) >>16) << screen->format->Bshift;
         }
+#endif
         ZB_copyFrameBuffer(frameBuffer, screen->pixels, screen->pitch);
         if ( SDL_MUSTLOCK(screen) ) SDL_UnlockSurface(screen);
         SDL_Flip(screen);

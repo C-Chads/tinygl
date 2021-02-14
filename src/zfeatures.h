@@ -48,18 +48,29 @@
 
 /* enable various convertion code from internal pixel format (usually
    16 bits per pixel) to any external format */
-//CURRENT MAINTAINER'S NOTE: Only FEATURE_32_BITS is being maintained.
-#define TGL_FEATURE_16_BITS        0
 #define TGL_FEATURE_8_BITS         0
 #define TGL_FEATURE_24_BITS        0
-#define TGL_FEATURE_32_BITS        1
+//These are the only maintained modes.
+#define TGL_FEATURE_16_BITS        1
+#define TGL_FEATURE_32_BITS        0
 
 //MAINTAINER'S NOTE: Only TGL_FEATURE_RENDER_BITS 32 is maintained.
+//TODO: Include support for 16 bit.
 //All others are experimental.
 //24 bit is broken.
 //#define TGL_FEATURE_RENDER_BITS    15
 //#define TGL_FEATURE_RENDER_BITS    16
 //#define TGL_FEATURE_RENDER_BITS    24 //BROKEN!
+#if TGL_FEATURE_32_BITS == 1
 #define TGL_FEATURE_RENDER_BITS    32
+
+#elif TGL_FEATURE_16_BITS == 1
+#define TGL_FEATURE_RENDER_BITS    16
+
+#else
+#error Unsupported TGL_FEATURE_RENDER_BITS
+
+#endif
+
 
 #endif /* _tgl_features_h_ */

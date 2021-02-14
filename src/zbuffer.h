@@ -36,14 +36,24 @@
 
 #if TGL_FEATURE_RENDER_BITS == 32
 
+/* 32 bit mode */
 #define RGB_TO_PIXEL(r,g,b) ( ((b&65280)<<8) | ((g&65280)) | ((r&65280)>>8) )
 typedef unsigned int PIXEL;
 #define PSZB 4
 #define PSZSH 5
 
+#elif TGL_FEATURE_RENDER_BITS == 16
+
+/* 16 bit mode */
+#define RGB_TO_PIXEL(r,g,b) (((r) & 0xF800) | (((g) >> 5) & 0x07E0) | ((b) >> 11))
+typedef unsigned short PIXEL;
+#define PSZB 2 
+#define PSZSH 4 
+
+
 #else
 
-#error Incorrect number of bits per pixel
+#error wrong TGL_FEATURE_RENDER_BITS buddy
 
 #endif
 
