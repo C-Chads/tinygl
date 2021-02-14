@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "include/zbuffer.h"
-#include "include/GL/gl.h"
+#include "../include/zbuffer.h"
+#include "../include/GL/gl.h"
 #include "zgl.h"
 #include "font8x8_basic.h"
 GLTEXTSIZE textsize = 1;

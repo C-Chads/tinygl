@@ -3,7 +3,7 @@ include config.mk
 OBJS= api.o list.o vertex.o init.o matrix.o texture.o \
       misc.o clear.o light.o clip.o select.o get.o error.o \
       zbuffer.o zline.o zdither.o ztriangle.o \
-      zmath.o image_util.o oscontext.o msghandling.o \
+      zmath.o image_util.o msghandling.o \
       arrays.o specbuf.o memory.o ztext.o
 ifdef TINYGL_USE_GLX
 #OBJS += glx.o
@@ -29,16 +29,16 @@ clean:
 .c.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c $*.c
 
-clip.o: zgl.h include/zfeatures.h
-vertex.o: zgl.h include/zfeatures.h
-light.o: zgl.h include/zfeatures.h
-matrix.o: zgl.h include/zfeatures.h
-list.o: zgl.h opinfo.h include/zfeatures.h
-arrays.c: zgl.h include/zfeatures.h
-specbuf.o: zgl.h include/zfeatures.h
-glx.o: zgl.h include/zfeatures.h
-nglx.o: zgl.h include/zfeatures.h
-zline.o: zgl.h include/zfeatures.h zline.h
+clip.o: zgl.h ../include/zfeatures.h
+vertex.o: zgl.h ../include/zfeatures.h
+light.o: zgl.h ../include/zfeatures.h
+matrix.o: zgl.h ../include/zfeatures.h
+list.o: zgl.h opinfo.h ../include/zfeatures.h
+arrays.c: zgl.h ../include/zfeatures.h
+specbuf.o: zgl.h ../include/zfeatures.h
+glx.o: zgl.h ../include/zfeatures.h
+nglx.o: zgl.h ../include/zfeatures.h
+zline.o: zgl.h ../include/zfeatures.h zline.h
 
-ztriangle.o: ztriangle.c ztriangle.h zgl.h include/zfeatures.h
+ztriangle.o: ztriangle.c ztriangle.h zgl.h ../include/zfeatures.h
 	$(CC) $(CFLAGS) -Wno-uninitialized $(INCLUDES) -c $*.c

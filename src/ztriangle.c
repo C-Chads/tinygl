@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "include/zbuffer.h"
+#include "../include/zbuffer.h"
 
 
 
