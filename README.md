@@ -58,7 +58,7 @@ Notable limitations:
 
 * A lot of prototypes are missing.
 
-* You cannot use lighting and textures at the same time.
+* A triangle cannot be textured and lit at the same time.
 
 * <Undocumented limitations that have not been tested>
 
