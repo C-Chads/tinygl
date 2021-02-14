@@ -4,13 +4,16 @@
 
 
 void glPolygonStipple(void* a){
+#if TGL_FEATURE_POLYGON_STIPPLE
 	unsigned char* b = a;
 	GLContext *c=gl_get_context();
 	ZBuffer *zb = c->zb;
-	for(int i = 0; i < 128; i++)
+
+	for(int i = 0; i < TGL_POLYGON_STIPPLE_BYTES; i++)
 	{
 		zb->stipplepattern[i] = b[i];
 	}
+#endif
 }
 
 

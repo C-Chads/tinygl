@@ -14,7 +14,7 @@
 #define CHAD_API_IMPL
 #include "include/api_audio.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "../include/stb_image.h"
+#include "include/stb_image.h"
 #include <SDL/SDL.h>
 #include "../zbuffer.h"
 

@@ -12,10 +12,10 @@
 
 #include "../include/GL/gl.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "../include/stb_image.h"
+#include "include/stb_image.h"
 #define CHAD_MATH_IMPL
-#include "../include/3dMath.h"
-#include "../include/tobjparse.h"
+#include "include/3dMath.h"
+#include "include/tobjparse.h"
 #define CHAD_API_IMPL
 #include "include/api_audio.h"
 #include <SDL/SDL.h>

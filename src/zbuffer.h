@@ -57,7 +57,7 @@ typedef struct {
     int frame_buffer_allocated;
     /* opengl polygon stipple*/
     int dostipple;
-    unsigned char stipplepattern[128]; //32 bits wide, 32 bits tall. 32 * 4 bytes.
+    unsigned char stipplepattern[TGL_POLYGON_STIPPLE_BYTES]; //32 bits wide, 32 bits tall. 32 * 4 bytes.
      
     int nb_colors;
     unsigned char *dctable;
