@@ -16,6 +16,7 @@ INCLUDES = -I./include
 LIB = libTinyGL.a
 
 all: $(LIB)
+	mv $(LIB) ../lib/
 
 $(LIB): $(OBJS)
 	rm -f $(LIB)

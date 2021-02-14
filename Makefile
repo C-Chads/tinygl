@@ -1,17 +1,19 @@
 
+LIB = lib/libTinyGL.a
 
-all: src SDL_Examples
+all: $(LIB) SDL_Examples
 	@echo Done!
 
-src:
+$(LIB):
 	cd src && $(MAKE) && cd ..
 
 
-SDL_Examples:
+SDL_Examples: $(LIB)
 	cd SDL_Examples && $(MAKE) && cd ..
 clean:
 	cd src && $(MAKE) clean && cd ..
 	cd SDL_Examples && $(MAKE) clean && cd ..
+	cd lib && rm -f *.a && cd ..
 #clean:
 #	rm -f *~ *.o *.a
 #	cd SDL_Examples && $(MAKE) clean && cd ..
