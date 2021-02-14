@@ -27,7 +27,7 @@ Model loading tests:
 
 
 
-TinyGL 0.6 (c) 1997-2021 Fabrice Bellard, C-Chads, Gek (see License, it's free software)
+TinyGL 0.7 (c) 1997-2021 Fabrice Bellard, C-Chads, Gek (see License, it's free software)
 
 This is a maintained fork of TinyGL, by the C-Chads.
 It is a small, suckless Software-only partial GL 1.1 implementation.
