@@ -51,8 +51,8 @@
 #define TGL_FEATURE_8_BITS         0
 #define TGL_FEATURE_24_BITS        0
 //These are the only maintained modes.
-#define TGL_FEATURE_16_BITS        1
-#define TGL_FEATURE_32_BITS        0
+#define TGL_FEATURE_16_BITS        0
+#define TGL_FEATURE_32_BITS        1
 
 //MAINTAINER'S NOTE: Only TGL_FEATURE_RENDER_BITS 32 is maintained.
 //TODO: Include support for 16 bit.
