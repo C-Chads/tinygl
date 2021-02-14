@@ -76,7 +76,7 @@ void ZB_fillTriangleSmooth(ZBuffer *zb,
 			   ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2)
 {
 #if TGL_FEATURE_RENDER_BITS == 16
-	int _drgbdx;
+//	int _drgbdx;
 #endif
 //unsigned int color;
 #define INTERP_Z
@@ -108,14 +108,23 @@ void ZB_fillTriangleSmooth(ZBuffer *zb,
 #elif TGL_FEATURE_RENDER_BITS == 16
 
 
+/*
 #define DRAW_INIT()                                       \
 {                                                         \
 _drgbdx=(SAR_RND_TO_ZERO(drdx, 6) << 22) & 0xFFC00000;     \
 _drgbdx|=SAR_RND_TO_ZERO(dgdx,5) & 0x000007FF;             \
 _drgbdx|=(SAR_RND_TO_ZERO(dbdx,7) << 12) & 0x001FF000;     \
 }
+*/
 
-#define PUT_PIXEL(_a)				\
+
+#define DRAW_INIT()				\
+{						\
+  	\
+}
+
+
+/*#define PUT_PIXEL(_a)				\
 {						\
     zz=z >> ZB_POINT_Z_FRAC_BITS;		\
     if (ZCMP(zz,pz[_a],_a)) {				\
@@ -126,7 +135,22 @@ _drgbdx|=(SAR_RND_TO_ZERO(dbdx,7) << 12) & 0x001FF000;     \
     z+=dzdx;					\
     rgb=(rgb+drgbdx) & ( ~ 0x00200800);\
 }
+*/
 
+
+#define PUT_PIXEL(_a)				\
+{						\
+    zz=z >> ZB_POINT_Z_FRAC_BITS;		\
+    if (ZCMP(zz,pz[_a],_a)) {				\
+      pp[_a] = RGB_TO_PIXEL(or1, og1, ob1);\
+      pz[_a]=zz;				\
+    }\
+    z+=dzdx;					\
+    og1+=dgdx;					\
+    or1+=drdx;					\
+    ob1+=dbdx;					\
+}
+/*
 #define DRAW_LINE()							   \
 {									   \
   register unsigned short *pz;					   \
@@ -158,6 +182,7 @@ _drgbdx|=(SAR_RND_TO_ZERO(dbdx,7) << 12) & 0x001FF000;     \
   }									   \
 }
 
+*/
 #endif 
 //^ End of 16 bit mode stuff
 #include "ztriangle.h"
