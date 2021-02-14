@@ -30,7 +30,7 @@ The original project was by Fabrice Bellard. We have forked it.
 
 The changelog is as such:
 
-* Disabled all non-RGBA rendering modes. The only supported mode is now RGBA.
+* Disabled 8, 15, and 24 bit rendering modes. 16 and 32 are the only supported rendering modes (Coincidentally, they are also the fastest)
 
 * Implemented new functions and some of GL 1.1's prototypes including polygon stipple.
 
@@ -42,7 +42,6 @@ Note that this Softrast **is not GL 1.1 compliant** and does not constitute a co
 
 You *will* have to tweak your code to work with this library. That said, once you have, it will run anywhere that you can get
 C99. TinyGL has very few external dependencies.
-
 
 
 Notable limitations:
@@ -59,6 +58,8 @@ Notable limitations:
 ### NEW FUNCTIONS 
 
 These are functions not in the GL 1.1 spec that i've added to make this library more useful.
+
+These functions cannot be added as opcodes to display lists.
 
 ### glDeleteList
 
