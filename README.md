@@ -60,8 +60,7 @@ Notable limitations:
 
 * You cannot use lighting and textures at the same time.
 
-* All lighting calculations are done in eye coordinates (After the MODELVIEW matrix is applied) irrespective of 
-GL_LIGHT_MODEL_LOCAL_VIEWER
+* <Undocumented limitations that have not been tested>
 
 
 ### NEW FUNCTIONS 
