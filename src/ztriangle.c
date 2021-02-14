@@ -23,7 +23,7 @@
 #define XSTIP(_a) ((THE_X+_a)& TGL_POLYGON_STIPPLE_MASK_X)
 #define YSTIP (the_y & TGL_POLYGON_STIPPLE_MASK_Y)
 //NOTES                                                           Divide by 8 to get the byte        Get the actual bit
-#define STIPBIT(_a) (zb->stipplepattern[(XSTIP(_a) + (YSTIP<<TGL_POLYGON_STIPPLE_POW2_WIDTH))>>3] & (1<<(XSTIP(_a) & 7)))
+#define STIPBIT(_a) (zb->stipplepattern[(XSTIP(_a) | (YSTIP<<TGL_POLYGON_STIPPLE_POW2_WIDTH))>>3] & (1<<(XSTIP(_a) & 7)))
 #define STIPTEST(_a) !(zb->dostipple && !STIPBIT(_a))
 #define ZCMP(z,zpix,_a) ((z) >= (zpix) && STIPTEST(_a))
 
