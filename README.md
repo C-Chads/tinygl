@@ -11,6 +11,10 @@ With Polygon Stipple:
 
 ![GIF Video of demo](capture2.gif)
 
+Hello World test:
+
+![model loading demo](helloworld.gif)
+
 Texturing Test: 
 
 ![Screenshot of Texture test](texture_test.png)
@@ -20,6 +24,8 @@ Model loading tests:
 ![model loading demo](model2.gif)
 
 ![model loading demo](model.gif)
+
+
 
 TinyGL 0.6 (c) 1997-2021 Fabrice Bellard, C-Chads, Gek (see License, it's free software)
 
