@@ -1,11 +1,6 @@
-/* Public Domain / CC0 3d Math Library
-
-
-Written by Gek (DMHSW) in 2020
-
+/* Public Domain / CC0 C99 Vector Math Library
 
 */
-
 
 #ifndef CHAD_MATH_H
 #define CHAD_MATH_H
