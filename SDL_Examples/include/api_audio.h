@@ -1,16 +1,16 @@
-/*
- * 
-Licensed under CC0, public domain software rendering toolkit.
- * 
- * */
+/* Public Domain / CC0 Audio Playback Mini Library
+
+
+Written by Gek (DMHSW) in 2020
+
+
+*/
 
 /*
 HOW TO BUILD THINGS USING THIS LIBRARY
-You gotta use a makefile
-
-Make sure to #include "api.h" into your code. You can only include it in one file.
-
-If you aren't using mixer, I recommend disabling USE_MIXER at the top, and then you don't need to link to it.
+#define CHAD_API_IMPL
+//^ This line goes in the file you want the "implementation" in.
+#include "api_audio.h"
 
 
 */

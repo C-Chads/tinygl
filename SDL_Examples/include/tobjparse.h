@@ -1,3 +1,13 @@
+/* Public Domain / CC0 3d OBJ Parser
+
+With support for Per Vertex Color (VC) Lines.
+
+
+Written by Gek (DMHSW) in 2020
+
+
+*/
+
 #ifndef TOBJ_PARSE_H
 #define TOBJ_PARSE_H
 #include "3dMath.h"

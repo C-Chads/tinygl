@@ -1,3 +1,12 @@
+
+/* Public Domain / CC0 3d Lock-Step Threading Implementation
+
+
+Written by Gek (DMHSW) in 2020
+
+
+*/
+
 #ifndef LOCKSTEPTHREAD_H
 #define LOCKSTEPTHREAD_H
 #include <pthread.h>

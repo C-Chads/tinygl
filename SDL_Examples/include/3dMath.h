@@ -1,3 +1,12 @@
+/* Public Domain / CC0 3d Math Library
+
+
+Written by Gek (DMHSW) in 2020
+
+
+*/
+
+
 #ifndef CHAD_MATH_H
 #define CHAD_MATH_H
 #include <math.h>
