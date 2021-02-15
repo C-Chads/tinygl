@@ -556,9 +556,10 @@ vec4 boxvbox(aabb b1, aabb b2){ //Just points along the minimum separating axis,
 						.d[0]=0,
 						.d[1]=0,
 						.d[2]=0,
-						.d[3]=axispen[i/3].d[i%3]
+						.d[3]=(axispen[i/3].d[i%3])
 					};
 			ret.d[i%3] = ret.d[3];
+			ret.d[3] = fabs(ret.d[3]);
 		}
 	}
 	return ret;
