@@ -54,9 +54,11 @@ typedef unsigned short PIXEL;
 
 #else
 
-#error wrong TGL_FEATURE_RENDER_BITS buddy
+#error "wrong TGL_FEATURE_RENDER_BITS buddy"
 
 #endif
+
+
 
 typedef struct {
     int xsize,ysize;

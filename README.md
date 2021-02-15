@@ -101,6 +101,64 @@ This function can be added to display lists.
 
 Plot pixel directly to the buffer.
 
+## TOGGLEABLE FEATURES
+
+See `include/zfeatures.h`
+
+Standard OpenGL features that you can disable for extra performance or smaller binary size.
+```c
+#define TGL_FEATURE_ARRAYS         1
+#define TGL_FEATURE_DISPLAYLISTS   1
+#define TGL_FEATURE_POLYGON_OFFSET 1
+#define TGL_FEATURE_POLYGON_STIPPLE 1
+```
+
+Change the dimensions of a polygon stipple pattern, and how it's interpreted.
+
+If you're only ever going to use very small stipple patterns, it's recommended you alter these settings.
+```c
+//A stipple pattern is 128 bytes in size.
+#define TGL_POLYGON_STIPPLE_BYTES 128
+//A stipple pattern is 2^5 (32) bits wide.
+#define TGL_POLYGON_STIPPLE_POW2_WIDTH 5
+//The stipple pattern mask (the last bits of the screen coordinates used for indexing)
+//The default pattern is 32 bits wide and 32 bits tall, or 4 bytes per row and 32 tall, 4 * 32 = 128 bytes.
+#define TGL_POLYGON_STIPPLE_MASK_X 31
+#define TGL_POLYGON_STIPPLE_MASK_Y 31
+```
+
+These features enable you to achieve the effect of `discard` in GLSL shaders.
+
+You can use this to draw objects which only ever need discard-type alpha transparency.
+
+Simply specify a color to use for that purpose. My favorite choice is hideous magenta (0xff00ff)
+
+The color mask is "and'd" with the color before the test, in case you wanted to only test one color (red, for instance)
+
+Note that when changing between bit depths, you will need to alter the NO_COPY_COLOR and NO_DRAW_COLOR if you use those
+features.
+```c
+#define TGL_FEATURE_NO_COPY_COLOR 0
+#define TGL_FEATURE_NO_DRAW_COLOR 0
+#define TGL_FEATURE_FORCE_CLEAR_NO_COPY_COLOR 0
+#define TGL_NO_COPY_COLOR 0xff00ff
+#define TGL_NO_DRAW_COLOR 0xff00ff
+//^ solid debug pink.
+#define TGL_COLOR_MASK 0x00ffffff
+```
+
+Alter the bit depth of rendering. Note that all textures loaded are assumed to be R8G8B8 (in that order, with no Alpha or padding)
+
+Textures are converted internally (see image_util.c) to the renderer's output format.
+
+at the current time, only 16 and 32 bit rendering are maintained and tested regularly.
+```c
+#define TGL_FEATURE_8_BITS         0
+#define TGL_FEATURE_24_BITS        0
+//These are the only maintained modes.
+#define TGL_FEATURE_16_BITS        0
+#define TGL_FEATURE_32_BITS        1
+```
 
 ## FIXED BUGS FROM THE ORIGINAL!
 

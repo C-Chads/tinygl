@@ -7,25 +7,25 @@
 #define TGL_FEATURE_ARRAYS         1
 #define TGL_FEATURE_DISPLAYLISTS   1
 #define TGL_FEATURE_POLYGON_OFFSET 1
-
 #define TGL_FEATURE_POLYGON_STIPPLE 1
 //A stipple pattern is 128 bytes in size.
 #define TGL_POLYGON_STIPPLE_BYTES 128
 //A stipple pattern is 2^5 (32) bits wide.
 #define TGL_POLYGON_STIPPLE_POW2_WIDTH 5
 //The stipple pattern mask (the last bits of the screen coordinates used for indexing)
-//The default pattern is 32 bits wide and 32 bits tall, or 4 bytes per row and 32 tall, 4 * 32 128 bytes.
+//The default pattern is 32 bits wide and 32 bits tall, or 4 bytes per row and 32 tall, 4 * 32 = 128 bytes.
 #define TGL_POLYGON_STIPPLE_MASK_X 31
 #define TGL_POLYGON_STIPPLE_MASK_Y 31
 
 //These are features useful for integrating TinyGL with other renderers.
 #define TGL_FEATURE_NO_COPY_COLOR 0
+#define TGL_FEATURE_NO_DRAW_COLOR 0
 #define TGL_FEATURE_FORCE_CLEAR_NO_COPY_COLOR 0
 #define TGL_NO_COPY_COLOR 0xff00ff
-//NOTE: fc02fc is what you'll get if you set glColor3f to 1,0,1. 
+#define TGL_NO_DRAW_COLOR 0xff00ff
 //^ solid debug pink.
-#define TGL_COLOR_MASK 0xffffffff
-//^ mask to check for copybuffer. This is configured for the default mode.
+#define TGL_COLOR_MASK 0x00ffffff
+//^ mask to check for while drawing/copying.
 
 /*
  * Matrix of internal and external pixel formats supported. 'Y' means

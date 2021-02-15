@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include "../include/GL/gl.h"
-#define NDEBUG
+//#define NDEBUG
 
 #ifdef NDEBUG
 #define NO_DEBUG_OUTPUT
