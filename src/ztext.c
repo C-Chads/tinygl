@@ -25,20 +25,30 @@ void renderchar(GLbyte *bitmap, GLint _x, GLint _y, GLuint p) {
     }
 }
 
+void glopPlotPixel(GLContext * c,GLParam * p){
+	GLint x = p[1].i;
+	PIXEL pix = p[2].ui;
+	//PIXEL* pbuf = c->zb->pbuf;
+	c->zb->pbuf[x] = pix;
+}
 
-void glPlotPixel(GLint x, GLint y, GLuint p){
-//	GLint x = p[1].i;
-//	GLint y = p[2].i;
-//	GLuint p = p[3].ui;
-#if TGL_FEATURE_RENDER_BITS == 16
-	p = RGB_TO_PIXEL( ( (p & 255) << 8) , ( p & 65280) , ( (p >>16)<<8 ) );
-#endif
-	PIXEL* pbuf = gl_get_context()->zb->pbuf;
+void glPlotPixel(GLint x, GLint y, GLuint pix){
+	GLParam p[3];
+
+	//PIXEL* pbuf = gl_get_context()->zb->pbuf;
 	GLint w = gl_get_context()->zb->xsize;
 	GLint h = gl_get_context()->zb->ysize;
+	p[0].op = OP_PlotPixel;
 	
-	if(x>0 && x<w && y>0 && y < h)
-		pbuf[x+y*w] = p;
+	
+	if(x>0 && x<w && y>0 && y < h){
+#if TGL_FEATURE_RENDER_BITS == 16
+		pix = RGB_TO_PIXEL( ( (pix & 255) << 8) , ( pix & 65280) , ( (pix >>16)<<8 ) );
+#endif
+		p[1].i = x+y*w;
+		p[2].ui = pix;
+		gl_add_op(p);
+	}
 }
 void glDrawText(const GLubyte* text, GLint x, GLint y, GLuint p){
 	if(!text)return;

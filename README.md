@@ -85,6 +85,8 @@ Allows the user to retrieve the raw pixel data of a texture, for their own modif
 
 ### glDrawText(const unsigned char* text, int x, int y, unsigned int pixel)
 
+This function can be added to display lists.
+
 Draws a pre-made 8x8 font to the screen. You can change its displayed size with...
 
 ### glTextSize(GLTEXTSIZE mode)
@@ -92,6 +94,8 @@ Draws a pre-made 8x8 font to the screen. You can change its displayed size with.
 Set size of text drawn to the buffer in aforementioned function.
 
 ### glPlotPixel(int x, int y, unsigned int pixel)
+
+This function can be added to display lists.
 
 Plot pixel directly to the buffer.
 

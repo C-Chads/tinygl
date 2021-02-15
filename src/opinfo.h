@@ -68,4 +68,7 @@ ADD_OP(TexCoordPointer, 4, "%d %C %d %p")
 /* opengl 1.1 polygon offset */
 ADD_OP(PolygonOffset, 2, "%f %f")
 
+/* Gek's Added Functions */
+ADD_OP(PlotPixel, 2, "%d %d")
+
 #undef ADD_OP
