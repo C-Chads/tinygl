@@ -27,7 +27,7 @@ Model loading tests:
 
 
 
-TinyGL 0.7 (c) 1997-2021 Fabrice Bellard, C-Chads, Gek (see License, it's free software)
+TinyGL 0.8 (c) 1997-2021 Fabrice Bellard, C-Chads, Gek (see License, it's free software)
 
 This is a maintained fork of TinyGL, by the C-Chads.
 It is a small, suckless Software-only partial GL 1.1 implementation.
@@ -58,7 +58,7 @@ Notable limitations:
 
 * A lot of prototypes are missing.
 
-* A triangle cannot be textured and lit at the same time.
+* A triangle cannot be textured and lit at the same time. (This is planned to be fixed)
 
 * <Undocumented limitations that have not been tested>
 
@@ -90,6 +90,8 @@ This function can be added to display lists.
 Draws a pre-made 8x8 font to the screen. You can change its displayed size with...
 
 ### glTextSize(GLTEXTSIZE mode)
+
+This function can be added to display lists.
 
 Set size of text drawn to the buffer in aforementioned function.
 
@@ -127,7 +129,7 @@ wrong. Additionally, per vertex color is just cool.
 The library is now able to be configured properly for RGBA rendering. Note that the output *is actually ABGR* 
 but adjusting it is easy, see the SDL examples under SDL_EXAMPLES (They require SDL 1.2 and Mixer to compile)
 
-The library is sometimes by default configured for RGBA or 5R6G5B, check zfeatures.h and change the values in this table:
+The library is sometimes by default configured for RGBA or 5R6G5B, check include/zfeatures.h and change the values in this table:
 ```c
 #define TGL_FEATURE_8_BITS         0
 #define TGL_FEATURE_24_BITS        0

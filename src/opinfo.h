@@ -70,5 +70,6 @@ ADD_OP(PolygonOffset, 2, "%f %f")
 
 /* Gek's Added Functions */
 ADD_OP(PlotPixel, 2, "%d %d")
+ADD_OP(TextSize, 1, "%d")
 
 #undef ADD_OP

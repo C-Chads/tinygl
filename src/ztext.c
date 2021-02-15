@@ -8,7 +8,15 @@
 #include "font8x8_basic.h"
 GLTEXTSIZE textsize = 1;
 
-void glTextSize(GLTEXTSIZE mode){textsize = mode;}//Set text size
+void glTextSize(GLTEXTSIZE mode){
+	GLParam p[2];
+	p[0].op = OP_TextSize;
+	p[1].ui = mode;
+	gl_add_op(p);
+}
+void glopTextSize(GLContext * c,GLParam * p){
+	textsize = p[1].ui;
+}//Set text size
 void renderchar(GLbyte *bitmap, GLint _x, GLint _y, GLuint p) {
     GLint x,y;
     GLint set;
