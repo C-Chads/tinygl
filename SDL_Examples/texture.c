@@ -47,9 +47,6 @@ GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h){
 	return t;
 }
 
-static GLfloat view_rotx=20.0, view_roty=30.0;
-static GLint gear1, gear2, gear3;
-static GLfloat angle = 0.0;
 
 void draw() {
 	glEnable(GL_TEXTURE_2D);
@@ -83,9 +80,7 @@ void draw() {
 void initScene() {
     static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0 };
     
-    static GLfloat red[4] = {1.0, 0.0, 0.0, 0.0 };
-    static GLfloat green[4] = {0.0, 1.0, 0.0, 0.0 };
-    static GLfloat blue[4] = {0.0, 0.0, 1.0, 0.0 };
+    
     static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0 };
 
     glLightfv( GL_LIGHT0, GL_POSITION, pos );
@@ -159,7 +154,7 @@ int main(int argc, char **argv) {
     SDL_WM_SetCaption(argv[0],0);
 
     // initialize TinyGL:
-    unsigned int pitch;
+    
     int	mode;
     switch( screen->format->BitsPerPixel ) {
     case  8:
@@ -167,19 +162,19 @@ int main(int argc, char **argv) {
         fprintf(stderr,"\nUnsupported by maintainer!!!");
         return 1;
     case 16:
-            pitch = screen->pitch;
+            
             //fprintf(stderr,"\nUnsupported by maintainer!!!");
             mode = ZB_MODE_5R6G5B;
             //return 1;
             break;
     case 24:
-        pitch = ( screen->pitch * 2 ) / 3;
+        
         fprintf(stderr,"\nUnsupported by maintainer!!!");
         mode = ZB_MODE_RGB24;
         return 1;
         break;
     case 32:
-        pitch = screen->pitch / 2;
+        
         mode = ZB_MODE_RGBA;
         break;
     default:
@@ -193,7 +188,7 @@ int main(int argc, char **argv) {
     glClearColor (0.0, 0.0, 0.0, 0.0);
     glViewport (0, 0, winSizeX, winSizeY);
     glEnable(GL_DEPTH_TEST);
-    GLfloat  h = (GLfloat) winSizeY / (GLfloat) winSizeX;
+    //GLfloat  h = (GLfloat) winSizeY / (GLfloat) winSizeX;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //glFrustum( -1.0, 1.0, -h, h, 5.0, 60.0 );
@@ -218,17 +213,6 @@ int main(int argc, char **argv) {
         while( SDL_PollEvent( &evt ) ) switch(evt.type) {
         case SDL_KEYDOWN:
             switch(evt.key.keysym.sym) {
-            case SDLK_UP:
-                view_rotx += 5.0;
-                break;
-            case SDLK_DOWN:
-                view_rotx -= 5.0;
-                break;
-            case SDLK_LEFT:
-                view_roty += 5.0;
-                break;
-            case SDLK_RIGHT:
-                view_roty -= 5.0;
                 break;
             case SDLK_ESCAPE :
             case SDLK_q :
