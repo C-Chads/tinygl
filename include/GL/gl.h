@@ -689,14 +689,14 @@ typedef int 		GLsizei;
 #if COMPILETIME_TINYGL_COMPAT_TEST == 1
 
 //NO
-extern char __BUILDT_GLbyte[ 1-2*(sizeof(GLbyte) != 1)];
+extern char TGL_BUILDT_GLbyte[ 1-2*(sizeof(GLbyte) != 1)];
 //extern char __BUILDT_error[ 1-2*(sizeof(GLbyte) != 4)];
-extern char __BUILDT_GLshort[ 1-2*(sizeof(GLshort) != 2)];
-extern char __BUILDT_GLint[ 1-2*(sizeof(GLint) != 4)];
-extern char __BUILDT_GLuint[ 1-2*(sizeof(GLuint) != 4)];
-extern char __BUILDT_GLfloat[ 1-2*(sizeof(GLfloat) != 4)];
-extern char __BUILDT_GLubyte[ 1-2*(sizeof(GLubyte) != 1)];
-extern char __BUILDT_GLushort[ 1-2*(sizeof(GLushort) != 2)];
+extern char TGL_BUILDT_GLshort[ 1-2*(sizeof(GLshort) != 2)];
+extern char TGL_BUILDT_GLint[ 1-2*(sizeof(GLint) != 4)];
+extern char TGL_BUILDT_GLuint[ 1-2*(sizeof(GLuint) != 4)];
+extern char TGL_BUILDT_GLfloat[ 1-2*(sizeof(GLfloat) != 4)];
+extern char TGL_BUILDT_GLubyte[ 1-2*(sizeof(GLubyte) != 1)];
+extern char TGL_BUILDT_GLushort[ 1-2*(sizeof(GLushort) != 2)];
 
 #endif
 /* functions */
