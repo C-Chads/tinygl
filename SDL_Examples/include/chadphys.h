@@ -55,21 +55,22 @@ void resolveBodies(phys_body* a, phys_body* b){
 		.d[2]=0,
 		.d[3]=0
 	};
-	if(a->shape.c[3] > 0 && b->shape.c[3] > 0) //Both Spheres!
+	if(a->shape.c.d[3] > 0 && b->shape.c.d[3] > 0) //Both Spheres!
 	{
 		penvec = spherevsphere(a->shape.c, b->shape.c);
-	} else if(a->shape.c[3] <= 0 && b->shape.c[3] <= 0) //Both boxes!
+	} else if(a->shape.c.d[3] <= 0 && b->shape.c.d[3] <= 0) //Both boxes!
 	{
 		penvec = boxvbox(a->shape,b->shape);
-	} else if (a->shape.c[3] > 0 && b->shape.c[3] <= 0) //a is a sphere, b is a box
+	} else if (a->shape.c.d[3] > 0 && b->shape.c.d[3] <= 0) //a is a sphere, b is a box
 	{
-		penvec = aabbvsphere(b->shape,a->shape.c);
-		//b was first so we have to swap these.
+		penvec = spherevaabb(a->shape.c,b->shape);
+		
+		
+	} else if (a->shape.c.d[3] <= 0 && b->shape.c.d[3] > 0){ //a is a box, b is a sphere
+		penvec = spherevaabb(b->shape.c,a->shape);
 		penvec.d[0] *= -1;
 		penvec.d[1] *= -1;
 		penvec.d[2] *= -1;
-	} else if (a->shape.c[3] <= 0 && b->shape.c[3] > 0){ //a is a box, b is a sphere
-		penvec = aabbvsphere(a->shape,b->shape.c);
 	} else {
 		puts("\nInvalid configuration. Error.\n");
 	}

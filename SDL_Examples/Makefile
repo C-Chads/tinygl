@@ -6,7 +6,7 @@ ALL_T= gears texture model helloworld
 LIB= ../lib/libTinyGL.a
 all: $(ALL_T)
 clean:
-	rm -f $(ALL_T)
+	rm -f $(ALL_T) *.exe
 texture:
 	gcc texture.c $(LIB) -o texture $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) -lSDL -lSDL_mixer -lmad -logg -lmikmod -logg -lm
 helloworld:
