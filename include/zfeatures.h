@@ -34,9 +34,9 @@
  *           External  8    16    24    32
  * Internal 
  *  15                 .     .     .     .
- *  16                 Y     Y     Y     Y
- *  24                 .     Y     Y     .
- *  32                 .     Y     .     Y
+ *  16                 .     Y     .     .
+ *  24                 .     .     .     .  (Stupid and pointless)
+ *  32                 .     .     .     Y
  * 
  *
  * 15 bpp does not work yet (although it is easy to add it - ask me if
