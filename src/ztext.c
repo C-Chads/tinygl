@@ -18,15 +18,15 @@ void renderGLbyte(GLbyte *bitmap, GLint _x, GLint _y, GLuint p) {
         for (y=0; y < 8; y++) {
             set = bitmap[x] & 1 << y;
 			if(set)
-				for(int i = 0; i < mult; i++)
-				for(int j = 0; j < mult; j++)
+				for(GLint i = 0; i < mult; i++)
+				for(GLint j = 0; j < mult; j++)
 				glPlotPixel(y*mult + i + _x, x*mult + j + _y, p);
         }
     }
 }
 
 
-void glPlotPixel(int x, GLint y, GLuint p){
+void glPlotPixel(GLint x, GLint y, GLuint p){
 //	int x = p[1].i;
 //	int y = p[2].i;
 //	GLuint p = p[3].ui;
@@ -48,7 +48,7 @@ void glDrawText(const GLubyte* text, GLint x, GLint y, GLuint p){
 	int xoff = 0;
 	int yoff = 0;
 	int mult = textsize;
-	for(int i = 0; text[i] != '\0' && y+7 < h; i++){
+	for(GLint i = 0; text[i] != '\0' && y+7 < h; i++){
 		if(text[i] != '\n' && text[i] < 127 && xoff+x < w)
 		{
 			renderGLbyte(font8x8_basic[text[i]],x+xoff,y+yoff, p);

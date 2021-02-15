@@ -16,11 +16,11 @@ void gl_transform_to_viewport(GLContext *c,GLVertex *v)
 
   /* coordinates */
   winv=1.0/v->pc.W;
-  v->zp.x= (int) ( v->pc.X * winv * c->viewport.scale.X 
+  v->zp.x= (GLint) ( v->pc.X * winv * c->viewport.scale.X 
                    + c->viewport.trans.X );
-  v->zp.y= (int) ( v->pc.Y * winv * c->viewport.scale.Y 
+  v->zp.y= (GLint) ( v->pc.Y * winv * c->viewport.scale.Y 
                    + c->viewport.trans.Y );
-  v->zp.z= (int) ( v->pc.Z * winv * c->viewport.scale.Z 
+  v->zp.z= (GLint) ( v->pc.Z * winv * c->viewport.scale.Z 
                    + c->viewport.trans.Z );
   /* color */
   //if (c->lighting_enabled) {
@@ -40,15 +40,15 @@ void gl_transform_to_viewport(GLContext *c,GLVertex *v)
   /* texture */
 
   if (c->texture_2d_enabled) {
-    v->zp.s=(int)(v->tex_coord.X * (ZB_POINT_S_MAX - ZB_POINT_S_MIN) 
+    v->zp.s=(GLint)(v->tex_coord.X * (ZB_POINT_S_MAX - ZB_POINT_S_MIN) 
                   + ZB_POINT_S_MIN);
-    v->zp.t=(int)(v->tex_coord.Y * (ZB_POINT_T_MAX - ZB_POINT_T_MIN) 
+    v->zp.t=(GLint)(v->tex_coord.Y * (ZB_POINT_T_MAX - ZB_POINT_T_MIN) 
                   + ZB_POINT_T_MIN);
   }
 }
 
 
-static void gl_add_select1(GLContext *c,int z1,int z2,int z3)
+static void gl_add_select1(GLContext *c,GLint z1,GLint z2,GLint z3)
 {
   GLuint min,max;
   min=max=z1;
@@ -248,7 +248,7 @@ static inline void updateTmp(GLContext *c,
 }
 
 static void gl_draw_triangle_clip(GLContext *c,
-                                  GLVertex *p0,GLVertex *p1,GLVertex *p2,int clip_bit);
+                                  GLVertex *p0,GLVertex *p1,GLVertex *p2,GLint clip_bit);
 
 void gl_draw_triangle(GLContext *c,
                       GLVertex *p0,GLVertex *p1,GLVertex *p2)
@@ -302,7 +302,7 @@ void gl_draw_triangle(GLContext *c,
 }
 
 static void gl_draw_triangle_clip(GLContext *c,
-                                  GLVertex *p0,GLVertex *p1,GLVertex *p2,int clip_bit)
+                                  GLVertex *p0,GLVertex *p1,GLVertex *p2,GLint clip_bit)
 {
   GLint co,c_and,co1,cc[3],edge_flag_tmp,clip_mask;
   GLVertex tmp1,tmp2,*q[3];

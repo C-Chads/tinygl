@@ -135,7 +135,7 @@ void gl_M4_InvOrtho(M4 *a,M4 b)
 /* Inversion of a general nxn matrix.
    Note : m is destroyed */
 
-int Matrix_Inv(GLfloat *r,GLfloat *m,int n)
+int Matrix_Inv(GLfloat *r,GLfloat *m,GLint n)
 {
 	 GLint i,j,k,l;
 	 GLfloat max,tmp,t;
@@ -203,7 +203,7 @@ void gl_M4_Inv(M4 *a,M4 *b)
   Matrix_Inv(&a->m[0][0],&tmp.m[0][0],4);
 }
 
-void gl_M4_Rotate(M4 *a,GLfloat t,int u)
+void gl_M4_Rotate(M4 *a,GLfloat t,GLint u)
 {
 	 GLfloat s,c;
 	 GLint v,w;

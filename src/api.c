@@ -136,7 +136,7 @@ void glTexCoord2fv(GLfloat *v)
   glTexCoord4f(v[0],v[1],0,1);
 }
 
-void glEdgeFlag(int flag)
+void glEdgeFlag(GLint flag)
 {
   GLParam p[2];
 
@@ -148,7 +148,7 @@ void glEdgeFlag(int flag)
 
 /* misc */
 
-void glShadeModel(int mode)
+void glShadeModel(GLint mode)
 {
   GLParam p[2];
 
@@ -160,7 +160,7 @@ void glShadeModel(int mode)
   gl_add_op(p);
 }
 
-void glCullFace(int mode)
+void glCullFace(GLint mode)
 {
   GLParam p[2];
 
@@ -174,7 +174,7 @@ void glCullFace(int mode)
   gl_add_op(p);
 }
 
-void glFrontFace(int mode)
+void glFrontFace(GLint mode)
 {
   GLParam p[2];
 
@@ -188,7 +188,7 @@ void glFrontFace(int mode)
   gl_add_op(p);
 }
 
-void glPolygonMode(int face,int mode)
+void glPolygonMode(GLint face,GLint mode)
 {
   GLParam p[3];
 
@@ -207,7 +207,7 @@ void glPolygonMode(int face,int mode)
 
 /* glEnable / glDisable */
 
-void glEnable(int cap)
+void glEnable(GLint cap)
 {
   GLParam p[3];
 
@@ -218,7 +218,7 @@ void glEnable(int cap)
   gl_add_op(p);
 }
 
-void glDisable(int cap)
+void glDisable(GLint cap)
 {
   GLParam p[3];
 
@@ -231,7 +231,7 @@ void glDisable(int cap)
 
 /* glBegin / glEnd */
 
-void glBegin(int mode)
+void glBegin(GLint mode)
 {
   GLParam p[2];
 
@@ -252,7 +252,7 @@ void glEnd(void)
 
 /* matrix */
 
-void glMatrixMode(int mode)
+void glMatrixMode(GLint mode)
 {
   GLParam p[2];
 
@@ -349,7 +349,7 @@ void glScalef(GLfloat x,GLfloat y,GLfloat z)
 }
 
 
-void glViewport(int x,int y,int width,int height)
+void glViewport(GLint x,GLint y,GLint width,GLint height)
 {
   GLParam p[5];
 
@@ -362,8 +362,8 @@ void glViewport(int x,int y,int width,int height)
   gl_add_op(p);
 }
 
-void glFrustum(double left,double right,double bottom,double top,
-               double near,double farv)
+void glFrustum(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top,
+               GLdouble near,GLdouble farv)
 {
   GLParam p[7];
 
@@ -380,7 +380,7 @@ void glFrustum(double left,double right,double bottom,double top,
 
 /* lightening */
 
-void glMaterialfv(int mode,int type,GLfloat *v)
+void glMaterialfv(GLint mode,GLint type,GLfloat *v)
 {
   GLParam p[7];
   GLint i,n;
@@ -398,7 +398,7 @@ void glMaterialfv(int mode,int type,GLfloat *v)
   gl_add_op(p);
 }
 
-void glMaterialf(int mode,int type,GLfloat v)
+void glMaterialf(GLint mode,GLint type,GLfloat v)
 {
   GLParam p[7];
   GLint i;
@@ -412,7 +412,7 @@ void glMaterialf(int mode,int type,GLfloat v)
   gl_add_op(p);
 }
 
-void glColorMaterial(int mode,int type)
+void glColorMaterial(GLint mode,GLint type)
 {
   GLParam p[3];
 
@@ -423,7 +423,7 @@ void glColorMaterial(int mode,int type)
   gl_add_op(p);
 }
 
-void glLightfv(int light,int type,GLfloat *v)
+void glLightfv(GLint light,GLint type,GLfloat *v)
 {
   GLParam p[7];
   GLint i;
@@ -438,7 +438,7 @@ void glLightfv(int light,int type,GLfloat *v)
 }
 
 
-void glLightf(int light,int type,GLfloat v)
+void glLightf(GLint light,GLint type,GLfloat v)
 {
   GLParam p[7];
   GLint i;
@@ -452,7 +452,7 @@ void glLightf(int light,int type,GLfloat v)
   gl_add_op(p);
 }
 
-void glLightModeli(int pname,int param)
+void glLightModeli(GLint pname,GLint param)
 {
   GLParam p[6];
 
@@ -467,7 +467,7 @@ void glLightModeli(int pname,int param)
   gl_add_op(p);
 }
 
-void glLightModelfv(int pname,GLfloat *param)
+void glLightModelfv(GLint pname,GLfloat *param)
 {
   GLParam p[6];
   GLint i;
@@ -481,7 +481,7 @@ void glLightModelfv(int pname,GLfloat *param)
 
 /* clear */
 
-void glClear(int mask)
+void glClear(GLint mask)
 {
   GLParam p[2];
 
@@ -504,7 +504,7 @@ void glClearColor(GLfloat r,GLfloat g,GLfloat b,GLfloat a)
   gl_add_op(p);
 }
 
-void glClearDepth(double depth)
+void glClearDepth(GLdouble depth)
 {
   GLParam p[2];
 
@@ -538,7 +538,7 @@ void glTexImage2D( GLint target, GLint level, GLint components,
 }
 
 
-void glBindTexture(int target,int texture)
+void glBindTexture(GLint target,GLint texture)
 {
   GLParam p[3];
 
@@ -549,7 +549,7 @@ void glBindTexture(int target,int texture)
   gl_add_op(p);
 }
 
-void glTexEnvi(int target,int pname,int param)
+void glTexEnvi(GLint target,GLint pname,GLint param)
 {
   GLParam p[8];
   
@@ -565,7 +565,7 @@ void glTexEnvi(int target,int pname,int param)
   gl_add_op(p);
 }
 
-void glTexParameteri(int target,int pname,int param)
+void glTexParameteri(GLint target,GLint pname,GLint param)
 {
   GLParam p[8];
   
@@ -581,7 +581,7 @@ void glTexParameteri(int target,int pname,int param)
   gl_add_op(p);
 }
 
-void glPixelStorei(int pname,int param)
+void glPixelStorei(GLint pname,GLint param)
 {
   GLParam p[3];
 
@@ -659,7 +659,7 @@ void glFlush(void)
   /* nothing to do */
 }
 
-void glHint(int target,int mode)
+void glHint(GLint target,GLint mode)
 {
   GLParam p[3];
 
@@ -672,7 +672,7 @@ void glHint(int target,int mode)
 
 /* Non standard functions */
 
-void glDebug(int mode)
+void glDebug(GLint mode)
 {
   GLContext *c=gl_get_context();
   c->print_flag=mode;

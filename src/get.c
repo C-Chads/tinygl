@@ -1,6 +1,6 @@
 #include "zgl.h"
 
-void glGetIntegerv(int pname,int *params)
+void glGetIntegerv(GLint pname,GLint *params)
 {
   GLContext *c=gl_get_context();
 
@@ -32,7 +32,7 @@ void glGetIntegerv(int pname,int *params)
   }
 }
 
-void glGetFloatv(int pname, GLfloat *v)
+void glGetFloatv(GLint pname, GLfloat *v)
 {
   GLint i;
   GLint mnr = 0; /* just a trick to return the correct matrix */

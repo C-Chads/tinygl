@@ -9,7 +9,7 @@ void glPolygonStipple(void* a){
 	GLContext *c=gl_get_context();
 	ZBuffer *zb = c->zb;
 
-	for(int i = 0; i < TGL_POLYGON_STIPPLE_BYTES; i++)
+	for(GLint i = 0; i < TGL_POLYGON_STIPPLE_BYTES; i++)
 	{
 		zb->stipplepattern[i] = b[i];
 	}

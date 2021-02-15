@@ -18,9 +18,9 @@ void glopClear(GLContext *c,GLParam *p)
 {
   GLint mask=p[1].i;
   GLint z=0;
-  GLint r=(int)(c->clear_color.v[0]*65535);
-  GLint g=(int)(c->clear_color.v[1]*65535);
-  GLint b=(int)(c->clear_color.v[2]*65535);
+  GLint r=(GLint)(c->clear_color.v[0]*65535);
+  GLint g=(GLint)(c->clear_color.v[1]*65535);
+  GLint b=(GLint)(c->clear_color.v[2]*65535);
 
   /* TODO : correct value of Z */
 

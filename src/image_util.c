@@ -5,7 +5,7 @@
  */
 
 void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,GLubyte *rgb,
-                             GLint xsize,int ysize)
+                             GLint xsize,GLint ysize)
 {
   GLint i,n;
   GLubyte *p;
@@ -43,7 +43,7 @@ void gl_convertRGB_to_8A8R8G8B(GLuint *pixmap, GLubyte *rgb,
 #define INTERP_NORM_BITS  16
 #define INTERP_NORM       (1 << INTERP_NORM_BITS)
 
-static inline GLint GLinterpolate(int v00,int v01,int v10,int xf,int yf)
+static inline GLint GLinterpolate(GLint v00,GLint v01,GLint v10,GLint xf,GLint yf)
 {
   return v00+(((v01-v00)*xf + (v10-v00)*yf) >> INTERP_NORM_BITS);
 }
@@ -53,8 +53,8 @@ static inline GLint GLinterpolate(int v00,int v01,int v10,int xf,int yf)
  * TODO: more accurate resampling 
  */
 
-void gl_resizeImage(GLubyte *dest,int xsize_dest,int ysize_dest,
-                    GLubyte *src,int xsize_src,int ysize_src)
+void gl_resizeImage(GLubyte *dest,GLint xsize_dest,GLint ysize_dest,
+                    GLubyte *src,GLint xsize_src,GLint ysize_src)
 {
   GLubyte *pix,*pix_src;
   GLfloat x1,y1,x1inc,y1inc;
@@ -70,10 +70,10 @@ void gl_resizeImage(GLubyte *dest,int xsize_dest,int ysize_dest,
   for(y=0;y<ysize_dest;y++) {
     x1=0;
     for(x=0;x<xsize_dest;x++) {
-      xi=(int) x1;
-      yi=(int) y1;
-      xf=(int) ((x1 - floor(x1)) * INTERP_NORM);
-      yf=(int) ((y1 - floor(y1)) * INTERP_NORM);
+      xi=(GLint) x1;
+      yi=(GLint) y1;
+      xf=(GLint) ((x1 - floor(x1)) * INTERP_NORM);
+      yf=(GLint) ((y1 - floor(y1)) * INTERP_NORM);
       
       if ((xf+yf) <= INTERP_NORM) {
 	for(j=0;j<3;j++) {
@@ -104,8 +104,8 @@ void gl_resizeImage(GLubyte *dest,int xsize_dest,int ysize_dest,
 
 /* resizing with no GLinterlating nor nearest pixel */
 
-void gl_resizeImageNoInterpolate(GLubyte *dest,int xsize_dest,int ysize_dest,
-                                 GLubyte *src,int xsize_src,int ysize_src)
+void gl_resizeImageNoInterpolate(GLubyte *dest,GLint xsize_dest,GLint ysize_dest,
+                                 GLubyte *src,GLint xsize_src,GLint ysize_src)
 {
   GLubyte *pix,*pix_src,*pix1;
   GLint x1,y1,x1inc,y1inc;
@@ -114,8 +114,8 @@ void gl_resizeImageNoInterpolate(GLubyte *dest,int xsize_dest,int ysize_dest,
   pix=dest;
   pix_src=src;
   
-  x1inc=(int)((GLfloat) ((xsize_src)<<FRAC_BITS) / (GLfloat) (xsize_dest));
-  y1inc=(int)((GLfloat) ((ysize_src)<<FRAC_BITS) / (GLfloat) (ysize_dest));
+  x1inc=(GLint)((GLfloat) ((xsize_src)<<FRAC_BITS) / (GLfloat) (xsize_dest));
+  y1inc=(GLint)((GLfloat) ((ysize_src)<<FRAC_BITS) / (GLfloat) (ysize_dest));
 
   y1=0;
   for(y=0;y<ysize_dest;y++) {

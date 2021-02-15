@@ -4,7 +4,7 @@
 
 #include "zgl.h"
 
-static GLTexture *find_texture(GLContext *c,int h)
+static GLTexture *find_texture(GLContext *c,GLint h)
 {
   GLTexture *t;
 
@@ -16,7 +16,7 @@ static GLTexture *find_texture(GLContext *c,int h)
   return NULL;
 }
 
-void* glGetTexturePixmap(int text, GLint level, GLint* xsize, GLint* ysize){
+void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize){
 	GLTexture* tex;
 	GLContext *c=gl_get_context();
 	assert(text >= 0 && level < MAX_TEXTURE_LEVELS);
@@ -27,7 +27,7 @@ void* glGetTexturePixmap(int text, GLint level, GLint* xsize, GLint* ysize){
 	return tex->images[level].pixmap;
 }
 
-static void free_texture(GLContext *c,int h)
+static void free_texture(GLContext *c,GLint h)
 {
   GLTexture *t,**ht;
   GLImage *im;
@@ -51,7 +51,7 @@ static void free_texture(GLContext *c,int h)
   gl_free(t);
 }
 
-GLTexture *alloc_texture(GLContext *c,int h)
+GLTexture *alloc_texture(GLContext *c,GLint h)
 {
   GLTexture *t,**ht;
   
@@ -78,7 +78,7 @@ void glInitTextures(GLContext *c)
   c->current_texture=find_texture(c,0);
 }
 
-void glGenTextures(int n, GLuint *textures)
+void glGenTextures(GLint n, GLuint *textures)
 {
   GLContext *c=gl_get_context();
   GLint max,i;
@@ -99,7 +99,7 @@ void glGenTextures(int n, GLuint *textures)
 }
 
 
-void glDeleteTextures(int n, const GLuint *textures)
+void glDeleteTextures(GLint n, const GLuint *textures)
 {
   GLContext *c=gl_get_context();
   GLint i;

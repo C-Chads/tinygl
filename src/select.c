@@ -1,6 +1,6 @@
 #include "zgl.h"
 
-int glRenderMode(int mode)
+int glRenderMode(GLint mode)
 {
   GLContext *c=gl_get_context();
   GLint result=0;
@@ -39,7 +39,7 @@ int glRenderMode(int mode)
   return result;
 }
 
-void glSelectBuffer(int size,GLuint *buf)
+void glSelectBuffer(GLint size,GLuint *buf)
 {
   GLContext *c=gl_get_context();
 

@@ -288,10 +288,10 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
       GLfloat ss,tt;\
       ss=(sz * zinv);\
       tt=(tz * zinv);\
-      s=(int) ss;\
-      t=(int) tt;\
-      dsdx= (int)( (dszdx - ss*fdzdx)*zinv );\
-      dtdx= (int)( (dtzdx - tt*fdzdx)*zinv );\
+      s=(GLint) ss;\
+      t=(GLint) tt;\
+      dsdx= (GLint)( (dszdx - ss*fdzdx)*zinv );\
+      dtdx= (GLint)( (dtzdx - tt*fdzdx)*zinv );\
       fz+=fndzdx;\
       zinv=1.0 / fz;\
     }\
@@ -313,10 +313,10 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
       GLfloat ss,tt;\
       ss=(sz * zinv);\
       tt=(tz * zinv);\
-      s=(int) ss;\
-      t=(int) tt;\
-      dsdx= (int)( (dszdx - ss*fdzdx)*zinv );\
-      dtdx= (int)( (dtzdx - tt*fdzdx)*zinv );\
+      s=(GLint) ss;\
+      t=(GLint) tt;\
+      dsdx= (GLint)( (dszdx - ss*fdzdx)*zinv );\
+      dtdx= (GLint)( (dtzdx - tt*fdzdx)*zinv );\
     }\
   while (n>=0) {							   \
     PUT_PIXEL(0);/*the_x += PSZB;*/			   \
@@ -370,8 +370,8 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
    zz=z >> ZB_POINT_Z_FRAC_BITS;		\
      if (ZCMP(zz,pz[_a],_a)) {				\
        zinv= 1.0 / (GLfloat) z; \
-       s= (int) (sz * zinv); \
-       t= (int) (tz * zinv); \
+       s= (GLint) (sz * zinv); \
+       t= (GLint) (tz * zinv); \
        pp[_a]=texture[((t & 0x3FC00000) | s) >> 14];	\
        pz[_a]=zz;				\
     }						\

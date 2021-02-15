@@ -10,7 +10,7 @@
 //#include "../include/GL/gl.h"
 #include "../include/zbuffer.h"
 
-ZBuffer *ZB_open(int xsize, GLint ysize, GLint mode,
+ZBuffer *ZB_open(GLint xsize, GLint ysize, GLint mode,
 		 GLint nb_colors,
 		 GLubyte *color_indexes,
 		 GLint *color_table,
@@ -149,7 +149,7 @@ static void ZB_copyBuffer(ZBuffer * zb,
     #endif
     for (y = 0; y < zb->ysize; y++) {
     #if TGL_FEATURE_NO_COPY_COLOR
-		for(int i = 0; i < zb->xsize; i++)
+		for(GLint i = 0; i < zb->xsize; i++)
 		{
 			if((*(q+i) & TGL_COLOR_MASK) != TGL_NO_COPY_COLOR)
 				*(((PIXEL*)p1) + i) = *(q+i);
@@ -503,7 +503,7 @@ void memset_l(void *adr, GLint val, GLint count)
 
 /* count must be a multiple of 4 and >= 4 */
 //Gek's note: Should never be used.
-void memset_RGB24(void *adr,int r, GLint v, GLint b,long count)
+void memset_RGB24(void *adr,GLint r, GLint v, GLint b,long count)
 {
     long i, n;
     register long v1,v2,v3,*pt=(long *)(adr);

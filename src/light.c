@@ -165,10 +165,10 @@ void glopLightModel(GLContext *c,GLParam *p)
       c->ambient_light_model.v[i] = p[2+i].f;
     break;
   case GL_LIGHT_MODEL_LOCAL_VIEWER:
-    c->local_light_model=(int)v[0];
+    c->local_light_model=(GLint)v[0];
     break;
   case GL_LIGHT_MODEL_TWO_SIDE:
-    c->light_model_two_side = (int)v[0];
+    c->light_model_two_side = (GLint)v[0];
     break;
   default:
     tgl_warning("glopLightModel: illegal pname: 0x%x\n", pname);
@@ -185,7 +185,7 @@ static inline GLfloat clampf(GLfloat a,GLfloat min,GLfloat max)
   else return a;
 }
 
-void gl_enable_disable_light(GLContext *c,int light,int v)
+void gl_enable_disable_light(GLContext *c,GLint light,GLint v)
 {
   GLLight *l=&c->lights[light];
   if (v && !l->enabled) {
@@ -203,7 +203,7 @@ void gl_enable_disable_light(GLContext *c,int light,int v)
 
 //FEATURES
 int zEnableSpecular = 1; //Enable specular lighting
-void glSetEnableSpecular(int s){
+void glSetEnableSpecular(GLint s){
 	zEnableSpecular = s;
 }
 /* non optimized lightening model */
@@ -314,7 +314,7 @@ void gl_shade_vertex(GLContext *c,GLVertex *v)
 	        /* testing specular buffer code */
 	        /* dot_spec= pow(dot_spec,m->shininess);*/
 	        specbuf = specbuf_get_buffer(c, m->shininess_i, m->shininess);
-	        idx = (int)(dot_spec*SPECULAR_BUFFER_SIZE);
+	        idx = (GLint)(dot_spec*SPECULAR_BUFFER_SIZE);
 	        if (idx > SPECULAR_BUFFER_SIZE) idx = SPECULAR_BUFFER_SIZE;
 	        dot_spec = specbuf->buf[idx];
 	        lR+=dot_spec * l->specular.v[0] * m->specular.v[0];

@@ -33,7 +33,7 @@ static GLList *find_list(GLContext *c,GLuint list)
 }
 
 
-static void delete_list(GLContext *c,int list)
+static void delete_list(GLContext *c,GLint list)
 {
   GLParamBuffer *pb,*pb1;
   GLList *l;
@@ -61,7 +61,7 @@ void glDeleteList(GLuint list){
 	delete_list(gl_get_context(), list);
 }
 
-static GLList *alloc_list(GLContext *c,int list)
+static GLList *alloc_list(GLContext *c,GLint list)
 {
   GLList *l;
   GLParamBuffer *ob;
@@ -195,7 +195,7 @@ void glopCallList(GLContext *c,GLParam *p)
 
 
 
-void glNewList(GLuint list,int mode)
+void glNewList(GLuint list,GLint mode)
 {
   GLList *l;
   GLContext *c=gl_get_context();
@@ -237,7 +237,7 @@ int glIsList(GLuint list)
   return (l != NULL);
 }
 
-GLuint glGenLists(int range)
+GLuint glGenLists(GLint range)
 {
   GLContext *c=gl_get_context();
   GLint count,i,list;

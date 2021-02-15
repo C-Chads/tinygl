@@ -272,7 +272,7 @@ typedef struct GLContext {
   /* opaque structure for user's use */
   void *opaque;
   /* resize viewport function */
-  GLint (*gl_resize_viewport)(struct GLContext *c,int *xsize,int *ysize);
+  GLint (*gl_resize_viewport)(struct GLContext *c,GLint *xsize,GLint *ysize);
 
   /* depth test */
   GLint depth_test;
@@ -305,22 +305,22 @@ void glopTranslate(GLContext *c,GLParam *p);*/
 
 /* light.c */
 void gl_add_select(GLContext *c,GLuint zmin,GLuint zmax);
-void gl_enable_disable_light(GLContext *c,int light,int v);
+void gl_enable_disable_light(GLContext *c,GLint light,GLint v);
 void gl_shade_vertex(GLContext *c,GLVertex *v);
 
 void glInitTextures(GLContext *c);
 void glEndTextures(GLContext *c);
-GLTexture *alloc_texture(GLContext *c,int h);
+GLTexture *alloc_texture(GLContext *c,GLint h);
 
 /* image_util.c */
 void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,GLubyte *rgb,
-                             GLint xsize,int ysize);
+                             GLint xsize,GLint ysize);
 void gl_convertRGB_to_8A8R8G8B(GLuint *pixmap, GLubyte *rgb,
                                GLint xsize, GLint ysize);
-void gl_resizeImage(GLubyte *dest,int xsize_dest,int ysize_dest,
-                    GLubyte *src,int xsize_src,int ysize_src);
-void gl_resizeImageNoInterpolate(GLubyte *dest,int xsize_dest,int ysize_dest,
-                                 GLubyte *src,int xsize_src,int ysize_src);
+void gl_resizeImage(GLubyte *dest,GLint xsize_dest,GLint ysize_dest,
+                    GLubyte *src,GLint xsize_src,GLint ysize_src);
+void gl_resizeImageNoInterpolate(GLubyte *dest,GLint xsize_dest,GLint ysize_dest,
+                                 GLubyte *src,GLint xsize_src,GLint ysize_src);
 
 GLContext *gl_get_context(void);
 

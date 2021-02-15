@@ -32,8 +32,8 @@ static GLint kernel8[_DY*_DX] = {
 
 /* we build the color table and the lookup table */
 
-void ZB_initDither(ZBuffer *zb,int nb_colors,
-		   GLubyte *color_indexes,int *color_table)
+void ZB_initDither(ZBuffer *zb,GLint nb_colors,
+		   GLubyte *color_indexes,GLint *color_table)
 {
   GLint c,r,g,b,i,index,r1,g1,b1;
 
@@ -45,7 +45,7 @@ void ZB_initDither(ZBuffer *zb,int nb_colors,
   for(i=0;i<nb_colors;i++) color_table[i]=0;
 
   zb->nb_colors=nb_colors;
-  zb->ctable=gl_malloc(nb_colors * sizeof(int));
+  zb->ctable=gl_malloc(nb_colors * sizeof(GLint));
 
   for (r = 0; r < _R; r++) {
     for (g = 0; g < _G; g++) {
@@ -79,7 +79,7 @@ void ZB_closeDither(ZBuffer *zb)
 }
 
 #if 0
-int ZDither_lookupColor(int r,int g,int b)
+int ZDither_lookupColor(GLint r,GLint g,GLint b)
 {
   GLubyte *ctable=zdither_color_table;
   return ctable[_MIX(_DITH0(_R, r), _DITH0(_G, g),_DITH0(_B, b))];

@@ -73,38 +73,38 @@
 #ifdef INTERP_Z
   d1 = p1->z - p0->z;
   d2 = p2->z - p0->z;
-  dzdx = (int) (fdy2 * d1 - fdy1 * d2);
-  dzdy = (int) (fdx1 * d2 - fdx2 * d1);
+  dzdx = (GLint) (fdy2 * d1 - fdy1 * d2);
+  dzdy = (GLint) (fdx1 * d2 - fdx2 * d1);
 #endif
 
 #ifdef INTERP_RGB
   d1 = p1->r - p0->r;
   d2 = p2->r - p0->r;
-  drdx = (int) (fdy2 * d1 - fdy1 * d2);
-  drdy = (int) (fdx1 * d2 - fdx2 * d1);
+  drdx = (GLint) (fdy2 * d1 - fdy1 * d2);
+  drdy = (GLint) (fdx1 * d2 - fdx2 * d1);
 
   d1 = p1->g - p0->g;
   d2 = p2->g - p0->g;
-  dgdx = (int) (fdy2 * d1 - fdy1 * d2);
-  dgdy = (int) (fdx1 * d2 - fdx2 * d1);
+  dgdx = (GLint) (fdy2 * d1 - fdy1 * d2);
+  dgdy = (GLint) (fdx1 * d2 - fdx2 * d1);
 
   d1 = p1->b - p0->b;
   d2 = p2->b - p0->b;
-  dbdx = (int) (fdy2 * d1 - fdy1 * d2);
-  dbdy = (int) (fdx1 * d2 - fdx2 * d1);
+  dbdx = (GLint) (fdy2 * d1 - fdy1 * d2);
+  dbdy = (GLint) (fdx1 * d2 - fdx2 * d1);
 
 #endif
   
 #ifdef INTERP_ST
   d1 = p1->s - p0->s;
   d2 = p2->s - p0->s;
-  dsdx = (int) (fdy2 * d1 - fdy1 * d2);
-  dsdy = (int) (fdx1 * d2 - fdx2 * d1);
+  dsdx = (GLint) (fdy2 * d1 - fdy1 * d2);
+  dsdy = (GLint) (fdx1 * d2 - fdx2 * d1);
   
   d1 = p1->t - p0->t;
   d2 = p2->t - p0->t;
-  dtdx = (int) (fdy2 * d1 - fdy1 * d2);
-  dtdy = (int) (fdx1 * d2 - fdx2 * d1);
+  dtdx = (GLint) (fdy2 * d1 - fdy1 * d2);
+  dtdy = (GLint) (fdx1 * d2 - fdx2 * d1);
 #endif
 
 #ifdef INTERP_STZ
