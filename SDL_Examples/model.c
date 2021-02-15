@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
     int winSizeX=640;
     int winSizeY=480;
     unsigned int count = 40;
-    GLuint modelDisplayList = 0; int dlExists = 0;
+    GLuint modelDisplayList = 0; int dlExists = 0; int doTextures = 1;
 	char* modelName = "extrude.obj";
 	track* myTrack = NULL;
 	unsigned int fps =0;
@@ -269,6 +269,8 @@ int main(int argc, char **argv) {
 				count = strtoull(argv[i],0,10);
 			if(!strcmp(larg,"-m"))
 				modelName = argv[i];
+			if(!strcmp(argv[i],"-notexture") || !strcmp(larg,"-notexture"))
+				doTextures = 0;
 			larg = argv[i];
     	}
     }
@@ -380,7 +382,7 @@ int main(int argc, char **argv) {
 	}
 
 	GLuint tex = 0;
-	{
+	if(doTextures){
 		int sw = 0, sh = 0, sc = 0; //sc goes unused.
 		uchar* source_data = stbi_load("tex.jpg", &sw, &sh, &sc, 3);
 		if(source_data){
@@ -458,7 +460,8 @@ int main(int argc, char **argv) {
 			);
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 		glEnable(GL_DEPTH_TEST);
-		glBindTexture(GL_TEXTURE_2D,tex);
+		if(doTextures)
+			glBindTexture(GL_TEXTURE_2D,tex);
 		//glDisable(GL_BLEND);
 		//glDisable(GL_TEXTURE_2D);
 		//printf("\nNew triangle!\n");
@@ -472,7 +475,8 @@ int main(int argc, char **argv) {
 				//glColor3f(0,1,0);
 			glEnd();
 		} else {
-			glEnable(GL_TEXTURE_2D);
+			if(doTextures)
+				glEnable(GL_TEXTURE_2D);
 			//glDisable(GL_TEXTURE_2D);
 			glEnable(GL_POLYGON_STIPPLE);
 			//glDisable(GL_COLOR_MATERIAL);
@@ -489,7 +493,8 @@ int main(int argc, char **argv) {
 				glPopMatrix();
 			}
 			glDisable(GL_POLYGON_STIPPLE);
-			glDisable(GL_TEXTURE_2D);
+			if(doTextures)
+				glDisable(GL_TEXTURE_2D);
 		}
         //draw();
 		glPopMatrix(); //The view transform.
