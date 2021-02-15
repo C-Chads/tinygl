@@ -19,7 +19,7 @@
 
 #if TGL_FEATURE_POLYGON_STIPPLE
 
-#define THE_X (((unsigned short)(pp-pp1)))
+#define THE_X (((GLushort)(pp-pp1)))
 #define XSTIP(_a) ((THE_X+_a)& TGL_POLYGON_STIPPLE_MASK_X)
 #define YSTIP (the_y & TGL_POLYGON_STIPPLE_MASK_Y)
 //NOTES                                                           Divide by 8 to get the byte        Get the actual bit
@@ -76,7 +76,7 @@ void ZB_fillTriangleSmooth(ZBuffer *zb,
 			   ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2)
 {
 #if TGL_FEATURE_RENDER_BITS == 16
-//	int _drgbdx;
+//	GLint _drgbdx;
 #endif
 //GLuint color;
 #define INTERP_Z
@@ -153,7 +153,7 @@ _drgbdx|=(SAR_RND_TO_ZERO(dbdx,7) << 12) & 0x001FF000;     \
 /*
 #define DRAW_LINE()							   \
 {									   \
-  register unsigned short *pz;					   \
+  register GLushort *pz;					   \
   register PIXEL *pp;					   \
   register GLuint tmp,z,zz,rgb,drgbdx;				   \
   register GLint n;							   \
@@ -270,7 +270,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
 
 #define DRAW_LINE()				\
 {						\
-  register unsigned short *pz;		\
+  register GLushort *pz;		\
   register PIXEL *pp;		\
   register GLuint s,t,z,zz;	\
   register GLint n,dsdx,dtdx;		\

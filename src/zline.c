@@ -5,7 +5,7 @@
 
 void ZB_plot(ZBuffer * zb, ZBufferPoint * p)
 {
-    unsigned short *pz;
+    GLushort *pz;
     PIXEL *pp;
     GLint zz;
 

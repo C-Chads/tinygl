@@ -7,6 +7,7 @@
 #sed -i 's/float/GLfloat/g' *.c *.h
 #sed -i 's/char/GLbyte/g' *.c *.h
 #sed -i 's/unsigned GLbyte/GLubyte/g' *.c *.h
-sed -i 's/double/GLdouble/g' *.c *.h
+#sed -i 's/	int/	GLint/g' *.c *.h
+sed -i 's/unsigned GLshort/GLushort/g' *.c *.h
 
 #gcc *.c -o executable.out -lglut -lGL -lm -lGLU

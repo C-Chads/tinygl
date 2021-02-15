@@ -9,7 +9,7 @@
     register GLuint rinc, ginc, binc;
 #endif
 #ifdef INTERP_Z
-    register unsigned short *pz;
+    register GLushort *pz;
     GLint zinc;
     register GLint z, zz;
 #endif

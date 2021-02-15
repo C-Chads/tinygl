@@ -701,47 +701,47 @@ extern char __BUILDT_GLushort[ 1-2*(sizeof(GLushort) != 2)];
 #endif
 /* functions */
 
-void glEnable(int code);
-void glDisable(int code);
+void glEnable(GLint code);
+void glDisable(GLint code);
 
 
-void glShadeModel(int mode);
-void glCullFace(int mode);
-void glPolygonMode(int face,int mode);
+void glShadeModel(GLint mode);
+void glCullFace(GLint mode);
+void glPolygonMode(GLint face,GLint mode);
 
-void glBegin(int type);
+void glBegin(GLint type);
 void glEnd(void);
 
 //NEW functions added by GEK!!!
-void glSetEnableSpecular(int s); //Toggle specular rendering (Speedup!!!)
-void* glGetTexturePixmap(int text, int level, int* xsize, int* ysize); //Get the raw data of a texture!
-void glDrawText(const unsigned char* text, int x, int y, unsigned int pixel); //Blit 8x8 text to he screen
+void glSetEnableSpecular(GLint s); //Toggle specular rendering (Speedup!!!)
+void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize); //Get the raw data of a texture!
+void glDrawText(const GLubyte* text, GLint x, GLint y, GLuint pixel); //Blit 8x8 text to he screen
 void glTextSize(GLTEXTSIZE mode); //Set text size
-void glPlotPixel(int x, int y, unsigned int pixel); //plot a pixel to the screen.
+void glPlotPixel(GLint x, GLint y, GLuint pixel); //plot a pixel to the screen.
 
 #define PROTO_GL1(name)				\
-void gl ## name ## 1f(float);	\
-void gl ## name ## 1d(double);	\
-void gl ## name ## 1fv(float *);		\
-void gl ## name ## 1dv(double *);
+void gl ## name ## 1f(GLfloat);	\
+void gl ## name ## 1d(GLdouble);	\
+void gl ## name ## 1fv(GLfloat *);		\
+void gl ## name ## 1dv(GLdouble *);
 
 #define PROTO_GL2(name)				\
-void gl ## name ## 2f(float ,float);	\
-void gl ## name ## 2d(double ,double);	\
-void gl ## name ## 2fv(float *);		\
-void gl ## name ## 2dv(double *);
+void gl ## name ## 2f(GLfloat ,GLfloat);	\
+void gl ## name ## 2d(GLdouble ,GLdouble);	\
+void gl ## name ## 2fv(GLfloat *);		\
+void gl ## name ## 2dv(GLdouble *);
 
 #define PROTO_GL3(name)				\
-void gl ## name ## 3f(float ,float ,float);	\
-void gl ## name ## 3d(double ,double ,double);	\
-void gl ## name ## 3fv(float *);		\
-void gl ## name ## 3dv(double *);
+void gl ## name ## 3f(GLfloat ,GLfloat ,GLfloat);	\
+void gl ## name ## 3d(GLdouble ,GLdouble ,GLdouble);	\
+void gl ## name ## 3fv(GLfloat *);		\
+void gl ## name ## 3dv(GLdouble *);
 
 #define PROTO_GL4(name)				\
-void gl ## name ## 4f(float ,float ,float, float );	\
-void gl ## name ## 4d(double ,double ,double, double );	\
-void gl ## name ## 4fv(float *);		\
-void gl ## name ## 4dv(double *);
+void gl ## name ## 4f(GLfloat ,GLfloat ,GLfloat, GLfloat );	\
+void gl ## name ## 4d(GLdouble ,GLdouble ,GLdouble, GLdouble );	\
+void gl ## name ## 4fv(GLfloat *);		\
+void gl ## name ## 4dv(GLdouble *);
 
 PROTO_GL2(Vertex)
 PROTO_GL3(Vertex)
@@ -757,74 +757,74 @@ PROTO_GL2(TexCoord)
 PROTO_GL3(TexCoord)
 PROTO_GL4(TexCoord)
 
-void glEdgeFlag(int flag);
+void glEdgeFlag(GLint flag);
 
 /* matrix */
-void glMatrixMode(int mode);
-void glLoadMatrixf(const float *m);
+void glMatrixMode(GLint mode);
+void glLoadMatrixf(const GLfloat *m);
 void glLoadIdentity(void);
-void glMultMatrixf(const float *m);
+void glMultMatrixf(const GLfloat *m);
 void glPushMatrix(void);
 void glPopMatrix(void);
-void glRotatef(float angle,float x,float y,float z);
-void glTranslatef(float x,float y,float z);
-void glScalef(float x,float y,float z);
+void glRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
+void glTranslatef(GLfloat x, GLfloat y, GLfloat z);
+void glScalef(GLfloat x,GLfloat y,GLfloat z);
 
-void glViewport(int x,int y,int width,int height);
-void glFrustum(double left,double right,double bottom,double top,
-               double near,double far);
+void glViewport(GLint x,GLint y,GLint width,GLint height);
+void glFrustum(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top,
+               GLdouble near,GLdouble far);
 
 /* lists */
-unsigned int glGenLists(int range);
-int glIsList(unsigned int list);
-void glNewList(unsigned int list,int mode);
+GLuint glGenLists(GLint range);
+int glIsList(GLuint list);
+void glNewList(GLuint list,GLint mode);
 void glEndList(void);
-void glCallList(unsigned int list);
-void glDeleteList(unsigned int list);
-void glDeleteLists(unsigned int list, unsigned int range);
+void glCallList(GLuint list);
+void glDeleteList(GLuint list);
+void glDeleteLists(GLuint list, GLuint range);
 /* clear */
-void glClear(int mask);
-void glClearColor(float r,float g,float b,float a);
-void glClearDepth(double depth);
+void glClear(GLint mask);
+void glClearColor(GLfloat r,GLfloat g,GLfloat b,GLfloat a);
+void glClearDepth(GLdouble depth);
 
 /* selection */
-int glRenderMode(int mode);
-void glSelectBuffer(int size,unsigned int *buf);
+int glRenderMode(GLint mode);
+void glSelectBuffer(GLint size,GLuint *buf);
 
 void glInitNames(void);
-void glPushName(unsigned int name);
+void glPushName(GLuint name);
 void glPopName(void);
-void glLoadName(unsigned int name);
+void glLoadName(GLuint name);
 
 /* textures */
-void glGenTextures(int n, unsigned int *textures);
-void glDeleteTextures(int n, const unsigned int *textures);
-void glBindTexture(int target,int texture);
-void glTexImage2D( int target, int level, int components,
-		    int width, int height, int border,
-                    int format, int type, void *pixels);
-void glTexEnvi(int target,int pname,int param);
-void glTexParameteri(int target,int pname,int param);
-void glPixelStorei(int pname,int param);
+void glGenTextures(GLint n, GLuint *textures);
+void glDeleteTextures(GLint n, const GLuint *textures);
+void glBindTexture(GLint target,GLint texture);
+void glTexImage2D( GLint target, GLint level, GLint components,
+		    GLint width, GLint height, GLint border,
+                    GLint format, GLint type, void *pixels);
+void glTexEnvi(GLint target,GLint pname,GLint param);
+void glTexParameteri(GLint target,GLint pname,GLint param);
+void glPixelStorei(GLint pname,GLint param);
 
 /* lighting */
 
-void glMaterialfv(int mode,int type,float *v);
-void glMaterialf(int mode,int type,float v);
-void glColorMaterial(int mode,int type);
+void glMaterialfv(GLint mode,GLint type,GLfloat *v);
+void glMaterialf(GLint mode,GLint type,GLfloat v);
+void glColorMaterial(GLint mode,GLint type);
 
-void glLightfv(int light,int type,float *v);
-void glLightf(int light,int type,float v);
-void glLightModeli(int pname,int param);
-void glLightModelfv(int pname,float *param);
+void glLightfv(GLint light,GLint type,GLfloat *v);
+void glLightf(GLint light,GLint type,GLfloat v);
+void glLightModeli(GLint pname,GLint param);
+void glLightModelfv(GLint pname,GLfloat *param);
 
 /* misc */
 
 void glFlush(void);
-void glHint(int target,int mode);
-void glGetIntegerv(int pname,int *params);
-void glGetFloatv(int pname, float *v);
-void glFrontFace(int mode);
+void glHint(GLint target,GLint mode);
+void glGetIntegerv(GLint pname,GLint *params);
+void glGetFloatv(GLint pname, GLfloat *v);
+void glFrontFace(GLint mode);
 
 /* opengl 1.2 arrays */
 void glEnableClientState(GLenum array);
@@ -844,26 +844,26 @@ void glPolygonOffset(GLfloat factor, GLfloat units);
 
 /* not implemented, just added to compile  */
   /*
-inline void glPointSize(float) {}
-inline void glLineWidth(float) {}
-inline void glDeleteLists(int, int) {}
-inline void glDepthFunc(int) {}
-inline void glBlendFunc(int, int) {}
-inline void glTexEnvf(int, int, int) {}
-inline void glOrtho(float,float,float,float,float,float){}
-inline void glVertex2i(int,int) {}
-inline void glDepthMask(int) {}
-inline void glFogi(int, int) {}
-inline void glFogfv(int, const float*) {}
-inline void glFogf(int, float) {}
-inline void glRasterPos2f(float, float) {}
+inline void glPointSize(GLfloat) {}
+inline void glLineWidth(GLfloat) {}
+inline void glDeleteLists(GLint, GLint) {}
+inline void glDepthFunc(GLint) {}
+inline void glBlendFunc(GLint, GLint) {}
+inline void glTexEnvf(GLint, GLint, GLint) {}
+inline void glOrtho(GLfloat,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat){}
+inline void glVertex2i(GLint,GLint) {}
+inline void glDepthMask(GLint) {}
+inline void glFogi(GLint, GLint) {}
+inline void glFogfv(GLint, const GLfloat*) {}
+inline void glFogf(GLint, GLfloat) {}
+inline void glRasterPos2f(GLfloat, GLfloat) {}
 inline void glPolygonStipple(void*) {}
-inline void glTexParameterf(int, int, int) {};
+inline void glTexParameterf(GLint, GLint, GLint) {};
   */
 void glPolygonStipple(void* a); //TODO: implement
 /* non compatible functions */
 
-void glDebug(int mode);
+void glDebug(GLint mode);
 
 void glInit(void *zbuffer);
 void glClose(void);

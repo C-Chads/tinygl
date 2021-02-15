@@ -313,7 +313,7 @@ void glEndTextures(GLContext *c);
 GLTexture *alloc_texture(GLContext *c,GLint h);
 
 /* image_util.c */
-void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,GLubyte *rgb,
+void gl_convertRGB_to_5R6G5B(GLushort *pixmap,GLubyte *rgb,
                              GLint xsize,GLint ysize);
 void gl_convertRGB_to_8A8R8G8B(GLuint *pixmap, GLubyte *rgb,
                                GLint xsize, GLint ysize);

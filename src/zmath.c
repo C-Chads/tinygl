@@ -11,7 +11,7 @@
 
 void gl_M4_Id(M4 *a)
 {
-	int i,j;
+	GLint i,j;
 	for(i=0;i<4;i++)
 	for(j=0;j<4;j++) 
 	if (i==j) a->m[i][j]=1.0; else a->m[i][j]=0.0;
@@ -19,7 +19,7 @@ void gl_M4_Id(M4 *a)
 
 int gl_M4_IsId(M4 *a)
 {
-	int i,j;
+	GLint i,j;
 	for(i=0;i<4;i++)
     for(j=0;j<4;j++) {
       if (i==j) { 
@@ -120,7 +120,7 @@ void gl_M4_Transpose(M4 *a,M4 *b)
 /* inversion of an orthogonal matrix of type Y=M.X+P */ 
 void gl_M4_InvOrtho(M4 *a,M4 b)
 {
-	int i,j;
+	GLint i,j;
 	GLfloat s;
 	for(i=0;i<3;i++)
 	for(j=0;j<3;j++) a->m[i][j]=b.m[j][i];

@@ -4,7 +4,7 @@
  * image conversion
  */
 
-void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,GLubyte *rgb,
+void gl_convertRGB_to_5R6G5B(GLushort *pixmap,GLubyte *rgb,
                              GLint xsize,GLint ysize)
 {
   GLint i,n;

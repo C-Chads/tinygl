@@ -95,7 +95,7 @@ int ZDither_lookupColor(GLint r,GLint g,GLint b)
   r=(((v & 0xF800F800) >> 2) + r_d) & 0x70007000; \
   t=r | g; \
   c=ctable[t & 0xFFFF] | (ctable[t >> 16] << 8); \
-  *(unsigned short *)(dest+(a))=c; 	\
+  *(GLushort *)(dest+(a))=c; 	\
 }
 
 /* NOTE: all the memory access are 16 bit aligned, so if buf or
@@ -107,11 +107,11 @@ void ZB_ditherFrameBuffer(ZBuffer *zb,GLubyte *buf,
 {
   GLint xk,yk,x,y,c1,c2;
   GLubyte *dest1;
-  unsigned short *pp1;
+  GLushort *pp1;
   GLint r_d,g_d,b_d;
   GLubyte *ctable=zb->dctable;
   register GLubyte *dest;
-  register unsigned short *pp;
+  register GLushort *pp;
 
   assert( ((long)buf & 1) == 0 && (linesize & 1) == 0);
 
@@ -135,8 +135,8 @@ void ZB_ditherFrameBuffer(ZBuffer *zb,GLubyte *buf,
 
       dest1=buf + (yk * linesize) + xk;
 	//NOTE BY GEK: The following line was modified to fix a compiler warning,
-	//casting zb->pbuf to unsigned short*
-      pp1=(unsigned short*)(zb->pbuf) + (yk * zb->xsize) + xk;
+	//casting zb->pbuf to GLushort*
+      pp1=(GLushort*)(zb->pbuf) + (yk * zb->xsize) + xk;
       
       for(y=yk;y<zb->ysize;y+=4) {
 	dest=dest1;

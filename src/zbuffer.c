@@ -47,7 +47,7 @@ ZBuffer *ZB_open(GLint xsize, GLint ysize, GLint mode,
 	goto error;
     }
 
-    size = zb->xsize * zb->ysize * sizeof(unsigned short);
+    size = zb->xsize * zb->ysize * sizeof(GLushort);
 
     zb->zbuf = gl_malloc(size);
     if (zb->zbuf == NULL)
@@ -98,7 +98,7 @@ void ZB_resize(ZBuffer * zb, void *frame_buffer, GLint xsize, GLint ysize)
     zb->ysize = ysize;
     zb->linesize = (xsize * PSZB + 3) & ~3;
 
-    size = zb->xsize * zb->ysize * sizeof(unsigned short);
+    size = zb->xsize * zb->ysize * sizeof(GLushort);
 
     gl_free(zb->zbuf);
     zb->zbuf = gl_malloc(size);
@@ -184,7 +184,7 @@ static void ZB_copyFrameBufferRGB32(ZBuffer * zb,
                                     void *buf,
                                     GLint linesize)
 {
-    unsigned short *q;
+    GLushort *q;
     GLuint *p, *p1, v, w0, w1;
     GLint y, n;
 
@@ -266,7 +266,7 @@ static void ZB_copyFrameBufferRGB24(ZBuffer * zb,
                                     void *buf,
                                     GLint linesize)
 {
-    unsigned short *q;
+    GLushort *q;
     GLuint *p, *p1, w0, w1, w2, v0, v1;
     GLint y, n;
 
@@ -299,7 +299,7 @@ static void ZB_copyFrameBufferRGB24(ZBuffer * zb,
 
 
 void ZB_copyFrameBuffer(ZBuffer * zb, void *buf,
-			int linesize)
+			GLint linesize)
 {
 	
 	ZB_copyBuffer(zb, buf, linesize);
@@ -347,11 +347,11 @@ static void ZB_copyFrameBuffer5R6G5B(ZBuffer * zb,
                                      void *buf, GLint linesize) 
 {
     PIXEL *q;
-    unsigned short *p, *p1;
+    GLushort *p, *p1;
     GLint y, n;
 
     q = zb->pbuf;
-    p1 = (unsigned short *) buf;
+    p1 = (GLushort *) buf;
 
     for (y = 0; y < zb->ysize; y++) {
 	p = p1;
@@ -364,12 +364,12 @@ static void ZB_copyFrameBuffer5R6G5B(ZBuffer * zb,
 	    q = (PIXEL *)((GLbyte *)q + 4 * PSZB);
 	    p += 4;
 	} while (--n > 0);
-	p1 = (unsigned short *)((GLbyte *)p1 + linesize);
+	p1 = (GLushort *)((GLbyte *)p1 + linesize);
     }
 }
 
 void ZB_copyFrameBuffer(ZBuffer * zb, void *buf,
-			int linesize)
+			GLint linesize)
 {
     switch (zb->mode) {
 #ifdef TGL_FEATURE_16_BITS
@@ -403,11 +403,11 @@ static void ZB_copyFrameBuffer5R6G5B(ZBuffer * zb,
                                      void *buf, GLint linesize) 
 {
     PIXEL *q;
-    unsigned short *p, *p1;
+    GLushort *p, *p1;
     GLint y, n;
 
     q = zb->pbuf;
-    p1 = (unsigned short *) buf;
+    p1 = (GLushort *) buf;
 
     for (y = 0; y < zb->ysize; y++) {
 	p = p1;
@@ -420,12 +420,12 @@ static void ZB_copyFrameBuffer5R6G5B(ZBuffer * zb,
 	    q += 4;
 	    p += 4;
 	} while (--n > 0);
-	p1 = (unsigned short *)((GLbyte *)p1 + linesize);
+	p1 = (GLushort *)((GLbyte *)p1 + linesize);
     }
 }
 */
 void ZB_copyFrameBuffer(ZBuffer * zb, void *buf,
-			int linesize)
+			GLint linesize)
 {
 	ZB_copyBuffer(zb, buf, linesize);
     //switch (zb->mode) {
@@ -459,7 +459,7 @@ void memset_s(void *adr, GLint val, GLint count)
 {
     GLint i, n, v;
     GLuint *p;
-    unsigned short *q;
+    GLushort *q;
 
     p = adr;
     v = val | (val << 16);
@@ -473,7 +473,7 @@ void memset_s(void *adr, GLint val, GLint count)
 	p += 4;
     }
 
-    q = (unsigned short *) p;
+    q = (GLushort *) p;
     n = count & 7;
     for (i = 0; i < n; i++)
 	*q++ = val;

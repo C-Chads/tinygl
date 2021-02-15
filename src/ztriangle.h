@@ -5,13 +5,13 @@
 {
   ZBufferPoint *t,*pr1,*pr2,*l1,*l2;
   GLfloat fdx1, fdx2, fdy1, fdy2, fz, d1, d2;
-  unsigned short *pz1;
+  GLushort *pz1;
   PIXEL *pp1;
   GLint part,update_left,update_right;
 
   GLint nb_lines,dx1,dy1,tmp,dx2,dy2;
 #if TGL_FEATURE_POLYGON_STIPPLE
-  unsigned short the_y;
+  GLushort the_y;
 #endif
   GLint error,derror;
   GLint x1,dxdy_min,dxdy_max;
@@ -251,7 +251,7 @@
           register PIXEL *pp;
           register GLint n;
 #ifdef INTERP_Z
-          register unsigned short *pz;
+          register GLushort *pz;
           register GLuint z,zz;
 #endif
 #ifdef INTERP_RGB
