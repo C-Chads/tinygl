@@ -28,6 +28,7 @@ enum {
 
 /* Max # of specular light pow buffers */
 #define MAX_SPECULAR_BUFFERS 8
+//#define MAX_SPECULAR_BUFFERS 16
 /* # of entries in specular buffer */
 #define SPECULAR_BUFFER_SIZE 1024
 /* specular buffer granularity */
