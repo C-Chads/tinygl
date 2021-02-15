@@ -332,6 +332,6 @@ void gl_shade_vertex(GLContext *c,GLVertex *v)
   v->color.v[0]=clampf(R,0,1);
   v->color.v[1]=clampf(G,0,1);
   v->color.v[2]=clampf(B,0,1);
-  v->color.v[3]=clampf(A,0,1);
+  v->color.v[3]=A;
 }
 

@@ -7,7 +7,7 @@
 #define TGL_FEATURE_ARRAYS         1
 #define TGL_FEATURE_DISPLAYLISTS   1
 #define TGL_FEATURE_POLYGON_OFFSET 1
-#define TGL_FEATURE_POLYGON_STIPPLE 1
+#define TGL_FEATURE_POLYGON_STIPPLE 0
 //A stipple pattern is 128 bytes in size.
 #define TGL_POLYGON_STIPPLE_BYTES 128
 //A stipple pattern is 2^5 (32) bits wide.
@@ -54,13 +54,8 @@
 #define TGL_FEATURE_16_BITS        0
 #define TGL_FEATURE_32_BITS        1
 
-//MAINTAINER'S NOTE: Only TGL_FEATURE_RENDER_BITS 32 is maintained.
-//TODO: Include support for 16 bit.
-//All others are experimental.
-//24 bit is broken.
 //#define TGL_FEATURE_RENDER_BITS    15
 //#define TGL_FEATURE_RENDER_BITS    16
-//#define TGL_FEATURE_RENDER_BITS    24 //BROKEN!
 #if TGL_FEATURE_32_BITS == 1
 #define TGL_FEATURE_RENDER_BITS    32
 

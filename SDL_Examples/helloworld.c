@@ -5,13 +5,14 @@
  *
  * ported to libSDL/TinyGL by Gerald Franz (gfz@o2online.de)
  */
+//#define PLAY_MUSIC
 
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 #include "../include/GL/gl.h"
+//#include <GL/glu.h>
 #define CHAD_API_IMPL
 #include "include/api_audio.h"
 #define STB_IMAGE_IMPLEMENTATION
@@ -25,7 +26,8 @@
 
 GLuint tex = 0;
 double time_passed = 0.0;
-
+int winSizeX=640;
+int winSizeY=480;
 
 void draw() {
 	//glEnable(GL_TEXTURE_2D);
@@ -50,6 +52,34 @@ void draw() {
    	glPopMatrix();
 }
 
+
+void draw2(){
+	        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		int x = 0;
+        // Select and setup the projection matrix
+        glMatrixMode( GL_PROJECTION );
+        glLoadIdentity();
+        //gluPerspective( 65.0f, (GLfloat)winSizeX/(GLfloat)winSizeY, 1.0f, 100.0f );
+		GLfloat  h = (GLfloat) winSizeY / (GLfloat) winSizeX;
+		glFrustum( -1.0, 1.0, -h, h, 5.0, 60.0 );
+        // Select and setup the modelview matrix
+        glMatrixMode( GL_MODELVIEW );
+        glLoadIdentity();
+        glRotatef(-90, 1,0,0);
+        glTranslatef(0,0,-1.0f);
+
+        // Draw a rotating colorful triangle
+        glTranslatef( 0.0f, 14.0f, 0.0f );
+        glRotatef( 0.3f*(GLfloat)x + (GLfloat)time_passed*100.0f, 0.0f, 0.0f, 1.0f );
+        glBegin( GL_TRIANGLES );
+        glColor4f( 1.0f, 0.0f, 0.0f, 0.0f );
+        glVertex3f( -5.0f, 0.0f, -4.0f );
+        glColor4f( 0.0f, 1.0f, 0.0f, 0.0f );
+        glVertex3f( 5.0f, 0.0f, -4.0f );
+        glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
+        glVertex3f( 0.0f, 0.0f, 6.0f );
+        glEnd();
+}
 
 void initScene() {
 
@@ -80,8 +110,7 @@ void initScene() {
 
 int main(int argc, char **argv) {
     // initialize SDL video:
-    int winSizeX=640;
-    int winSizeY=480;
+
 	unsigned int fps =0;
     if(argc > 2){
     	char* larg = argv[1];
@@ -99,7 +128,9 @@ int main(int argc, char **argv) {
         fprintf(stderr,"ERROR: cannot initialize SDL video.\n");
         return 1;
     }
+#ifdef PLAY_MUSIC
     ainit(0);
+#endif
     SDL_Surface* screen = NULL;
     if((screen=SDL_SetVideoMode( winSizeX, winSizeY, TGL_FEATURE_RENDER_BITS, SDL_SWSURFACE)) == 0 ) {
         fprintf(stderr,"ERROR: Video mode set failed.\n");
@@ -117,8 +148,10 @@ int main(int argc, char **argv) {
     printf("\nASHIFT IS %u",screen->format->Ashift);
     fflush(stdout);
     track* myTrack = NULL;
+#ifdef PLAY_MUSIC
     myTrack = lmus("WWGW.mp3");
     mplay(myTrack, -1, 1000);
+#endif
     SDL_ShowCursor(SDL_DISABLE);
     SDL_WM_SetCaption(argv[0],0);
 
@@ -197,7 +230,7 @@ int main(int argc, char **argv) {
 
         // draw scene:
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        draw();
+        draw2();
 		glDrawText((unsigned char*)"Hello World!\nFrom TinyGL", 0, 0, 0x00FFFFFF);
         // swap buffers:
         if ( SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen)<0) ) {
@@ -245,9 +278,11 @@ int main(int argc, char **argv) {
     ZB_close(frameBuffer);
     if(SDL_WasInit(SDL_INIT_VIDEO))
         SDL_QuitSubSystem(SDL_INIT_VIDEO);
+#ifdef PLAY_MUSIC
     mhalt();
     Mix_FreeMusic(myTrack);
     acleanup();
+#endif
     SDL_Quit();
     return 0;
 }

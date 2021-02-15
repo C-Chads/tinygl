@@ -139,23 +139,23 @@ static void ZB_copyBuffer(ZBuffer * zb,
     PIXEL *q;
     GLint y;
     #if !TGL_FEATURE_NO_COPY_COLOR
-    GLint n;
+    //GLint n;
     #endif
 
     q = zb->pbuf;
     p1 = buf;
     #if !TGL_FEATURE_NO_COPY_COLOR
-    n = zb->xsize * PSZB;
+    //n = zb->xsize * PSZB;
     #endif
     for (y = 0; y < zb->ysize; y++) {
-    #if TGL_FEATURE_NO_COPY_COLOR
+    #if TGL_FEATURE_NO_COPY_COLOR == 1
 		for(GLint i = 0; i < zb->xsize; i++)
 		{
 			if((*(q+i) & TGL_COLOR_MASK) != TGL_NO_COPY_COLOR)
 				*(((PIXEL*)p1) + i) = *(q+i);
 		}
     #else
-		memcpy(p1, q, n);
+		memcpy(p1, q, linesize);
 	#endif
 	p1 += linesize; //TODO make this a predictable behavior.
 	q = (PIXEL *) ((GLbyte *) q + zb->linesize);

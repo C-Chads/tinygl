@@ -1,5 +1,5 @@
 CC= gcc
-CFLAGS = -g -Wall -O3
+CFLAGS = -g -Wall -O3 -w
 GL_LIBS= -L../ 
 GL_INCLUDES= -I../include/
 ALL_T= gears texture model helloworld
@@ -9,6 +9,8 @@ clean:
 	rm -f $(ALL_T) *.exe
 texture:
 	gcc texture.c $(LIB) -o texture $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) -lSDL -lSDL_mixer -lmad -logg -lmikmod -logg -lm
+#triangle:
+#	gcc triangle.c $(LIB) -o triangle $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) -lSDL -lGLU -lSDL_mixer -lmad -logg -lmikmod -logg -lm
 helloworld:
 	gcc helloworld.c $(LIB) -o helloworld $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) -lSDL -lSDL_mixer -lmad -logg -lmikmod -logg -lm
 	

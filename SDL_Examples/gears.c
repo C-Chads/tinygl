@@ -5,6 +5,8 @@
  * ported to libSDL/TinyGL by Gerald Franz (gfz@o2online.de)
  */
 
+//#define PLAY_MUSIC
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -288,7 +290,9 @@ int main(int argc, char **argv) {
         fprintf(stderr,"ERROR: cannot initialize SDL video.\n");
         return 1;
     }
+#ifdef PLAY_MUSIC
     ainit(0);
+#endif
     SDL_Surface* screen = NULL;
     if((screen=SDL_SetVideoMode( winSizeX, winSizeY, TGL_FEATURE_RENDER_BITS, SDL_SWSURFACE)) == 0 ) {
         fprintf(stderr,"ERROR: Video mode set failed.\n");
@@ -306,8 +310,10 @@ int main(int argc, char **argv) {
     printf("\nASHIFT IS %u",screen->format->Ashift);
     fflush(stdout);
     track* myTrack = NULL;
+#ifdef PLAY_MUSIC
     myTrack = lmus("WWGW.mp3");
     mplay(myTrack, -1, 1000);
+#endif
     SDL_ShowCursor(SDL_DISABLE);
     SDL_WM_SetCaption(argv[0],0);
 
@@ -399,11 +405,11 @@ int main(int argc, char **argv) {
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         draw();
         
-		glDrawText((unsigned char*)"RED text", 0, 0,   0x000000FF);
+//		glDrawText((unsigned char*)"RED text", 0, 0,   0x000000FF);
 
-		glDrawText((unsigned char*)"GREEN text", 0, 24,0x0000FF00);
+//		glDrawText((unsigned char*)"GREEN text", 0, 24,0x0000FF00);
 
-		glDrawText((unsigned char*)"BLUE text", 0, 48,  0x00FF0000);
+//		glDrawText((unsigned char*)"BLUE text", 0, 48,  0x00FF0000);
         // swap buffers:
         if ( SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen)<0) ) {
             fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
@@ -453,9 +459,11 @@ int main(int argc, char **argv) {
     ZB_close(frameBuffer);
     if(SDL_WasInit(SDL_INIT_VIDEO))
         SDL_QuitSubSystem(SDL_INIT_VIDEO);
+#ifdef PLAY_MUSIC
     mhalt();
     Mix_FreeMusic(myTrack);
     acleanup();
+#endif
     SDL_Quit();
     return 0;
 }

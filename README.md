@@ -106,11 +106,13 @@ Plot pixel directly to the buffer.
 See `include/zfeatures.h`
 
 Standard OpenGL features that you can disable for extra performance or smaller binary size.
+
+Note that Polygon Stipple is OFF by default, to improve performance.
 ```c
 #define TGL_FEATURE_ARRAYS         1
 #define TGL_FEATURE_DISPLAYLISTS   1
 #define TGL_FEATURE_POLYGON_OFFSET 1
-#define TGL_FEATURE_POLYGON_STIPPLE 1
+#define TGL_FEATURE_POLYGON_STIPPLE 0
 ```
 
 Change the dimensions of a polygon stipple pattern, and how it's interpreted.

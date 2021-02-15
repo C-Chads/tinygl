@@ -4,6 +4,7 @@
  *
  * ported to libSDL/TinyGL by Gerald Franz (gfz@o2online.de)
  */
+//#define PLAY_MUSIC
 
 #include <math.h>
 #include <stdlib.h>
@@ -130,7 +131,9 @@ int main(int argc, char **argv) {
         fprintf(stderr,"ERROR: cannot initialize SDL video.\n");
         return 1;
     }
+#ifdef PLAY_MUSIC
     ainit(0);
+#endif
     SDL_Surface* screen = NULL;
     if((screen=SDL_SetVideoMode( winSizeX, winSizeY, TGL_FEATURE_RENDER_BITS, SDL_SWSURFACE)) == 0 ) {
         fprintf(stderr,"ERROR: Video mode set failed.\n");
@@ -148,8 +151,10 @@ int main(int argc, char **argv) {
     printf("\nASHIFT IS %u",screen->format->Ashift);
     fflush(stdout);
     track* myTrack = NULL;
+#ifdef PLAY_MUSIC
     myTrack = lmus("WWGW.mp3");
     mplay(myTrack, -1, 1000);
+#endif
     SDL_ShowCursor(SDL_DISABLE);
     SDL_WM_SetCaption(argv[0],0);
 
@@ -276,9 +281,11 @@ int main(int argc, char **argv) {
     ZB_close(frameBuffer);
     if(SDL_WasInit(SDL_INIT_VIDEO))
         SDL_QuitSubSystem(SDL_INIT_VIDEO);
+#ifdef PLAY_MUSIC
     mhalt();
     Mix_FreeMusic(myTrack);
     acleanup();
+#endif
     SDL_Quit();
     return 0;
 }
