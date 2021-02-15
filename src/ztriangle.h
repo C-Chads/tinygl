@@ -252,13 +252,13 @@
           register int n;
 #ifdef INTERP_Z
           register unsigned short *pz;
-          register unsigned int z,zz;
+          register GLuint z,zz;
 #endif
 #ifdef INTERP_RGB
-          register unsigned int or1,og1,ob1;
+          register GLuint or1,og1,ob1;
 #endif
 #ifdef INTERP_ST
-          register unsigned int s,t;
+          register GLuint s,t;
 #endif
 #ifdef INTERP_STZ
           float sz,tz;

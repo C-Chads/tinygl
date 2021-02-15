@@ -62,16 +62,16 @@ void glColor4f(float r,float g,float b,float a)
   p[4].f=a;
   /* direct convertion to integer to go faster if no shading */
   /*
-  p[5].ui = (unsigned int) (r * (ZB_POINT_RED_MAX - ZB_POINT_RED_MIN) + 
+  p[5].ui = (GLuint) (r * (ZB_POINT_RED_MAX - ZB_POINT_RED_MIN) + 
                             ZB_POINT_RED_MIN);
-  p[6].ui = (unsigned int) (g * (ZB_POINT_GREEN_MAX - ZB_POINT_GREEN_MIN) + 
+  p[6].ui = (GLuint) (g * (ZB_POINT_GREEN_MAX - ZB_POINT_GREEN_MIN) + 
                             ZB_POINT_GREEN_MIN);
-  p[7].ui = (unsigned int) (b * (ZB_POINT_BLUE_MAX - ZB_POINT_BLUE_MIN) + 
+  p[7].ui = (GLuint) (b * (ZB_POINT_BLUE_MAX - ZB_POINT_BLUE_MIN) + 
                             ZB_POINT_BLUE_MIN);
   */
-  p[5].ui = (((unsigned int)(r * 65535)) & 65535);
-  p[6].ui = (((unsigned int)(g * 65535)) & 65535);
-  p[7].ui = (((unsigned int)(b * 65535)) & 65535);
+  p[5].ui = (((GLuint)(r * 65535)) & 65535);
+  p[6].ui = (((GLuint)(g * 65535)) & 65535);
+  p[7].ui = (((GLuint)(b * 65535)) & 65535);
   gl_add_op(p);
 }
 
@@ -86,16 +86,16 @@ void glColor4fv(float *v)
   p[4].f=v[3];
   /* direct convertion to integer to go faster if no shading */
   /*
-  p[5].ui = (unsigned int) (v[0] * (ZB_POINT_RED_MAX - ZB_POINT_RED_MIN) + 
+  p[5].ui = (GLuint) (v[0] * (ZB_POINT_RED_MAX - ZB_POINT_RED_MIN) + 
                             ZB_POINT_RED_MIN);
-  p[6].ui = (unsigned int) (v[1] * (ZB_POINT_GREEN_MAX - ZB_POINT_GREEN_MIN) + 
+  p[6].ui = (GLuint) (v[1] * (ZB_POINT_GREEN_MAX - ZB_POINT_GREEN_MIN) + 
                             ZB_POINT_GREEN_MIN);
-  p[7].ui = (unsigned int) (v[2] * (ZB_POINT_BLUE_MAX - ZB_POINT_BLUE_MIN) + 
+  p[7].ui = (GLuint) (v[2] * (ZB_POINT_BLUE_MAX - ZB_POINT_BLUE_MIN) + 
                             ZB_POINT_BLUE_MIN);
   */
-  p[5].ui = (((unsigned int)(v[0] * 65535)) & 65535);
-  p[6].ui = (((unsigned int)(v[1] * 65535)) & 65535);
-  p[7].ui = (((unsigned int)(v[2] * 65535)) & 65535);
+  p[5].ui = (((GLuint)(v[0] * 65535)) & 65535);
+  p[6].ui = (((GLuint)(v[1] * 65535)) & 65535);
+  p[7].ui = (((GLuint)(v[2] * 65535)) & 65535);
   
   gl_add_op(p);
 }
@@ -603,7 +603,7 @@ void glInitNames(void)
   gl_add_op(p);
 }
 
-void glPushName(unsigned int name)
+void glPushName(GLuint name)
 {
   GLParam p[2];
 
@@ -622,7 +622,7 @@ void glPopName(void)
   gl_add_op(p);
 }
 
-void glLoadName(unsigned int name)
+void glLoadName(GLuint name)
 {
   GLParam p[2];
 
@@ -644,7 +644,7 @@ glPolygonOffset(GLfloat factor, GLfloat units)
 
 /* Special Functions */
 
-void glCallList(unsigned int list)
+void glCallList(GLuint list)
 {
   GLParam p[2];
 

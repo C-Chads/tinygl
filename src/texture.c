@@ -78,7 +78,7 @@ void glInitTextures(GLContext *c)
   c->current_texture=find_texture(c,0);
 }
 
-void glGenTextures(int n, unsigned int *textures)
+void glGenTextures(int n, GLuint *textures)
 {
   GLContext *c=gl_get_context();
   int max,i;
@@ -99,7 +99,7 @@ void glGenTextures(int n, unsigned int *textures)
 }
 
 
-void glDeleteTextures(int n, const unsigned int *textures)
+void glDeleteTextures(int n, const GLuint *textures)
 {
   GLContext *c=gl_get_context();
   int i;

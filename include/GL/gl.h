@@ -4,6 +4,9 @@
 #ifndef GL_H
 #define GL_H
 
+//Enable TinyGL's Compiletime Compatibility Test (Scroll down)
+#define COMPILETIME_TINYGL_COMPAT_TEST 1
+
 #define GL_VERSION_1_1 1
 
 #ifdef __cplusplus
@@ -680,8 +683,22 @@ typedef unsigned short	GLushort;	/* 2-byte unsigned */
 typedef unsigned int	GLuint;		/* 4-byte unsigned */
 typedef float		GLfloat;	/* single precision float */
 typedef double		GLdouble;	/* double precision float */
-typedef int GLsizei;
+typedef int 		GLsizei;
 
+
+#if COMPILETIME_TINYGL_COMPAT_TEST == 1
+
+//NO
+extern char __BUILDT_GLbyte[ 1-2*(sizeof(GLbyte) != 1)];
+//extern char __BUILDT_error[ 1-2*(sizeof(GLbyte) != 4)];
+extern char __BUILDT_GLshort[ 1-2*(sizeof(GLshort) != 2)];
+extern char __BUILDT_GLint[ 1-2*(sizeof(GLint) != 4)];
+extern char __BUILDT_GLuint[ 1-2*(sizeof(GLuint) != 4)];
+extern char __BUILDT_GLfloat[ 1-2*(sizeof(GLfloat) != 4)];
+extern char __BUILDT_GLubyte[ 1-2*(sizeof(GLubyte) != 1)];
+extern char __BUILDT_GLushort[ 1-2*(sizeof(GLushort) != 2)];
+
+#endif
 /* functions */
 
 void glEnable(int code);

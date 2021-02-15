@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+//#include "../include/GL/gl.h"
 #include "../include/zbuffer.h"
 
 ZBuffer *ZB_open(int xsize, int ysize, int mode,
@@ -170,7 +171,7 @@ static void ZB_copyBuffer(ZBuffer * zb,
 
 #define RGB16_TO_RGB32(p0,p1,v)\
 {\
-    unsigned int g,b,gb;\
+    GLuint g,b,gb;\
     g = (v & 0x07E007E0) << 5;\
     b = (v & 0x001F001F) << 3;\
     gb = g | b;\
@@ -184,21 +185,21 @@ static void ZB_copyFrameBufferRGB32(ZBuffer * zb,
                                     int linesize)
 {
     unsigned short *q;
-    unsigned int *p, *p1, v, w0, w1;
+    GLuint *p, *p1, v, w0, w1;
     int y, n;
 
     q = zb->pbuf;
-    p1 = (unsigned int *) buf;
+    p1 = (GLuint *) buf;
 	//puts("\nBEING CALLED\n");
     for (y = 0; y < zb->ysize; y++) {
 	p = p1;
 	n = zb->xsize >> 2;
 	do {
-	    v = *(unsigned int *) q;
+	    v = *(GLuint *) q;
 	    RGB16_TO_RGB32(w1, w0, v);
 	    p[0] = w0;
 	    p[1] = w1;
-	    v = *(unsigned int *) (q + 2);
+	    v = *(GLuint *) (q + 2);
 	    RGB16_TO_RGB32(w1, w0, v);
 	    p[2] = w0;
 	    p[3] = 0;
@@ -226,7 +227,7 @@ static void ZB_copyFrameBufferRGB32(ZBuffer * zb,
 
 #define RGB16_TO_RGB24(p0,p1,p2,v1,v2)\
 {\
-    unsigned int r1,g1,b1,gb1,g2,b2,gb2;\
+    GLuint r1,g1,b1,gb1,g2,b2,gb2;\
     v1 = (v1 << 16) | (v1 >> 16);\
     v2 = (v2 << 16) | (v2 >> 16);\
     r1 = (v1 & 0xF800F800);\
@@ -245,7 +246,7 @@ static void ZB_copyFrameBufferRGB32(ZBuffer * zb,
 
 #define RGB16_TO_RGB24(p0,p1,p2,v1,v2)\
 {\
-    unsigned int r1,g1,b1,gb1,g2,b2,gb2;\
+    GLuint r1,g1,b1,gb1,g2,b2,gb2;\
     r1 = (v1 & 0xF800F800);\
     g1 = (v1 & 0x07E007E0) << 5;\
     b1 = (v1 & 0x001F001F) << 3;\
@@ -266,19 +267,19 @@ static void ZB_copyFrameBufferRGB24(ZBuffer * zb,
                                     int linesize)
 {
     unsigned short *q;
-    unsigned int *p, *p1, w0, w1, w2, v0, v1;
+    GLuint *p, *p1, w0, w1, w2, v0, v1;
     int y, n;
 
     q = zb->pbuf;
-    p1 = (unsigned int *) buf;
+    p1 = (GLuint *) buf;
     linesize = linesize * 3;
 
     for (y = 0; y < zb->ysize; y++) {
 	p = p1;
 	n = zb->xsize >> 2;
 	do {
-	    v0 = *(unsigned int *) q;
-	    v1 = *(unsigned int *) (q + 2);
+	    v0 = *(GLuint *) q;
+	    v1 = *(GLuint *) (q + 2);
 	    RGB16_TO_RGB24(w0, w1, w2, v0, v1);
 	    p[0] = w0;
 	    p[1] = w1;
@@ -457,7 +458,7 @@ void ZB_copyFrameBuffer(ZBuffer * zb, void *buf,
 void memset_s(void *adr, int val, int count)
 {
     int i, n, v;
-    unsigned int *p;
+    GLuint *p;
     unsigned short *q;
 
     p = adr;
@@ -482,7 +483,7 @@ void memset_s(void *adr, int val, int count)
 void memset_l(void *adr, int val, int count)
 {
     int i, n, v;
-    unsigned int *p;
+    GLuint *p;
 
     p = adr;
     v = val;

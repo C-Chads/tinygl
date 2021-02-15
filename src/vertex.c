@@ -246,9 +246,9 @@ void glopVertex(GLContext * c, GLParam * p)
 		v->color = c->current_color;
     }
 	/* Added by Gek to fix bug with rendering*/
-		//v->zp.r=(unsigned int)(v->color.v[0] * 65535) & 65535;
-		//v->zp.g=(unsigned int)(v->color.v[1] * 65535) & 65535;
-		//v->zp.b=(unsigned int)(v->color.v[2] * 65535) & 65535;
+		//v->zp.r=(GLuint)(v->color.v[0] * 65535) & 65535;
+		//v->zp.g=(GLuint)(v->color.v[1] * 65535) & 65535;
+		//v->zp.b=(GLuint)(v->color.v[2] * 65535) & 65535;
     /* tex coords */
 
     if (c->texture_2d_enabled) {

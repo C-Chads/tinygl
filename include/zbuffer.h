@@ -6,6 +6,7 @@
  */
 
 #include "zfeatures.h"
+#include "GL/gl.h"
 
 #define ZB_Z_BITS 16
 

@@ -78,7 +78,7 @@ void ZB_fillTriangleSmooth(ZBuffer *zb,
 #if TGL_FEATURE_RENDER_BITS == 16
 //	int _drgbdx;
 #endif
-//unsigned int color;
+//GLuint color;
 #define INTERP_Z
 #define INTERP_RGB
 
@@ -155,7 +155,7 @@ _drgbdx|=(SAR_RND_TO_ZERO(dbdx,7) << 12) & 0x001FF000;     \
 {									   \
   register unsigned short *pz;					   \
   register PIXEL *pp;					   \
-  register unsigned int tmp,z,zz,rgb,drgbdx;				   \
+  register GLuint tmp,z,zz,rgb,drgbdx;				   \
   register int n;							   \
   n=(x2 >> 16) - x1;							   \
   pp=pp1+x1;								   \
@@ -272,7 +272,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
 {						\
   register unsigned short *pz;		\
   register PIXEL *pp;		\
-  register unsigned int s,t,z,zz;	\
+  register GLuint s,t,z,zz;	\
   register int n,dsdx,dtdx;		\
   float sz,tz,fz,zinv; \
   n=(x2>>16)-x1;                             \

@@ -90,7 +90,7 @@ int ZDither_lookupColor(int r,int g,int b)
 #define DITHER_PIXEL2(a)			\
 { \
   register int v,t,r,g,c;			\
-  v=*(unsigned int *)(pp+(a));                  \
+  v=*(GLuint *)(pp+(a));                  \
   g=(v & 0x07DF07DF) + g_d; \
   r=(((v & 0xF800F800) >> 2) + r_d) & 0x70007000; \
   t=r | g; \
@@ -134,7 +134,9 @@ void ZB_ditherFrameBuffer(ZBuffer *zb,unsigned char *buf,
       g_d=b_d | g_d;
 
       dest1=buf + (yk * linesize) + xk;
-      pp1=zb->pbuf + (yk * zb->xsize) + xk;
+	//NOTE BY GEK: The following line was modified to fix a compiler warning,
+	//casting zb->pbuf to unsigned short*
+      pp1=(unsigned short*)(zb->pbuf) + (yk * zb->xsize) + xk;
       
       for(y=yk;y<zb->ysize;y+=4) {
 	dest=dest1;

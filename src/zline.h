@@ -3,10 +3,10 @@
     register int a;
     register PIXEL *pp;
 #if defined(INTERP_RGB) || TGL_FEATURE_RENDER_BITS == 24
-    register unsigned int r, g, b;
+    register GLuint r, g, b;
 #endif
 #ifdef INTERP_RGB
-    register unsigned int rinc, ginc, binc;
+    register GLuint rinc, ginc, binc;
 #endif
 #ifdef INTERP_Z
     register unsigned short *pz;

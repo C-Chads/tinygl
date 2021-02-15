@@ -27,7 +27,7 @@ GLContext *gl_get_context(void)
   return gl_ctx;
 }
 
-static GLList *find_list(GLContext *c,unsigned int list)
+static GLList *find_list(GLContext *c,GLuint list)
 {
   return c->shared_state.lists[list];
 }
@@ -53,11 +53,11 @@ static void delete_list(GLContext *c,int list)
   gl_free(l);
   c->shared_state.lists[list]=NULL;
 }
-void glDeleteLists(unsigned int list, unsigned int range){
-	for(unsigned int i = 0; i < list + range; i++)
+void glDeleteLists(GLuint list, GLuint range){
+	for(GLuint i = 0; i < list + range; i++)
 		glDeleteList(list+i);
 }
-void glDeleteList(unsigned int list){
+void glDeleteList(GLuint list){
 	delete_list(gl_get_context(), list);
 }
 
@@ -195,7 +195,7 @@ void glopCallList(GLContext *c,GLParam *p)
 
 
 
-void glNewList(unsigned int list,int mode)
+void glNewList(GLuint list,int mode)
 {
   GLList *l;
   GLContext *c=gl_get_context();
@@ -229,7 +229,7 @@ void glEndList(void)
   c->exec_flag=1;
 }
 
-int glIsList(unsigned int list)
+int glIsList(GLuint list)
 {
   GLContext *c=gl_get_context();
   GLList *l;
@@ -237,7 +237,7 @@ int glIsList(unsigned int list)
   return (l != NULL);
 }
 
-unsigned int glGenLists(int range)
+GLuint glGenLists(int range)
 {
   GLContext *c=gl_get_context();
   int count,i,list;

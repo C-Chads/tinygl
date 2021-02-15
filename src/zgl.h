@@ -99,7 +99,7 @@ typedef union {
   int op;
   float f;
   int i;
-  unsigned int ui;
+  GLuint ui;
   void *p;
 } GLParam;
 
@@ -216,14 +216,14 @@ typedef struct GLContext {
 
   /* selection */
   int render_mode;
-  unsigned int *select_buffer;
+  GLuint *select_buffer;
   int select_size;
-  unsigned int *select_ptr,*select_hit;
+  GLuint *select_ptr,*select_hit;
   int select_overflow;
   int select_hits;
 
   /* names */
-  unsigned int name_stack[MAX_NAME_STACK_DEPTH];
+  GLuint name_stack[MAX_NAME_STACK_DEPTH];
   int name_stack_size;
 
   /* clear */
@@ -232,7 +232,7 @@ typedef struct GLContext {
 
   /* current vertex state */
   V4 current_color;
-  //unsigned int longcurrent_color[3]; /* precomputed integer color */
+  //GLuint longcurrent_color[3]; /* precomputed integer color */
   V4 current_normal;
   V4 current_tex_coord;
   int current_edge_flag;
@@ -304,7 +304,7 @@ void glopLoadIdentity(GLContext *c,GLParam *p);
 void glopTranslate(GLContext *c,GLParam *p);*/
 
 /* light.c */
-void gl_add_select(GLContext *c,unsigned int zmin,unsigned int zmax);
+void gl_add_select(GLContext *c,GLuint zmin,GLuint zmax);
 void gl_enable_disable_light(GLContext *c,int light,int v);
 void gl_shade_vertex(GLContext *c,GLVertex *v);
 
@@ -315,7 +315,7 @@ GLTexture *alloc_texture(GLContext *c,int h);
 /* image_util.c */
 void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,unsigned char *rgb,
                              int xsize,int ysize);
-void gl_convertRGB_to_8A8R8G8B(unsigned int *pixmap, unsigned char *rgb,
+void gl_convertRGB_to_8A8R8G8B(GLuint *pixmap, unsigned char *rgb,
                                int xsize, int ysize);
 void gl_resizeImage(unsigned char *dest,int xsize_dest,int ysize_dest,
                     unsigned char *src,int xsize_src,int ysize_src);

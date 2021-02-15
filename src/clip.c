@@ -25,15 +25,15 @@ void gl_transform_to_viewport(GLContext *c,GLVertex *v)
   /* color */
   //if (c->lighting_enabled) {
   	
-      v->zp.r=(unsigned int)(v->color.v[0] * 65535) & 65535;
-      v->zp.g=(unsigned int)(v->color.v[1] * 65535) & 65535;
-      v->zp.b=(unsigned int)(v->color.v[2] * 65535) & 65535;
+      v->zp.r=(GLuint)(v->color.v[0] * 65535) & 65535;
+      v->zp.g=(GLuint)(v->color.v[1] * 65535) & 65535;
+      v->zp.b=(GLuint)(v->color.v[2] * 65535) & 65535;
 
   //} else {
       //printf("\nRECEIVED COLOR %f, %f, %f, %f", v->color.v[0], v->color.v[1], v->color.v[2], v->color.v[3]);
-    //  v->zp.r=(unsigned int)(v->color.v[0] * 65535) & 65535;
-    //  v->zp.g=(unsigned int)(v->color.v[1] * 65535) & 65535;
-    //  v->zp.b=(unsigned int)(v->color.v[2] * 65535) & 65535;
+    //  v->zp.r=(GLuint)(v->color.v[0] * 65535) & 65535;
+    //  v->zp.g=(GLuint)(v->color.v[1] * 65535) & 65535;
+    //  v->zp.b=(GLuint)(v->color.v[2] * 65535) & 65535;
       //printf("\nCOLORS ARE %d, %d, %d", v->zp.r,v->zp.g,v->zp.b);
  // }
   
@@ -50,7 +50,7 @@ void gl_transform_to_viewport(GLContext *c,GLVertex *v)
 
 static void gl_add_select1(GLContext *c,int z1,int z2,int z3)
 {
-  unsigned int min,max;
+  GLuint min,max;
   min=max=z1;
   if (z2<min) min=z2;
   if (z3<min) min=z3;
