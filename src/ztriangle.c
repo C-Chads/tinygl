@@ -156,7 +156,7 @@ _drgbdx|=(SAR_RND_TO_ZERO(dbdx,7) << 12) & 0x001FF000;     \
   register unsigned short *pz;					   \
   register PIXEL *pp;					   \
   register GLuint tmp,z,zz,rgb,drgbdx;				   \
-  register int n;							   \
+  register GLint n;							   \
   n=(x2 >> 16) - x1;							   \
   pp=pp1+x1;								   \
   pz=pz1+x1;								   \
@@ -236,7 +236,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
                             ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2)
 {
     PIXEL *texture;
-    float fdzdx,fndzdx,ndszdx,ndtzdx;
+    GLfloat fdzdx,fndzdx,ndszdx,ndtzdx;
 
 #define INTERP_Z
 #define INTERP_STZ
@@ -246,7 +246,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
 #define DRAW_INIT()				\
 {						\
   texture=zb->current_texture;\
-  fdzdx=(float)dzdx;\
+  fdzdx=(GLfloat)dzdx;\
   fndzdx=NB_INTERP * fdzdx;\
   ndszdx=NB_INTERP * dszdx;\
   ndtzdx=NB_INTERP * dtzdx;\
@@ -257,7 +257,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
 {						\
    zz=z >> ZB_POINT_Z_FRAC_BITS;		\
      if (ZCMP(zz,pz[_a],_a)) {				\
-       pp[_a]=*(PIXEL *)((char *)texture+ \
+       pp[_a]=*(PIXEL *)((GLbyte *)texture+ \
                (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH)));\
        pz[_a]=zz;				\
     }						\
@@ -273,19 +273,19 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
   register unsigned short *pz;		\
   register PIXEL *pp;		\
   register GLuint s,t,z,zz;	\
-  register int n,dsdx,dtdx;		\
-  float sz,tz,fz,zinv; \
+  register GLint n,dsdx,dtdx;		\
+  GLfloat sz,tz,fz,zinv; \
   n=(x2>>16)-x1;                             \
-  fz=(float)z1;\
+  fz=(GLfloat)z1;\
   zinv=1.0 / fz;\
-  pp=(PIXEL *)((char *)pp1 + x1 * PSZB); \
+  pp=(PIXEL *)((GLbyte *)pp1 + x1 * PSZB); \
   pz=pz1+x1;					\
   z=z1;						\
   sz=sz1;\
   tz=tz1;\
   while (n>=(NB_INTERP-1)) {						   \
     {\
-      float ss,tt;\
+      GLfloat ss,tt;\
       ss=(sz * zinv);\
       tt=(tz * zinv);\
       s=(int) ss;\
@@ -304,13 +304,13 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
     PUT_PIXEL(6);/*the_x++;*/		   \
     PUT_PIXEL(7);/*the_x-=7;*/		   \
     pz+=NB_INTERP;							   \
-    pp=(PIXEL *)((char *)pp + NB_INTERP * PSZB);/*the_x+=NB_INTERP * PSZB;*/\
+    pp=(PIXEL *)((GLbyte *)pp + NB_INTERP * PSZB);/*the_x+=NB_INTERP * PSZB;*/\
     n-=NB_INTERP;							   \
     sz+=ndszdx;\
     tz+=ndtzdx;\
   }									   \
     {\
-      float ss,tt;\
+      GLfloat ss,tt;\
       ss=(sz * zinv);\
       tt=(tz * zinv);\
       s=(int) ss;\
@@ -321,7 +321,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
   while (n>=0) {							   \
     PUT_PIXEL(0);/*the_x += PSZB;*/			   \
     pz+=1;								   \
-    pp=(PIXEL *)((char *)pp + PSZB);\
+    pp=(PIXEL *)((GLbyte *)pp + PSZB);\
     n-=1;								   \
   }									   \
 }
@@ -365,11 +365,11 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
 
 #define PUT_PIXEL(_a)				\
 {						\
-   float zinv; \
-   int s,t; \
+   GLfloat zinv; \
+   GLint s,t; \
    zz=z >> ZB_POINT_Z_FRAC_BITS;		\
      if (ZCMP(zz,pz[_a],_a)) {				\
-       zinv= 1.0 / (float) z; \
+       zinv= 1.0 / (GLfloat) z; \
        s= (int) (sz * zinv); \
        t= (int) (tz * zinv); \
        pp[_a]=texture[((t & 0x3FC00000) | s) >> 14];	\

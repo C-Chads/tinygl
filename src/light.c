@@ -3,14 +3,14 @@
 
 void glopMaterial(GLContext *c,GLParam *p)
 {
-  int mode=p[1].i;
-  int type=p[2].i;
-  float v[4]; 
+  GLint mode=p[1].i;
+  GLint type=p[2].i;
+  GLfloat v[4]; 
   v[0]= p[3].f;
   v[1]= p[4].f;
   v[2]= p[5].f;
   v[3]= p[6].f;
-  int i;
+  GLint i;
   GLMaterial *m;
 
   if (mode == GL_FRONT_AND_BACK) {
@@ -74,8 +74,8 @@ void glopMaterial(GLContext *c,GLParam *p)
 
 void glopColorMaterial(GLContext *c,GLParam *p)
 {
-  int mode=p[1].i;
-  int type=p[2].i;
+  GLint mode=p[1].i;
+  GLint type=p[2].i;
 
   c->current_color_material_mode=mode;
   c->current_color_material_type=type;
@@ -83,11 +83,11 @@ void glopColorMaterial(GLContext *c,GLParam *p)
 
 void glopLight(GLContext *c,GLParam *p)
 {
-  int light=p[1].i;
-  int type=p[2].i;
+  GLint light=p[1].i;
+  GLint type=p[2].i;
   V4 v;
   GLLight *l;
-  int i;
+  GLint i;
   
   assert(light >= GL_LIGHT0 && light < GL_LIGHT0+MAX_LIGHTS );
 
@@ -132,7 +132,7 @@ void glopLight(GLContext *c,GLParam *p)
     break;
   case GL_SPOT_CUTOFF:
     {
-      float a=v.v[0];
+      GLfloat a=v.v[0];
       assert(a == 180 || (a>=0 && a<=90));
       l->spot_cutoff=a;
       if (a != 180) l->cos_spot_cutoff=cos(a * M_PI / 180.0);
@@ -155,9 +155,9 @@ void glopLight(GLContext *c,GLParam *p)
 
 void glopLightModel(GLContext *c,GLParam *p)
 {
-  int pname=p[1].i;
-  float *v=&p[2].f;
-  int i;
+  GLint pname=p[1].i;
+  GLfloat *v=&p[2].f;
+  GLint i;
 
   switch(pname) {
   case GL_LIGHT_MODEL_AMBIENT:
@@ -178,7 +178,7 @@ void glopLightModel(GLContext *c,GLParam *p)
 }
 
 
-static inline float clampf(float a,float min,float max)
+static inline GLfloat clampf(GLfloat a,GLfloat min,GLfloat max)
 {
   if (a<min) return min;
   else if (a>max) return max;
@@ -209,12 +209,12 @@ void glSetEnableSpecular(int s){
 /* non optimized lightening model */
 void gl_shade_vertex(GLContext *c,GLVertex *v)
 {
-  float R,G,B,A;
+  GLfloat R,G,B,A;
   GLMaterial *m;
   GLLight *l;
   V3 n,s,d;
-  float dist,tmp,att,dot,dot_spot,dot_spec;
-  int twoside = c->light_model_two_side;
+  GLfloat dist,tmp,att,dot,dot_spot,dot_spec;
+  GLint twoside = c->light_model_two_side;
 
   m=&c->materials[0];
 
@@ -228,7 +228,7 @@ void gl_shade_vertex(GLContext *c,GLVertex *v)
   A=clampf(m->diffuse.v[3],0,1);
 
   for(l=c->first_light;l!=NULL;l=l->next) {
-    float lR,lB,lG;
+    GLfloat lR,lB,lG;
     
     /* ambient */
     lR=l->ambient.v[0] * m->ambient.v[0];
@@ -304,7 +304,7 @@ void gl_shade_vertex(GLContext *c,GLVertex *v)
 	      if (twoside && dot_spec < 0) dot_spec = -dot_spec;
 	      if (dot_spec>0) {
 	        GLSpecBuf *specbuf;
-	        int idx;
+	        GLint idx;
 	        tmp=sqrt(s.X*s.X+s.Y*s.Y+s.Z*s.Z);
 	        if (tmp > 1E-3) {
 	          dot_spec=dot_spec / tmp;

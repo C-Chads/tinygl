@@ -16,7 +16,7 @@ void initSharedState(GLContext *c)
 void endSharedState(GLContext *c)
 {
   GLSharedState *s=&c->shared_state;
-  int i;
+  GLint i;
 
   for(i=0;i<MAX_DISPLAY_LISTS;i++) {
     /* TODO */
@@ -32,7 +32,7 @@ void glInit(void *zbuffer1)
   ZBuffer *zbuffer=(ZBuffer *)zbuffer1;
   GLContext *c;
   GLViewport *v;
-  int i;
+  GLint i;
 
   c=gl_zalloc(sizeof(GLContext));
   gl_ctx=c;

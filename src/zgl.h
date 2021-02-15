@@ -51,9 +51,9 @@ enum {
 #define TGL_OFFSET_POINT   0x4
 
 typedef struct GLSpecBuf {
-  int shininess_i;
-  int last_used;
-  float buf[SPECULAR_BUFFER_SIZE+1];
+  GLint shininess_i;
+  GLint last_used;
+  GLfloat buf[SPECULAR_BUFFER_SIZE+1];
   struct GLSpecBuf *next;
 } GLSpecBuf;
 
@@ -63,15 +63,15 @@ typedef struct GLLight {
   V4 specular;
   V4 position;	
   V3 spot_direction;
-  float spot_exponent;
-  float spot_cutoff;
-  float attenuation[3];
+  GLfloat spot_exponent;
+  GLfloat spot_cutoff;
+  GLfloat attenuation[3];
   /* precomputed values */
-  float cos_spot_cutoff;
+  GLfloat cos_spot_cutoff;
   V3 norm_spot_direction;
   V3 norm_position;
   /* we use a linked list to know which are the enabled lights */
-  int enabled;
+  GLint enabled;
   struct GLLight *next,*prev;
 } GLLight;
 
@@ -80,25 +80,25 @@ typedef struct GLMaterial {
   V4 ambient;
   V4 diffuse;
   V4 specular;
-  float shininess;
+  GLfloat shininess;
 
   /* computed values */
-  int shininess_i;
-  int do_specular;  
+  GLint shininess_i;
+  GLint do_specular;  
 } GLMaterial;
 
 
 typedef struct GLViewport {
-  int xmin,ymin,xsize,ysize;
+  GLint xmin,ymin,xsize,ysize;
   V3 scale;
   V3 trans;
-  int updated;
+  GLint updated;
 } GLViewport;
 
 typedef union {
-  int op;
-  float f;
-  int i;
+  GLint op;
+  GLfloat f;
+  GLint i;
   GLuint ui;
   void *p;
 } GLParam;
@@ -114,7 +114,7 @@ typedef struct GLList {
 } GLList;
 
 typedef struct GLVertex {
-  int edge_flag;
+  GLint edge_flag;
   V3 normal;
   V4 coord;
   V4 tex_coord;
@@ -123,13 +123,13 @@ typedef struct GLVertex {
   /* computed values */
   V4 ec;                /* eye coordinates */
   V4 pc;                /* coordinates in the normalized volume */
-  int clip_code;        /* clip code */
-  ZBufferPoint zp;      /* integer coordinates for the rasterization */
+  GLint clip_code;        /* clip code */
+  ZBufferPoint zp;      /* GLinteger coordinates for the rasterization */
 } GLVertex;
 
 typedef struct GLImage {
   void *pixmap;
-  int xsize,ysize;
+  GLint xsize,ysize;
 } GLImage;
 
 /* textures */
@@ -138,7 +138,7 @@ typedef struct GLImage {
 
 typedef struct GLTexture {
   GLImage images[MAX_TEXTURE_LEVELS];
-  int handle;
+  GLint handle;
   struct GLTexture *next,*prev;
 } GLTexture;
 
@@ -165,117 +165,117 @@ typedef struct GLContext {
   GLLight lights[MAX_LIGHTS];
   GLLight *first_light;
   V4 ambient_light_model;
-  int local_light_model;
-  int lighting_enabled;
-  int light_model_two_side;
+  GLint local_light_model;
+  GLint lighting_enabled;
+  GLint light_model_two_side;
 
   /* materials */
   GLMaterial materials[2];
-  int color_material_enabled;
-  int current_color_material_mode;
-  int current_color_material_type;
+  GLint color_material_enabled;
+  GLint current_color_material_mode;
+  GLint current_color_material_type;
 
   /* textures */
   GLTexture *current_texture;
-  int texture_2d_enabled;
+  GLint texture_2d_enabled;
 
   /* shared state */
   GLSharedState shared_state;
 
   /* current list */
   GLParamBuffer *current_op_buffer;
-  int current_op_buffer_index;
-  int exec_flag,compile_flag,print_flag;
+  GLint current_op_buffer_index;
+  GLint exec_flag,compile_flag,print_flag;
 
   /* matrix */
 
-  int matrix_mode;
+  GLint matrix_mode;
   M4 *matrix_stack[3];
   M4 *matrix_stack_ptr[3];
-  int matrix_stack_depth_max[3];
+  GLint matrix_stack_depth_max[3];
 
   M4 matrix_model_view_inv;
   M4 matrix_model_projection;
-  int matrix_model_projection_updated;
-  int matrix_model_projection_no_w_transform; 
-  int apply_texture_matrix;
+  GLint matrix_model_projection_updated;
+  GLint matrix_model_projection_no_w_transform; 
+  GLint apply_texture_matrix;
 
   /* viewport */
   GLViewport viewport;
 
   /* current state */
-  int polygon_mode_back;
-  int polygon_mode_front;
+  GLint polygon_mode_back;
+  GLint polygon_mode_front;
 
-  int current_front_face;
-  int current_shade_model;
-  int current_cull_face;
-  int cull_face_enabled;
-  int normalize_enabled;
+  GLint current_front_face;
+  GLint current_shade_model;
+  GLint current_cull_face;
+  GLint cull_face_enabled;
+  GLint normalize_enabled;
   gl_draw_triangle_func draw_triangle_front,draw_triangle_back;
 
   /* selection */
-  int render_mode;
+  GLint render_mode;
   GLuint *select_buffer;
-  int select_size;
+  GLint select_size;
   GLuint *select_ptr,*select_hit;
-  int select_overflow;
-  int select_hits;
+  GLint select_overflow;
+  GLint select_hits;
 
   /* names */
   GLuint name_stack[MAX_NAME_STACK_DEPTH];
-  int name_stack_size;
+  GLint name_stack_size;
 
   /* clear */
-  float clear_depth;
+  GLfloat clear_depth;
   V4 clear_color;
 
   /* current vertex state */
   V4 current_color;
-  //GLuint longcurrent_color[3]; /* precomputed integer color */
+  //GLuint longcurrent_color[3]; /* precomputed GLinteger color */
   V4 current_normal;
   V4 current_tex_coord;
-  int current_edge_flag;
+  GLint current_edge_flag;
 
   /* glBegin / glEnd */
-  int in_begin;
-  int begin_type;
-  int vertex_n,vertex_cnt;
-  int vertex_max;
+  GLint in_begin;
+  GLint begin_type;
+  GLint vertex_n,vertex_cnt;
+  GLint vertex_max;
   GLVertex *vertex;
 
   /* opengl 1.1 arrays  */
-  float *vertex_array;
-  int vertex_array_size;
-  int vertex_array_stride;
-  float *normal_array;
-  int normal_array_stride;
-  float *color_array;
-  int color_array_size;
-  int color_array_stride;
-  float *texcoord_array;
-  int texcoord_array_size;
-  int texcoord_array_stride;
-  int client_states;
+  GLfloat *vertex_array;
+  GLint vertex_array_size;
+  GLint vertex_array_stride;
+  GLfloat *normal_array;
+  GLint normal_array_stride;
+  GLfloat *color_array;
+  GLint color_array_size;
+  GLint color_array_stride;
+  GLfloat *texcoord_array;
+  GLint texcoord_array_size;
+  GLint texcoord_array_stride;
+  GLint client_states;
   
   /* opengl 1.1 polygon offset */
-  float offset_factor;
-  float offset_units;
-  int offset_states;
+  GLfloat offset_factor;
+  GLfloat offset_units;
+  GLint offset_states;
   
   /* specular buffer. could probably be shared between contexts, 
     but that wouldn't be 100% thread safe */
   GLSpecBuf *specbuf_first;
-  int specbuf_used_counter;
-  int specbuf_num_buffers;
+  GLint specbuf_used_counter;
+  GLint specbuf_num_buffers;
 
   /* opaque structure for user's use */
   void *opaque;
   /* resize viewport function */
-  int (*gl_resize_viewport)(struct GLContext *c,int *xsize,int *ysize);
+  GLint (*gl_resize_viewport)(struct GLContext *c,int *xsize,int *ysize);
 
   /* depth test */
-  int depth_test;
+  GLint depth_test;
 } GLContext;
 
 extern GLContext *gl_ctx;
@@ -298,7 +298,7 @@ void gl_draw_triangle_select(GLContext *c,
                              GLVertex *p0,GLVertex *p1,GLVertex *p2);
 
 /* matrix.c */
-void gl_print_matrix(const float *m);
+void gl_print_matrix(const GLfloat *m);
 /*
 void glopLoadIdentity(GLContext *c,GLParam *p);
 void glopTranslate(GLContext *c,GLParam *p);*/
@@ -313,14 +313,14 @@ void glEndTextures(GLContext *c);
 GLTexture *alloc_texture(GLContext *c,int h);
 
 /* image_util.c */
-void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,unsigned char *rgb,
-                             int xsize,int ysize);
-void gl_convertRGB_to_8A8R8G8B(GLuint *pixmap, unsigned char *rgb,
-                               int xsize, int ysize);
-void gl_resizeImage(unsigned char *dest,int xsize_dest,int ysize_dest,
-                    unsigned char *src,int xsize_src,int ysize_src);
-void gl_resizeImageNoInterpolate(unsigned char *dest,int xsize_dest,int ysize_dest,
-                                 unsigned char *src,int xsize_src,int ysize_src);
+void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,GLubyte *rgb,
+                             GLint xsize,int ysize);
+void gl_convertRGB_to_8A8R8G8B(GLuint *pixmap, GLubyte *rgb,
+                               GLint xsize, GLint ysize);
+void gl_resizeImage(GLubyte *dest,int xsize_dest,int ysize_dest,
+                    GLubyte *src,int xsize_src,int ysize_src);
+void gl_resizeImageNoInterpolate(GLubyte *dest,int xsize_dest,int ysize_dest,
+                                 GLubyte *src,int xsize_src,int ysize_src);
 
 GLContext *gl_get_context(void);
 
@@ -328,8 +328,8 @@ void gl_fatal_error(char *format, ...);
 
 
 /* specular buffer "api" */
-GLSpecBuf *specbuf_get_buffer(GLContext *c, const int shininess_i, 
-                              const float shininess);
+GLSpecBuf *specbuf_get_buffer(GLContext *c, const GLint shininess_i, 
+                              const GLfloat shininess);
 
 #ifdef __BEOS__
 void dprintf(const char *, ...);
@@ -358,9 +358,9 @@ void dprintf(const char *, ...);
 
 #define CLIP_EPSILON (1E-5)
 
-static inline int gl_clipcode(float x,float y,float z,float w1)
+static inline GLint gl_clipcode(GLfloat x,GLfloat y,GLfloat z,GLfloat w1)
 {
-  float w;
+  GLfloat w;
 
   w=w1 * (1.0 + CLIP_EPSILON);
   return (x<-w) |

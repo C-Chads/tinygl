@@ -16,7 +16,7 @@ static GLTexture *find_texture(GLContext *c,int h)
   return NULL;
 }
 
-void* glGetTexturePixmap(int text, int level, int* xsize, int* ysize){
+void* glGetTexturePixmap(int text, GLint level, GLint* xsize, GLint* ysize){
 	GLTexture* tex;
 	GLContext *c=gl_get_context();
 	assert(text >= 0 && level < MAX_TEXTURE_LEVELS);
@@ -31,7 +31,7 @@ static void free_texture(GLContext *c,int h)
 {
   GLTexture *t,**ht;
   GLImage *im;
-  int i;
+  GLint i;
 
   t=find_texture(c,h);
   if (t->prev==NULL) {
@@ -81,7 +81,7 @@ void glInitTextures(GLContext *c)
 void glGenTextures(int n, GLuint *textures)
 {
   GLContext *c=gl_get_context();
-  int max,i;
+  GLint max,i;
   GLTexture *t;
 
   max=0;
@@ -102,7 +102,7 @@ void glGenTextures(int n, GLuint *textures)
 void glDeleteTextures(int n, const GLuint *textures)
 {
   GLContext *c=gl_get_context();
-  int i;
+  GLint i;
   GLTexture *t;
 
   for(i=0;i<n;i++) {
@@ -119,8 +119,8 @@ void glDeleteTextures(int n, const GLuint *textures)
 
 void glopBindTexture(GLContext *c,GLParam *p)
 {
-  int target=p[1].i;
-  int texture=p[2].i;
+  GLint target=p[1].i;
+  GLint texture=p[2].i;
   GLTexture *t;
 
   assert(target == GL_TEXTURE_2D && texture >= 0);
@@ -134,18 +134,18 @@ void glopBindTexture(GLContext *c,GLParam *p)
 
 void glopTexImage2D(GLContext *c,GLParam *p)
 {
-  int target=p[1].i;
-  int level=p[2].i;
-  int components=p[3].i;
-  int width=p[4].i;
-  int height=p[5].i;
-  int border=p[6].i;
-  int format=p[7].i;
-  int type=p[8].i;
+  GLint target=p[1].i;
+  GLint level=p[2].i;
+  GLint components=p[3].i;
+  GLint width=p[4].i;
+  GLint height=p[5].i;
+  GLint border=p[6].i;
+  GLint format=p[7].i;
+  GLint type=p[8].i;
   void *pixels=p[9].p;
   GLImage *im;
-  unsigned char *pixels1;
-  int do_free;
+  GLubyte *pixels1;
+  GLint do_free;
 
   if (!(target == GL_TEXTURE_2D && level == 0 && components == 3 && 
         border == 0 && format == GL_RGB &&
@@ -156,7 +156,7 @@ void glopTexImage2D(GLContext *c,GLParam *p)
   do_free=0;
   if (width != 256 || height != 256) {
     pixels1 = gl_malloc(256 * 256 * 3);
-    /* no interpolation is done here to respect the original image aliasing ! */
+    /* no GLinterpolation is done here to respect the original image aliasing ! */
     gl_resizeImageNoInterpolate(pixels1,256,256,pixels,width,height);
     do_free=1;
     width=256;
@@ -194,9 +194,9 @@ void glopTexImage2D(GLContext *c,GLParam *p)
 /* TODO: not all tests are done */
 void glopTexEnv(GLContext *c,GLParam *p)
 {
-  int target=p[1].i;
-  int pname=p[2].i;
-  int param=p[3].i;
+  GLint target=p[1].i;
+  GLint pname=p[2].i;
+  GLint param=p[3].i;
 
   if (target != GL_TEXTURE_ENV) {
   error:
@@ -211,9 +211,9 @@ void glopTexEnv(GLContext *c,GLParam *p)
 /* TODO: not all tests are done */
 void glopTexParameter(GLContext *c,GLParam *p)
 {
-  int target=p[1].i;
-  int pname=p[2].i;
-  int param=p[3].i;
+  GLint target=p[1].i;
+  GLint pname=p[2].i;
+  GLint param=p[3].i;
   
   if (target != GL_TEXTURE_2D) {
   error:
@@ -230,8 +230,8 @@ void glopTexParameter(GLContext *c,GLParam *p)
 
 void glopPixelStore(GLContext *c,GLParam *p)
 {
-  int pname=p[1].i;
-  int param=p[2].i;
+  GLint pname=p[1].i;
+  GLint param=p[2].i;
 
   if (pname != GL_UNPACK_ALIGNMENT ||
       param != 1) {

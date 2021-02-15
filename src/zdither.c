@@ -23,7 +23,7 @@
 #define DITHER_INDEX(r,g,b) ((b) + (g) * _B + (r) * (_B * _G))
 
 #define MAXC	256
-static int kernel8[_DY*_DX] = {
+static GLint kernel8[_DY*_DX] = {
     0 * MAXC,  8 * MAXC,  2 * MAXC, 10 * MAXC,
    12 * MAXC,  4 * MAXC, 14 * MAXC,  6 * MAXC,
     3 * MAXC, 11 * MAXC,  1 * MAXC,  9 * MAXC,
@@ -33,9 +33,9 @@ static int kernel8[_DY*_DX] = {
 /* we build the color table and the lookup table */
 
 void ZB_initDither(ZBuffer *zb,int nb_colors,
-		   unsigned char *color_indexes,int *color_table)
+		   GLubyte *color_indexes,int *color_table)
 {
-  int c,r,g,b,i,index,r1,g1,b1;
+  GLint c,r,g,b,i,index,r1,g1,b1;
 
   if (nb_colors < (_R * _G * _B)) {
     fprintf(stderr,"zdither: not enough colors\n");
@@ -81,7 +81,7 @@ void ZB_closeDither(ZBuffer *zb)
 #if 0
 int ZDither_lookupColor(int r,int g,int b)
 {
-  unsigned char *ctable=zdither_color_table;
+  GLubyte *ctable=zdither_color_table;
   return ctable[_MIX(_DITH0(_R, r), _DITH0(_G, g),_DITH0(_B, b))];
 }
 #endif
@@ -89,7 +89,7 @@ int ZDither_lookupColor(int r,int g,int b)
 
 #define DITHER_PIXEL2(a)			\
 { \
-  register int v,t,r,g,c;			\
+  register GLint v,t,r,g,c;			\
   v=*(GLuint *)(pp+(a));                  \
   g=(v & 0x07DF07DF) + g_d; \
   r=(((v & 0xF800F800) >> 2) + r_d) & 0x70007000; \
@@ -102,15 +102,15 @@ int ZDither_lookupColor(int r,int g,int b)
    linesize are not multiple of 2, it cannot work efficiently (or
    hang!) */
 
-void ZB_ditherFrameBuffer(ZBuffer *zb,unsigned char *buf,
-			  int linesize)
+void ZB_ditherFrameBuffer(ZBuffer *zb,GLubyte *buf,
+			  GLint linesize)
 {
-  int xk,yk,x,y,c1,c2;
-  unsigned char *dest1;
+  GLint xk,yk,x,y,c1,c2;
+  GLubyte *dest1;
   unsigned short *pp1;
-  int r_d,g_d,b_d;
-  unsigned char *ctable=zb->dctable;
-  register unsigned char *dest;
+  GLint r_d,g_d,b_d;
+  GLubyte *ctable=zb->dctable;
+  register GLubyte *dest;
   register unsigned short *pp;
 
   assert( ((long)buf & 1) == 0 && (linesize & 1) == 0);

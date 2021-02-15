@@ -31,8 +31,8 @@ int gl_M4_IsId(M4 *a)
 
 void gl_M4_Mul(M4 *c,M4 *a,M4 *b)
 {
-  int i,j,k;
-  float s;
+  GLint i,j,k;
+  GLfloat s;
   for(i=0;i<4;i++)
     for(j=0;j<4;j++) {
       s=0.0;
@@ -44,11 +44,11 @@ void gl_M4_Mul(M4 *c,M4 *a,M4 *b)
 /* c=c*a */
 void gl_M4_MulLeft(M4 *c,M4 *b)
 {
-  int i,j,k;
-  float s;
+  GLint i,j,k;
+  GLfloat s;
   M4 a;
 
-  /*memcpy(&a, c, 16*sizeof(float));
+  /*memcpy(&a, c, 16*sizeof(GLfloat));
   */
   a=*c;
 
@@ -121,7 +121,7 @@ void gl_M4_Transpose(M4 *a,M4 *b)
 void gl_M4_InvOrtho(M4 *a,M4 b)
 {
 	int i,j;
-	float s;
+	GLfloat s;
 	for(i=0;i<3;i++)
 	for(j=0;j<3;j++) a->m[i][j]=b.m[j][i];
 	a->m[3][0]=0.0; a->m[3][1]=0.0; a->m[3][2]=0.0; a->m[3][3]=1.0;
@@ -135,10 +135,10 @@ void gl_M4_InvOrtho(M4 *a,M4 b)
 /* Inversion of a general nxn matrix.
    Note : m is destroyed */
 
-int Matrix_Inv(float *r,float *m,int n)
+int Matrix_Inv(GLfloat *r,GLfloat *m,int n)
 {
-	 int i,j,k,l;
-	 float max,tmp,t;
+	 GLint i,j,k,l;
+	 GLfloat max,tmp,t;
 
 	 /* identitée dans r */
 	 for(i=0;i<n*n;i++) r[i]=0;
@@ -155,7 +155,7 @@ int Matrix_Inv(float *r,float *m,int n)
 					 max=m[i*n+j];
 				}
 
-      /* non intersible matrix */
+      /* non GLintersible matrix */
       if (max==0) return 1;
 
 			
@@ -198,15 +198,15 @@ int Matrix_Inv(float *r,float *m,int n)
 void gl_M4_Inv(M4 *a,M4 *b)
 {
   M4 tmp;
-  memcpy(&tmp, b, 16*sizeof(float));
+  memcpy(&tmp, b, 16*sizeof(GLfloat));
   /*tmp=*b;*/
   Matrix_Inv(&a->m[0][0],&tmp.m[0][0],4);
 }
 
-void gl_M4_Rotate(M4 *a,float t,int u)
+void gl_M4_Rotate(M4 *a,GLfloat t,int u)
 {
-	 float s,c;
-	 int v,w;
+	 GLfloat s,c;
+	 GLint v,w;
    if ((v=u+1)>2) v=0;
 	 if ((w=v+1)>2) w=0;
 	 s=sin(t);
@@ -220,7 +220,7 @@ void gl_M4_Rotate(M4 *a,float t,int u)
 /* inverse of a 3x3 matrix */
 void gl_M3_Inv(M3 *a,M3 *m)
 {
-	 float det;
+	 GLfloat det;
 	 
 	 det = m->m[0][0]*m->m[1][1]*m->m[2][2]-m->m[0][0]*m->m[1][2]*m->m[2][1]-
 		 m->m[1][0]*m->m[0][1]*m->m[2][2]+m->m[1][0]*m->m[0][2]*m->m[2][1]+
@@ -244,7 +244,7 @@ void gl_M3_Inv(M3 *a,M3 *m)
 
 int gl_V3_Norm(V3 *a)
 {
-	float n;
+	GLfloat n;
 	n=sqrt(a->X*a->X+a->Y*a->Y+a->Z*a->Z);
 	if (n==0) return 1;
 	a->X/=n;
@@ -253,7 +253,7 @@ int gl_V3_Norm(V3 *a)
 	return 0;
 }
 
-V3 gl_V3_New(float x,float y,float z)
+V3 gl_V3_New(GLfloat x,GLfloat y,GLfloat z)
 {
 	 V3 a;
 	 a.X=x;
@@ -262,7 +262,7 @@ V3 gl_V3_New(float x,float y,float z)
 	 return a;
 }
 
-V4 gl_V4_New(float x,float y,float z,float w)
+V4 gl_V4_New(GLfloat x,GLfloat y,GLfloat z,GLfloat w)
 {
   V4 a;
   a.X=x;

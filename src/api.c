@@ -2,7 +2,7 @@
 #include <stdio.h>
 /* glVertex */
 
-void glVertex4f(float x,float y,float z,float w)
+void glVertex4f(GLfloat x,GLfloat y,GLfloat z,GLfloat w)
 {
   GLParam p[5];
 
@@ -15,24 +15,24 @@ void glVertex4f(float x,float y,float z,float w)
   gl_add_op(p);
 }
 
-void glVertex2f(float x,float y) 
+void glVertex2f(GLfloat x,GLfloat y) 
 {
   glVertex4f(x,y,0,1);
 }
 
-void glVertex3f(float x,float y,float z) 
+void glVertex3f(GLfloat x,GLfloat y,GLfloat z) 
 {
   glVertex4f(x,y,z,1);
 }
 
-void glVertex3fv(float *v) 
+void glVertex3fv(GLfloat *v) 
 {
   glVertex4f(v[0],v[1],v[2],1);
 }
 
 /* glNormal */
 
-void glNormal3f(float x,float y,float z)
+void glNormal3f(GLfloat x,GLfloat y,GLfloat z)
 {
   GLParam p[4];
 
@@ -44,14 +44,14 @@ void glNormal3f(float x,float y,float z)
   gl_add_op(p);
 }
 
-void glNormal3fv(float *v) 
+void glNormal3fv(GLfloat *v) 
 {
   glNormal3f(v[0],v[1],v[2]);
 }
 
 /* glColor */
 
-void glColor4f(float r,float g,float b,float a)
+void glColor4f(GLfloat r,GLfloat g,GLfloat b,GLfloat a)
 {
   GLParam p[8];
 
@@ -60,7 +60,7 @@ void glColor4f(float r,float g,float b,float a)
   p[2].f=g;
   p[3].f=b;
   p[4].f=a;
-  /* direct convertion to integer to go faster if no shading */
+  /* direct convertion to GLinteger to go faster if no shading */
   /*
   p[5].ui = (GLuint) (r * (ZB_POINT_RED_MAX - ZB_POINT_RED_MIN) + 
                             ZB_POINT_RED_MIN);
@@ -75,7 +75,7 @@ void glColor4f(float r,float g,float b,float a)
   gl_add_op(p);
 }
 
-void glColor4fv(float *v)
+void glColor4fv(GLfloat *v)
 {
   GLParam p[8];
 
@@ -84,7 +84,7 @@ void glColor4fv(float *v)
   p[2].f=v[1];
   p[3].f=v[2];
   p[4].f=v[3];
-  /* direct convertion to integer to go faster if no shading */
+  /* direct convertion to GLinteger to go faster if no shading */
   /*
   p[5].ui = (GLuint) (v[0] * (ZB_POINT_RED_MAX - ZB_POINT_RED_MIN) + 
                             ZB_POINT_RED_MIN);
@@ -100,12 +100,12 @@ void glColor4fv(float *v)
   gl_add_op(p);
 }
 
-void glColor3f(float x,float y,float z) 
+void glColor3f(GLfloat x,GLfloat y,GLfloat z) 
 {
   glColor4f(x,y,z,1);
 }
 
-void glColor3fv(float *v) 
+void glColor3fv(GLfloat *v) 
 {
   glColor4f(v[0],v[1],v[2],1);
 }
@@ -113,7 +113,7 @@ void glColor3fv(float *v)
 
 /* TexCoord */
 
-void glTexCoord4f(float s,float t,float r,float q)
+void glTexCoord4f(GLfloat s,GLfloat t,GLfloat r,GLfloat q)
 {
   GLParam p[5];
 
@@ -126,12 +126,12 @@ void glTexCoord4f(float s,float t,float r,float q)
   gl_add_op(p);
 }
 
-void glTexCoord2f(float s,float t)
+void glTexCoord2f(GLfloat s,GLfloat t)
 {
   glTexCoord4f(s,t,0,1);
 }
 
-void glTexCoord2fv(float *v)
+void glTexCoord2fv(GLfloat *v)
 {
   glTexCoord4f(v[0],v[1],0,1);
 }
@@ -262,10 +262,10 @@ void glMatrixMode(int mode)
   gl_add_op(p);
 }
 
-void glLoadMatrixf(const float *m)
+void glLoadMatrixf(const GLfloat *m)
 {
   GLParam p[17];
-  int i;
+  GLint i;
 
   p[0].op=OP_LoadMatrix;
   for(i=0;i<16;i++) p[i+1].f=m[i];
@@ -282,10 +282,10 @@ void glLoadIdentity(void)
   gl_add_op(p);
 }
 
-void glMultMatrixf(const float *m)
+void glMultMatrixf(const GLfloat *m)
 {
   GLParam p[17];
-  int i;
+  GLint i;
 
   p[0].op=OP_MultMatrix;
   for(i=0;i<16;i++) p[i+1].f=m[i];
@@ -311,7 +311,7 @@ void glPopMatrix(void)
   gl_add_op(p);
 }
 
-void glRotatef(float angle,float x,float y,float z)
+void glRotatef(GLfloat angle,GLfloat x,GLfloat y,GLfloat z)
 {
   GLParam p[5];
 
@@ -324,7 +324,7 @@ void glRotatef(float angle,float x,float y,float z)
   gl_add_op(p);
 }
 
-void glTranslatef(float x,float y,float z)
+void glTranslatef(GLfloat x,GLfloat y,GLfloat z)
 {
   GLParam p[4];
 
@@ -336,7 +336,7 @@ void glTranslatef(float x,float y,float z)
   gl_add_op(p);
 }
 
-void glScalef(float x,float y,float z)
+void glScalef(GLfloat x,GLfloat y,GLfloat z)
 {
   GLParam p[4];
 
@@ -380,10 +380,10 @@ void glFrustum(double left,double right,double bottom,double top,
 
 /* lightening */
 
-void glMaterialfv(int mode,int type,float *v)
+void glMaterialfv(int mode,int type,GLfloat *v)
 {
   GLParam p[7];
-  int i,n;
+  GLint i,n;
 
   assert(mode == GL_FRONT  || mode == GL_BACK || mode==GL_FRONT_AND_BACK);
 
@@ -398,10 +398,10 @@ void glMaterialfv(int mode,int type,float *v)
   gl_add_op(p);
 }
 
-void glMaterialf(int mode,int type,float v)
+void glMaterialf(int mode,int type,GLfloat v)
 {
   GLParam p[7];
-  int i;
+  GLint i;
 
   p[0].op=OP_Material;
   p[1].i=mode;
@@ -423,10 +423,10 @@ void glColorMaterial(int mode,int type)
   gl_add_op(p);
 }
 
-void glLightfv(int light,int type,float *v)
+void glLightfv(int light,int type,GLfloat *v)
 {
   GLParam p[7];
-  int i;
+  GLint i;
 
   p[0].op=OP_Light;
   p[1].i=light;
@@ -438,10 +438,10 @@ void glLightfv(int light,int type,float *v)
 }
 
 
-void glLightf(int light,int type,float v)
+void glLightf(int light,int type,GLfloat v)
 {
   GLParam p[7];
-  int i;
+  GLint i;
 
   p[0].op=OP_Light;
   p[1].i=light;
@@ -458,7 +458,7 @@ void glLightModeli(int pname,int param)
 
   p[0].op=OP_LightModel;
   p[1].i=pname;
-  p[2].f=(float)param;
+  p[2].f=(GLfloat)param;
 //  for(i=0;i<4;i++) p[3+i].f=0;
 //  for(i=0;i<3;i++) p[3+i].f=0;
   p[3].f=0;
@@ -467,10 +467,10 @@ void glLightModeli(int pname,int param)
   gl_add_op(p);
 }
 
-void glLightModelfv(int pname,float *param)
+void glLightModelfv(int pname,GLfloat *param)
 {
   GLParam p[6];
-  int i;
+  GLint i;
 
   p[0].op=OP_LightModel;
   p[1].i=pname;
@@ -491,7 +491,7 @@ void glClear(int mask)
   gl_add_op(p);
 }
 
-void glClearColor(float r,float g,float b,float a)
+void glClearColor(GLfloat r,GLfloat g,GLfloat b,GLfloat a)
 {
   GLParam p[5];
 
@@ -517,9 +517,9 @@ void glClearDepth(double depth)
 
 /* textures */
 
-void glTexImage2D( int target, int level, int components,
-                   int width, int height, int border,
-                   int format, int type, void *pixels)
+void glTexImage2D( GLint target, GLint level, GLint components,
+                   GLint width, GLint height, GLint border,
+                   GLint format, GLint type, void *pixels)
 {
   GLParam p[10];
 

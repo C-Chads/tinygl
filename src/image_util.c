@@ -4,11 +4,11 @@
  * image conversion
  */
 
-void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,unsigned char *rgb,
-                             int xsize,int ysize)
+void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,GLubyte *rgb,
+                             GLint xsize,int ysize)
 {
-  int i,n;
-  unsigned char *p;
+  GLint i,n;
+  GLubyte *p;
 
   p=rgb;
   n=xsize*ysize;
@@ -20,11 +20,11 @@ void gl_convertRGB_to_5R6G5B(unsigned short *pixmap,unsigned char *rgb,
 
 //This actually converts to ABGR!!!
 //This is the format of the entire engine!!!
-void gl_convertRGB_to_8A8R8G8B(GLuint *pixmap, unsigned char *rgb,
-                               int xsize, int ysize)
+void gl_convertRGB_to_8A8R8G8B(GLuint *pixmap, GLubyte *rgb,
+                               GLint xsize, GLint ysize)
 {
-    int i,n;
-    unsigned char *p;
+    GLint i,n;
+    GLubyte *p;
     
     p=rgb;
     n=xsize*ysize;
@@ -37,13 +37,13 @@ void gl_convertRGB_to_8A8R8G8B(GLuint *pixmap, unsigned char *rgb,
 }
 
 /*
- * linear interpolation with xf,yf normalized to 2^16
+ * linear GLinterpolation with xf,yf normalized to 2^16
  */
 
 #define INTERP_NORM_BITS  16
 #define INTERP_NORM       (1 << INTERP_NORM_BITS)
 
-static inline int interpolate(int v00,int v01,int v10,int xf,int yf)
+static inline GLint GLinterpolate(int v00,int v01,int v10,int xf,int yf)
 {
   return v00+(((v01-v00)*xf + (v10-v00)*yf) >> INTERP_NORM_BITS);
 }
@@ -53,18 +53,18 @@ static inline int interpolate(int v00,int v01,int v10,int xf,int yf)
  * TODO: more accurate resampling 
  */
 
-void gl_resizeImage(unsigned char *dest,int xsize_dest,int ysize_dest,
-                    unsigned char *src,int xsize_src,int ysize_src)
+void gl_resizeImage(GLubyte *dest,int xsize_dest,int ysize_dest,
+                    GLubyte *src,int xsize_src,int ysize_src)
 {
-  unsigned char *pix,*pix_src;
-  float x1,y1,x1inc,y1inc;
-  int xi,yi,j,xf,yf,x,y;
+  GLubyte *pix,*pix_src;
+  GLfloat x1,y1,x1inc,y1inc;
+  GLint xi,yi,j,xf,yf,x,y;
 
   pix=dest;
   pix_src=src;
   
-  x1inc=(float) (xsize_src - 1) / (float) (xsize_dest - 1);
-  y1inc=(float) (ysize_src - 1) / (float) (ysize_dest - 1);
+  x1inc=(GLfloat) (xsize_src - 1) / (GLfloat) (xsize_dest - 1);
+  y1inc=(GLfloat) (ysize_src - 1) / (GLfloat) (ysize_dest - 1);
 
   y1=0;
   for(y=0;y<ysize_dest;y++) {
@@ -77,7 +77,7 @@ void gl_resizeImage(unsigned char *dest,int xsize_dest,int ysize_dest,
       
       if ((xf+yf) <= INTERP_NORM) {
 	for(j=0;j<3;j++) {
-	  pix[j]=interpolate(pix_src[(yi*xsize_src+xi)*3+j],
+	  pix[j]=GLinterpolate(pix_src[(yi*xsize_src+xi)*3+j],
 			     pix_src[(yi*xsize_src+xi+1)*3+j],
 			     pix_src[((yi+1)*xsize_src+xi)*3+j],
 			     xf,yf);
@@ -86,7 +86,7 @@ void gl_resizeImage(unsigned char *dest,int xsize_dest,int ysize_dest,
 	xf=INTERP_NORM - xf;
 	yf=INTERP_NORM - yf;
 	for(j=0;j<3;j++) {
-	  pix[j]=interpolate(pix_src[((yi+1)*xsize_src+xi+1)*3+j],
+	  pix[j]=GLinterpolate(pix_src[((yi+1)*xsize_src+xi+1)*3+j],
 			     pix_src[((yi+1)*xsize_src+xi)*3+j],
 			     pix_src[(yi*xsize_src+xi+1)*3+j],
 			     xf,yf);
@@ -102,20 +102,20 @@ void gl_resizeImage(unsigned char *dest,int xsize_dest,int ysize_dest,
 
 #define FRAC_BITS 16
 
-/* resizing with no interlating nor nearest pixel */
+/* resizing with no GLinterlating nor nearest pixel */
 
-void gl_resizeImageNoInterpolate(unsigned char *dest,int xsize_dest,int ysize_dest,
-                                 unsigned char *src,int xsize_src,int ysize_src)
+void gl_resizeImageNoInterpolate(GLubyte *dest,int xsize_dest,int ysize_dest,
+                                 GLubyte *src,int xsize_src,int ysize_src)
 {
-  unsigned char *pix,*pix_src,*pix1;
-  int x1,y1,x1inc,y1inc;
-  int xi,yi,x,y;
+  GLubyte *pix,*pix_src,*pix1;
+  GLint x1,y1,x1inc,y1inc;
+  GLint xi,yi,x,y;
 
   pix=dest;
   pix_src=src;
   
-  x1inc=(int)((float) ((xsize_src)<<FRAC_BITS) / (float) (xsize_dest));
-  y1inc=(int)((float) ((ysize_src)<<FRAC_BITS) / (float) (ysize_dest));
+  x1inc=(int)((GLfloat) ((xsize_src)<<FRAC_BITS) / (GLfloat) (xsize_dest));
+  y1inc=(int)((GLfloat) ((ysize_src)<<FRAC_BITS) / (GLfloat) (ysize_dest));
 
   y1=0;
   for(y=0;y<ysize_dest;y++) {

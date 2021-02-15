@@ -1,38 +1,38 @@
 /*
- * We draw a triangle with various interpolations
+ * We draw a triangle with various GLinterpolations
  */
 
 {
   ZBufferPoint *t,*pr1,*pr2,*l1,*l2;
-  float fdx1, fdx2, fdy1, fdy2, fz, d1, d2;
+  GLfloat fdx1, fdx2, fdy1, fdy2, fz, d1, d2;
   unsigned short *pz1;
   PIXEL *pp1;
-  int part,update_left,update_right;
+  GLint part,update_left,update_right;
 
-  int nb_lines,dx1,dy1,tmp,dx2,dy2;
+  GLint nb_lines,dx1,dy1,tmp,dx2,dy2;
 #if TGL_FEATURE_POLYGON_STIPPLE
   unsigned short the_y;
 #endif
-  int error,derror;
-  int x1,dxdy_min,dxdy_max;
+  GLint error,derror;
+  GLint x1,dxdy_min,dxdy_max;
 /* warning: x2 is multiplied by 2^16 */
-  int x2,dx2dy2;  
+  GLint x2,dx2dy2;  
 
 #ifdef INTERP_Z
-  int z1,dzdx,dzdy,dzdl_min,dzdl_max;
+  GLint z1,dzdx,dzdy,dzdl_min,dzdl_max;
 #endif
 #ifdef INTERP_RGB
-  int r1,drdx,drdy,drdl_min,drdl_max;
-  int g1,dgdx,dgdy,dgdl_min,dgdl_max;
-  int b1,dbdx,dbdy,dbdl_min,dbdl_max;
+  GLint r1,drdx,drdy,drdl_min,drdl_max;
+  GLint g1,dgdx,dgdy,dgdl_min,dgdl_max;
+  GLint b1,dbdx,dbdy,dbdl_min,dbdl_max;
 #endif
 #ifdef INTERP_ST
-  int s1,dsdx,dsdy,dsdl_min,dsdl_max;
-  int t1,dtdx,dtdy,dtdl_min,dtdl_max;
+  GLint s1,dsdx,dsdy,dsdl_min,dsdl_max;
+  GLint t1,dtdx,dtdy,dtdl_min,dtdl_max;
 #endif
 #ifdef INTERP_STZ
-  float sz1,dszdx,dszdy,dszdl_min,dszdl_max;
-  float tz1,dtzdx,dtzdy,dtzdl_min,dtzdl_max;
+  GLfloat sz1,dszdx,dszdy,dszdl_min,dszdl_max;
+  GLfloat tz1,dtzdx,dtzdy,dtzdl_min,dtzdl_max;
 #endif
 
   /* we sort the vertex with increasing y */
@@ -52,7 +52,7 @@
     p2 = t;
   }
 
-  /* we compute dXdx and dXdy for all interpolated values */
+  /* we compute dXdx and dXdy for all GLinterpolated values */
   
   fdx1 = p1->x - p0->x;
   fdy1 = p1->y - p0->y;
@@ -109,16 +109,16 @@
 
 #ifdef INTERP_STZ
   {
-    float zz;
-    zz=(float) p0->z;
-    p0->sz= (float) p0->s * zz;
-    p0->tz= (float) p0->t * zz;
-    zz=(float) p1->z;
-    p1->sz= (float) p1->s * zz;
-    p1->tz= (float) p1->t * zz;
-    zz=(float) p2->z;
-    p2->sz= (float) p2->s * zz;
-    p2->tz= (float) p2->t * zz;
+    GLfloat zz;
+    zz=(GLfloat) p0->z;
+    p0->sz= (GLfloat) p0->s * zz;
+    p0->tz= (GLfloat) p0->t * zz;
+    zz=(GLfloat) p1->z;
+    p1->sz= (GLfloat) p1->s * zz;
+    p1->tz= (GLfloat) p1->t * zz;
+    zz=(GLfloat) p2->z;
+    p2->sz= (GLfloat) p2->s * zz;
+    p2->tz= (GLfloat) p2->t * zz;
 
     d1 = p1->sz - p0->sz;
     d2 = p2->sz - p0->sz;
@@ -134,7 +134,7 @@
 
   /* screen coordinates */
 
-  pp1 = (PIXEL *) ((char *) zb->pbuf + zb->linesize * p0->y); 
+  pp1 = (PIXEL *) ((GLbyte *) zb->pbuf + zb->linesize * p0->y); 
   #if TGL_FEATURE_POLYGON_STIPPLE
   the_y = p0->y;
   #endif
@@ -249,7 +249,7 @@
       /* generic draw line */
       {
           register PIXEL *pp;
-          register int n;
+          register GLint n;
 #ifdef INTERP_Z
           register unsigned short *pz;
           register GLuint z,zz;
@@ -261,12 +261,12 @@
           register GLuint s,t;
 #endif
 #ifdef INTERP_STZ
-          float sz,tz;
+          GLfloat sz,tz;
 #endif
 
           n=(x2 >> 16) - x1;
           /*the_x = x1; //Gek added this to make determining the X coordinate easier!*/
-          pp=(PIXEL *)((char *)pp1 + x1 * PSZB);
+          pp=(PIXEL *)((GLbyte *)pp1 + x1 * PSZB);
 #ifdef INTERP_Z
           pz=pz1+x1;
           z=z1;
@@ -292,7 +292,7 @@
 #ifdef INTERP_Z
               pz+=4;
 #endif
-              pp=(PIXEL *)((char *)pp + 4 * PSZB);
+              pp=(PIXEL *)((GLbyte *)pp + 4 * PSZB);
               n-=4;
           }
           while (n>=0) {
@@ -300,7 +300,7 @@
 #ifdef INTERP_Z
               pz+=1;
 #endif
-              pp=(PIXEL *)((char *)pp + PSZB);
+              pp=(PIXEL *)((GLbyte *)pp + PSZB);
               n-=1;
           }
       }
@@ -354,7 +354,7 @@
       x2+=dx2dy2;
 
       /* screen coordinates */
-      pp1=(PIXEL *)((char *)pp1 + zb->linesize);
+      pp1=(PIXEL *)((GLbyte *)pp1 + zb->linesize);
 #if TGL_FEATURE_POLYGON_STIPPLE
       the_y++;
 #endif

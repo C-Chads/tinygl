@@ -1,8 +1,8 @@
 #include "zgl.h"
 
-void gl_print_matrix( const float *m)
+void gl_print_matrix( const GLfloat *m)
 {
-   int i;
+   GLint i;
 
    for (i=0;i<4;i++) {
       fprintf(stderr,"%f %f %f %f\n", m[i], m[4+i], m[8+i], m[12+i] );
@@ -17,7 +17,7 @@ static inline void gl_matrix_update(GLContext *c)
 
 void glopMatrixMode(GLContext *c,GLParam *p)
 {
-  int mode=p[1].i;
+  GLint mode=p[1].i;
   switch(mode) {
   case GL_MODELVIEW:
     c->matrix_mode=0;
@@ -36,7 +36,7 @@ void glopMatrixMode(GLContext *c,GLParam *p)
 void glopLoadMatrix(GLContext *c,GLParam *p)
 {
   M4 *m;
-  int i;
+  GLint i;
   
   GLParam *q;
 
@@ -65,7 +65,7 @@ void glopLoadIdentity(GLContext *c,GLParam *p)
 void glopMultMatrix(GLContext *c,GLParam *p)
 {
   M4 m;
-  int i;
+  GLint i;
 
   GLParam *q;
   q=p+1;
@@ -86,7 +86,7 @@ void glopMultMatrix(GLContext *c,GLParam *p)
 
 void glopPushMatrix(GLContext *c,GLParam *p)
 {
-  int n=c->matrix_mode;
+  GLint n=c->matrix_mode;
   M4 *m;
 
   assert( (c->matrix_stack_ptr[n] - c->matrix_stack[n] + 1 )
@@ -101,7 +101,7 @@ void glopPushMatrix(GLContext *c,GLParam *p)
 
 void glopPopMatrix(GLContext *c,GLParam *p)
 {
-  int n=c->matrix_mode;
+  GLint n=c->matrix_mode;
 
   assert( c->matrix_stack_ptr[n] > c->matrix_stack[n] );
   c->matrix_stack_ptr[n]--;
@@ -112,9 +112,9 @@ void glopPopMatrix(GLContext *c,GLParam *p)
 void glopRotate(GLContext *c,GLParam *p)
 {
   M4 m;
-  float u[3];
-  float angle;
-  int dir_code;
+  GLfloat u[3];
+  GLfloat angle;
+  GLint dir_code;
 
   angle = p[1].f * M_PI / 180.0;
   u[0]=p[2].f;
@@ -142,10 +142,10 @@ void glopRotate(GLContext *c,GLParam *p)
     break;
   default:
     {
-      float cost, sint;
+      GLfloat cost, sint;
 
       /* normalize vector */
-      float len = u[0]*u[0]+u[1]*u[1]+u[2]*u[2];
+      GLfloat len = u[0]*u[0]+u[1]*u[1]+u[2]*u[2];
       if (len == 0.0f) return;
       len = 1.0f / sqrt(len);
       u[0] *= len;
@@ -181,8 +181,8 @@ void glopRotate(GLContext *c,GLParam *p)
 
 void glopScale(GLContext *c,GLParam *p)
 {
-  float *m;
-  float x=p[1].f,y=p[2].f,z=p[3].f;
+  GLfloat *m;
+  GLfloat x=p[1].f,y=p[2].f,z=p[3].f;
 
   m=&c->matrix_stack_ptr[c->matrix_mode]->m[0][0];
 
@@ -195,8 +195,8 @@ void glopScale(GLContext *c,GLParam *p)
 
 void glopTranslate(GLContext *c,GLParam *p)
 {
-  float *m;
-  float x=p[1].f,y=p[2].f,z=p[3].f;
+  GLfloat *m;
+  GLfloat x=p[1].f,y=p[2].f,z=p[3].f;
 
   m=&c->matrix_stack_ptr[c->matrix_mode]->m[0][0];
 
@@ -211,15 +211,15 @@ void glopTranslate(GLContext *c,GLParam *p)
 
 void glopFrustum(GLContext *c,GLParam *p)
 {
-  float *r;
+  GLfloat *r;
   M4 m;
-  float left=p[1].f;
-  float right=p[2].f;
-  float bottom=p[3].f;
-  float top=p[4].f;
-  float near=p[5].f;
-  float farp=p[6].f;
-  float x,y,A,B,C,D;
+  GLfloat left=p[1].f;
+  GLfloat right=p[2].f;
+  GLfloat bottom=p[3].f;
+  GLfloat top=p[4].f;
+  GLfloat near=p[5].f;
+  GLfloat farp=p[6].f;
+  GLfloat x,y,A,B,C,D;
 
   x = (2.0*near) / (right-left);
   y = (2.0*near) / (top-bottom);

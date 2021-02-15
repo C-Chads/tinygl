@@ -1,6 +1,6 @@
 {
-    int n, dx, dy, sx, pp_inc_1, pp_inc_2;
-    register int a;
+    GLint n, dx, dy, sx, pp_inc_1, pp_inc_2;
+    register GLint a;
     register PIXEL *pp;
 #if defined(INTERP_RGB) || TGL_FEATURE_RENDER_BITS == 24
     register GLuint r, g, b;
@@ -10,8 +10,8 @@
 #endif
 #ifdef INTERP_Z
     register unsigned short *pz;
-    int zinc;
-    register int z, zz;
+    GLint zinc;
+    register GLint z, zz;
 #endif
 
     if (p1->y > p2->y || (p1->y == p2->y && p1->x > p2->x)) {
@@ -21,7 +21,7 @@
 	p2 = tmp;
     }
     sx = zb->xsize;
-    pp = (PIXEL *) ((char *) zb->pbuf + zb->linesize * p1->y + p1->x * PSZB);
+    pp = (PIXEL *) ((GLbyte *) zb->pbuf + zb->linesize * p1->y + p1->x * PSZB);
 #ifdef INTERP_Z
     pz = zb->zbuf + (p1->y * sx + p1->x);
     z = p1->z;
@@ -86,8 +86,8 @@
         PUTPIXEL();\
         ZZ(z+=zinc);\
         RGB(r+=rinc;g+=ginc;b+=binc);\
-        if (a>0) { pp=(PIXEL *)((char *)pp + pp_inc_1); ZZ(pz+=(inc_1));  a-=dx; }\
-	else { pp=(PIXEL *)((char *)pp + pp_inc_2); ZZ(pz+=(inc_2)); a+=dy; }\
+        if (a>0) { pp=(PIXEL *)((GLbyte *)pp + pp_inc_1); ZZ(pz+=(inc_1));  a-=dx; }\
+	else { pp=(PIXEL *)((GLbyte *)pp + pp_inc_2); ZZ(pz+=(inc_2)); a+=dy; }\
     } while (--n >= 0);
 
 /* fin macro */
@@ -113,7 +113,7 @@
 #undef INTERP_Z
 #undef INTERP_RGB
 
-/* internal defines */
+/* GLinternal defines */
 #undef DRAWLINE
 #undef PUTPIXEL
 #undef ZZ

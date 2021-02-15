@@ -14,7 +14,7 @@ static void (*op_table_func[])(GLContext *,GLParam *)=
 #include "opinfo.h"
 };
 
-static int op_table_size[]=
+static GLint op_table_size[]=
 {
 #define ADD_OP(a,b,c) b + 1 ,
 
@@ -81,7 +81,7 @@ static GLList *alloc_list(GLContext *c,int list)
 
 void gl_print_op(FILE *f,GLParam *p)
 {
-  int op;
+  GLint op;
   char *s;
 
   op=p[0].op;
@@ -110,9 +110,9 @@ void gl_print_op(FILE *f,GLParam *p)
 
 void gl_compile_op(GLContext *c,GLParam *p)
 {
-  int op,op_size;
+  GLint op,op_size;
   GLParamBuffer *ob,*ob1;
-  int index,i;
+  GLint index,i;
 
   op=p[0].op;
   op_size=op_table_size[op];
@@ -144,7 +144,7 @@ void gl_compile_op(GLContext *c,GLParam *p)
 void gl_add_op(GLParam *p)
 {
   GLContext *c=gl_get_context();
-  int op;
+  GLint op;
 
   op=p[0].op;
   if (c->exec_flag) {
@@ -174,7 +174,7 @@ void glopNextBuffer(GLContext *c,GLParam *p)
 void glopCallList(GLContext *c,GLParam *p)
 {
   GLList *l;
-  int list,op;
+  GLint list,op;
 
   list=p[1].ui;
   l=find_list(c,list);
@@ -240,7 +240,7 @@ int glIsList(GLuint list)
 GLuint glGenLists(int range)
 {
   GLContext *c=gl_get_context();
-  int count,i,list;
+  GLint count,i,list;
   GLList **lists;
 
   lists=c->shared_state.lists;

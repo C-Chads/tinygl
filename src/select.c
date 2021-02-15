@@ -3,7 +3,7 @@
 int glRenderMode(int mode)
 {
   GLContext *c=gl_get_context();
-  int result=0;
+  GLint result=0;
   
   switch(c->render_mode) {
   case GL_RENDER:
@@ -88,7 +88,7 @@ void glopLoadName(GLContext *c,GLParam *p)
 void gl_add_select(GLContext *c,GLuint zmin,GLuint zmax)
 {
   GLuint *ptr;
-  int n,i;
+  GLint n,i;
 
   if (!c->select_overflow) {
     if (c->select_hit==NULL) {

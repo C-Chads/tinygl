@@ -1,6 +1,6 @@
 #include <stdarg.h>
 #include <stdio.h>
-
+#include "../include/GL/gl.h"
 #define NDEBUG
 
 #ifdef NDEBUG
@@ -9,7 +9,7 @@
 
 /* Use this function to output messages when something unexpected
    happens (which might be an indication of an error). *Don't* use it
-   when there's internal errors in the code - these should be handled
+   when there's GLinternal errors in the code - these should be handled
    by asserts. */
 void
 tgl_warning(const char *format, ...)

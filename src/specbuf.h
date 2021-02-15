@@ -9,14 +9,14 @@
 #define SPECULAR_BUFFER_RESOLUTION 1024
 
 typedef struct GLSpecBuf {
-  int shininess_i;
-  int last_used;
-  float buf[SPECULAR_BUFFER_SIZE+1];
+  GLint shininess_i;
+  GLint last_used;
+  GLfloat buf[SPECULAR_BUFFER_SIZE+1];
   struct GLSpecBuf *next;
 } GLSpecBuf;
 
-GLSpecBuf *specbuf_get_buffer(GLContext *c, const int shininess_i, 
-                              const float shininess);
+GLSpecBuf *specbuf_get_buffer(GLContext *c, const GLint shininess_i, 
+                              const GLfloat shininess);
 void specbuf_cleanup(GLContext *c); /* free all memory used */
 
 #endif /* _tgl_specbuf_h_ */

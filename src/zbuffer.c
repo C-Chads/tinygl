@@ -10,14 +10,14 @@
 //#include "../include/GL/gl.h"
 #include "../include/zbuffer.h"
 
-ZBuffer *ZB_open(int xsize, int ysize, int mode,
-		 int nb_colors,
-		 unsigned char *color_indexes,
-		 int *color_table,
+ZBuffer *ZB_open(int xsize, GLint ysize, GLint mode,
+		 GLint nb_colors,
+		 GLubyte *color_indexes,
+		 GLint *color_table,
 		 void *frame_buffer)
 {
     ZBuffer *zb;
-    int size;
+    GLint size;
 
     zb = gl_malloc(sizeof(ZBuffer));
     if (zb == NULL)
@@ -87,9 +87,9 @@ void ZB_close(ZBuffer * zb)
     gl_free(zb);
 }
 
-void ZB_resize(ZBuffer * zb, void *frame_buffer, int xsize, int ysize)
+void ZB_resize(ZBuffer * zb, void *frame_buffer, GLint xsize, GLint ysize)
 {
-    int size;
+    GLint size;
 
     /* xsize must be a multiple of 4 */
     xsize = xsize & ~3;
@@ -133,13 +133,13 @@ inline PIXEL pxReverse32(PIXEL x)
 
 static void ZB_copyBuffer(ZBuffer * zb,
                           void *buf,
-                          int linesize)
+                          GLint linesize)
 {
-    unsigned char *p1;
+    GLubyte *p1;
     PIXEL *q;
-    int y;
+    GLint y;
     #if !TGL_FEATURE_NO_COPY_COLOR
-    int n;
+    GLint n;
     #endif
 
     q = zb->pbuf;
@@ -158,7 +158,7 @@ static void ZB_copyBuffer(ZBuffer * zb,
 		memcpy(p1, q, n);
 	#endif
 	p1 += linesize; //TODO make this a predictable behavior.
-	q = (PIXEL *) ((char *) q + zb->linesize);
+	q = (PIXEL *) ((GLbyte *) q + zb->linesize);
     }
 }
 
@@ -182,11 +182,11 @@ static void ZB_copyBuffer(ZBuffer * zb,
 //This function is never called.
 static void ZB_copyFrameBufferRGB32(ZBuffer * zb,
                                     void *buf,
-                                    int linesize)
+                                    GLint linesize)
 {
     unsigned short *q;
     GLuint *p, *p1, v, w0, w1;
-    int y, n;
+    GLint y, n;
 
     q = zb->pbuf;
     p1 = (GLuint *) buf;
@@ -264,11 +264,11 @@ static void ZB_copyFrameBufferRGB32(ZBuffer * zb,
 /*
 static void ZB_copyFrameBufferRGB24(ZBuffer * zb,
                                     void *buf,
-                                    int linesize)
+                                    GLint linesize)
 {
     unsigned short *q;
     GLuint *p, *p1, w0, w1, w2, v0, v1;
-    int y, n;
+    GLint y, n;
 
     q = zb->pbuf;
     p1 = (GLuint *) buf;
@@ -289,7 +289,7 @@ static void ZB_copyFrameBufferRGB24(ZBuffer * zb,
 	    p += 3;
 	} while (--n > 0);
 
-	*((char *) p1) += linesize;
+	*((GLbyte *) p1) += linesize;
     }
 }
 */
@@ -344,11 +344,11 @@ void ZB_copyFrameBuffer(ZBuffer * zb, void *buf,
 
 // XXX: not optimized 
 static void ZB_copyFrameBuffer5R6G5B(ZBuffer * zb, 
-                                     void *buf, int linesize) 
+                                     void *buf, GLint linesize) 
 {
     PIXEL *q;
     unsigned short *p, *p1;
-    int y, n;
+    GLint y, n;
 
     q = zb->pbuf;
     p1 = (unsigned short *) buf;
@@ -361,10 +361,10 @@ static void ZB_copyFrameBuffer5R6G5B(ZBuffer * zb,
             p[1] = RGB24_TO_RGB16(q[3], q[4], q[5]);
             p[2] = RGB24_TO_RGB16(q[6], q[7], q[8]);
             p[3] = RGB24_TO_RGB16(q[9], q[10], q[11]);
-	    q = (PIXEL *)((char *)q + 4 * PSZB);
+	    q = (PIXEL *)((GLbyte *)q + 4 * PSZB);
 	    p += 4;
 	} while (--n > 0);
-	p1 = (unsigned short *)((char *)p1 + linesize);
+	p1 = (unsigned short *)((GLbyte *)p1 + linesize);
     }
 }
 
@@ -400,11 +400,11 @@ void ZB_copyFrameBuffer(ZBuffer * zb, void *buf,
 /* XXX: not optimized */
 /*
 static void ZB_copyFrameBuffer5R6G5B(ZBuffer * zb, 
-                                     void *buf, int linesize) 
+                                     void *buf, GLint linesize) 
 {
     PIXEL *q;
     unsigned short *p, *p1;
-    int y, n;
+    GLint y, n;
 
     q = zb->pbuf;
     p1 = (unsigned short *) buf;
@@ -420,7 +420,7 @@ static void ZB_copyFrameBuffer5R6G5B(ZBuffer * zb,
 	    q += 4;
 	    p += 4;
 	} while (--n > 0);
-	p1 = (unsigned short *)((char *)p1 + linesize);
+	p1 = (unsigned short *)((GLbyte *)p1 + linesize);
     }
 }
 */
@@ -455,9 +455,9 @@ void ZB_copyFrameBuffer(ZBuffer * zb, void *buf,
  * adr must be aligned on an 'int'
  */
  //Used in 16 bit mode
-void memset_s(void *adr, int val, int count)
+void memset_s(void *adr, GLint val, GLint count)
 {
-    int i, n, v;
+    GLint i, n, v;
     GLuint *p;
     unsigned short *q;
 
@@ -480,9 +480,9 @@ void memset_s(void *adr, int val, int count)
 }
 
 //Used in 32 bit mode
-void memset_l(void *adr, int val, int count)
+void memset_l(void *adr, GLint val, GLint count)
 {
-    int i, n, v;
+    GLint i, n, v;
     GLuint *p;
 
     p = adr;
@@ -503,13 +503,13 @@ void memset_l(void *adr, int val, int count)
 
 /* count must be a multiple of 4 and >= 4 */
 //Gek's note: Should never be used.
-void memset_RGB24(void *adr,int r, int v, int b,long count)
+void memset_RGB24(void *adr,int r, GLint v, GLint b,long count)
 {
     long i, n;
     register long v1,v2,v3,*pt=(long *)(adr);
-    unsigned char *p,R=(unsigned char)r,V=(unsigned char)v,B=(unsigned char)b;
+    GLubyte *p,R=(GLubyte)r,V=(GLubyte)v,B=(GLubyte)b;
 
-    p=(unsigned char *)adr;
+    p=(GLubyte *)adr;
     *p++=R;
     *p++=V;
     *p++=B;
@@ -533,13 +533,13 @@ void memset_RGB24(void *adr,int r, int v, int b,long count)
     }
 }
 
-void ZB_clear(ZBuffer * zb, int clear_z, int z,
-	      int clear_color, int r, int g, int b)
+void ZB_clear(ZBuffer * zb, GLint clear_z, GLint z,
+	      GLint clear_color, GLint r, GLint g, GLint b)
 {
 #if TGL_FEATURE_RENDER_BITS != 24
-    int color;
+    GLint color;
 #endif
-    int y;
+    GLint y;
     PIXEL *pp;
 
     if (clear_z) {
@@ -566,7 +566,7 @@ void ZB_clear(ZBuffer * zb, int clear_z, int z,
 #else
 #error BADJUJU
 #endif
-	    pp = (PIXEL *) ((char *) pp + zb->linesize);
+	    pp = (PIXEL *) ((GLbyte *) pp + zb->linesize);
 	}
     }
 }

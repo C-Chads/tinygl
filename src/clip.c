@@ -12,7 +12,7 @@
 
 void gl_transform_to_viewport(GLContext *c,GLVertex *v)
 {
-  float winv;
+  GLfloat winv;
 
   /* coordinates */
   winv=1.0/v->pc.W;
@@ -75,7 +75,7 @@ void gl_draw_point(GLContext *c,GLVertex *p0)
 
 /* line */
 
-static inline void interpolate(GLVertex *q,GLVertex *p0,GLVertex *p1,float t)
+static inline void GLinterpolate(GLVertex *q,GLVertex *p0,GLVertex *p1,GLfloat t)
 {
   q->pc.X=p0->pc.X+(p1->pc.X-p0->pc.X)*t;
   q->pc.Y=p0->pc.Y+(p1->pc.Y-p0->pc.Y)*t;
@@ -93,9 +93,9 @@ static inline void interpolate(GLVertex *q,GLVertex *p0,GLVertex *p1,float t)
 
 /* Line Clipping algorithm from 'Computer Graphics', Principles and
    Practice */
-static inline int ClipLine1(float denom,float num,float *tmin,float *tmax)
+static inline GLint ClipLine1(GLfloat denom,GLfloat num,GLfloat *tmin,GLfloat *tmax)
 {
-  float t;
+  GLfloat t;
 	 
   if (denom>0) {
     t=num/denom;
@@ -111,10 +111,10 @@ static inline int ClipLine1(float denom,float num,float *tmin,float *tmax)
 
 void gl_draw_line(GLContext *c,GLVertex *p1,GLVertex *p2)
 {
-  float dx,dy,dz,dw,x1,y1,z1,w1;
-  float tmin,tmax;
+  GLfloat dx,dy,dz,dw,x1,y1,z1,w1;
+  GLfloat tmin,tmax;
   GLVertex q1,q2;
-  int cc1,cc2;
+  GLint cc1,cc2;
   
   cc1=p1->clip_code;
   cc2=p2->clip_code;
@@ -149,8 +149,8 @@ void gl_draw_line(GLContext *c,GLVertex *p1,GLVertex *p2)
         ClipLine1(dz+dw,-z1-w1,&tmin,&tmax) && 
         ClipLine1(-dz+dw,z1-w1,&tmin,&tmax)) {
 
-      interpolate(&q1,p1,p2,tmin);
-      interpolate(&q2,p1,p2,tmax);
+      GLinterpolate(&q1,p1,p2,tmin);
+      GLinterpolate(&q2,p1,p2,tmax);
       gl_transform_to_viewport(c,&q1);
       gl_transform_to_viewport(c,&q2);
 
@@ -170,14 +170,14 @@ void gl_draw_line(GLContext *c,GLVertex *p1,GLVertex *p2)
  */
 
 /* We clip the segment [a,b] against the 6 planes of the normal volume.
- * We compute the point 'c' of intersection and the value of the parameter 't'
- * of the intersection if x=a+t(b-a). 
+ * We compute the point 'c' of GLintersection and the value of the parameter 't'
+ * of the GLintersection if x=a+t(b-a). 
  */
 	 
 #define clip_func(name,sign,dir,dir1,dir2) \
-static float name(V4 *c,V4 *a,V4 *b) \
+static GLfloat name(V4 *c,V4 *a,V4 *b) \
 {\
-  float t,dX,dY,dZ,dW,den;\
+  GLfloat t,dX,dY,dZ,dW,den;\
   dX = (b->X - a->X);\
   dY = (b->Y - a->Y);\
   dZ = (b->Z - a->Z);\
@@ -206,14 +206,14 @@ clip_func(clip_zmin,-,Z,X,Y)
 clip_func(clip_zmax,+,Z,X,Y)
 
 
-float (*clip_proc[6])(V4 *,V4 *,V4 *)=  {
+GLfloat (*clip_proc[6])(V4 *,V4 *,V4 *)=  {
     clip_xmin,clip_xmax,
     clip_ymin,clip_ymax,
     clip_zmin,clip_zmax
 };
 
 static inline void updateTmp(GLContext *c,
-			     GLVertex *q,GLVertex *p0,GLVertex *p1,float t)
+			     GLVertex *q,GLVertex *p0,GLVertex *p1,GLfloat t)
 {
   if (c->current_shade_model == GL_SMOOTH) {
     q->color.v[0]=p0->color.v[0] + (p1->color.v[0] - p0->color.v[0])*t;
@@ -253,8 +253,8 @@ static void gl_draw_triangle_clip(GLContext *c,
 void gl_draw_triangle(GLContext *c,
                       GLVertex *p0,GLVertex *p1,GLVertex *p2)
 {
-  int co,c_and,cc[3],front;
-  float norm;
+  GLint co,c_and,cc[3],front;
+  GLfloat norm;
   
   cc[0]=p0->clip_code;
   cc[1]=p1->clip_code;
@@ -265,8 +265,8 @@ void gl_draw_triangle(GLContext *c,
   /* we handle the non clipped case here to go faster */
   if (co==0) {
     
-      norm=(float)(p1->zp.x-p0->zp.x)*(float)(p2->zp.y-p0->zp.y)-
-        (float)(p2->zp.x-p0->zp.x)*(float)(p1->zp.y-p0->zp.y);
+      norm=(GLfloat)(p1->zp.x-p0->zp.x)*(GLfloat)(p2->zp.y-p0->zp.y)-
+        (GLfloat)(p2->zp.x-p0->zp.x)*(GLfloat)(p1->zp.y-p0->zp.y);
       
       if (norm == 0) return;
 
@@ -304,9 +304,9 @@ void gl_draw_triangle(GLContext *c,
 static void gl_draw_triangle_clip(GLContext *c,
                                   GLVertex *p0,GLVertex *p1,GLVertex *p2,int clip_bit)
 {
-  int co,c_and,co1,cc[3],edge_flag_tmp,clip_mask;
+  GLint co,c_and,co1,cc[3],edge_flag_tmp,clip_mask;
   GLVertex tmp1,tmp2,*q[3];
-  float tt;
+  GLfloat tt;
   
   cc[0]=p0->clip_code;
   cc[1]=p1->clip_code;
@@ -398,7 +398,7 @@ void gl_draw_triangle_fill(GLContext *c,
 	//puts("\n <yes, it's draw_triangle_fill>");
 #ifdef PROFILE
   {
-    int norm;
+    GLint norm;
     assert(p0->zp.x >= 0 && p0->zp.x < c->zb->xsize);
     assert(p0->zp.y >= 0 && p0->zp.y < c->zb->ysize);
     assert(p1->zp.x >= 0 && p1->zp.x < c->zb->xsize);

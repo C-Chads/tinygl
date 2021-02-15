@@ -10,13 +10,13 @@
 void
 glopArrayElement(GLContext *c, GLParam *param)
 {
-  int i;
-  int states = c->client_states;
-  int idx = param[1].i;
+  GLint i;
+  GLint states = c->client_states;
+  GLint idx = param[1].i;
     
   if (states & COLOR_ARRAY) {
     GLParam p[5];
-    int size = c->color_array_size; 
+    GLint size = c->color_array_size; 
     i = idx * (size + c->color_array_stride);
     p[1].f = c->color_array[i];
     p[2].f = c->color_array[i+1];
@@ -32,7 +32,7 @@ glopArrayElement(GLContext *c, GLParam *param)
     c->current_normal.Z = 0.0f;
   }
   if (states & TEXCOORD_ARRAY) {
-    int size = c->texcoord_array_size;
+    GLint size = c->texcoord_array_size;
     i = idx * (size + c->texcoord_array_stride);
     c->current_tex_coord.X = c->texcoord_array[i];
     c->current_tex_coord.Y = c->texcoord_array[i+1];
@@ -41,7 +41,7 @@ glopArrayElement(GLContext *c, GLParam *param)
   }
   if (states & VERTEX_ARRAY) {
     GLParam p[5];
-    int size = c->vertex_array_size;
+    GLint size = c->vertex_array_size;
     i = idx * (size + c->vertex_array_stride);
     p[1].f = c->vertex_array[i];
     p[2].f = c->vertex_array[i+1];

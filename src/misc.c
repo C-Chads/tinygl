@@ -5,7 +5,7 @@
 
 void glPolygonStipple(void* a){
 #if TGL_FEATURE_POLYGON_STIPPLE
-	unsigned char* b = a;
+	GLubyte* b = a;
 	GLContext *c=gl_get_context();
 	ZBuffer *zb = c->zb;
 
@@ -19,7 +19,7 @@ void glPolygonStipple(void* a){
 
 void glopViewport(GLContext *c,GLParam *p)
 {
-  int xsize,ysize,xmin,ymin,xsize_req,ysize_req;
+  GLint xsize,ysize,xmin,ymin,xsize_req,ysize_req;
   
   xmin=p[1].i;
   ymin=p[2].i;
@@ -60,8 +60,8 @@ void glopViewport(GLContext *c,GLParam *p)
 
 void glopEnableDisable(GLContext *c,GLParam *p)
 {
-  int code=p[1].i;
-  int v=p[2].i;
+  GLint code=p[1].i;
+  GLint v=p[2].i;
 
   switch(code) {
   case GL_CULL_FACE:
@@ -111,26 +111,26 @@ void glopEnableDisable(GLContext *c,GLParam *p)
 
 void glopShadeModel(GLContext *c,GLParam *p)
 {
-  int code=p[1].i;
+  GLint code=p[1].i;
   c->current_shade_model=code;
 }
 
 void glopCullFace(GLContext *c,GLParam *p)
 {
-  int code=p[1].i;
+  GLint code=p[1].i;
   c->current_cull_face=code;
 }
 
 void glopFrontFace(GLContext *c,GLParam *p)
 {
-  int code=p[1].i;
+  GLint code=p[1].i;
   c->current_front_face=code;
 }
 
 void glopPolygonMode(GLContext *c,GLParam *p)
 {
-  int face=p[1].i;
-  int mode=p[2].i;
+  GLint face=p[1].i;
+  GLint mode=p[2].i;
   
   switch(face) {
   case GL_BACK:
@@ -151,8 +151,8 @@ void glopPolygonMode(GLContext *c,GLParam *p)
 void glopHint(GLContext *c,GLParam *p)
 {
 #if 0
-  int target=p[1].i;
-  int mode=p[2].i;
+  GLint target=p[1].i;
+  GLint mode=p[2].i;
 
   /* do nothing */
 #endif
