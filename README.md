@@ -75,6 +75,9 @@ The "implementation specific multiplier" is 0.
 
 * There is no stencil buffer.
 
+* Lit triangles will use the current material properties, even if they are textures. If the diffuse color is black, then your
+textured triangles will appear black.
+
 * <Undocumented limitations that have not been tested>
 
 
@@ -123,10 +126,14 @@ See `include/zfeatures.h`
 Standard OpenGL features that you can disable for extra performance or smaller binary size.
 
 Note that Polygon Stipple is OFF by default, to improve performance.
+
+Lit texturing is toggleable because it significantly bogs down the rendering of textured triangles even if there is no lighting.
 ```c
 #define TGL_FEATURE_ARRAYS         1
 #define TGL_FEATURE_DISPLAYLISTS   1
-#define TGL_FEATURE_POLYGON_OFFSET 1
+#define TGL_FEATURE_LIT_TEXTURES   1
+//NOTE: Polygon Offset does nothing at the moment.
+#define TGL_FEATURE_POLYGON_OFFSET 0
 #define TGL_FEATURE_POLYGON_STIPPLE 0
 ```
 

@@ -312,8 +312,6 @@ int main(int argc, char** argv) {
 	glInit(frameBuffer);
 
 	srand(time(NULL));
-	//	initGL(winSizeX,winSizeY);
-	// initialize GL:
 	glShadeModel(GL_SMOOTH);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glEnable(GL_DEPTH_TEST);
@@ -325,14 +323,12 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 	// glLightfv( GL_LIGHT0, GL_AMBIENT, white);
 	// glLightfv( GL_LIGHT0, GL_SPECULAR, white);
 	glEnable(GL_CULL_FACE);
-	//glEnable(GL_LIGHTING);
+	
 	//glDisable( GL_LIGHTING );
 	glEnable(GL_LIGHT0);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	//	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_COLOR_MATERIAL);
-	//	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER,1);
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 0);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glClearColor(0, 0, 0, 0);
