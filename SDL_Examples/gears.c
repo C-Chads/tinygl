@@ -86,7 +86,7 @@ static void gear( GLfloat inner_radius, GLfloat outer_radius, GLfloat width,
 
     da = 2.0*M_PI / teeth / 4.0;
 
-    glShadeModel( GL_FLAT );
+    glShadeModel( GL_SMOOTH );
 
     glNormal3f( 0.0, 0.0, 1.0 );
 
@@ -172,7 +172,7 @@ static void gear( GLfloat inner_radius, GLfloat outer_radius, GLfloat width,
     glEnd();
 
 
-    glShadeModel( GL_SMOOTH );
+    //glShadeModel( GL_SMOOTH );
 
     /* draw inside radius cylinder */
     glBegin( GL_QUAD_STRIP );
@@ -238,7 +238,7 @@ void initScene() {
     //glDisable( GL_LIGHTING );
     glEnable( GL_LIGHT0 );
     glEnable( GL_DEPTH_TEST );
-    glShadeModel( GL_SMOOTH );
+    //glShadeModel( GL_SMOOTH );
 
     glEnable(GL_POLYGON_STIPPLE);
     glPolygonStipple(stipplepattern);
