@@ -33,7 +33,9 @@ Without lighting:
 
 ![model loading demo](model.gif)
 
+This is a demo of the NO_DRAW_COLOR feature. Notice that the object appears to have a hole in it.
 
+![model loading demo](model_hole.gif)
 
 TinyGL 0.8 (c) 1997-2021 Fabrice Bellard, C-Chads, Gek (see License, it's free software)
 

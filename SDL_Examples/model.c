@@ -366,7 +366,11 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 	GLuint tex = 0;
 	if (doTextures) {
 		int sw = 0, sh = 0, sc = 0; // sc goes unused.
+#if TGL_FEATURE_NO_DRAW_COLOR == 1
+		uchar* source_data = stbi_load("tex_hole.png", &sw, &sh, &sc, 3);
+#else 
 		uchar* source_data = stbi_load("tex.jpg", &sw, &sh, &sc, 3);
+#endif		
 		if (source_data) {
 			tex = loadRGBTexture(source_data, sw, sh);
 			free(source_data);
