@@ -41,6 +41,9 @@
 //#define RGB_TO_PIXEL(r,g,b) ( ((b&65280)<<8) | ((g&65280)) | ((r&65280)>>8) )
 #define RGB_TO_PIXEL(r,g,b) \
   ((((r) << 8) & 0xff0000) | ((g) & 0xff00) | ((b) >> 8))
+#define GET_RED(p) ((p & 0xff0000)>>16)
+#define GET_GREEN(p) ((p & 0xff00)>>8)
+#define GET_BLUE(p) (p & 0xff)
 typedef unsigned int PIXEL;
 #define PSZB 4
 #define PSZSH 5
@@ -49,6 +52,10 @@ typedef unsigned int PIXEL;
 
 /* 16 bit mode */
 #define RGB_TO_PIXEL(r,g,b) (((r) & 0xF800) | (((g) >> 5) & 0x07E0) | ((b) >> 11))
+#define GET_RED(p) ((p & 0xF800)>>8)
+#define GET_GREEN(p) ((p & 0x07E0)>>3)
+#define GET_BLUE(p) ((p & 31)<<3)
+
 typedef unsigned short PIXEL;
 #define PSZB 2 
 #define PSZSH 4 
@@ -60,7 +67,16 @@ typedef unsigned short PIXEL;
 
 #endif
 
-
+#if TGL_FEATURE_LIT_TEXTURES == 1
+#define RGB_MIX_FUNC(rr, gg, bb, tpix) \
+	RGB_TO_PIXEL( \
+		((rr * GET_RED(tpix))>>8),\
+		((gg * GET_GREEN(tpix))>>8),\
+		((bb * GET_BLUE(tpix))>>8)\
+	)
+#else
+#define RGB_MIX_FUNC(rr, gg, bb, tpix)(tpix)
+#endif
 
 typedef struct {
     int xsize,ysize;
@@ -132,9 +148,11 @@ void ZB_fillTriangleFlat(ZBuffer *zb,
 void ZB_fillTriangleSmooth(ZBuffer *zb,
 		   ZBufferPoint *p1,ZBufferPoint *p2,ZBufferPoint *p3);
 
+/*
+This function goes unused and is removed by Gek.
 void ZB_fillTriangleMapping(ZBuffer *zb,
 		    ZBufferPoint *p1,ZBufferPoint *p2,ZBufferPoint *p3);
-
+*/
 void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
                     ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2);
 

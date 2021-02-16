@@ -117,7 +117,7 @@ inline PIXEL pxReverse32(PIXEL x) {
 		((x & 0x00FF0000) >> 8) |  //____RR__
 		((x & 0x0000FF00) << 8) |  //__GG____
 		((x & 0x000000FF) << 24);  // BB______
-	// Return value is in format:  0xBBGGRRAA
+								   // Return value is in format:  0xBBGGRRAA
 }
 #endif
 

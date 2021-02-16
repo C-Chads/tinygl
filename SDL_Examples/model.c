@@ -318,6 +318,16 @@ int main(int argc, char** argv) {
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
+static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10, 0.0}; // Light at infinity.
+	
+	glLightfv(GL_LIGHT0, GL_POSITION, pos);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+	// glLightfv( GL_LIGHT0, GL_AMBIENT, white);
+	// glLightfv( GL_LIGHT0, GL_SPECULAR, white);
+	glEnable(GL_CULL_FACE);
+	//glEnable(GL_LIGHTING);
+	//glDisable( GL_LIGHTING );
+	glEnable(GL_LIGHT0);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	//	glEnable(GL_TEXTURE_2D);
@@ -332,7 +342,7 @@ int main(int argc, char** argv) {
 	glDisable(GL_TEXTURE_2D);
 
 	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	glShadeModel(GL_SMOOTH);
 	// glDisable(GL_DEPTH_TEST);
 	double t = 0;
@@ -367,7 +377,7 @@ int main(int argc, char** argv) {
 		}
 		// tex =
 	}
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	// glEnable( GL_NORMALIZE );
 	// variables for timing:
 	unsigned int frames = 0;

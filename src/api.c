@@ -579,7 +579,8 @@ void glCallList(GLuint list) {
 	gl_add_op(p);
 }
 
-void glFlush(void) { /* nothing to do */ }
+void glFlush(void) { /* nothing to do */
+}
 
 void glHint(GLint target, GLint mode) {
 	GLParam p[3];

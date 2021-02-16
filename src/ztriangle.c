@@ -167,20 +167,20 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 
 void ZB_setTexture(ZBuffer* zb, PIXEL* texture) { zb->current_texture = texture; }
 // Ignore this it is never used
+/*
 void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
 	PIXEL* texture;
 
-#if TGL_FEATURE_NO_DRAW_COLOR == 1
+//#if TGL_FEATURE_NO_DRAW_COLOR == 1
 	PIXEL c;
-#endif
-#define INTERP_Z
-#define INTERP_ST
+//#endif
+//#define INTERP_Z
+//#define INTERP_ST
+//#define INTERP_RGB
+//#define DRAW_INIT() \ { texture = zb->current_texture; }
 
-#define DRAW_INIT()                                                                                                                                            \
-	{ texture = zb->current_texture; }
-
-#if TGL_FEATURE_NO_DRAW_COLOR != 1
-#define PUT_PIXEL(_a)                                                                                                                                          \
+//#if TGL_FEATURE_NO_DRAW_COLOR != 1
+//#define PUT_PIXEL(_a) \
 	{                                                                                                                                                          \
 		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
 		if (ZCMP(zz, pz[_a], _a, 0)) {                                                                                                                         \
@@ -191,8 +191,8 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
 		s += dsdx;                                                                                                                                             \
 		t += dtdx;                                                                                                                                             \
 	}
-#else
-#define PUT_PIXEL(_a)                                                                                                                                          \
+//#else
+//#define PUT_PIXEL(_a) \
 	{                                                                                                                                                          \
 		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
 		c = texture[((t & 0x3FC00000) | s) >> 14];                                                                                                             \
@@ -204,10 +204,10 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
 		s += dsdx;                                                                                                                                             \
 		t += dtdx;                                                                                                                                             \
 	}
-#endif
-#include "ztriangle.h"
+//#endif
+//#include "ztriangle.h"
 }
-
+*/
 /*
  * Texture mapping with perspective correction.
  * We use the gradient method to make less divisions.
@@ -224,6 +224,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 #endif
 #define INTERP_Z
 #define INTERP_STZ
+#define INTERP_RGB
 
 #define NB_INTERP 8
 
@@ -235,18 +236,28 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 		ndszdx = NB_INTERP * dszdx;                                                                                                                            \
 		ndtzdx = NB_INTERP * dtzdx;                                                                                                                            \
 	}
-
+#if TGL_FEATURE_LIT_TEXTURES == 1
+#define OR1OG1OB1DECL register GLuint or1, og1, ob1;or1=r1;og1=g1;ob1=b1;
+#define OR1G1B1INCR og1 += dgdx;or1 += drdx;ob1 += dbdx;
+#else 
+#define OR1OG1OB1DECL /*A comment*/
+#define OR1G1B1INCR /*Another comment*/
+#define or1 0xffff
+#define og1 0xffff
+#define ob1 0xffff
+#endif
 #if TGL_FEATURE_NO_DRAW_COLOR != 1
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
 		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
 		if (ZCMP(zz, pz[_a], _a, 0)) {                                                                                                                         \
-			pp[_a] = *(PIXEL*)((GLbyte*)texture + (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH)));                                                    \
+			pp[_a] = RGB_MIX_FUNC(or1,og1,ob1,   *(PIXEL*)((GLbyte*)texture + (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH))));                       \
 			pz[_a] = zz;                                                                                                                                       \
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
 		s += dsdx;                                                                                                                                             \
 		t += dtdx;                                                                                                                                             \
+		OR1G1B1INCR	\
 	}
 #else
 #define PUT_PIXEL(_a)                                                                                                                                          \
@@ -254,12 +265,13 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
 		c = *(PIXEL*)((GLbyte*)texture + (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH)));                                                             \
 		if (ZCMP(zz, pz[_a], _a, c)) {                                                                                                                         \
-			pp[_a] = c;                                                                                                                                        \
+			pp[_a] = RGB_MIX_FUNC(or1,og1,ob1,c);                                                                                                                                        \
 			pz[_a] = zz;                                                                                                                                       \
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
 		s += dsdx;                                                                                                                                             \
 		t += dtdx;                                                                                                                                             \
+		OR1G1B1INCR	\
 	}
 #endif
 
@@ -269,6 +281,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 		register PIXEL* pp;                                                                                                                                    \
 		register GLuint s, t, z, zz;                                                                                                                           \
 		register GLint n, dsdx, dtdx;                                                                                                                          \
+		OR1OG1OB1DECL                                                                                                                         \
 		GLfloat sz, tz, fz, zinv;                                                                                                                              \
 		n = (x2 >> 16) - x1;                                                                                                                                   \
 		fz = (GLfloat)z1;                                                                                                                                      \

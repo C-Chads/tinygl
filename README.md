@@ -23,6 +23,12 @@ Texturing Test:
 
 Model loading tests:
 
+![model loading demo](model2_lit.gif)
+
+![model loading demo](model_lit.gif)
+
+Without lighting: 
+
 ![model loading demo](model2.gif)
 
 ![model loading demo](model.gif)
@@ -42,6 +48,10 @@ The changelog is as such:
 
 * Implemented new functions and some of GL 1.1's prototypes including polygon stipple.
 
+* Triangles can now be lit and textured at the same time!
+
+* Removed unused functions which bloat binary size and lengthen compile times.
+
 * Fixed a myriad of bugs and... weirdnesses
 
 
@@ -60,9 +70,10 @@ Notable limitations:
 
 * A lot of prototypes are missing.
 
-* A triangle cannot be textured and lit at the same time. (This is planned to be fixed)
+* glPolygonOffset doesn't change anything about how rendering occurs. It does nothing, at the moment. 
+The "implementation specific multiplier" is 0.
 
-* glPolygonOffset doesn't change anything about how rendering occurs. It does nothing, at the moment.
+* There is no stencil buffer.
 
 * <Undocumented limitations that have not been tested>
 
