@@ -1,9 +1,6 @@
-#include <stdlib.h>
-#include "msghandling.h"
 #include "../include/zbuffer.h"
-
-
-
+#include "msghandling.h"
+#include <stdlib.h>
 
 #if TGL_FEATURE_RENDER_BITS == 32
 #elif TGL_FEATURE_RENDER_BITS == 16
@@ -11,17 +8,14 @@
 #error "WRONG MODE!!!"
 #endif
 
-
-
 #if TGL_FEATURE_POLYGON_STIPPLE
 
-#define THE_X (((GLushort)(pp-pp1)))
-#define XSTIP(_a) ((THE_X+_a)& TGL_POLYGON_STIPPLE_MASK_X)
+#define THE_X (((GLushort)(pp - pp1)))
+#define XSTIP(_a) ((THE_X + _a) & TGL_POLYGON_STIPPLE_MASK_X)
 #define YSTIP (the_y & TGL_POLYGON_STIPPLE_MASK_Y)
-//NOTES                                                           Divide by 8 to get the byte        Get the actual bit
-#define STIPBIT(_a) (zb->stipplepattern[(XSTIP(_a) | (YSTIP<<TGL_POLYGON_STIPPLE_POW2_WIDTH))>>3] & (1<<(XSTIP(_a) & 7)))
+// NOTES                                                           Divide by 8 to get the byte        Get the actual bit
+#define STIPBIT(_a) (zb->stipplepattern[(XSTIP(_a) | (YSTIP << TGL_POLYGON_STIPPLE_POW2_WIDTH)) >> 3] & (1 << (XSTIP(_a) & 7)))
 #define STIPTEST(_a) !(zb->dostipple && !STIPBIT(_a))
-
 
 #else
 
@@ -31,41 +25,31 @@
 #endif
 
 #if TGL_FEATURE_NO_DRAW_COLOR == 1
-#define NODRAWTEST(c) ( (c & TGL_COLOR_MASK) != TGL_NO_DRAW_COLOR)
+#define NODRAWTEST(c) ((c & TGL_COLOR_MASK) != TGL_NO_DRAW_COLOR)
 #else
 #define NODRAWTEST(c) (1)
 #endif
 
-#define ZCMP(z,zpix,_a,c) ((z) >= (zpix) && STIPTEST(_a) && NODRAWTEST(c))
+#define ZCMP(z, zpix, _a, c) ((z) >= (zpix) && STIPTEST(_a) && NODRAWTEST(c))
 
-void ZB_fillTriangleFlat(ZBuffer *zb,
-			 ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2)
-{
+void ZB_fillTriangleFlat(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
 
-
-
-
-    PIXEL color;
-
+	PIXEL color;
 
 #define INTERP_Z
 
+#define DRAW_INIT()                                                                                                                                            \
+	{ color = RGB_TO_PIXEL(p2->r, p2->g, p2->b); }
 
-#define DRAW_INIT()				\
-{						\
-  color=RGB_TO_PIXEL(p2->r,p2->g,p2->b);	\
-}
-  
-#define PUT_PIXEL(_a)				\
-{						\
-    zz=z >> ZB_POINT_Z_FRAC_BITS;		\
-    if (ZCMP(zz,pz[_a],_a,color)) {				\
-      pp[_a]=color;				\
-      pz[_a]=zz;				\
-    }						\
-    z+=dzdx;					\
-}
-
+#define PUT_PIXEL(_a)                                                                                                                                          \
+	{                                                                                                                                                          \
+		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		if (ZCMP(zz, pz[_a], _a, color)) {                                                                                                                     \
+			pp[_a] = color;                                                                                                                                    \
+			pz[_a] = zz;                                                                                                                                       \
+		}                                                                                                                                                      \
+		z += dzdx;                                                                                                                                             \
+	}
 
 #include "ztriangle.h"
 }
@@ -75,114 +59,102 @@ void ZB_fillTriangleFlat(ZBuffer *zb,
  * The code below is very tricky :)
  */
 
-void ZB_fillTriangleSmooth(ZBuffer *zb,
-			   ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2)
-{
+void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
 #if TGL_FEATURE_NO_DRAW_COLOR == 1
 	PIXEL c;
 #endif
-//GLuint color;
+// GLuint color;
 #define INTERP_Z
 #define INTERP_RGB
 
-#define SAR_RND_TO_ZERO(v,n) (v / (1<<n))
-
+#define SAR_RND_TO_ZERO(v, n) (v / (1 << n))
 
 #if TGL_FEATURE_RENDER_BITS == 32
-#define DRAW_INIT()				\
-{						\
-  	\
-}
+#define DRAW_INIT()                                                                                                                                            \
+	{}
 
 #if TGL_FEATURE_NO_DRAW_COLOR != 1
-#define PUT_PIXEL(_a)													\
-{																		\
-    zz=z >> ZB_POINT_Z_FRAC_BITS;										\
-    if (ZCMP(zz,pz[_a],_a,RGB_TO_PIXEL(or1, og1, ob1))) {				\
-      pp[_a] = RGB_TO_PIXEL(or1, og1, ob1);								\
-      pz[_a]=zz;								\
-    }											\
-    z+=dzdx;									\
-    og1+=dgdx;									\
-    or1+=drdx;									\
-    ob1+=dbdx;									\
-}
-#else 
-#define PUT_PIXEL(_a)						\
-{											\
-    zz=z >> ZB_POINT_Z_FRAC_BITS;			\
-    c = RGB_TO_PIXEL(or1, og1, ob1);		\
-    if (ZCMP(zz,pz[_a],_a,c)) {				\
-      pp[_a] = c;							\
-      pz[_a]=zz;							\
-    }										\
-    z+=dzdx;								\
-    og1+=dgdx;								\
-    or1+=drdx;								\
-    ob1+=dbdx;								\
-}
+#define PUT_PIXEL(_a)                                                                                                                                          \
+	{                                                                                                                                                          \
+		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		if (ZCMP(zz, pz[_a], _a, RGB_TO_PIXEL(or1, og1, ob1))) {                                                                                               \
+			pp[_a] = RGB_TO_PIXEL(or1, og1, ob1);                                                                                                              \
+			pz[_a] = zz;                                                                                                                                       \
+		}                                                                                                                                                      \
+		z += dzdx;                                                                                                                                             \
+		og1 += dgdx;                                                                                                                                           \
+		or1 += drdx;                                                                                                                                           \
+		ob1 += dbdx;                                                                                                                                           \
+	}
+#else
+#define PUT_PIXEL(_a)                                                                                                                                          \
+	{                                                                                                                                                          \
+		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		c = RGB_TO_PIXEL(or1, og1, ob1);                                                                                                                       \
+		if (ZCMP(zz, pz[_a], _a, c)) {                                                                                                                         \
+			pp[_a] = c;                                                                                                                                        \
+			pz[_a] = zz;                                                                                                                                       \
+		}                                                                                                                                                      \
+		z += dzdx;                                                                                                                                             \
+		og1 += dgdx;                                                                                                                                           \
+		or1 += drdx;                                                                                                                                           \
+		ob1 += dbdx;                                                                                                                                           \
+	}
 #endif
-//END OF 32 bit mode 
+// END OF 32 bit mode
 #elif TGL_FEATURE_RENDER_BITS == 16
 
+#define DRAW_INIT()                                                                                                                                            \
+	{}
 
-
-#define DRAW_INIT()				\
-{						\
-  	\
-}
-
-
-
-/*
-#define PUT_PIXEL(_a)				\
-{						\
-    zz=z >> ZB_POINT_Z_FRAC_BITS;		\
-    if (ZCMP(zz,pz[_a],_a)) {				\
-      pp[_a] = RGB_TO_PIXEL(or1, og1, ob1);\
-      pz[_a]=zz;				\
-    }\
-    z+=dzdx;					\
-    og1+=dgdx;					\
-    or1+=drdx;					\
-    ob1+=dbdx;					\
-}
-*/
+	/*
+	#define PUT_PIXEL(_a)				\
+	{						\
+		zz=z >> ZB_POINT_Z_FRAC_BITS;		\
+		if (ZCMP(zz,pz[_a],_a)) {				\
+		  pp[_a] = RGB_TO_PIXEL(or1, og1, ob1);\
+		  pz[_a]=zz;				\
+		}\
+		z+=dzdx;					\
+		og1+=dgdx;					\
+		or1+=drdx;					\
+		ob1+=dbdx;					\
+	}
+	*/
 
 #if TGL_FEATURE_NO_DRAW_COLOR != 1
-#define PUT_PIXEL(_a)													\
-{																		\
-    zz=z >> ZB_POINT_Z_FRAC_BITS;										\
-    if (ZCMP(zz,pz[_a],_a,0)) {											\
-      pp[_a] = RGB_TO_PIXEL(or1, og1, ob1);								\
-      pz[_a]=zz;								\
-    }											\
-    z+=dzdx;									\
-    og1+=dgdx;									\
-    or1+=drdx;									\
-    ob1+=dbdx;									\
-}
-#else 
-#define PUT_PIXEL(_a)						\
-{											\
-    zz=z >> ZB_POINT_Z_FRAC_BITS;			\
-    c = RGB_TO_PIXEL(or1, og1, ob1);		\
-    if (ZCMP(zz,pz[_a],_a,c)) {				\
-      pp[_a] = c;							\
-      pz[_a]=zz;							\
-    }										\
-    z+=dzdx;								\
-    og1+=dgdx;								\
-    or1+=drdx;								\
-    ob1+=dbdx;								\
-}
+#define PUT_PIXEL(_a)                                                                                                                                          \
+	{                                                                                                                                                          \
+		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		if (ZCMP(zz, pz[_a], _a, 0)) {                                                                                                                         \
+			pp[_a] = RGB_TO_PIXEL(or1, og1, ob1);                                                                                                              \
+			pz[_a] = zz;                                                                                                                                       \
+		}                                                                                                                                                      \
+		z += dzdx;                                                                                                                                             \
+		og1 += dgdx;                                                                                                                                           \
+		or1 += drdx;                                                                                                                                           \
+		ob1 += dbdx;                                                                                                                                           \
+	}
+#else
+#define PUT_PIXEL(_a)                                                                                                                                          \
+	{                                                                                                                                                          \
+		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		c = RGB_TO_PIXEL(or1, og1, ob1);                                                                                                                       \
+		if (ZCMP(zz, pz[_a], _a, c)) {                                                                                                                         \
+			pp[_a] = c;                                                                                                                                        \
+			pz[_a] = zz;                                                                                                                                       \
+		}                                                                                                                                                      \
+		z += dzdx;                                                                                                                                             \
+		og1 += dgdx;                                                                                                                                           \
+		or1 += drdx;                                                                                                                                           \
+		ob1 += dbdx;                                                                                                                                           \
+	}
 #endif
 
-#endif 
+#endif
 //^ End of 16 bit mode stuff
 #include "ztriangle.h"
-} //EOF smooth fill triangle
-
+} // EOF smooth fill triangle
 
 //
 //
@@ -193,17 +165,10 @@ void ZB_fillTriangleSmooth(ZBuffer *zb,
 //
 //
 
-
-
-void ZB_setTexture(ZBuffer *zb,PIXEL *texture)
-{
-    zb->current_texture=texture;
-}
-//Ignore this it is never used
-void ZB_fillTriangleMapping(ZBuffer *zb,
-			    ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2)
-{
-    PIXEL *texture;
+void ZB_setTexture(ZBuffer* zb, PIXEL* texture) { zb->current_texture = texture; }
+// Ignore this it is never used
+void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
+	PIXEL* texture;
 
 #if TGL_FEATURE_NO_DRAW_COLOR == 1
 	PIXEL c;
@@ -211,37 +176,34 @@ void ZB_fillTriangleMapping(ZBuffer *zb,
 #define INTERP_Z
 #define INTERP_ST
 
-#define DRAW_INIT()				\
-{						\
-  texture=zb->current_texture;			\
-}
-
+#define DRAW_INIT()                                                                                                                                            \
+	{ texture = zb->current_texture; }
 
 #if TGL_FEATURE_NO_DRAW_COLOR != 1
-#define PUT_PIXEL(_a)				\
-{						\
-   zz=z >> ZB_POINT_Z_FRAC_BITS;		\
-     if (ZCMP(zz,pz[_a],_a,0)) {				\
-       pp[_a]=texture[((t & 0x3FC00000) | s) >> 14];	\
-       pz[_a]=zz;				\
-    }						\
-    z+=dzdx;					\
-    s+=dsdx;					\
-    t+=dtdx;					\
-}
+#define PUT_PIXEL(_a)                                                                                                                                          \
+	{                                                                                                                                                          \
+		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		if (ZCMP(zz, pz[_a], _a, 0)) {                                                                                                                         \
+			pp[_a] = texture[((t & 0x3FC00000) | s) >> 14];                                                                                                    \
+			pz[_a] = zz;                                                                                                                                       \
+		}                                                                                                                                                      \
+		z += dzdx;                                                                                                                                             \
+		s += dsdx;                                                                                                                                             \
+		t += dtdx;                                                                                                                                             \
+	}
 #else
-#define PUT_PIXEL(_a)				\
-{						\
-   zz=z >> ZB_POINT_Z_FRAC_BITS;		\
-   c = texture[((t & 0x3FC00000) | s) >> 14];\
-     if (ZCMP(zz,pz[_a],_a,c)) {				\
-       pp[_a]=c;	\
-       pz[_a]=zz;				\
-    }						\
-    z+=dzdx;					\
-    s+=dsdx;					\
-    t+=dtdx;					\
-}
+#define PUT_PIXEL(_a)                                                                                                                                          \
+	{                                                                                                                                                          \
+		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		c = texture[((t & 0x3FC00000) | s) >> 14];                                                                                                             \
+		if (ZCMP(zz, pz[_a], _a, c)) {                                                                                                                         \
+			pp[_a] = c;                                                                                                                                        \
+			pz[_a] = zz;                                                                                                                                       \
+		}                                                                                                                                                      \
+		z += dzdx;                                                                                                                                             \
+		s += dsdx;                                                                                                                                             \
+		t += dtdx;                                                                                                                                             \
+	}
 #endif
 #include "ztriangle.h"
 }
@@ -252,14 +214,11 @@ void ZB_fillTriangleMapping(ZBuffer *zb,
  * TODO: pipeline the division
  */
 
+#if 1 // IF 1
 
-#if 1 //IF 1
-
-void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
-                            ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2)
-{
-    PIXEL *texture;
-    GLfloat fdzdx,fndzdx,ndszdx,ndtzdx;
+void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
+	PIXEL* texture;
+	GLfloat fdzdx, fndzdx, ndszdx, ndtzdx;
 #if TGL_FEATURE_NO_DRAW_COLOR == 1
 	PIXEL c;
 #endif
@@ -268,121 +227,104 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
 
 #define NB_INTERP 8
 
-#define DRAW_INIT()				\
-{						\
-  texture=zb->current_texture;\
-  fdzdx=(GLfloat)dzdx;\
-  fndzdx=NB_INTERP * fdzdx;\
-  ndszdx=NB_INTERP * dszdx;\
-  ndtzdx=NB_INTERP * dtzdx;\
-}
+#define DRAW_INIT()                                                                                                                                            \
+	{                                                                                                                                                          \
+		texture = zb->current_texture;                                                                                                                         \
+		fdzdx = (GLfloat)dzdx;                                                                                                                                 \
+		fndzdx = NB_INTERP * fdzdx;                                                                                                                            \
+		ndszdx = NB_INTERP * dszdx;                                                                                                                            \
+		ndtzdx = NB_INTERP * dtzdx;                                                                                                                            \
+	}
 
 #if TGL_FEATURE_NO_DRAW_COLOR != 1
-#define PUT_PIXEL(_a)				\
-{						\
-   zz=z >> ZB_POINT_Z_FRAC_BITS;		\
-     if (ZCMP(zz,pz[_a],_a,0)) {				\
-       pp[_a]=*(PIXEL *)((GLbyte *)texture+ \
-               (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH)));\
-       pz[_a]=zz;				\
-    }						\
-    z+=dzdx;					\
-    s+=dsdx;					\
-    t+=dtdx;					\
-}
+#define PUT_PIXEL(_a)                                                                                                                                          \
+	{                                                                                                                                                          \
+		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		if (ZCMP(zz, pz[_a], _a, 0)) {                                                                                                                         \
+			pp[_a] = *(PIXEL*)((GLbyte*)texture + (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH)));                                                    \
+			pz[_a] = zz;                                                                                                                                       \
+		}                                                                                                                                                      \
+		z += dzdx;                                                                                                                                             \
+		s += dsdx;                                                                                                                                             \
+		t += dtdx;                                                                                                                                             \
+	}
 #else
-#define PUT_PIXEL(_a)				\
-{						\
-	zz=z >> ZB_POINT_Z_FRAC_BITS;		\
-	c=	*(PIXEL *)((GLbyte *)texture+ \
-        (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH)));\
-	if (ZCMP(zz,pz[_a],_a,c)) {				\
-		pp[_a]=c;                      \
-		pz[_a]=zz;				\
-    }						\
-    z+=dzdx;					\
-    s+=dsdx;					\
-    t+=dtdx;					\
-}
+#define PUT_PIXEL(_a)                                                                                                                                          \
+	{                                                                                                                                                          \
+		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		c = *(PIXEL*)((GLbyte*)texture + (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH)));                                                             \
+		if (ZCMP(zz, pz[_a], _a, c)) {                                                                                                                         \
+			pp[_a] = c;                                                                                                                                        \
+			pz[_a] = zz;                                                                                                                                       \
+		}                                                                                                                                                      \
+		z += dzdx;                                                                                                                                             \
+		s += dsdx;                                                                                                                                             \
+		t += dtdx;                                                                                                                                             \
+	}
 #endif
 
+#define DRAW_LINE()                                                                                                                                            \
+	{                                                                                                                                                          \
+		register GLushort* pz;                                                                                                                                 \
+		register PIXEL* pp;                                                                                                                                    \
+		register GLuint s, t, z, zz;                                                                                                                           \
+		register GLint n, dsdx, dtdx;                                                                                                                          \
+		GLfloat sz, tz, fz, zinv;                                                                                                                              \
+		n = (x2 >> 16) - x1;                                                                                                                                   \
+		fz = (GLfloat)z1;                                                                                                                                      \
+		zinv = 1.0 / fz;                                                                                                                                       \
+		pp = (PIXEL*)((GLbyte*)pp1 + x1 * PSZB);                                                                                                               \
+		pz = pz1 + x1;                                                                                                                                         \
+		z = z1;                                                                                                                                                \
+		sz = sz1;                                                                                                                                              \
+		tz = tz1;                                                                                                                                              \
+		while (n >= (NB_INTERP - 1)) {                                                                                                                         \
+			{                                                                                                                                                  \
+				GLfloat ss, tt;                                                                                                                                \
+				ss = (sz * zinv);                                                                                                                              \
+				tt = (tz * zinv);                                                                                                                              \
+				s = (GLint)ss;                                                                                                                                 \
+				t = (GLint)tt;                                                                                                                                 \
+				dsdx = (GLint)((dszdx - ss * fdzdx) * zinv);                                                                                                   \
+				dtdx = (GLint)((dtzdx - tt * fdzdx) * zinv);                                                                                                   \
+				fz += fndzdx;                                                                                                                                  \
+				zinv = 1.0 / fz;                                                                                                                               \
+			}                                                                                                                                                  \
+			PUT_PIXEL(0); /*the_x++;*/                                                                                                                         \
+			PUT_PIXEL(1); /*the_x++;*/                                                                                                                         \
+			PUT_PIXEL(2); /*the_x++;*/                                                                                                                         \
+			PUT_PIXEL(3); /*the_x++;*/                                                                                                                         \
+			PUT_PIXEL(4); /*the_x++;*/                                                                                                                         \
+			PUT_PIXEL(5); /*the_x++;*/                                                                                                                         \
+			PUT_PIXEL(6); /*the_x++;*/                                                                                                                         \
+			PUT_PIXEL(7); /*the_x-=7;*/                                                                                                                        \
+			pz += NB_INTERP;                                                                                                                                   \
+			pp = (PIXEL*)((GLbyte*)pp + NB_INTERP * PSZB); /*the_x+=NB_INTERP * PSZB;*/                                                                        \
+			n -= NB_INTERP;                                                                                                                                    \
+			sz += ndszdx;                                                                                                                                      \
+			tz += ndtzdx;                                                                                                                                      \
+		}                                                                                                                                                      \
+		{                                                                                                                                                      \
+			GLfloat ss, tt;                                                                                                                                    \
+			ss = (sz * zinv);                                                                                                                                  \
+			tt = (tz * zinv);                                                                                                                                  \
+			s = (GLint)ss;                                                                                                                                     \
+			t = (GLint)tt;                                                                                                                                     \
+			dsdx = (GLint)((dszdx - ss * fdzdx) * zinv);                                                                                                       \
+			dtdx = (GLint)((dtzdx - tt * fdzdx) * zinv);                                                                                                       \
+		}                                                                                                                                                      \
+		while (n >= 0) {                                                                                                                                       \
+			PUT_PIXEL(0); /*the_x += PSZB;*/                                                                                                                   \
+			pz += 1;                                                                                                                                           \
+			pp = (PIXEL*)((GLbyte*)pp + PSZB);                                                                                                                 \
+			n -= 1;                                                                                                                                            \
+		}                                                                                                                                                      \
+	}
 
-#define DRAW_LINE()				\
-{						\
-  register GLushort *pz;		\
-  register PIXEL *pp;		\
-  register GLuint s,t,z,zz;	\
-  register GLint n,dsdx,dtdx;		\
-  GLfloat sz,tz,fz,zinv; \
-  n=(x2>>16)-x1;                             \
-  fz=(GLfloat)z1;\
-  zinv=1.0 / fz;\
-  pp=(PIXEL *)((GLbyte *)pp1 + x1 * PSZB); \
-  pz=pz1+x1;					\
-  z=z1;						\
-  sz=sz1;\
-  tz=tz1;\
-  while (n>=(NB_INTERP-1)) {						   \
-    {\
-      GLfloat ss,tt;\
-      ss=(sz * zinv);\
-      tt=(tz * zinv);\
-      s=(GLint) ss;\
-      t=(GLint) tt;\
-      dsdx= (GLint)( (dszdx - ss*fdzdx)*zinv );\
-      dtdx= (GLint)( (dtzdx - tt*fdzdx)*zinv );\
-      fz+=fndzdx;\
-      zinv=1.0 / fz;\
-    }\
-    PUT_PIXEL(0);/*the_x++;*/		   \
-    PUT_PIXEL(1);/*the_x++;*/		   \
-    PUT_PIXEL(2);/*the_x++;*/		   \
-    PUT_PIXEL(3);/*the_x++;*/		   \
-    PUT_PIXEL(4);/*the_x++;*/		   \
-    PUT_PIXEL(5);/*the_x++;*/		   \
-    PUT_PIXEL(6);/*the_x++;*/		   \
-    PUT_PIXEL(7);/*the_x-=7;*/		   \
-    pz+=NB_INTERP;							   \
-    pp=(PIXEL *)((GLbyte *)pp + NB_INTERP * PSZB);/*the_x+=NB_INTERP * PSZB;*/\
-    n-=NB_INTERP;							   \
-    sz+=ndszdx;\
-    tz+=ndtzdx;\
-  }									   \
-    {\
-      GLfloat ss,tt;\
-      ss=(sz * zinv);\
-      tt=(tz * zinv);\
-      s=(GLint) ss;\
-      t=(GLint) tt;\
-      dsdx= (GLint)( (dszdx - ss*fdzdx)*zinv );\
-      dtdx= (GLint)( (dtzdx - tt*fdzdx)*zinv );\
-    }\
-  while (n>=0) {							   \
-    PUT_PIXEL(0);/*the_x += PSZB;*/			   \
-    pz+=1;								   \
-    pp=(PIXEL *)((GLbyte *)pp + PSZB);\
-    n-=1;								   \
-  }									   \
-}
-  
 #include "ztriangle.h"
 }
 
-#endif //if 1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif // if 1
 
 #if 0
 
@@ -397,30 +339,27 @@ void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
 #define INTERP_Z
 #define INTERP_STZ
 
-#define DRAW_INIT()				\
-{						\
-  texture=zb->current_texture;			\
-}
+#define DRAW_INIT()                                                                                                                                            \
+	{ texture = zb->current_texture; }
 
-#define PUT_PIXEL(_a)				\
-{						\
-   GLfloat zinv; \
-   GLint s,t; \
-   zz=z >> ZB_POINT_Z_FRAC_BITS;		\
-     if (ZCMP(zz,pz[_a],_a)) {				\
-       zinv= 1.0 / (GLfloat) z; \
-       s= (GLint) (sz * zinv); \
-       t= (GLint) (tz * zinv); \
-       pp[_a]=texture[((t & 0x3FC00000) | s) >> 14];	\
-       pz[_a]=zz;				\
-    }						\
-    z+=dzdx;					\
-    sz+=dszdx;					\
-    tz+=dtzdx;					\
-}
+#define PUT_PIXEL(_a)                                                                                                                                          \
+	{                                                                                                                                                          \
+		GLfloat zinv;                                                                                                                                          \
+		GLint s, t;                                                                                                                                            \
+		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		if (ZCMP(zz, pz[_a], _a)) {                                                                                                                            \
+			zinv = 1.0 / (GLfloat)z;                                                                                                                           \
+			s = (GLint)(sz * zinv);                                                                                                                            \
+			t = (GLint)(tz * zinv);                                                                                                                            \
+			pp[_a] = texture[((t & 0x3FC00000) | s) >> 14];                                                                                                    \
+			pz[_a] = zz;                                                                                                                                       \
+		}                                                                                                                                                      \
+		z += dzdx;                                                                                                                                             \
+		sz += dszdx;                                                                                                                                           \
+		tz += dtzdx;                                                                                                                                           \
+	}
 
 #include "ztriangle.h"
 }
-
 
 #endif
