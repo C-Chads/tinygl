@@ -131,8 +131,10 @@ void glInit(void *zbuffer1)
   c->current_shade_model=GL_SMOOTH;
   c->cull_face_enabled=0;
   c->zb->dostipple = 0;
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
   for(GLint i = 0; i < 128; i++)
   	c->zb->stipplepattern[i] = 0xFF;
+#endif
   /* clear */
   c->clear_color.v[0]=0;
   c->clear_color.v[1]=0;

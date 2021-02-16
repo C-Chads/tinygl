@@ -138,15 +138,9 @@ static void ZB_copyBuffer(ZBuffer * zb,
     GLubyte *p1;
     PIXEL *q;
     GLint y;
-    #if !TGL_FEATURE_NO_COPY_COLOR
-    //GLint n;
-    #endif
 
     q = zb->pbuf;
     p1 = buf;
-    #if !TGL_FEATURE_NO_COPY_COLOR
-    //n = zb->xsize * PSZB;
-    #endif
     for (y = 0; y < zb->ysize; y++) {
     #if TGL_FEATURE_NO_COPY_COLOR == 1
 		for(GLint i = 0; i < zb->xsize; i++)
@@ -157,8 +151,8 @@ static void ZB_copyBuffer(ZBuffer * zb,
     #else
 		memcpy(p1, q, linesize);
 	#endif
-	p1 += linesize; //TODO make this a predictable behavior.
-	q = (PIXEL *) ((GLbyte *) q + zb->linesize);
+		p1 += linesize;
+		q = (PIXEL *) ((GLbyte *) q + zb->linesize);
     }
 }
 
@@ -536,9 +530,9 @@ void memset_RGB24(void *adr,GLint r, GLint v, GLint b,long count)
 void ZB_clear(ZBuffer * zb, GLint clear_z, GLint z,
 	      GLint clear_color, GLint r, GLint g, GLint b)
 {
-#if TGL_FEATURE_RENDER_BITS != 24
-    GLint color;
-#endif
+//#if TGL_FEATURE_RENDER_BITS != 24
+    GLuint color;
+//#endif
     GLint y;
     PIXEL *pp;
 
