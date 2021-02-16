@@ -7,7 +7,7 @@
 #define TGL_FEATURE_ARRAYS         1
 #define TGL_FEATURE_DISPLAYLISTS   1
 //NOTE: Polygon Offset does nothing at the moment.
-#define TGL_FEATURE_POLYGON_OFFSET 1
+#define TGL_FEATURE_POLYGON_OFFSET 0
 #define TGL_FEATURE_POLYGON_STIPPLE 0
 //A stipple pattern is 128 bytes in size.
 #define TGL_POLYGON_STIPPLE_BYTES 128

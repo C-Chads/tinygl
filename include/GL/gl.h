@@ -688,7 +688,17 @@ typedef int 		GLsizei;
 
 #if COMPILETIME_TINYGL_COMPAT_TEST == 1
 
-//NO
+//Test to ensure that these types are the correct size
+//If you get an "array is negative" error, simply change
+//the typedefs above to types which match the sizes tested for here.
+//Note that this library NEEDS a 4-byte float type (IEEE 754) so
+//if you don't have one, TinyGL is incompatible.
+
+//Sizeof cannot be tested directly in #if directives.
+//This won't work:
+//#if (sizeof(GLbyte) != 1)
+//#error "GLbyte is wrong size!"
+//#endif
 extern char TGL_BUILDT_GLbyte[ 1-2*(sizeof(GLbyte) != 1)];
 //extern char __BUILDT_error[ 1-2*(sizeof(GLbyte) != 4)];
 extern char TGL_BUILDT_GLshort[ 1-2*(sizeof(GLshort) != 2)];
