@@ -62,6 +62,8 @@ Notable limitations:
 
 * A triangle cannot be textured and lit at the same time. (This is planned to be fixed)
 
+* glPolygonOffset doesn't change anything about how rendering occurs. It does nothing, at the moment.
+
 * <Undocumented limitations that have not been tested>
 
 
