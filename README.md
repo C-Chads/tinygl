@@ -174,7 +174,7 @@ wrong. Additionally, per vertex color is just cool.
 
 * Per vertex color is broken due to a faulty optimization in clip.c
 
-* The conventions for 32 bit color were RGBA for textured triangles and ABGR for non-textured. Now both render as ABGR.
+* The conventions for 32 bit color were RGBA for textured triangles and ABGR for non-textured. Now both render as ARGB.
 
 * Little endian was assumed in a thousand places in the code
 
@@ -186,7 +186,7 @@ wrong. Additionally, per vertex color is just cool.
   
 ## FULLY COMPATIBLE WITH RGBA!
 
-The library is now able to be configured properly for RGBA rendering. Note that the output *is actually ABGR* 
+The library is now able to be configured properly for RGBA rendering. Note that the output *is actually ARGB* 
 but adjusting it is easy, see the SDL examples under SDL_EXAMPLES (They require SDL 1.2 and Mixer to compile)
 
 The library is sometimes by default configured for RGBA or 5R6G5B, check include/zfeatures.h and change the values in this table:

@@ -29,9 +29,9 @@ void gl_convertRGB_to_8A8R8G8B(GLuint *pixmap, GLubyte *rgb,
     p=rgb;
     n=xsize*ysize;
     for(i=0;i<n;i++) {
-        pixmap[i]=(((GLuint)p[2])<<16) | 
+        pixmap[i]=(((GLuint)p[0])<<16) | 
             (((GLuint)p[1])<<8) | 
-            (((GLuint)p[0]) ); 
+            (((GLuint)p[2]) ); 
         p+=3;
     }
 }

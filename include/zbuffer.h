@@ -38,7 +38,9 @@
 #if TGL_FEATURE_RENDER_BITS == 32
 
 /* 32 bit mode */
-#define RGB_TO_PIXEL(r,g,b) ( ((b&65280)<<8) | ((g&65280)) | ((r&65280)>>8) )
+//#define RGB_TO_PIXEL(r,g,b) ( ((b&65280)<<8) | ((g&65280)) | ((r&65280)>>8) )
+#define RGB_TO_PIXEL(r,g,b) \
+  ((((r) << 8) & 0xff0000) | ((g) & 0xff00) | ((b) >> 8))
 typedef unsigned int PIXEL;
 #define PSZB 4
 #define PSZSH 5

@@ -112,6 +112,7 @@ int main(int argc, char **argv) {
     // initialize SDL video:
 
 	unsigned int fps =0;
+	char needsRGBAFix = 0;
     if(argc > 2){
     	char* larg = argv[1];
     	for(int i = 0; i < argc; i++){
@@ -140,12 +141,22 @@ int main(int argc, char **argv) {
     printf("\nGMASK IS %u",screen->format->Gmask);
     printf("\nBMASK IS %u",screen->format->Bmask);
     printf("\nAMASK IS %u",screen->format->Amask);
-
+#if TGL_FEATURE_RENDER_BITS == 32
+	if(
+		screen->format->Rmask != 0x00FF0000 ||
+		screen->format->Gmask != 0x0000FF00 ||
+		screen->format->Bmask != 0x000000FF
+	){
+		needsRGBAFix = 1;
+		printf("\nYour screen is using an RGBA output different than this library expects.");
+		printf("\nYou should consider using the 16 bit version for optimal performance");
+	}
+#endif
 
     printf("\nRSHIFT IS %u",screen->format->Rshift);
     printf("\nGSHIFT IS %u",screen->format->Gshift);
     printf("\nBSHIFT IS %u",screen->format->Bshift);
-    printf("\nASHIFT IS %u",screen->format->Ashift);
+    printf("\nASHIFT IS %u\n",screen->format->Ashift);
     fflush(stdout);
     track* myTrack = NULL;
 #ifdef PLAY_MUSIC
@@ -244,7 +255,8 @@ int main(int argc, char **argv) {
 		printf("\nAMASK IS %u",screen->format->Amask);
         */
         //Quickly convert all pixels to the correct format
-#if TGL_FEATURE_RENDER_BITS == 32        
+#if TGL_FEATURE_RENDER_BITS == 32
+	if(needsRGBAFix)      
         for(int i = 0; i < frameBuffer->xsize* frameBuffer->ysize;i++){
 #define DATONE (frameBuffer->pbuf[i])
 			DATONE = ((DATONE & 0x000000FF)     ) << screen->format->Rshift | 

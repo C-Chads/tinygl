@@ -10,7 +10,7 @@
   GLint part,update_left,update_right;
 
   GLint nb_lines,dx1,dy1,tmp,dx2,dy2;
-#if TGL_FEATURE_POLYGON_STIPPLE
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
   GLushort the_y;
 #endif
   GLint error,derror;
@@ -135,9 +135,9 @@
   /* screen coordinates */
 
   pp1 = (PIXEL *) ((GLbyte *) zb->pbuf + zb->linesize * p0->y); 
-  #if TGL_FEATURE_POLYGON_STIPPLE
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
   the_y = p0->y;
-  #endif
+#endif
   pz1 = zb->zbuf + p0->y * zb->xsize;
 
   DRAW_INIT();
@@ -355,7 +355,7 @@
 
       /* screen coordinates */
       pp1=(PIXEL *)((GLbyte *)pp1 + zb->linesize);
-#if TGL_FEATURE_POLYGON_STIPPLE
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
       the_y++;
 #endif
       pz1+=zb->xsize;
