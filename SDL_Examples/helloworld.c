@@ -59,9 +59,10 @@ void draw2(){
         // Select and setup the projection matrix
         glMatrixMode( GL_PROJECTION );
         glLoadIdentity();
-        //gluPerspective( 65.0f, (GLfloat)winSizeX/(GLfloat)winSizeY, 1.0f, 100.0f );
-		GLfloat  h = (GLfloat) winSizeY / (GLfloat) winSizeX;
-		glFrustum( -1.0, 1.0, -h, h, 5.0, 60.0 );
+        mat4 m = perspective( 65.0f, (GLfloat)winSizeX/(GLfloat)winSizeY, 1.0f, 100.0f );
+        glLoadMatrixf( m.d);
+		//GLfloat  h = (GLfloat) winSizeY / (GLfloat) winSizeX;
+		//glFrustum( -1.0, 1.0, -h, h, 5.0, 60.0 );
         // Select and setup the modelview matrix
         glMatrixMode( GL_MODELVIEW );
         glLoadIdentity();
@@ -72,12 +73,12 @@ void draw2(){
         glTranslatef( 0.0f, 14.0f, 0.0f );
         glRotatef( 0.3f*(GLfloat)x + (GLfloat)time_passed*100.0f, 0.0f, 0.0f, 1.0f );
         glBegin( GL_TRIANGLES );
-        glColor4f( 1.0f, 0.0f, 0.0f, 0.0f );
-        glVertex3f( -5.0f, 0.0f, -4.0f );
-        glColor4f( 0.0f, 1.0f, 0.0f, 0.0f );
-        glVertex3f( 5.0f, 0.0f, -4.0f );
-        glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
-        glVertex3f( 0.0f, 0.0f, 6.0f );
+	        glColor4f( 1.0f, 0.0f, 0.0f, 0.0f );
+	        glVertex3f( -5.0f, 0.0f, -4.0f );
+	        glColor4f( 0.0f, 1.0f, 0.0f, 0.0f );
+	        glVertex3f( 5.0f, 0.0f, -4.0f );
+	        glColor4f( 0.0f, 0.0f, 1.0f, 0.0f );
+	        glVertex3f( 0.0f, 0.0f, 6.0f );
         glEnd();
 }
 
@@ -85,8 +86,8 @@ void initScene() {
 
     //glLightfv( GL_LIGHT0, GL_AMBIENT, white);
     //glLightfv( GL_LIGHT0, GL_SPECULAR, white);
-    glEnable( GL_CULL_FACE );
-    //glDisable( GL_CULL_FACE );
+    //glEnable( GL_CULL_FACE );
+    glDisable( GL_CULL_FACE );
     glEnable( GL_LIGHTING );
     glDisable( GL_TEXTURE_2D );
     glDisable( GL_LIGHTING );
@@ -241,7 +242,7 @@ int main(int argc, char **argv) {
 
         // draw scene:
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        draw();
+        draw2();
 		glDrawText((unsigned char*)"Hello World!\nFrom TinyGL", 0, 0, 0x00FFFFFF);
         // swap buffers:
         if ( SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen)<0) ) {
