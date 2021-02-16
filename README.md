@@ -3,6 +3,8 @@
 A rework of Fabrice Bellard's TinyGL (still compiling with -std=c99) to be
 more useful as a software rasterizer.
 
+It's also lightning fast.
+
 Without Polygon Stipple:
 
 ![GIF Video of demo](capture.gif)

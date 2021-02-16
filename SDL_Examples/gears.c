@@ -415,11 +415,11 @@ int main(int argc, char **argv) {
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         draw();
         
-//		glDrawText((unsigned char*)"RED text", 0, 0,   0x000000FF);
+		glDrawText((unsigned char*)"RED text", 0, 0,   0x000000FF);
 
-//		glDrawText((unsigned char*)"GREEN text", 0, 24,0x0000FF00);
+		glDrawText((unsigned char*)"GREEN text", 0, 24,0x0000FF00);
 
-//		glDrawText((unsigned char*)"BLUE text", 0, 48,  0x00FF0000);
+		glDrawText((unsigned char*)"BLUE text", 0, 48,  0x00FF0000);
         // swap buffers:
         if ( SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen)<0) ) {
             fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
