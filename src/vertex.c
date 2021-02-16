@@ -228,8 +228,8 @@ void glopVertex(GLContext* c, GLParam* p) {
 
 	if (c->texture_2d_enabled) {
 #if TGL_FEATURE_LIT_TEXTURES == 1
-		if(!(c->lighting_enabled))
-			v->color = gl_V4_New(1, 1, 1, 0); //Fix by GEK for unlit textured models.
+		if (!(c->lighting_enabled))
+			v->color = gl_V4_New(1, 1, 1, 0); // Fix by GEK for unlit textured models.
 #endif
 		if (c->apply_texture_matrix) {
 			gl_M4_MulV4(&v->tex_coord, c->matrix_stack_ptr[2], &c->current_tex_coord);
