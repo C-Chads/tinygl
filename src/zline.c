@@ -1,7 +1,7 @@
 #include "../include/zbuffer.h"
 #include <stdlib.h>
 
-#define ZCMP(z, zpix) (!(zb->depth_test) || z >= (zpix))
+#define ZCMP(z, zpix) (!(zbdt) || z >= (zpix))
 
 /* TODO: Implement blending for lines.*/
 
@@ -9,6 +9,9 @@ void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 	GLushort* pz;
 	PIXEL* pp;
 	GLint zz;
+	GLubyte zbdw = zb->depth_write; 
+	GLubyte zbdt = zb->depth_test;
+	TGL_BLEND_VARS
 	//	PIXEL col;
 	pz = zb->zbuf + (p->y * zb->xsize + p->x);
 	pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * p->y + p->x * PSZB);
@@ -16,13 +19,15 @@ void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 	if (ZCMP(zz, *pz)) {
 		//*pp =
 		TGL_BLEND_FUNC_RGB(p->r, p->g, p->b, (*pp))
-		if(zb->depth_write)
+		if(zbdw)
 			*pz = zz;
 	}
 }
 
 #define INTERP_Z
 static void ZB_line_flat_z(ZBuffer* zb, ZBufferPoint* p1, ZBufferPoint* p2, GLint color) {
+	//GLubyte zbdw = zb->depth_write; 
+	GLubyte zbdt = zb->depth_test;
 #include "zline.h"
 }
 
@@ -30,23 +35,28 @@ static void ZB_line_flat_z(ZBuffer* zb, ZBufferPoint* p1, ZBufferPoint* p2, GLin
 #define INTERP_Z
 #define INTERP_RGB
 static void ZB_line_interp_z(ZBuffer* zb, ZBufferPoint* p1, ZBufferPoint* p2) {
+	//GLubyte zbdw = zb->depth_write;
+	GLubyte zbdt = zb->depth_test;
 #include "zline.h"
 }
 
 /* no Z GLinterpolation */
 
 static void ZB_line_flat(ZBuffer* zb, ZBufferPoint* p1, ZBufferPoint* p2, GLint color) {
+	//GLubyte zbdw = zb->depth_write; 
+	//GLubyte zbdt = zb->depth_test;
 #include "zline.h"
 }
 
 #define INTERP_RGB
 static void ZB_line_interp(ZBuffer* zb, ZBufferPoint* p1, ZBufferPoint* p2) {
+//	GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 #include "zline.h"
 }
 
 void ZB_line_z(ZBuffer* zb, ZBufferPoint* p1, ZBufferPoint* p2) {
 	GLint color1, color2;
-
+//	GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	color1 = RGB_TO_PIXEL(p1->r, p1->g, p1->b);
 	color2 = RGB_TO_PIXEL(p2->r, p2->g, p2->b);
 

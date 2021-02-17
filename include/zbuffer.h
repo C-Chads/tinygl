@@ -91,17 +91,14 @@ typedef GLushort PIXEL;
 
 
 #if TGL_FEATURE_BLEND == 1
+#define TGL_BLEND_VARS GLuint zbblendeq = zb->blendeq; GLuint sfactor = zb->sfactor; GLuint dfactor = zb->dfactor;
 #define TGL_NO_BLEND_FUNC(source, dest){dest = source;}
 #define TGL_NO_BLEND_FUNC_RGB(rr, gg, bb, dest){dest = RGB_TO_PIXEL(rr,gg,bb);}
 //SORCERY to achieve 32 bit signed integer clamping
-//#define TGL_IGTZ(imp) ((imp>>31) == 0)
-//#define TGL_ILT(imp) ((imp & 0x10000) != 0x10000)
-//#define TGL_INLT(imp) ((imp & 0x10000) == 0x10000)
-//#define TGL_CLAMPI(imp) ( TGL_IGTZ(imp)*( TGL_ILT(imp) * imp + !TGL_INLT(imp) * 65535)  )
-#define TGL_CLAMPI(imp) ( (imp<0)?0:((imp>65535)?65535:imp) )
+#define TGL_CLAMPI(imp) ( (imp>0) * (65535 * (imp>65535) + imp * (!(imp>65535)) )      )
 
 #define TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest) 									\
-		switch(zb->blendeq){															\
+		switch(zbblendeq){															\
 			case GL_FUNC_ADD:															\
 			default:																	\
 				sr+=dr;sg+=dg;sb+=db;													\
@@ -131,16 +128,14 @@ typedef GLushort PIXEL;
 
 
 #define TGL_BLEND_FUNC(source, dest){													\
-	if(zb->enable_blend != 1){															\
-		TGL_NO_BLEND_FUNC(source,dest)													\
-	} else {																			\
+	{																					\
 	GLuint sr, sg, sb, dr, dg, db;														\
 	{	GLuint t = source;																\
 	sr = GET_REDDER(t); sg = GET_GREENER(t); sb = GET_BLUEER(t);						\
 	t = dest;																			\
 	dr = GET_REDDER(t); dg = GET_GREENER(t); db = GET_BLUEER(t);}						\
 		/*printf("\nShould never reach this point!");*/									\
-		switch(zb->sfactor){															\
+		switch(sfactor){															\
 			case GL_ONE:																\
 			default:																	\
 			break;																		\
@@ -153,7 +148,7 @@ typedef GLushort PIXEL;
 			sr=0;sg=0;sb=0;break;														\
 			break;																		\
 		}																				\
-		switch(zb->dfactor){															\
+		switch(dfactor){															\
 				case GL_ONE:															\
 				default:																\
 				break;																	\
@@ -171,14 +166,12 @@ typedef GLushort PIXEL;
 } ///////////////////////////////////////////////////////////////////////////////////////
 
 #define TGL_BLEND_FUNC_RGB(rr, gg, bb, dest){											\
-	if(zb->enable_blend != 1){															\
-		TGL_NO_BLEND_FUNC_RGB(rr,gg,bb,dest)											\
-	} else {																			\
+	{																					\
 		GLint sr = rr & 0xFFFF, sg = gg & 0xFFFF, sb = bb & 0xFFFF, dr, dg, db;			\
 		{GLuint t = dest;																\
 		dr = GET_REDDER(t); dg = GET_GREENER(t); db = GET_BLUEER(t);}					\
 	/*printf("\nShould never reach this point!");*/										\
-		switch(zb->sfactor){															\
+		switch(sfactor){																\
 			case GL_ONE:																\
 			default:																	\
 			break;																		\
@@ -191,7 +184,7 @@ typedef GLushort PIXEL;
 			sr=0;sg=0;sb=0;break;														\
 			break;																		\
 		}																				\
-		switch(zb->dfactor){															\
+		switch(dfactor){															\
 				case GL_ONE:															\
 				default:																\
 				break;																	\
@@ -209,6 +202,7 @@ typedef GLushort PIXEL;
 } ///////////////////////////////////////////////////////////////////////////////////////
 
 #else
+#define TGL_BLEND_VARS /* a comment */
 #define TGL_BLEND_FUNC(source, dest){dest = source;}
 #define TGL_BLEND_FUNC_RGB(rr, gg, bb, dest){dest = RGB_TO_PIXEL(rr,gg,bb);}
 #endif
@@ -288,9 +282,15 @@ void ZB_setTexture(ZBuffer *zb, PIXEL *texture);
 void ZB_fillTriangleFlat(ZBuffer *zb,
 		 ZBufferPoint *p1,ZBufferPoint *p2,ZBufferPoint *p3);
 
+void ZB_fillTriangleFlatNOBLEND(ZBuffer *zb,
+		 ZBufferPoint *p1,ZBufferPoint *p2,ZBufferPoint *p3);
+
+
 void ZB_fillTriangleSmooth(ZBuffer *zb,
 		   ZBufferPoint *p1,ZBufferPoint *p2,ZBufferPoint *p3);
 
+void ZB_fillTriangleSmoothNOBLEND(ZBuffer *zb,
+		   ZBufferPoint *p1,ZBufferPoint *p2,ZBufferPoint *p3);
 /*
 This function goes unused and is removed by Gek.
 void ZB_fillTriangleMapping(ZBuffer *zb,
@@ -299,6 +299,9 @@ void ZB_fillTriangleMapping(ZBuffer *zb,
 void ZB_fillTriangleMappingPerspective(ZBuffer *zb,
                     ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2);
 
+
+void ZB_fillTriangleMappingPerspectiveNOBLEND(ZBuffer *zb,
+                    ZBufferPoint *p0,ZBufferPoint *p1,ZBufferPoint *p2);
 
 typedef void (*ZB_fillTriangleFunc)(ZBuffer  *,
 	    ZBufferPoint *,ZBufferPoint *,ZBufferPoint *);

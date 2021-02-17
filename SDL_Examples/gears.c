@@ -63,7 +63,8 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 
 	da = 2.0 * M_PI / teeth / 4.0;
 
-	glShadeModel(GL_SMOOTH);
+	//glShadeModel(GL_SMOOTH);
+	//glShadeModel(GL_FLAT);
 
 	glNormal3f(0.0, 0.0, 1.0);
 
@@ -210,7 +211,7 @@ void initScene() {
 	
 	glEnable(GL_LIGHT0);
 	//glEnable(GL_DEPTH_TEST);
-	// glShadeModel( GL_SMOOTH );
+	//glShadeModel( GL_SMOOTH );
 
 	glEnable(GL_POLYGON_STIPPLE);
 	glPolygonStipple(stipplepattern);
@@ -333,6 +334,7 @@ int main(int argc, char** argv) {
 	// initialize GL:
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glViewport(0, 0, winSizeX, winSizeY);
+	glShadeModel(GL_SMOOTH);
 //TESTING BLENDING...
 	//glDisable(GL_DEPTH_TEST);
 	glEnable(GL_DEPTH_TEST);
@@ -340,12 +342,12 @@ int main(int argc, char** argv) {
 	//glEnable(GL_BLEND);
 	glDisable(GL_BLEND);
 	
-	//glDepthMask(GL_FALSE);
 	glDepthMask(GL_TRUE);
+	//glDepthMask(GL_FALSE);
 
 	//glDisable( GL_LIGHTING );
 	glEnable(GL_LIGHTING);
-	glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE_MINUS_DST_COLOR);
+	glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
 	glBlendEquation(GL_FUNC_ADD);
 	GLfloat h = (GLfloat)winSizeY / (GLfloat)winSizeX;
 	glMatrixMode(GL_PROJECTION);
