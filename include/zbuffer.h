@@ -227,12 +227,9 @@ typedef struct {
     GLint *ctable;
     PIXEL *current_texture;
     /* opengl polygon stipple*/
-    GLint dostipple;
+    GLuint dostipple;
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
-    unsigned char stipplepattern[TGL_POLYGON_STIPPLE_BYTES];
-
-    /* opengl blending */
-    
+    GLubyte stipplepattern[TGL_POLYGON_STIPPLE_BYTES];
 #endif
 	GLenum blendeq, sfactor, dfactor;
     GLint enable_blend;
@@ -312,5 +309,6 @@ typedef void (*ZB_fillTriangleFunc)(ZBuffer  *,
 void gl_free(void *p);
 void *gl_malloc(GLint size);
 void *gl_zalloc(GLint size);
+void gl_memcpy(void* dest, void* src, GLuint size);
 
 #endif /* _tgl_zbuffer_h_ */

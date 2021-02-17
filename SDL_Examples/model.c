@@ -355,7 +355,7 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 	double t = 0;
 	glViewport(0, 0, winSizeX, winSizeY);
 	// glEnable(GL_POLYGON_STIPPLE);
-	// glPolygonStipple(stipplepattern);
+	glPolygonStipple(stipplepattern);
 	// initScene();
 	{
 		objraw omodel;

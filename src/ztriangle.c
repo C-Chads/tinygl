@@ -2,27 +2,30 @@
 #include "msghandling.h"
 #include <stdlib.h>
 
+//#include <stdio.h>
+//#warning STDIO INCLUDE!!!
+
 #if TGL_FEATURE_RENDER_BITS == 32
 #elif TGL_FEATURE_RENDER_BITS == 16
 #else
 #error "WRONG MODE!!!"
 #endif
 
-#if TGL_FEATURE_POLYGON_STIPPLE
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
 
-#define TGL_STIPPLEVARS GLubyte* zbstipplepattern = zb->stipplepattern; GLubyte zbdostipple = zbdostipple;
+#define TGL_STIPPLEVARS GLubyte* zbstipplepattern = zb->stipplepattern; GLubyte zbdostipple = zb->dostipple;
 #define THE_X (((GLushort)(pp - pp1)))
 #define XSTIP(_a) ((THE_X + _a) & TGL_POLYGON_STIPPLE_MASK_X)
 #define YSTIP (the_y & TGL_POLYGON_STIPPLE_MASK_Y)
 // NOTES                                                           Divide by 8 to get the byte        Get the actual bit
 #define STIPBIT(_a) (zbstipplepattern[(XSTIP(_a) | (YSTIP << TGL_POLYGON_STIPPLE_POW2_WIDTH)) >> 3] & (1 << (XSTIP(_a) & 7)))
-#define STIPTEST(_a) !(zbdostipple && !STIPBIT(_a))
+#define STIPTEST(_a) (!(zbdostipple && !STIPBIT(_a)))
 
 #else
 
 #define TGL_STIPPLEVARS /* a comment */
 #define STIPTEST(_a) (1)
-//#define ZCMP(z,zpix,_a) ((z) >= (zpix))
+
 
 #endif
 
@@ -32,15 +35,15 @@
 #define NODRAWTEST(c) (1)
 #endif
 
-#define ZCMP(z, zpix, _a, c) ( ((!zbdt) || (z) >= (zpix)) && STIPTEST(_a) && NODRAWTEST(c))
-#define ZCMPSIMP(z, zpix, _a, c) ( ((!zbdt) || (z) >= (zpix)) && STIPTEST(_a))
+#define ZCMP(z, zpix, _a, c) ( ((!zbdt) || (z >= zpix)) && STIPTEST(_a) && NODRAWTEST(c))
+#define ZCMPSIMP(z, zpix, _a, c) ( ((!zbdt) || (z >= zpix)) && STIPTEST(_a) )
 
 void ZB_fillTriangleFlat(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
 
 	PIXEL color = RGB_TO_PIXEL(p2->r, p2->g, p2->b); GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	TGL_BLEND_VARS
 	TGL_STIPPLEVARS
-
+	
 #undef INTERP_Z
 #undef INTERP_RGB
 #undef INTERP_ST
@@ -49,15 +52,14 @@ void ZB_fillTriangleFlat(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuffe
 #define INTERP_Z
 //#define INTERP_RGB
 
-#define DRAW_INIT()                                                                                                                                            \
-	{  }
+#define DRAW_INIT()	{  }
 
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
 		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
 		if (ZCMPSIMP(zz, pz[_a], _a, color)) {                                                                                                                 \
 			TGL_BLEND_FUNC(color, (pp[_a])) /*pp[_a] = color;*/                                                                                                \
-			if(zbdw)pz[_a] = zz;                                                                                                                                       \
+			if(zbdw)pz[_a] = zz;                                                                                                                               \
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
 	}
@@ -73,11 +75,10 @@ void ZB_fillTriangleFlatNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1,
 #undef INTERP_RGB
 #undef INTERP_ST
 #undef INTERP_STZ
-
+//	{printf("\nzbdostipple = %d",zbdostipple);} //TODO: remove this after debugging is complete.
 #define INTERP_Z
 //#define INTERP_RGB
-#define DRAW_INIT()                                                                                                                                            \
-	{  }
+#define DRAW_INIT() {  }
 
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \

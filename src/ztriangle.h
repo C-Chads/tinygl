@@ -359,6 +359,8 @@
 			pp1 = (PIXEL*)((GLbyte*)pp1 + zb->linesize);
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 			the_y++;
+#else
+//#error POLYGONSTIPPLE_TESTING
 #endif
 			pz1 += zb->xsize;
 		}

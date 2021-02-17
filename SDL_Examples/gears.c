@@ -240,6 +240,7 @@ void initScene() {
 	
 
 	glEnable(GL_POLYGON_STIPPLE);
+//	glDisable(GL_POLYGON_STIPPLE);
 	glPolygonStipple(stipplepattern);
 
 	glTextSize(GL_TEXT_SIZE24x24);

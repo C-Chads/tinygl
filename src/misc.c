@@ -2,15 +2,14 @@
 #include "zgl.h"
 
 void glPolygonStipple(void* a) {
-#if TGL_FEATURE_POLYGON_STIPPLE
-	GLubyte* b = a;
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
 	GLContext* c = gl_get_context();
 	ZBuffer* zb = c->zb;
 
-	memcpy(zb->stipplepattern, a, TGL_POLYGON_STIPPLE_BYTES);
-//	for (GLint i = 0; i < TGL_POLYGON_STIPPLE_BYTES; i++) {
-//		zb->stipplepattern[i] = b[i];
-//	}
+	gl_memcpy(zb->stipplepattern, a, TGL_POLYGON_STIPPLE_BYTES);
+	for (GLint i = 0; i < TGL_POLYGON_STIPPLE_BYTES; i++) {
+		zb->stipplepattern[i] = ((GLubyte*)a)[i];
+	}
 #endif
 }
 
