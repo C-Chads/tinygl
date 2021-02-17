@@ -858,6 +858,9 @@ void glPolygonOffset(GLfloat factor, GLfloat units);
 void glBlendFunc(GLint, GLint);
 void glBlendEquation(GLenum mode);
 void glDepthMask(GLint);
+
+/* Point Size */
+void glPointSize(GLfloat);
 /* not implemented, just added to compile  */
   /*
 inline void glPointSize(GLfloat) {}

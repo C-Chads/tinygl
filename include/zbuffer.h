@@ -219,6 +219,8 @@ typedef struct {
     /* depth */
     GLint depth_test;
     GLint depth_write;
+	/* point size*/
+    GLfloat pointsize;
     
     GLint nb_colors;
     unsigned char *dctable;

@@ -3,7 +3,7 @@
 
 #define ZCMP(z, zpix) (!(zbdt) || z >= (zpix))
 
-/* TODO: Implement blending for lines.*/
+/* TODO: Implement point size */
 
 void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 	GLushort* pz;

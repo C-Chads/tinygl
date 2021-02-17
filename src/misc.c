@@ -7,9 +7,10 @@ void glPolygonStipple(void* a) {
 	GLContext* c = gl_get_context();
 	ZBuffer* zb = c->zb;
 
-	for (GLint i = 0; i < TGL_POLYGON_STIPPLE_BYTES; i++) {
-		zb->stipplepattern[i] = b[i];
-	}
+	memcpy(zb->stipplepattern, a, TGL_POLYGON_STIPPLE_BYTES);
+//	for (GLint i = 0; i < TGL_POLYGON_STIPPLE_BYTES; i++) {
+//		zb->stipplepattern[i] = b[i];
+//	}
 #endif
 }
 
@@ -59,6 +60,8 @@ void glopBlendFunc(GLContext* c, GLParam* p) {
 	c->zb->sfactor = p[1].i;
 	c->zb->dfactor = p[2].i;
 }
+
+
 void glBlendEquation(GLenum mode) {
 	GLParam p[2];
 	p[0].op = OP_BlendEquation;
@@ -66,6 +69,16 @@ void glBlendEquation(GLenum mode) {
 	gl_add_op(p);
 }
 void glopBlendEquation(GLContext* c, GLParam* p) { c->zb->blendeq = p[1].i; }
+
+void glopPointSize(GLContext* c, GLParam* p){
+	c->zb->pointsize = p[1].f;
+}
+void glPointSize(GLfloat f){
+	GLParam p[2]; p[0].op = OP_PointSize;
+	p[1].f = f;
+	gl_add_op(p);
+}
+
 void glopEnableDisable(GLContext* c, GLParam* p) {
 	GLint code = p[1].i;
 	GLint v = p[2].i;

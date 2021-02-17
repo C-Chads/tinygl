@@ -28,7 +28,7 @@ typedef unsigned char uchar;
 #ifndef M_PI
 #define M_PI 3.14159265
 #endif
-
+int override_drawmodes = 0;
 GLubyte stipplepattern[128] = {0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55,
 							   0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55,
 
@@ -66,7 +66,12 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 	glNormal3f(0.0, 0.0, 1.0);
 
 	/* draw front face */
-	glBegin(GL_QUAD_STRIP);
+if(override_drawmodes == 1)
+	glBegin(GL_LINES);
+else if (override_drawmodes == 2)
+	glBegin(GL_POINTS);
+else
+	{glBegin(GL_QUAD_STRIP);}
 	for (i = 0; i <= teeth; i++) {
 		angle = i * 2.0 * M_PI / teeth;
 		glVertex3f(r0 * cos(angle), r0 * sin(angle), width * 0.5);
@@ -77,7 +82,12 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 	glEnd();
 
 	/* draw front sides of teeth */
-	glBegin(GL_QUADS);
+	if(override_drawmodes == 1)
+		glBegin(GL_LINES);
+	else if (override_drawmodes == 2)
+		glBegin(GL_POINTS);
+	else
+		glBegin(GL_QUADS);
 	da = 2.0 * M_PI / teeth / 4.0;
 	for (i = 0; i < teeth; i++) {
 		angle = i * 2.0 * M_PI / teeth;
@@ -92,7 +102,12 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 	glNormal3f(0.0, 0.0, -1.0);
 
 	/* draw back face */
-	glBegin(GL_QUAD_STRIP);
+	if(override_drawmodes == 1)
+		glBegin(GL_LINES);
+	else if (override_drawmodes == 2)
+		glBegin(GL_POINTS);
+	else
+		glBegin(GL_QUAD_STRIP);
 	for (i = 0; i <= teeth; i++) {
 		angle = i * 2.0 * M_PI / teeth;
 		glVertex3f(r1 * cos(angle), r1 * sin(angle), -width * 0.5);
@@ -103,7 +118,12 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 	glEnd();
 
 	/* draw back sides of teeth */
-	glBegin(GL_QUADS);
+	if(override_drawmodes == 1)
+		glBegin(GL_LINES);
+	else if (override_drawmodes == 2)
+		glBegin(GL_POINTS);
+	else
+		glBegin(GL_QUADS);
 	da = 2.0 * M_PI / teeth / 4.0;
 	for (i = 0; i < teeth; i++) {
 		angle = i * 2.0 * M_PI / teeth;
@@ -116,7 +136,12 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 	glEnd();
 
 	/* draw outward faces of teeth */
-	glBegin(GL_QUAD_STRIP);
+	if(override_drawmodes == 1)
+		glBegin(GL_LINES);
+	else if (override_drawmodes == 2)
+		glBegin(GL_POINTS);
+	else
+		glBegin(GL_QUAD_STRIP);
 	for (i = 0; i < teeth; i++) {
 		angle = i * 2.0 * M_PI / teeth;
 
@@ -148,7 +173,12 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 
 
 	/* draw inside radius cylinder */
-	glBegin(GL_QUAD_STRIP);
+	if(override_drawmodes == 1)
+		glBegin(GL_LINES);
+	else if (override_drawmodes == 2)
+		glBegin(GL_POINTS);
+	else
+		glBegin(GL_QUAD_STRIP);
 	for (i = 0; i <= teeth; i++) {
 		angle = i * 2.0 * M_PI / teeth;
 		glNormal3f(-cos(angle), -sin(angle), 0.0);
@@ -263,6 +293,10 @@ int main(int argc, char** argv) {
 				blending = 1;
 			if (!strcmp(argv[i],"-nospecular"))
 				setenspec = 0;
+			if (!strcmp(argv[i],"-lines"))
+				override_drawmodes = 1;
+			if (!strcmp(argv[i],"-points"))
+				override_drawmodes = 2;
 			larg = argv[i];
 		}
 	}
