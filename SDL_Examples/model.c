@@ -326,6 +326,7 @@ int main(int argc, char** argv) {
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
+	glSetEnableSpecular(0);
 static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10, 0.0}; // Light at infinity.
 	
 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
