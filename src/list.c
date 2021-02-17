@@ -1,11 +1,13 @@
 #include "zgl.h"
 #include "msghandling.h"
+
+/*
 static char* op_table_str[] = {
 #define ADD_OP(a, b, c) "gl" #a " " #c,
 
 #include "opinfo.h"
 };
-
+*/
 static void (*op_table_func[])(GLContext*, GLParam*) = {
 #define ADD_OP(a, b, c) glop##a,
 
