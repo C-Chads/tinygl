@@ -321,7 +321,7 @@ at the default settings, 32 bit,
 ```
 
 Hovers around 55-62 fps at count 27. 
-(I get the exact same performance figures with textures enabled)
+(I get the exact same performance figures with textures disabled)
 
 ```
 ./gears
