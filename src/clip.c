@@ -415,7 +415,7 @@ void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p
 				ZB_fillTriangleSmoothNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
 		#endif
 	} else {
-		ZB_fillTriangleFlat(c->zb, &p0->zp, &p1->zp, &p2->zp);
+		//ZB_fillTriangleFlat(c->zb, &p0->zp, &p1->zp, &p2->zp);
 		#if TGL_FEATURE_BLEND == 1
 				if(c->zb->enable_blend) 
 					ZB_fillTriangleFlat(c->zb, &p0->zp, &p1->zp, &p2->zp);
