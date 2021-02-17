@@ -1,5 +1,5 @@
-#include "zgl.h"
 #include "msghandling.h"
+#include "zgl.h"
 
 /*
 static char* op_table_str[] = {
@@ -29,8 +29,10 @@ static void delete_list(GLContext* c, GLint list) {
 	GLList* l;
 
 	l = find_list(c, list);
-	if (l == NULL)
-		{tgl_warning("\nAttempted to delete NULL list!!!!\n");return;}
+	if (l == NULL) {
+		tgl_warning("\nAttempted to delete NULL list!!!!\n");
+		return;
+	}
 	assert(l != NULL);
 
 	/* free param buffer */
@@ -137,7 +139,7 @@ void gl_add_op(GLParam* p) {
 		gl_compile_op(c, p);
 	}
 	if (c->print_flag) {
-//		gl_print_op(stderr, p);
+		//		gl_print_op(stderr, p);
 	}
 }
 

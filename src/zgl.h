@@ -261,8 +261,8 @@ typedef struct GLContext {
 	GLint offset_states;
 
 	/* opengl blending */
-	//All the settings are in the Zbuffer!
-	
+	// All the settings are in the Zbuffer!
+
 	/* specular buffer. could probably be shared between contexts,
 	  but that wouldn't be 100% thread safe */
 	GLSpecBuf* specbuf_first;
@@ -275,7 +275,7 @@ typedef struct GLContext {
 	GLint (*gl_resize_viewport)(struct GLContext* c, GLint* xsize, GLint* ysize);
 
 	/* depth test */
-	GLint depth_test;
+	//Moved to Zbuffer.
 } GLContext;
 
 extern GLContext* gl_ctx;

@@ -58,6 +58,8 @@ The changelog is as such:
 
 * Removed unused functions which bloat binary size and lengthen compile times.
 
+* Added support for glDepthMask and glDisable(GL_DEPTH_TEST) as per-GL-spec
+
 * Fixed a myriad of bugs and... weirdnesses
 
 
@@ -72,7 +74,7 @@ Notable limitations:
 
 * The only supported texture size and format is RGB 256x256
 
-* there is no GL_BLEND compatibility whatsoever
+* Blending is in development.
 
 * A lot of prototypes are missing.
 

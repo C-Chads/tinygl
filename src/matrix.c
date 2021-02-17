@@ -1,5 +1,5 @@
-#include "zgl.h"
 #include "msghandling.h"
+#include "zgl.h"
 void gl_print_matrix(const GLfloat* m) {
 	GLint i;
 

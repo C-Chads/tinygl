@@ -7,7 +7,7 @@ void initSharedState(GLContext* c) {
 	s->lists = gl_zalloc(sizeof(GLList*) * MAX_DISPLAY_LISTS);
 	s->texture_hash_table = gl_zalloc(sizeof(GLTexture*) * TEXTURE_HASH_TABLE_SIZE);
 
-	alloc_texture(c, 0); //MEMORY LEAK
+	alloc_texture(c, 0); // MEMORY LEAK
 }
 
 void endSharedState(GLContext* c) {
@@ -15,46 +15,45 @@ void endSharedState(GLContext* c) {
 	GLint i;
 	GLList* l;
 	GLParamBuffer *pb, *pb1;
-	GLTexture* t, *n;
-	for (i = 0; i < MAX_DISPLAY_LISTS; i++) 
-	if(s->lists[i]){
-		l = s->lists[i];
-		pb = l->first_op_buffer;
-		while (pb != NULL) {
-			pb1 = pb->next;
-			gl_free(pb);
-			pb = pb1;
+	GLTexture *t, *n;
+	for (i = 0; i < MAX_DISPLAY_LISTS; i++)
+		if (s->lists[i]) {
+			l = s->lists[i];
+			pb = l->first_op_buffer;
+			while (pb != NULL) {
+				pb1 = pb->next;
+				gl_free(pb);
+				pb = pb1;
+			}
+			gl_free(l);
+			s->lists[i] = NULL;
 		}
-		gl_free(l);
-		s->lists[i] = NULL;
-	}
 	gl_free(s->lists);
-	for(i = 0; i < TEXTURE_HASH_TABLE_SIZE; i++)
-	{
+	for (i = 0; i < TEXTURE_HASH_TABLE_SIZE; i++) {
 		t = s->texture_hash_table[i];
-		while(t){
-			GLTexture **ht;
-				GLImage* im;
-				GLint inner_i;
-			
-				//t = find_texture(c, h);
-				if (t->prev == NULL) {
-					ht = &c->shared_state.texture_hash_table[t->handle % TEXTURE_HASH_TABLE_SIZE];
-					*ht = t->next;
-				} else {
-					t->prev->next = t->next;
-				}
-				n=t->next;
-				if (t->next != NULL)
-					t->next->prev = t->prev;
-			
-				for (inner_i = 0; inner_i < MAX_TEXTURE_LEVELS; inner_i++) {
-					im = &t->images[inner_i];
-					if (im->pixmap != NULL)
-						gl_free(im->pixmap);
-				}
-				gl_free(t);
-				t=n;
+		while (t) {
+			GLTexture** ht;
+			GLImage* im;
+			GLint inner_i;
+
+			// t = find_texture(c, h);
+			if (t->prev == NULL) {
+				ht = &c->shared_state.texture_hash_table[t->handle % TEXTURE_HASH_TABLE_SIZE];
+				*ht = t->next;
+			} else {
+				t->prev->next = t->next;
+			}
+			n = t->next;
+			if (t->next != NULL)
+				t->next->prev = t->prev;
+
+			for (inner_i = 0; inner_i < MAX_TEXTURE_LEVELS; inner_i++) {
+				im = &t->images[inner_i];
+				if (im->pixmap != NULL)
+					gl_free(im->pixmap);
+			}
+			gl_free(t);
+			t = n;
 		}
 	}
 	gl_free(s->texture_hash_table);
@@ -138,7 +137,7 @@ void glInit(void* zbuffer1) {
 	c->zb->sfactor = GL_ONE;
 	c->zb->dfactor = GL_ZERO;
 	c->zb->blendeq = GL_FUNC_ADD;
-	
+
 	/* default state */
 	c->current_color.X = 1.0;
 	c->current_color.Y = 1.0;
@@ -221,22 +220,22 @@ void glInit(void* zbuffer1) {
 	c->specbuf_num_buffers = 0;
 
 	/* depth test */
-	c->depth_test = 0;
+	c->zb->depth_test = 0;
+	c->zb->depth_write = 1;
 }
 
 void glClose(void) {
-	GLContext* c = gl_get_context();GLuint i;
+	GLContext* c = gl_get_context();
+	GLuint i;
 	gl_free(c->vertex);
 	for (i = 0; i < 3; i++) {
-		//c->matrix_stack[i] = gl_zalloc(c->matrix_stack_depth_max[i] * sizeof(M4));
+		// c->matrix_stack[i] = gl_zalloc(c->matrix_stack_depth_max[i] * sizeof(M4));
 		gl_free(c->matrix_stack[i]);
-		//c->matrix_stack_ptr[i] = c->matrix_stack[i];
+		// c->matrix_stack_ptr[i] = c->matrix_stack[i];
 	}
 	i = 0;
 	GLSpecBuf* n = NULL;
-	for(
-	GLSpecBuf* b = c->specbuf_first; b != NULL; b = n)
-	{
+	for (GLSpecBuf* b = c->specbuf_first; b != NULL; b = n) {
 		n = b->next;
 		gl_free(b);
 		i++;

@@ -857,6 +857,7 @@ void glTexCoordPointer(GLint size, GLenum type, GLsizei stride,
 void glPolygonOffset(GLfloat factor, GLfloat units);
 void glBlendFunc(GLint, GLint);
 void glBlendEquation(GLenum mode);
+void glDepthMask(GLint);
 /* not implemented, just added to compile  */
   /*
 inline void glPointSize(GLfloat) {}

@@ -7,7 +7,8 @@
 
 #include "zfeatures.h"
 #include "GL/gl.h"
-
+//#warning stdio is left in!!! remove it!!!
+//#include <stdio.h>
 #define ZB_Z_BITS 16
 
 #define ZB_POINT_Z_FRAC_BITS 14
@@ -87,31 +88,124 @@ typedef GLushort PIXEL;
 #define RGB_MIX_FUNC(rr, gg, bb, tpix)(tpix)
 #endif
 
+
+
 #if TGL_FEATURE_BLEND == 1
-#define 
-#define TGL_BLEND_FUNC(source, dest){\
-	GLuint t = source;\
-	GLint sr = GET_REDDER(t), sg = GET_GREENER(t), sb = GET_BLUEER(t);\
-	GLint dr = GET_REDDER(dest), dg = GET_GREENER(dest), db = GET_BLUEER(dest);\
-	switch(zb->sfactor){		\
-		case GL_ONE:		\
-		default:		\
-		break;				\
-		case GL_ONE_MINUS_SRC_COLOR:\
-						\
-		break;\
-	}\
-	switch(zb->blendeq){\
-		case GL_ADD_FUNC:\
-		case GL_ADD_FUNC_EXT:\
-			dest = RGB_TO_PIXEL(sr+dr,sg+dg,sb+db);\
-		break;\
-		case GL_SUBTRACT_FUNC:
-		case GL_SUBTRACT_FUNC_EXT:
-			dest = RGB_TO_PIXEL(sr-dr,sg-dg,sb-db);\
-		break;
-	}\
-}
+#define TGL_NO_BLEND_FUNC(source, dest){dest = source;}
+#define TGL_NO_BLEND_FUNC_RGB(rr, gg, bb, dest){dest = RGB_TO_PIXEL(rr,gg,bb);}
+#define TGL_CLAMPI(imp,min,max) ( (imp<min)?min:((imp>max)?max:imp) )
+
+#if TGL_FEATURE_EXPENSIVE_BLEND == 1
+#define TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest) 									\
+		switch(zb->blendeq){															\
+			case GL_FUNC_ADD:															\
+			default:																	\
+				dest = RGB_TO_PIXEL(sr+dr, sg+dg, sb+db);								\
+			break;																		\
+			case GL_FUNC_SUBTRACT:														\
+				sr-=dr;sg-=dg;sb-=db;													\
+				dest = RGB_TO_PIXEL(sr * (sr),sg,sb);									\
+			break;																		\
+			case GL_FUNC_REVERSE_SUBTRACT:												\
+				sr=dr-sr;sg=dg-sg;sb=db-sb;												\
+				sr = TGL_CLAMPI(sr, 0, 65280);											\
+				sg = TGL_CLAMPI(sg, 0, 65280);											\
+				sb = TGL_CLAMPI(sb, 0, 65280);											\
+				dest = RGB_TO_PIXEL(sr,sg,sb);											\
+			break;																		\
+			  																			\
+		}																				
+#else
+#define TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest) 									\
+		/*switch(zb->blendeq){*/														\
+		/*	case GL_FUNC_ADD:	*/														\
+		/*	default:			*/														\
+		\
+		dest = RGB_TO_PIXEL(sr+dr, sg+dg, sb+db);										\
+		/*	break;				*/														\
+			  																			\
+		/*}						*/														
+#endif
+
+
+#define TGL_BLEND_FUNC(source, dest){													\
+	if(zb->enable_blend != 1){															\
+		TGL_NO_BLEND_FUNC(source,dest)													\
+	} else {																			\
+	GLuint sr, sg, sb, dr, dg, db;														\
+	{		GLuint t = source;															\
+	sr = GET_REDDER(t); sg = GET_GREENER(t); sb = GET_BLUEER(t);						\
+	t = dest;																			\
+	dr = GET_REDDER(t); dg = GET_GREENER(t); db = GET_BLUEER(t);}						\
+		/*printf("\nShould never reach this point!");*/									\
+		switch(zb->sfactor){															\
+			case GL_ONE:																\
+			default:																	\
+			break;																		\
+			case GL_ONE_MINUS_SRC_COLOR:												\
+			sr = ~sr & 0xffff;															\
+			sg = ~sg & 0xffff;															\
+			sb = ~sb & 0xffff;															\
+			break;																		\
+			case GL_ZERO:																\
+			sr=0;sg=0;sb=0;break;														\
+			break;																		\
+		}																				\
+		switch(zb->dfactor){															\
+				case GL_ONE:															\
+				default:																\
+				break;																	\
+				case GL_ONE_MINUS_DST_COLOR:											\
+				dr = ~dr & 0xffff;														\
+				dg = ~dg & 0xffff;														\
+				db = ~db & 0xffff;														\
+				break;																	\
+				case GL_ZERO:															\
+				dr=0;dg=0;db=0;break;													\
+				break;																	\
+			}																			\
+		TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest)									\
+	}																					\
+} ///////////////////////////////////////////////////////////////////////////////////////
+
+#define TGL_BLEND_FUNC_RGB(rr, gg, bb, dest){											\
+	if(zb->enable_blend != 1){															\
+		TGL_NO_BLEND_FUNC_RGB(rr,gg,bb,dest)											\
+	} else {																			\
+		GLint sr = rr & 0xFFFF, sg = gg & 0xFFFF, sb = bb & 0xFFFF, dr, dg, db;			\
+		{GLuint t = dest;																\
+		dr = GET_REDDER(t); dg = GET_GREENER(t); db = GET_BLUEER(t);}					\
+	/*printf("\nShould never reach this point!");*/										\
+		switch(zb->sfactor){															\
+			case GL_ONE:																\
+			default:																	\
+			break;																		\
+			case GL_ONE_MINUS_SRC_COLOR:												\
+			sr = ~sr & 0xffff;															\
+			sg = ~sg & 0xffff;															\
+			sb = ~sb & 0xffff;															\
+			break;																		\
+			case GL_ZERO:																\
+			sr=0;sg=0;sb=0;break;														\
+			break;																		\
+		}																				\
+		switch(zb->dfactor){															\
+				case GL_ONE:															\
+				default:																\
+				break;																	\
+				case GL_ONE_MINUS_DST_COLOR:											\
+				dr = ~dr & 0xffff;														\
+				dg = ~dg & 0xffff;														\
+				db = ~db & 0xffff;														\
+				break;																	\
+				case GL_ZERO:															\
+				dr=0;dg=0;db=0;break;													\
+				break;																	\
+		}																				\
+		TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest)									\
+	}																					\
+} ///////////////////////////////////////////////////////////////////////////////////////
+
 #else
 #define TGL_BLEND_FUNC(source, dest){dest = source;}
 #define TGL_BLEND_FUNC_RGB(rr, gg, bb, dest){dest = RGB_TO_PIXEL(rr,gg,bb);}
@@ -126,8 +220,10 @@ typedef struct {
     GLushort *zbuf;
     PIXEL *pbuf;
     GLint frame_buffer_allocated;
+    /* depth */
+    GLint depth_test;
+    GLint depth_write;
     
-     
     GLint nb_colors;
     unsigned char *dctable;
     GLint *ctable;

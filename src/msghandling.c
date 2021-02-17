@@ -1,7 +1,7 @@
 #include "../include/GL/gl.h"
+#include "zgl.h"
 #include <stdarg.h>
 #include <stdio.h>
-#include "zgl.h"
 #define NDEBUG
 
 #ifdef NDEBUG
@@ -45,7 +45,6 @@ void tgl_fixme(const char* format, ...) {
 	va_end(args);
 #endif /* !NO_DEBUG_OUTPUT */
 }
-
 
 void gl_fatal_error(char* format, ...) {
 #ifndef NO_DEBUG_OUTPUT

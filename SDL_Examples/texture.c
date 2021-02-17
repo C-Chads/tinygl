@@ -90,7 +90,8 @@ void initScene() {
 	// glLightfv( GL_LIGHT0, GL_SPECULAR, white);
 	glEnable(GL_CULL_FACE);
 	// glDisable( GL_CULL_FACE );
-	glEnable(GL_LIGHTING);
+	glDisable(GL_BLEND);
+	//glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 	// glEnable( GL_LIGHT0 );

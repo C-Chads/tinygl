@@ -1,5 +1,5 @@
-#include "zgl.h"
 #include "msghandling.h"
+#include "zgl.h"
 /* fill triangle profile */
 /* #define PROFILE */
 
@@ -110,7 +110,7 @@ void gl_draw_line(GLContext* c, GLVertex* p1, GLVertex* p2) {
 		if (c->render_mode == GL_SELECT) {
 			gl_add_select1(c, p1->zp.z, p2->zp.z, p2->zp.z);
 		} else {
-			if (c->depth_test)
+			if (c->zb->depth_test)
 				ZB_line_z(c->zb, &p1->zp, &p2->zp);
 			else
 				ZB_line(c->zb, &p1->zp, &p2->zp);
@@ -137,7 +137,7 @@ void gl_draw_line(GLContext* c, GLVertex* p1, GLVertex* p2) {
 			gl_transform_to_viewport(c, &q1);
 			gl_transform_to_viewport(c, &q2);
 
-			if (c->depth_test)
+			if (c->zb->depth_test)
 				ZB_line_z(c->zb, &q1.zp, &q2.zp);
 			else
 				ZB_line(c->zb, &q1.zp, &q2.zp);
@@ -414,7 +414,7 @@ void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p
 /* Render a clipped triangle in line mode */
 
 void gl_draw_triangle_line(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) {
-	if (c->depth_test) {
+	if (c->zb->depth_test) {
 		if (p0->edge_flag)
 			ZB_line_z(c->zb, &p0->zp, &p1->zp);
 		if (p1->edge_flag)

@@ -75,6 +75,4 @@ ADD_OP(BlendFunc, 2, "%d %d")
 ADD_OP(PlotPixel, 2, "%d %d")
 ADD_OP(TextSize, 1, "%d")
 
-
-
 #undef ADD_OP

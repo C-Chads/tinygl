@@ -165,6 +165,9 @@ void glPolygonMode(GLint face, GLint mode) {
 	gl_add_op(p);
 }
 
+void glDepthMask(GLint i){
+	gl_get_context()->zb->depth_write = (i==GL_TRUE);
+}
 /* glEnable / glDisable */
 
 void glEnable(GLint cap) {

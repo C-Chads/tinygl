@@ -207,10 +207,9 @@ void initScene() {
 	// glLightfv( GL_LIGHT0, GL_AMBIENT, white);
 	// glLightfv( GL_LIGHT0, GL_SPECULAR, white);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_LIGHTING);
-	// glDisable( GL_LIGHTING );
+	
 	glEnable(GL_LIGHT0);
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	// glShadeModel( GL_SMOOTH );
 
 	glEnable(GL_POLYGON_STIPPLE);
@@ -221,21 +220,21 @@ void initScene() {
 	gear1 = glGenLists(1);
 	glNewList(gear1, GL_COMPILE);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
-	// glColor3fv(red);
+	glColor3fv(blue);
 	gear(1.0, 4.0, 1.0, 20, 0.7); // The largest gear.
 	glEndList();
 
 	gear2 = glGenLists(1);
 	glNewList(gear2, GL_COMPILE);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
-	// glColor3fv(green);
+	glColor3fv(red);
 	gear(0.5, 2.0, 2.0, 10, 0.7); // The small gear with the smaller hole, to the right.
 	glEndList();
 
 	gear3 = glGenLists(1);
 	glNewList(gear3, GL_COMPILE);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, green);
-	// glColor3fv(blue);
+	glColor3fv(green);
 	gear(1.3, 2.0, 0.5, 10, 0.7); // The small gear above with the large hole.
 	glEndList();
 	// glEnable( GL_NORMALIZE );
@@ -334,7 +333,20 @@ int main(int argc, char** argv) {
 	// initialize GL:
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glViewport(0, 0, winSizeX, winSizeY);
+//TESTING BLENDING...
+	//glDisable(GL_DEPTH_TEST);
 	glEnable(GL_DEPTH_TEST);
+
+	//glEnable(GL_BLEND);
+	glDisable(GL_BLEND);
+	
+	//glDepthMask(GL_FALSE);
+	glDepthMask(GL_TRUE);
+
+	//glDisable( GL_LIGHTING );
+	glEnable(GL_LIGHTING);
+	glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE_MINUS_DST_COLOR);
+	glBlendEquation(GL_FUNC_ADD);
 	GLfloat h = (GLfloat)winSizeY / (GLfloat)winSizeX;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

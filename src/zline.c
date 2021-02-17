@@ -1,23 +1,23 @@
 #include "../include/zbuffer.h"
 #include <stdlib.h>
 
-#define ZCMP(z, zpix) ((z) >= (zpix))
+#define ZCMP(z, zpix) (!(zb->depth_test) || z >= (zpix))
 
 /* TODO: Implement blending for lines.*/
-
 
 void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 	GLushort* pz;
 	PIXEL* pp;
 	GLint zz;
-//	PIXEL col;
+	//	PIXEL col;
 	pz = zb->zbuf + (p->y * zb->xsize + p->x);
 	pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * p->y + p->x * PSZB);
 	zz = p->z >> ZB_POINT_Z_FRAC_BITS;
 	if (ZCMP(zz, *pz)) {
-		//*pp = 
+		//*pp =
 		TGL_BLEND_FUNC_RGB(p->r, p->g, p->b, (*pp))
-		*pz = zz;
+		if(zb->depth_write)
+			*pz = zz;
 	}
 }
 

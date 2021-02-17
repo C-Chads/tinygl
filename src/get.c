@@ -1,5 +1,5 @@
-#include "zgl.h"
 #include "msghandling.h"
+#include "zgl.h"
 void glGetIntegerv(GLint pname, GLint* params) {
 	GLContext* c = gl_get_context();
 
