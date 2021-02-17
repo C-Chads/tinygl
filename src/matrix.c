@@ -1,10 +1,10 @@
 #include "zgl.h"
-
+#include "msghandling.h"
 void gl_print_matrix(const GLfloat* m) {
 	GLint i;
 
 	for (i = 0; i < 4; i++) {
-		fprintf(stderr, "%f %f %f %f\n", m[i], m[4 + i], m[8 + i], m[12 + i]);
+		tgl_warning("%f %f %f %f\n", m[i], m[4 + i], m[8 + i], m[12 + i]);
 	}
 }
 

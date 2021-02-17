@@ -3,9 +3,9 @@
 #include "font8x8_basic.h"
 #include "zgl.h"
 #include <assert.h>
-#include <stdio.h>
+//#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+//#include <string.h>
 GLTEXTSIZE textsize = 1;
 
 void glTextSize(GLTEXTSIZE mode) {

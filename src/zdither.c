@@ -5,7 +5,7 @@
 
 #include "../include/zbuffer.h"
 #include <assert.h>
-#include <stdio.h>
+//#include <stdio.h>
 #include <stdlib.h>
 
 #if defined(TGL_FEATURE_8_BITS)
@@ -34,7 +34,7 @@ void ZB_initDither(ZBuffer* zb, GLint nb_colors, GLubyte* color_indexes, GLint* 
 	GLint c, r, g, b, i, index, r1, g1, b1;
 
 	if (nb_colors < (_R * _G * _B)) {
-		fprintf(stderr, "zdither: not enough colors\n");
+//		fprintf(stderr, "zdither: not enough colors\n");
 		exit(1);
 	}
 

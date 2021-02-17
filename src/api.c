@@ -1,5 +1,5 @@
 #include "zgl.h"
-#include <stdio.h>
+//#include <stdio.h>
 /* glVertex */
 
 void glVertex4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w) {

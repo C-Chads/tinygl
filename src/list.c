@@ -1,5 +1,5 @@
 #include "zgl.h"
-
+#include "msghandling.h"
 static char* op_table_str[] = {
 #define ADD_OP(a, b, c) "gl" #a " " #c,
 
@@ -28,7 +28,7 @@ static void delete_list(GLContext* c, GLint list) {
 
 	l = find_list(c, list);
 	if (l == NULL)
-		puts("\nAttempted to delete NULL list!!!!\n");
+		{tgl_warning("\nAttempted to delete NULL list!!!!\n");return;}
 	assert(l != NULL);
 
 	/* free param buffer */
@@ -63,7 +63,7 @@ static GLList* alloc_list(GLContext* c, GLint list) {
 	c->shared_state.lists[list] = l;
 	return l;
 }
-
+/*
 void gl_print_op(FILE* f, GLParam* p) {
 	GLint op;
 	char* s;
@@ -88,9 +88,9 @@ void gl_print_op(FILE* f, GLParam* p) {
 			s++;
 		}
 	}
-	fprintf(f, "\n");
+	tgl_warning(f, "\n");
 }
-
+*/
 void gl_compile_op(GLContext* c, GLParam* p) {
 	GLint op, op_size;
 	GLParamBuffer *ob, *ob1;
@@ -135,7 +135,7 @@ void gl_add_op(GLParam* p) {
 		gl_compile_op(c, p);
 	}
 	if (c->print_flag) {
-		gl_print_op(stderr, p);
+//		gl_print_op(stderr, p);
 	}
 }
 

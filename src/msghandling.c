@@ -1,6 +1,7 @@
 #include "../include/GL/gl.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include "zgl.h"
 //#define NDEBUG
 
 #ifdef NDEBUG
@@ -43,4 +44,17 @@ void tgl_fixme(const char* format, ...) {
 	vfprintf(stderr, format, args);
 	va_end(args);
 #endif /* !NO_DEBUG_OUTPUT */
+}
+
+
+void gl_fatal_error(char* format, ...) {
+	va_list ap;
+
+	va_start(ap, format);
+
+	fprintf(stderr, "TinyGL: fatal error: ");
+	vfprintf(stderr, format, ap);
+	fprintf(stderr, "\n");
+	exit(1);
+	va_end(ap);
 }

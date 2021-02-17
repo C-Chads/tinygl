@@ -13,11 +13,17 @@
 #include <stdlib.h>
 #include <string.h>
 //#include <GL/glu.h>
-#define CHAD_API_IMPL
-#include "include/api_audio.h"
-#define STB_IMAGE_IMPLEMENTATION
+#include "../include/GL/gl.h"
+
 #include "../include/zbuffer.h"
-#include "include/stb_image.h"
+#define CHAD_API_IMPL
+#define CHAD_MATH_IMPL
+#include "include/3dMath.h"
+#ifdef PLAY_MUSIC
+#include "include/api_audio.h"
+#else
+typedef unsigned char uchar;
+#endif
 #include <SDL/SDL.h>
 
 #ifndef M_PI
@@ -125,7 +131,11 @@ int main(int argc, char** argv) {
 			larg = argv[i];
 		}
 	}
+#ifdef PLAY_MUSIC
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+#else
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+#endif
 		fprintf(stderr, "ERROR: cannot initialize SDL video.\n");
 		return 1;
 	}
@@ -154,8 +164,8 @@ int main(int argc, char** argv) {
 	printf("\nBSHIFT IS %u", screen->format->Bshift);
 	printf("\nASHIFT IS %u\n", screen->format->Ashift);
 	fflush(stdout);
-	track* myTrack = NULL;
 #ifdef PLAY_MUSIC
+	track* myTrack = NULL;
 	myTrack = lmus("WWGW.mp3");
 	mplay(myTrack, -1, 1000);
 #endif
@@ -285,6 +295,7 @@ int main(int argc, char** argv) {
 	printf("%i frames in %f secs, %f frames per second.\n", frames, (float)(tNow - tLastFps) * 0.001f, (float)frames * 1000.0f / (float)(tNow - tLastFps));
 	// cleanup:
 	ZB_close(frameBuffer);
+	glClose();
 	if (SDL_WasInit(SDL_INIT_VIDEO))
 		SDL_QuitSubSystem(SDL_INIT_VIDEO);
 #ifdef PLAY_MUSIC

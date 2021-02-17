@@ -3,6 +3,8 @@
 A rework of Fabrice Bellard's TinyGL (still compiling with -std=c99) to be
 more useful as a software rasterizer.
 
+Valgrind'd for memory leaks in the demos.
+
 It's also lightning fast.
 
 Without Polygon Stipple:
@@ -82,7 +84,52 @@ textured triangles will appear black.
 
 * Lit textured triangles are smoothly shaded, irrespective of glShadeModel (Untextured triangles do not have this bug)
 
+* the X dimension of the rendering window with must be a multiple of 4.
+
 * <Undocumented limitations that have not been tested>
+
+### HOW DO I USE THIS LIBRARY???
+
+```c
+//First you have to include
+#include "../include/GL/gl.h"
+#include "../include/zbuffer.h"
+
+/*
+	Somewhere in your program...
+*/
+
+//Next, open a framebuffer.
+ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0, 0, 0, 0);
+//Tell TinyGL to init on that framebuffer
+glInit(frameBuffer);
+
+//Begin making OpenGL calls!
+//At the end of your application, when you want to clean up.
+ZB_close(frameBuffer);
+glClose();
+
+```
+
+### WHAT ARE THE MINIMUM REQUIREMENTS OF THIS LIBRARY?
+
+SDL 1.2 is required to run the demos I've written.
+
+SDL is by no means required to compile or use this library.
+SDL is used as a reasonable means of displaying the output of TinyGL for testing.
+
+(I also included some bonus libraries that work well with SDL in the SDL examples if you want to write games using TinyGL!)
+(Try compiling the demos with -D PLAY_MUSIC if you have mixer!)
+* A c99 compiler
+* 32 bit signed and unsigned integer types
+* 32 bit binary float type (IEEE 754)
+* Some floating point type at least as large as a 32 bit float
+* sin and cos functions in math.h
+* assert in assert.h
+* a minimal C stdlib
+* A memory allocator of some sort with some equivalents or replacements for malloc, calloc, and free.
+
+There is no FILE* usage, or I/O outside of 'msghandling.c' so if you want to remove all stdio dependency, just stub out the calls there.
 
 
 ### NEW FUNCTIONS 

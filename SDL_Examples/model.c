@@ -19,7 +19,11 @@
 #include "include/tobjparse.h"
 #define CHAD_API_IMPL
 #include "../include/zbuffer.h"
+#ifdef PLAY_MUSIC
 #include "include/api_audio.h"
+#else
+typedef unsigned char uchar;
+#endif
 #include <SDL/SDL.h>
 #include <time.h>
 
@@ -226,7 +230,9 @@ int main(int argc, char** argv) {
 	int dlExists = 0;
 	int doTextures = 1;
 	char* modelName = "extrude.obj";
+#ifdef PLAY_MUSIC
 	track* myTrack = NULL;
+#endif
 	unsigned int fps = 0;
 	if (argc > 2) {
 		char* larg = argv[1];
@@ -246,7 +252,11 @@ int main(int argc, char** argv) {
 			larg = argv[i];
 		}
 	}
+#ifdef PLAY_MUSIC
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+#else
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+#endif
 		fprintf(stderr, "ERROR: cannot initialize SDL video.\n");
 		return 1;
 	}
@@ -525,7 +535,7 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 	// glDeleteList(modelDisplayList);
 	glDeleteLists(modelDisplayList, 1);
 	ZB_close(frameBuffer);
-
+	glClose();
 	if (SDL_WasInit(SDL_INIT_VIDEO))
 		SDL_QuitSubSystem(SDL_INIT_VIDEO);
 #ifdef PLAY_MUSIC

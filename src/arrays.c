@@ -1,6 +1,6 @@
 #include "zgl.h"
 #include <assert.h>
-#include <stdio.h>
+//#include <stdio.h>
 
 #define VERTEX_ARRAY 0x0001
 #define COLOR_ARRAY 0x0002

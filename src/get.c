@@ -1,5 +1,5 @@
 #include "zgl.h"
-
+#include "msghandling.h"
 void glGetIntegerv(GLint pname, GLint* params) {
 	GLContext* c = gl_get_context();
 
@@ -63,7 +63,7 @@ void glGetFloatv(GLint pname, GLfloat* v) {
 	case GL_POINT_SIZE_RANGE:
 		v[0] = v[1] = 1.0f;
 	default:
-		fprintf(stderr, "warning: unknown pname in glGetFloatv()\n");
+		tgl_warning("warning: unknown pname in glGetFloatv()\n");
 		break;
 	}
 }

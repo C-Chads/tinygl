@@ -7,7 +7,7 @@
 #include "zmath.h"
 #include <assert.h>
 #include <math.h>
-#include <stdio.h>
+//#include <stdio.h>
 #include <stdlib.h>
 #ifndef M_PI
 #define M_PI 3.14159265358979323
@@ -27,7 +27,7 @@ enum {
 #define POLYGON_MAX_VERTEX 16
 
 /* Max # of specular light pow buffers */
-#define MAX_SPECULAR_BUFFERS 8
+#define MAX_SPECULAR_BUFFERS 32
 //#define MAX_SPECULAR_BUFFERS 16
 /* # of entries in specular buffer */
 #define SPECULAR_BUFFER_SIZE 1024
@@ -44,7 +44,7 @@ enum {
 #define VERTEX_HASH_SIZE 1031
 
 #define MAX_DISPLAY_LISTS 1024
-#define OP_BUFFER_MAX_SIZE 512
+#define OP_BUFFER_MAX_SIZE 1024
 
 #define TGL_OFFSET_FILL 0x1
 #define TGL_OFFSET_LINE 0x2
