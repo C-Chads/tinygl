@@ -190,7 +190,7 @@ clip_func(clip_xmin, -, X, Y, Z)
 						GLfloat (*clip_proc[6])(V4*, V4*, V4*) = {clip_xmin, clip_xmax, clip_ymin, clip_ymax, clip_zmin, clip_zmax};
 
 static inline void updateTmp(GLContext* c, GLVertex* q, GLVertex* p0, GLVertex* p1, GLfloat t) {
-	if (c->current_shade_model == GL_SMOOTH) {
+	{
 		q->color.v[0] = p0->color.v[0] + (p1->color.v[0] - p0->color.v[0]) * t;
 		q->color.v[1] = p0->color.v[1] + (p1->color.v[1] - p0->color.v[1]) * t;
 		q->color.v[2] = p0->color.v[2] + (p1->color.v[2] - p0->color.v[2]) * t;
@@ -203,13 +203,6 @@ static inline void updateTmp(GLContext* c, GLVertex* q, GLVertex* p0, GLVertex* 
 		// tgl_warning("\n~\nNew Components are %f, %f, %f", q->color.v[0], q->color.v[1], q->color.v[2]);
 		// tgl_warning("\nZbuffer point r,g,b for new point are: %d %d %d",q->zp.r, q->zp.g,q->zp.b);
 		/// *
-	} else {
-		q->color.v[0] = p0->color.v[0];
-		q->color.v[1] = p0->color.v[1];
-		q->color.v[2] = p0->color.v[2];
-		q->zp.r = p0->zp.r;
-		q->zp.g = p0->zp.g;
-		q->zp.b = p0->zp.b;
 	}
 	//	*/
 	if (c->texture_2d_enabled) {

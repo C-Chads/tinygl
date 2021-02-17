@@ -63,9 +63,6 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 
 	da = 2.0 * M_PI / teeth / 4.0;
 
-	//glShadeModel(GL_SMOOTH);
-	//glShadeModel(GL_FLAT);
-
 	glNormal3f(0.0, 0.0, 1.0);
 
 	/* draw front face */
@@ -149,7 +146,6 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 
 	glEnd();
 
-	// glShadeModel( GL_SMOOTH );
 
 	/* draw inside radius cylinder */
 	glBegin(GL_QUAD_STRIP);
@@ -211,7 +207,7 @@ void initScene() {
 	
 	glEnable(GL_LIGHT0);
 	//glEnable(GL_DEPTH_TEST);
-	//glShadeModel( GL_SMOOTH );
+	
 
 	glEnable(GL_POLYGON_STIPPLE);
 	glPolygonStipple(stipplepattern);
@@ -246,16 +242,21 @@ int main(int argc, char** argv) {
 	int winSizeX = 640;
 	int winSizeY = 480;
 	unsigned int fps = 0;
+	unsigned int flat = 0;
 	char needsRGBAFix = 0;
-	if (argc > 2) {
-		char* larg = argv[1];
-		for (int i = 0; i < argc; i++) {
+	if (argc > 1) {
+		char* larg = "";
+		for (int i = 1; i < argc; i++) {
 			if (!strcmp(larg, "-w"))
 				winSizeX = atoi(argv[i]);
 			if (!strcmp(larg, "-h"))
 				winSizeY = atoi(argv[i]);
 			if (!strcmp(larg, "-fps"))
 				fps = strtoull(argv[i], 0, 10);
+			if (!strcmp(argv[i],"-flat"))
+				flat = 1;
+			if (!strcmp(argv[i],"-smooth"))
+				flat = 0;
 			larg = argv[i];
 		}
 	}
@@ -334,7 +335,7 @@ int main(int argc, char** argv) {
 	// initialize GL:
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glViewport(0, 0, winSizeX, winSizeY);
-	glShadeModel(GL_SMOOTH);
+if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 //TESTING BLENDING...
 	//glDisable(GL_DEPTH_TEST);
 	glEnable(GL_DEPTH_TEST);

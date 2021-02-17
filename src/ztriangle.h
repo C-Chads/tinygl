@@ -3,7 +3,7 @@
  */
 
 {
-	ZBufferPoint *t, *pr1, *pr2, *l1, *l2;
+	ZBufferPoint *pr1, *pr2, *l1, *l2;
 	GLfloat fdx1, fdx2, fdy1, fdy2, fz, d1, d2;
 	GLushort* pz1;
 	PIXEL* pp1;
@@ -36,6 +36,8 @@
 #endif
 
 	/* we sort the vertex with increasing y */
+	{
+	ZBufferPoint *t;
 	if (p1->y < p0->y) {
 		t = p0;
 		p0 = p1;
@@ -50,6 +52,7 @@
 		t = p1;
 		p1 = p2;
 		p2 = t;
+	}
 	}
 
 	/* we compute dXdx and dXdy for all GLinterpolated values */
@@ -265,7 +268,6 @@
 #endif
 
 				n = (x2 >> 16) - x1;
-				/*the_x = x1; //Gek added this to make determining the X coordinate easier!*/
 				pp = (PIXEL*)((GLbyte*)pp1 + x1 * PSZB);
 #ifdef INTERP_Z
 				pz = pz1 + x1;

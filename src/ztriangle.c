@@ -37,13 +37,19 @@
 
 void ZB_fillTriangleFlat(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
 
-	PIXEL color; GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
+	PIXEL color = RGB_TO_PIXEL(p2->r, p2->g, p2->b); GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	TGL_BLEND_VARS
 	TGL_STIPPLEVARS
+
+#undef INTERP_Z
+#undef INTERP_RGB
+#undef INTERP_ST
+#undef INTERP_STZ
+
 #define INTERP_Z
 
 #define DRAW_INIT()                                                                                                                                            \
-	{ color = RGB_TO_PIXEL(p2->r, p2->g, p2->b); }
+	{  }
 
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
@@ -60,12 +66,16 @@ void ZB_fillTriangleFlat(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuffe
 
 void ZB_fillTriangleFlatNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
 
-	PIXEL color; GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
+	PIXEL color = RGB_TO_PIXEL(p2->r, p2->g, p2->b); GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	TGL_STIPPLEVARS
+#undef INTERP_Z
+#undef INTERP_RGB
+#undef INTERP_ST
+#undef INTERP_STZ
 #define INTERP_Z
 
 #define DRAW_INIT()                                                                                                                                            \
-	{ color = RGB_TO_PIXEL(p2->r, p2->g, p2->b); }
+	{  }
 
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
