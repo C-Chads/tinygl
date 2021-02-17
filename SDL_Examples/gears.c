@@ -243,6 +243,7 @@ int main(int argc, char** argv) {
 	int winSizeY = 480;
 	unsigned int fps = 0;
 	unsigned int flat = 0;
+	unsigned int setenspec = 1;
 	unsigned int blending = 0;
 	char needsRGBAFix = 0;
 	if (argc > 1) {
@@ -260,6 +261,8 @@ int main(int argc, char** argv) {
 				flat = 0;
 			if (!strcmp(argv[i],"-blend"))
 				blending = 1;
+			if (!strcmp(argv[i],"-nospecular"))
+				setenspec = 0;
 			larg = argv[i];
 		}
 	}
@@ -367,7 +370,7 @@ if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 	glTranslatef(0.0, 0.0, -45.0);
 
 	initScene();
-
+	if(setenspec) glSetEnableSpecular(GL_TRUE); else glSetEnableSpecular(GL_FALSE);
 	// variables for timing:
 	unsigned int frames = 0;
 	unsigned int tNow = SDL_GetTicks();

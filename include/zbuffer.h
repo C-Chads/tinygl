@@ -122,7 +122,7 @@ typedef GLushort PIXEL;
 				dest = RGB_TO_PIXEL(sr,sg,sb);											\
 			break;																		\
 			  																			\
-		}																				
+		}
 
 
 
