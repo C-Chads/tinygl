@@ -35,7 +35,20 @@ void glopPlotPixel(GLContext* c, GLParam* p) {
 	GLint x = p[1].i;
 	PIXEL pix = p[2].ui;
 	// PIXEL* pbuf = c->zb->pbuf;
+	
+	//c->zb->pbuf[x] = pix;
+#if TGL_FEATURE_BLEND == 1
+	ZBuffer* zb = c->zb;
+	PIXEL* targ = zb->pbuf + x;
+	TGL_BLEND_VARS
+	if(zb->enable_blend){
+		TGL_BLEND_FUNC(pix, (*targ));
+	}else{
+		*targ = pix;
+	}
+#else
 	c->zb->pbuf[x] = pix;
+#endif
 }
 
 void glPlotPixel(GLint x, GLint y, GLuint pix) {
