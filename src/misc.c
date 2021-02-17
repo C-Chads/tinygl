@@ -97,7 +97,7 @@ void glopEnableDisable(GLContext* c, GLParam* p) {
 			gl_enable_disable_light(c, code - GL_LIGHT0, v);
 		} else {
 			/*
-			fprintf(stderr,"glEnableDisable: 0x%X not supported.\n",code);
+			fpr_ntf(stderr,"glEnableDisable: 0x%X not supported.\n",code);
 			*/
 		}
 		break;

@@ -1,5 +1,5 @@
 #include "zgl.h"
-
+#include "msghandling.h"
 /* fill triangle profile */
 /* #define PROFILE */
 
@@ -32,7 +32,7 @@ void gl_transform_to_viewport(GLContext* c, GLVertex* v) {
 }
 
 static void gl_add_select1(GLContext* c, GLint z1, GLint z2, GLint z3) {
-	GLuint min, max;
+	GLint min, max;
 	min = max = z1;
 	if (z2 < min)
 		min = z2;
@@ -198,10 +198,10 @@ static inline void updateTmp(GLContext* c, GLVertex* q, GLVertex* p0, GLVertex* 
 		q->zp.g = p0->zp.g + (p1->zp.g - p0->zp.g) * t;
 		q->zp.b = p0->zp.b + (p1->zp.b - p0->zp.b) * t;
 		// q->color.v[3]=p0->color.v[3] + (p1->color.v[3] - p0->color.v[3])*t;
-		// printf("\np0 Components are %f, %f, %f", p0->color.v[0], p0->color.v[1], p0->color.v[2]);
-		// printf("\nZbuffer point r,g,b for p0 are: %d %d %d",p0->zp.r, p0->zp.g,p0->zp.b);
-		// printf("\n~\nNew Components are %f, %f, %f", q->color.v[0], q->color.v[1], q->color.v[2]);
-		// printf("\nZbuffer point r,g,b for new point are: %d %d %d",q->zp.r, q->zp.g,q->zp.b);
+		// tgl_warning("\np0 Components are %f, %f, %f", p0->color.v[0], p0->color.v[1], p0->color.v[2]);
+		// tgl_warning("\nZbuffer point r,g,b for p0 are: %d %d %d",p0->zp.r, p0->zp.g,p0->zp.b);
+		// tgl_warning("\n~\nNew Components are %f, %f, %f", q->color.v[0], q->color.v[1], q->color.v[2]);
+		// tgl_warning("\nZbuffer point r,g,b for new point are: %d %d %d",q->zp.r, q->zp.g,q->zp.b);
 		/// *
 	} else {
 		q->color.v[0] = p0->color.v[0];
@@ -301,10 +301,10 @@ static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVe
 		/* this test can be true only in case of rounding errors */
 		if (clip_bit == 6) {
 #if 0
-      printf("Error:\n");
-      printf("%f %f %f %f\n",p0->pc.X,p0->pc.Y,p0->pc.Z,p0->pc.W);
-      printf("%f %f %f %f\n",p1->pc.X,p1->pc.Y,p1->pc.Z,p1->pc.W);
-      printf("%f %f %f %f\n",p2->pc.X,p2->pc.Y,p2->pc.Z,p2->pc.W);
+      tgl_warning("Error:\n");
+      tgl_warning("%f %f %f %f\n",p0->pc.X,p0->pc.Y,p0->pc.Z,p0->pc.W);
+      tgl_warning("%f %f %f %f\n",p1->pc.X,p1->pc.Y,p1->pc.Z,p1->pc.W);
+      tgl_warning("%f %f %f %f\n",p2->pc.X,p2->pc.Y,p2->pc.Z,p2->pc.W);
 #endif
 			return;
 		}

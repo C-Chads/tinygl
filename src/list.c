@@ -76,10 +76,10 @@ void gl_print_op(FILE* f, GLParam* p) {
 			s++;
 			switch (*s++) {
 			case 'f':
-				fprintf(f, "%g", p[0].f);
+				fpr_ntf(f, "%g", p[0].f);
 				break;
 			default:
-				fprintf(f, "%d", p[0].i);
+				fpr_ntf(f, "%d", p[0].i);
 				break;
 			}
 			p++;
