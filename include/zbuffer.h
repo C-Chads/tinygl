@@ -93,39 +93,41 @@ typedef GLushort PIXEL;
 #if TGL_FEATURE_BLEND == 1
 #define TGL_NO_BLEND_FUNC(source, dest){dest = source;}
 #define TGL_NO_BLEND_FUNC_RGB(rr, gg, bb, dest){dest = RGB_TO_PIXEL(rr,gg,bb);}
-#define TGL_CLAMPI(imp,min,max) ( (imp<min)?min:((imp>max)?max:imp) )
+//SORCERY to achieve 32 bit signed integer clamping
+//#define TGL_IGTZ(imp) ((imp>>31) == 0)
+//#define TGL_ILT(imp) ((imp & 0x10000) != 0x10000)
+//#define TGL_INLT(imp) ((imp & 0x10000) == 0x10000)
+//#define TGL_CLAMPI(imp) ( TGL_IGTZ(imp)*( TGL_ILT(imp) * imp + !TGL_INLT(imp) * 65535)  )
+#define TGL_CLAMPI(imp) ( (imp<0)?0:((imp>65535)?65535:imp) )
 
-#if TGL_FEATURE_EXPENSIVE_BLEND == 1
 #define TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest) 									\
 		switch(zb->blendeq){															\
 			case GL_FUNC_ADD:															\
 			default:																	\
-				dest = RGB_TO_PIXEL(sr+dr, sg+dg, sb+db);								\
+				sr+=dr;sg+=dg;sb+=db;													\
+				sr = TGL_CLAMPI(sr);													\
+				sg = TGL_CLAMPI(sg);													\
+				sb = TGL_CLAMPI(sb);													\
+				dest = RGB_TO_PIXEL(sr,sg,sb);											\
 			break;																		\
 			case GL_FUNC_SUBTRACT:														\
 				sr-=dr;sg-=dg;sb-=db;													\
-				dest = RGB_TO_PIXEL(sr * (sr),sg,sb);									\
+				sr = TGL_CLAMPI(sr);													\
+				sg = TGL_CLAMPI(sg);													\
+				sb = TGL_CLAMPI(sb);													\
+				dest = RGB_TO_PIXEL(sr,sg,sb);											\
 			break;																		\
 			case GL_FUNC_REVERSE_SUBTRACT:												\
 				sr=dr-sr;sg=dg-sg;sb=db-sb;												\
-				sr = TGL_CLAMPI(sr, 0, 65280);											\
-				sg = TGL_CLAMPI(sg, 0, 65280);											\
-				sb = TGL_CLAMPI(sb, 0, 65280);											\
+				sr = TGL_CLAMPI(sr);													\
+				sg = TGL_CLAMPI(sg);													\
+				sb = TGL_CLAMPI(sb);													\
 				dest = RGB_TO_PIXEL(sr,sg,sb);											\
 			break;																		\
 			  																			\
 		}																				
-#else
-#define TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest) 									\
-		/*switch(zb->blendeq){*/														\
-		/*	case GL_FUNC_ADD:	*/														\
-		/*	default:			*/														\
-		\
-		dest = RGB_TO_PIXEL(sr+dr, sg+dg, sb+db);										\
-		/*	break;				*/														\
-			  																			\
-		/*}						*/														
-#endif
+
+
 
 
 #define TGL_BLEND_FUNC(source, dest){													\
@@ -133,7 +135,7 @@ typedef GLushort PIXEL;
 		TGL_NO_BLEND_FUNC(source,dest)													\
 	} else {																			\
 	GLuint sr, sg, sb, dr, dg, db;														\
-	{		GLuint t = source;															\
+	{	GLuint t = source;																\
 	sr = GET_REDDER(t); sg = GET_GREENER(t); sb = GET_BLUEER(t);						\
 	t = dest;																			\
 	dr = GET_REDDER(t); dg = GET_GREENER(t); db = GET_BLUEER(t);}						\

@@ -60,6 +60,8 @@ The changelog is as such:
 
 * Added support for glDepthMask and glDisable(GL_DEPTH_TEST) as per-GL-spec
 
+* ADDED BLENDING SUPPORT!
+
 * Fixed a myriad of bugs and... weirdnesses
 
 
@@ -73,8 +75,6 @@ C99. TinyGL has very few external dependencies.
 Notable limitations:
 
 * The only supported texture size and format is RGB 256x256
-
-* Blending is in development.
 
 * A lot of prototypes are missing.
 
@@ -114,6 +114,8 @@ ZB_close(frameBuffer);
 glClose();
 
 ```
+
+Note that while you... *can* invoke ZB_Resize to resize the framebuffer, you really shouldn't. It isn't tested.
 
 ### WHAT ARE THE MINIMUM REQUIREMENTS OF THIS LIBRARY?
 
