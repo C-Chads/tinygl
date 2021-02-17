@@ -47,6 +47,7 @@ void ZB_fillTriangleFlat(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuffe
 #undef INTERP_STZ
 
 #define INTERP_Z
+//#define INTERP_RGB
 
 #define DRAW_INIT()                                                                                                                                            \
 	{  }
@@ -72,8 +73,9 @@ void ZB_fillTriangleFlatNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1,
 #undef INTERP_RGB
 #undef INTERP_ST
 #undef INTERP_STZ
-#define INTERP_Z
 
+#define INTERP_Z
+//#define INTERP_RGB
 #define DRAW_INIT()                                                                                                                                            \
 	{  }
 

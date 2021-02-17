@@ -243,6 +243,7 @@ int main(int argc, char** argv) {
 	int winSizeY = 480;
 	unsigned int fps = 0;
 	unsigned int flat = 0;
+	unsigned int blending = 0;
 	char needsRGBAFix = 0;
 	if (argc > 1) {
 		char* larg = "";
@@ -257,6 +258,8 @@ int main(int argc, char** argv) {
 				flat = 1;
 			if (!strcmp(argv[i],"-smooth"))
 				flat = 0;
+			if (!strcmp(argv[i],"-blend"))
+				blending = 1;
 			larg = argv[i];
 		}
 	}
@@ -338,18 +341,23 @@ int main(int argc, char** argv) {
 if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 //TESTING BLENDING...
 	//glDisable(GL_DEPTH_TEST);
-	glEnable(GL_DEPTH_TEST);
 
-	//glEnable(GL_BLEND);
-	glDisable(GL_BLEND);
-	
-	glDepthMask(GL_TRUE);
-	//glDepthMask(GL_FALSE);
 
 	//glDisable( GL_LIGHTING );
 	glEnable(GL_LIGHTING);
 	glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
 	glBlendEquation(GL_FUNC_ADD);
+	if(blending){
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glDepthMask(GL_TRUE);
+		glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
+		glBlendEquation(GL_FUNC_ADD);
+	}else{
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		glDepthMask(GL_TRUE);
+	}
 	GLfloat h = (GLfloat)winSizeY / (GLfloat)winSizeX;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
