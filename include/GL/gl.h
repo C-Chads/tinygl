@@ -591,8 +591,11 @@ enum {
 	GL_MIN_EXT			= 0x8007,
 	GL_MAX_EXT			= 0x8008,
 	GL_FUNC_ADD_EXT			= 0x8006,
+	GL_FUNC_ADD			= 0x8006,
 	GL_FUNC_SUBTRACT_EXT		= 0x800A,
+	GL_FUNC_SUBTRACT		= 0x800A,
 	GL_FUNC_REVERSE_SUBTRACT_EXT	= 0x800B,
+	GL_FUNC_REVERSE_SUBTRACT	= 0x800B,
 	GL_BLEND_COLOR_EXT		= 0x8005,
 
 	/* GL_EXT_polygon_offset */
@@ -672,12 +675,13 @@ enum {
 
 /* some types */
 
-typedef int		GLenum;
+
 typedef void		GLvoid;
 typedef unsigned char	GLboolean;
 typedef signed char	GLbyte;		/* 1-byte signed */
 typedef short		GLshort;	/* 2-byte signed */
 typedef int		GLint;		/* 4-byte signed */
+typedef GLint	GLenum; /* Same as GLint */
 typedef unsigned char	GLubyte;	/* 1-byte unsigned */
 typedef unsigned short	GLushort;	/* 2-byte unsigned */
 typedef unsigned int	GLuint;		/* 4-byte unsigned */
@@ -851,14 +855,14 @@ void glTexCoordPointer(GLint size, GLenum type, GLsizei stride,
 
 /* opengl 1.2 polygon offset */
 void glPolygonOffset(GLfloat factor, GLfloat units);
-
+void glBlendFunc(GLint, GLint);
+void glBlendEquation(GLenum mode);
 /* not implemented, just added to compile  */
   /*
 inline void glPointSize(GLfloat) {}
 inline void glLineWidth(GLfloat) {}
-inline void glDeleteLists(GLint, GLint) {}
 inline void glDepthFunc(GLint) {}
-inline void glBlendFunc(GLint, GLint) {}
+
 inline void glTexEnvf(GLint, GLint, GLint) {}
 inline void glOrtho(GLfloat,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat){}
 inline void glVertex2i(GLint,GLint) {}
@@ -867,10 +871,9 @@ inline void glFogi(GLint, GLint) {}
 inline void glFogfv(GLint, const GLfloat*) {}
 inline void glFogf(GLint, GLfloat) {}
 inline void glRasterPos2f(GLfloat, GLfloat) {}
-inline void glPolygonStipple(void*) {}
 inline void glTexParameterf(GLint, GLint, GLint) {};
   */
-void glPolygonStipple(void* a); //TODO: implement
+void glPolygonStipple(void* a);
 /* non compatible functions */
 
 void glDebug(GLint mode);

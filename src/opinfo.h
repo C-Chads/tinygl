@@ -68,8 +68,13 @@ ADD_OP(TexCoordPointer, 4, "%d %C %d %p")
 /* opengl 1.1 polygon offset */
 ADD_OP(PolygonOffset, 2, "%f %f")
 
+/* blending */
+ADD_OP(BlendEquation, 1, "%d")
+ADD_OP(BlendFunc, 2, "%d %d")
 /* Gek's Added Functions */
 ADD_OP(PlotPixel, 2, "%d %d")
 ADD_OP(TextSize, 1, "%d")
+
+
 
 #undef ADD_OP

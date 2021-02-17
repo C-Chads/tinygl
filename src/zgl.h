@@ -260,6 +260,9 @@ typedef struct GLContext {
 	GLfloat offset_units;
 	GLint offset_states;
 
+	/* opengl blending */
+	//All the settings are in the Zbuffer!
+	
 	/* specular buffer. could probably be shared between contexts,
 	  but that wouldn't be 100% thread safe */
 	GLSpecBuf* specbuf_first;

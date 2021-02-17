@@ -42,9 +42,12 @@
 #define RGB_TO_PIXEL(r,g,b) \
   ((((r) << 8) & 0xff0000) | ((g) & 0xff00) | ((b) >> 8))
 #define GET_RED(p) ((p & 0xff0000)>>16)
+#define GET_REDDER(p) ((p & 0xff0000)>>8)
 #define GET_GREEN(p) ((p & 0xff00)>>8)
+#define GET_GREENER(p) ((p & 0xff00))
 #define GET_BLUE(p) (p & 0xff)
-typedef unsigned int PIXEL;
+#define GET_BLUEER(p) ((p & 0xff)<<8)
+typedef GLuint PIXEL;
 #define PSZB 4
 #define PSZSH 5
 
@@ -52,11 +55,17 @@ typedef unsigned int PIXEL;
 
 /* 16 bit mode */
 #define RGB_TO_PIXEL(r,g,b) (((r) & 0xF800) | (((g) >> 5) & 0x07E0) | ((b) >> 11))
-#define GET_RED(p) ((p & 0xF800)>>8)
-#define GET_GREEN(p) ((p & 0x07E0)>>3)
-#define GET_BLUE(p) ((p & 31)<<3)
 
-typedef unsigned short PIXEL;
+#define GET_RED(p) ((p & 0xF800)>>8)
+#define GET_REDDER(p) ((p & 0xF800))
+
+#define GET_GREEN(p) ((p & 0x07E0)>>3)
+#define GET_GREENER(p) ((p & 0x07E0)<<5)
+
+#define GET_BLUE(p) ((p & 31)<<3)
+#define GET_BLUEER(p) ((p & 31)<<11)
+
+typedef GLushort PIXEL;
 #define PSZB 2 
 #define PSZSH 4 
 
@@ -78,59 +87,95 @@ typedef unsigned short PIXEL;
 #define RGB_MIX_FUNC(rr, gg, bb, tpix)(tpix)
 #endif
 
+#if TGL_FEATURE_BLEND == 1
+#define 
+#define TGL_BLEND_FUNC(source, dest){\
+	GLuint t = source;\
+	GLint sr = GET_REDDER(t), sg = GET_GREENER(t), sb = GET_BLUEER(t);\
+	GLint dr = GET_REDDER(dest), dg = GET_GREENER(dest), db = GET_BLUEER(dest);\
+	switch(zb->sfactor){		\
+		case GL_ONE:		\
+		default:		\
+		break;				\
+		case GL_ONE_MINUS_SRC_COLOR:\
+						\
+		break;\
+	}\
+	switch(zb->blendeq){\
+		case GL_ADD_FUNC:\
+		case GL_ADD_FUNC_EXT:\
+			dest = RGB_TO_PIXEL(sr+dr,sg+dg,sb+db);\
+		break;\
+		case GL_SUBTRACT_FUNC:
+		case GL_SUBTRACT_FUNC_EXT:
+			dest = RGB_TO_PIXEL(sr-dr,sg-dg,sb-db);\
+		break;
+	}\
+}
+#else
+#define TGL_BLEND_FUNC(source, dest){dest = source;}
+#define TGL_BLEND_FUNC_RGB(rr, gg, bb, dest){dest = RGB_TO_PIXEL(rr,gg,bb);}
+#endif
+
+
 typedef struct {
-    int xsize,ysize;
-    int linesize; /* line size, in bytes */
-    int mode;
+    GLint xsize,ysize;
+    GLint linesize; /* line size, in bytes */
+    GLint mode;
     
-    unsigned short *zbuf;
+    GLushort *zbuf;
     PIXEL *pbuf;
-    int frame_buffer_allocated;
+    GLint frame_buffer_allocated;
     
      
-    int nb_colors;
+    GLint nb_colors;
     unsigned char *dctable;
-    int *ctable;
+    GLint *ctable;
     PIXEL *current_texture;
     /* opengl polygon stipple*/
-    int dostipple;
+    GLint dostipple;
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
     unsigned char stipplepattern[TGL_POLYGON_STIPPLE_BYTES];
+
+    /* opengl blending */
+    
 #endif
+	GLenum blendeq, sfactor, dfactor;
+    GLint enable_blend;
 } ZBuffer;
 
 typedef struct {
-  int x,y,z;     /* integer coordinates in the zbuffer */
-  int s,t;       /* coordinates for the mapping */
-  int r,g,b;     /* color indexes */
+  GLint x,y,z;     /* integer coordinates in the zbuffer */
+  GLint s,t;       /* coordinates for the mapping */
+  GLint r,g,b;     /* color indexes */
   
-  float sz,tz;   /* temporary coordinates for mapping */
+  GLfloat sz,tz;   /* temporary coordinates for mapping */
 } ZBufferPoint;
 
 /* zbuffer.c */
 
 ZBuffer *ZB_open(int xsize,int ysize,int mode,
-		 int nb_colors,
+		 GLint nb_colors,
 		 unsigned char *color_indexes,
-		 int *color_table,
+		 GLint *color_table,
 		 void *frame_buffer);
 
 
 void ZB_close(ZBuffer *zb);
 
-void ZB_resize(ZBuffer *zb,void *frame_buffer,int xsize,int ysize);
-void ZB_clear(ZBuffer *zb,int clear_z,int z,
-	      int clear_color,int r,int g,int b);
+void ZB_resize(ZBuffer *zb,void *frame_buffer,GLint xsize,GLint ysize);
+void ZB_clear(ZBuffer *zb,GLint clear_z,GLint z,
+	      GLint clear_color,GLint r,GLint g,GLint b);
 /* linesize is in BYTES */
-void ZB_copyFrameBuffer(ZBuffer *zb,void *buf,int linesize);
+void ZB_copyFrameBuffer(ZBuffer *zb,void *buf,GLint linesize);
 
 /* zdither.c */
 
-void ZB_initDither(ZBuffer *zb,int nb_colors,
-		   unsigned char *color_indexes,int *color_table);
+void ZB_initDither(ZBuffer *zb,GLint nb_colors,
+		   unsigned char *color_indexes,GLint *color_table);
 void ZB_closeDither(ZBuffer *zb);
 void ZB_ditherFrameBuffer(ZBuffer *zb,unsigned char *dest,
-			  int linesize);
+			  GLint linesize);
 
 /* zline.c */
 
@@ -162,7 +207,7 @@ typedef void (*ZB_fillTriangleFunc)(ZBuffer  *,
 
 /* memory.c */
 void gl_free(void *p);
-void *gl_malloc(int size);
-void *gl_zalloc(int size);
+void *gl_malloc(GLint size);
+void *gl_zalloc(GLint size);
 
 #endif /* _tgl_zbuffer_h_ */

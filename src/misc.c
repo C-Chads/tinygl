@@ -47,7 +47,27 @@ void glopViewport(GLContext* c, GLParam* p) {
 		c->viewport.updated = 1;
 	}
 }
-
+void glBlendFunc(GLenum sfactor, GLenum dfactor){
+	GLParam p[3];
+	p[0].op = OP_BlendFunc;
+	p[1].i = sfactor;
+	p[2].i = dfactor;
+	gl_add_op(p);
+	return;
+}
+void glopBlendFunc(GLContext* c, GLParam* p){
+	c->zb->sfactor = p[1].i;
+	c->zb->dfactor = p[2].i;
+}
+void glBlendEquation(GLenum mode){
+	GLParam p[2];
+	p[0].op = OP_BlendEquation;
+	p[1].i = mode;
+	gl_add_op(p);
+}
+void glopBlendEquation(GLContext* c, GLParam* p){
+	c->zb->blendeq = p[1].i;
+}
 void glopEnableDisable(GLContext* c, GLParam* p) {
 	GLint code = p[1].i;
 	GLint v = p[2].i;
@@ -64,6 +84,9 @@ void glopEnableDisable(GLContext* c, GLParam* p) {
 		break;
 	case GL_TEXTURE_2D:
 		c->texture_2d_enabled = v;
+		break;
+	case GL_BLEND:
+		c->zb->enable_blend = v;
 		break;
 	case GL_NORMALIZE:
 		c->normalize_enabled = v;

@@ -133,6 +133,12 @@ void glInit(void* zbuffer1) {
 	/* textures */
 	glInitTextures(c);
 
+	/* blending */
+	c->zb->enable_blend = 0;
+	c->zb->sfactor = GL_ONE;
+	c->zb->dfactor = GL_ZERO;
+	c->zb->blendeq = GL_FUNC_ADD;
+	
 	/* default state */
 	c->current_color.X = 1.0;
 	c->current_color.Y = 1.0;
