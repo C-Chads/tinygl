@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include "zgl.h"
-//#define NDEBUG
+#define NDEBUG
 
 #ifdef NDEBUG
 #define NO_DEBUG_OUTPUT
@@ -48,6 +48,7 @@ void tgl_fixme(const char* format, ...) {
 
 
 void gl_fatal_error(char* format, ...) {
+#ifndef NO_DEBUG_OUTPUT
 	va_list ap;
 
 	va_start(ap, format);
@@ -57,4 +58,5 @@ void gl_fatal_error(char* format, ...) {
 	fprintf(stderr, "\n");
 	exit(1);
 	va_end(ap);
+#endif
 }
