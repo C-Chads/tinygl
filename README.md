@@ -57,6 +57,8 @@ The changelog is as such:
 
 * Disabled 8, 15, and 24 bit rendering modes. 16 and 32 are the only supported rendering modes (Coincidentally, they are also the fastest)
 
+* Removed the entire GLX/NanoGLX part of the library. Not portable and mostly useless.
+
 * Implemented new functions and some of GL 1.1's prototypes including polygon stipple.
 
 * Triangles can now be lit and textured at the same time!
