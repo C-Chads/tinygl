@@ -370,7 +370,8 @@ int main(int argc, char** argv) {
 		return 1;
 		break;
 	}
-	ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0, 0, 0, 0);
+	ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0);
+	if(!frameBuffer){printf("\nZB_open failed!");exit(1);}
 	glInit(frameBuffer);
 
 	// initialize GL:

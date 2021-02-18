@@ -221,10 +221,10 @@ typedef struct {
     GLint depth_write;
 	/* point size*/
     GLfloat pointsize;
-    
-    GLint nb_colors;
-    unsigned char *dctable;
-    GLint *ctable;
+
+//    GLint nb_colors;
+//    unsigned char *dctable;
+//    GLint *ctable;
     PIXEL *current_texture;
     /* opengl polygon stipple*/
     GLuint dostipple;
@@ -246,9 +246,9 @@ typedef struct {
 /* zbuffer.c */
 
 ZBuffer *ZB_open(int xsize,int ysize,int mode,
-		 GLint nb_colors,
-		 unsigned char *color_indexes,
-		 GLint *color_table,
+//		 GLint nb_colors,
+//		 unsigned char *color_indexes,
+//		 GLint *color_table,
 		 void *frame_buffer);
 
 
@@ -262,12 +262,13 @@ void ZB_copyFrameBuffer(ZBuffer *zb,void *buf,GLint linesize);
 
 /* zdither.c */
 
+/*
 void ZB_initDither(ZBuffer *zb,GLint nb_colors,
 		   unsigned char *color_indexes,GLint *color_table);
 void ZB_closeDither(ZBuffer *zb);
 void ZB_ditherFrameBuffer(ZBuffer *zb,unsigned char *dest,
 			  GLint linesize);
-
+*/
 /* zline.c */
 
 void ZB_plot(ZBuffer *zb,ZBufferPoint *p);

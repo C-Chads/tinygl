@@ -109,8 +109,10 @@ textured triangles will appear black.
 */
 
 //Next, open a framebuffer.
-ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0, 0, 0, 0);
-//Tell TinyGL to init on that framebuffer
+//The "0" parameter is where you pass in a framebuffer pointer if you've already made one.
+ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0);
+
+//Tell TinyGL to initialize on that framebuffer
 glInit(frameBuffer);
 
 //Begin making OpenGL calls!

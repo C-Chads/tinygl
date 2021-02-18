@@ -10,7 +10,9 @@
 //#include "../include/GL/gl.h"
 #include "../include/zbuffer.h"
 
-ZBuffer* ZB_open(GLint xsize, GLint ysize, GLint mode, GLint nb_colors, GLubyte* color_indexes, GLint* color_table, void* frame_buffer) {
+ZBuffer* ZB_open(GLint xsize, GLint ysize, GLint mode,
+// GLint nb_colors, GLubyte* color_indexes, GLint* color_table, 
+ void* frame_buffer) {
 	ZBuffer* zb;
 	GLint size;
 
@@ -24,20 +26,23 @@ ZBuffer* ZB_open(GLint xsize, GLint ysize, GLint mode, GLint nb_colors, GLubyte*
 	zb->linesize = (xsize * PSZB + 3) & ~3;
 
 	switch (mode) {
-#ifdef TGL_FEATURE_8_BITS
+#if TGL_FEATURE_8_BITS ==1 
 	case ZB_MODE_INDEX:
 		ZB_initDither(zb, nb_colors, color_indexes, color_table);
 		break;
 #endif
-#ifdef TGL_FEATURE_32_BITS
-	case ZB_MODE_RGBA:
+#if TGL_FEATURE_32_BITS == 1
+	case ZB_MODE_RGBA:	break;
 #endif
-#ifdef TGL_FEATURE_24_BITS
-	case ZB_MODE_RGB24:
+#if TGL_FEATURE_24_BITS == 1
+	case ZB_MODE_RGB24:	break;
 #endif
+#if TGL_FEATURE_16_BITS == 1
 	case ZB_MODE_5R6G5B:
-		zb->nb_colors = 0;
-		break;
+//		zb->nb_colors = 0;
+	break;
+#endif
+
 	default:
 		goto error;
 	}
@@ -69,7 +74,7 @@ error:
 }
 
 void ZB_close(ZBuffer* zb) {
-#ifdef TGL_FEATURE_8_BITS
+#if TGL_FEATURE_8_BITS == 1
 	if (zb->mode == ZB_MODE_INDEX)
 		ZB_closeDither(zb);
 #endif

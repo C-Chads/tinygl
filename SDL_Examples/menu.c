@@ -242,7 +242,7 @@ int main(int argc, char** argv) {
 		return 1;
 		break;
 	}
-	ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0, 0, 0, 0);
+	ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0);
 	glInit(frameBuffer);
 
 	// initialize GL:
