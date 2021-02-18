@@ -230,7 +230,7 @@ static inline void updateTmp(GLContext* c, GLVertex* q, GLVertex* p0, GLVertex* 
 static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2, GLint clip_bit);
 
 void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) {
-	GLint co, c_and, cc[3], front;
+	GLint co, cc[3], front;
 	
 
 	cc[0] = p0->clip_code;
@@ -273,8 +273,8 @@ void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) {
 			}
 		}
 	} else {
-		c_and = cc[0] & cc[1] & cc[2];
-		if (c_and == 0) { // Don't draw a triangle with no points
+		//GLint c_and = cc[0] & cc[1] & cc[2];
+		if ((cc[0] & cc[1] & cc[2]) == 0) { // Don't draw a triangle with no points
 			gl_draw_triangle_clip(c, p0, p1, p2, 0);
 		}
 	}
