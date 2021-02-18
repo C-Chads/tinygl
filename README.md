@@ -3,6 +3,8 @@
 A rework of Fabrice Bellard's TinyGL (still compiling with -std=c99) to be
 more useful as a software rasterizer.
 
+Tightly tweaked for performance,
+
 Valgrind'd for memory leaks in the demos.
 
 It's also lightning fast.

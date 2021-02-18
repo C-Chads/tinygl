@@ -11,13 +11,14 @@
 #define CLIP_ZMAX (1 << 5)
 
 void gl_transform_to_viewport(GLContext* c, GLVertex* v) {
-	GLfloat winv;
 
 	/* coordinates */
-	winv = 1.0 / v->pc.W;
+	{
+	GLfloat winv = 1.0 / v->pc.W;
 	v->zp.x = (GLint)(v->pc.X * winv * c->viewport.scale.X + c->viewport.trans.X);
 	v->zp.y = (GLint)(v->pc.Y * winv * c->viewport.scale.Y + c->viewport.trans.Y);
 	v->zp.z = (GLint)(v->pc.Z * winv * c->viewport.scale.Z + c->viewport.trans.Z);
+	}
 	/* color */
 	v->zp.r = (GLuint)(v->color.v[0] * 65535) & 65535;
 	v->zp.g = (GLuint)(v->color.v[1] * 65535) & 65535;
@@ -99,7 +100,7 @@ static inline GLint ClipLine1(GLfloat denom, GLfloat num, GLfloat* tmin, GLfloat
 
 void gl_draw_line(GLContext* c, GLVertex* p1, GLVertex* p2) {
 	GLfloat dx, dy, dz, dw, x1, y1, z1, w1;
-	GLfloat tmin, tmax;
+	
 	GLVertex q1, q2;
 	GLint cc1, cc2;
 
@@ -127,8 +128,8 @@ void gl_draw_line(GLContext* c, GLVertex* p1, GLVertex* p2) {
 		z1 = p1->pc.Z;
 		w1 = p1->pc.W;
 
-		tmin = 0;
-		tmax = 1;
+		GLfloat tmin = 0;
+		GLfloat tmax = 1;
 		if (ClipLine1(dx + dw, -x1 - w1, &tmin, &tmax) && ClipLine1(-dx + dw, x1 - w1, &tmin, &tmax) && ClipLine1(dy + dw, -y1 - w1, &tmin, &tmax) &&
 			ClipLine1(-dy + dw, y1 - w1, &tmin, &tmax) && ClipLine1(dz + dw, -z1 - w1, &tmin, &tmax) && ClipLine1(-dz + dw, z1 - w1, &tmin, &tmax)) {
 
@@ -191,18 +192,29 @@ clip_func(clip_xmin, -, X, Y, Z)
 
 static inline void updateTmp(GLContext* c, GLVertex* q, GLVertex* p0, GLVertex* p1, GLfloat t) {
 	{
+
+
 		q->color.v[0] = p0->color.v[0] + (p1->color.v[0] - p0->color.v[0]) * t;
 		q->color.v[1] = p0->color.v[1] + (p1->color.v[1] - p0->color.v[1]) * t;
 		q->color.v[2] = p0->color.v[2] + (p1->color.v[2] - p0->color.v[2]) * t;
-		q->zp.r = p0->zp.r + (p1->zp.r - p0->zp.r) * t;
-		q->zp.g = p0->zp.g + (p1->zp.g - p0->zp.g) * t;
-		q->zp.b = p0->zp.b + (p1->zp.b - p0->zp.b) * t;
-		// q->color.v[3]=p0->color.v[3] + (p1->color.v[3] - p0->color.v[3])*t;
-		// tgl_warning("\np0 Components are %f, %f, %f", p0->color.v[0], p0->color.v[1], p0->color.v[2]);
-		// tgl_warning("\nZbuffer point r,g,b for p0 are: %d %d %d",p0->zp.r, p0->zp.g,p0->zp.b);
-		// tgl_warning("\n~\nNew Components are %f, %f, %f", q->color.v[0], q->color.v[1], q->color.v[2]);
-		// tgl_warning("\nZbuffer point r,g,b for new point are: %d %d %d",q->zp.r, q->zp.g,q->zp.b);
-		/// *
+//		q->zp.r = p0->zp.r + (p1->zp.r - p0->zp.r) * t;
+//		q->zp.g = p0->zp.g + (p1->zp.g - p0->zp.g) * t;
+//		q->zp.b = p0->zp.b + (p1->zp.b - p0->zp.b) * t;
+
+/*
+		v->zp.r = (GLuint)(v->color.v[0] * 65535) & 65535;
+		v->zp.g = (GLuint)(v->color.v[1] * 65535) & 65535;
+		v->zp.b = (GLuint)(v->color.v[2] * 65535) & 65535;
+
+*/
+/*
+		q->zp.r = 0xffFF * p0->color.v[0];
+		q->zp.g = 0xffFF * p0->color.v[1];
+		q->zp.b = 0xffFF * p0->color.v[2];
+*/
+//		q->zp.r = (GLuint)(p0->color.v[0] * 65535) & 65535;
+//		q->zp.g = (GLuint)(p0->color.v[1] * 65535) & 65535;
+//		q->zp.b = (GLuint)(p0->color.v[2] * 65535) & 65535;
 	}
 	//	*/
 	if (c->texture_2d_enabled) {
@@ -219,7 +231,7 @@ static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVe
 
 void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) {
 	GLint co, c_and, cc[3], front;
-	GLfloat norm;
+	
 
 	cc[0] = p0->clip_code;
 	cc[1] = p1->clip_code;
@@ -229,7 +241,7 @@ void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) {
 
 	/* we handle the non clipped case here to go faster */
 	if (co == 0) {
-
+		GLfloat norm;
 		norm = (GLfloat)(p1->zp.x - p0->zp.x) * (GLfloat)(p2->zp.y - p0->zp.y) - (GLfloat)(p2->zp.x - p0->zp.x) * (GLfloat)(p1->zp.y - p0->zp.y);
 
 		if (norm == 0)
@@ -270,8 +282,9 @@ void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) {
 
 static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2, GLint clip_bit) {
 	GLint co, c_and, co1, cc[3], edge_flag_tmp, clip_mask;
-	GLVertex tmp1, tmp2, *q[3];
-	GLfloat tt;
+	//GLVertex tmp1, tmp2, *q[3];
+	GLVertex *q[3];
+
 
 	cc[0] = p0->clip_code;
 	cc[1] = p1->clip_code;
@@ -281,6 +294,7 @@ static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVe
 	if (co == 0) {
 		gl_draw_triangle(c, p0, p1, p2);
 	} else {
+		
 		c_and = cc[0] & cc[1] & cc[2];
 		/* the triangle is completely outside */
 		if (c_and != 0)
@@ -294,10 +308,7 @@ static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVe
 		/* this test can be true only in case of rounding errors */
 		if (clip_bit == 6) {
 #if 0
-      tgl_warning("Error:\n");
-      tgl_warning("%f %f %f %f\n",p0->pc.X,p0->pc.Y,p0->pc.Z,p0->pc.W);
-      tgl_warning("%f %f %f %f\n",p1->pc.X,p1->pc.Y,p1->pc.Z,p1->pc.W);
-      tgl_warning("%f %f %f %f\n",p2->pc.X,p2->pc.Y,p2->pc.Z,p2->pc.W);
+      tgl_warning("Error:\n");tgl_warning("%f %f %f %f\n",p0->pc.X,p0->pc.Y,p0->pc.Z,p0->pc.W);tgl_warning("%f %f %f %f\n",p1->pc.X,p1->pc.Y,p1->pc.Z,p1->pc.W);tgl_warning("%f %f %f %f\n",p2->pc.X,p2->pc.Y,p2->pc.Z,p2->pc.W);
 #endif
 			return;
 		}
@@ -307,7 +318,7 @@ static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVe
 
 		if (co1) {
 			/* one point outside */
-
+			
 			if (cc[0] & clip_mask) {
 				q[0] = p0;
 				q[1] = p1;
@@ -321,25 +332,26 @@ static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVe
 				q[1] = p0;
 				q[2] = p1;
 			}
+			{GLVertex tmp1, tmp2;GLfloat tt;
+				tt = clip_proc[clip_bit](&tmp1.pc, &q[0]->pc, &q[1]->pc);
+				updateTmp(c, &tmp1, q[0], q[1], tt);
 
-			tt = clip_proc[clip_bit](&tmp1.pc, &q[0]->pc, &q[1]->pc);
-			updateTmp(c, &tmp1, q[0], q[1], tt);
+				tt = clip_proc[clip_bit](&tmp2.pc, &q[0]->pc, &q[2]->pc);
+				updateTmp(c, &tmp2, q[0], q[2], tt);
 
-			tt = clip_proc[clip_bit](&tmp2.pc, &q[0]->pc, &q[2]->pc);
-			updateTmp(c, &tmp2, q[0], q[2], tt);
+				tmp1.edge_flag = q[0]->edge_flag;
+				edge_flag_tmp = q[2]->edge_flag;
+				q[2]->edge_flag = 0;
+				gl_draw_triangle_clip(c, &tmp1, q[1], q[2], clip_bit + 1);
 
-			tmp1.edge_flag = q[0]->edge_flag;
-			edge_flag_tmp = q[2]->edge_flag;
-			q[2]->edge_flag = 0;
-			gl_draw_triangle_clip(c, &tmp1, q[1], q[2], clip_bit + 1);
-
-			tmp2.edge_flag = 1;
-			tmp1.edge_flag = 0;
-			q[2]->edge_flag = edge_flag_tmp;
-			gl_draw_triangle_clip(c, &tmp2, &tmp1, q[2], clip_bit + 1);
+				tmp2.edge_flag = 1;
+				tmp1.edge_flag = 0;
+				q[2]->edge_flag = edge_flag_tmp;
+				gl_draw_triangle_clip(c, &tmp2, &tmp1, q[2], clip_bit + 1);
+			}
 		} else {
 			/* two points outside */
-
+			
 			if ((cc[0] & clip_mask) == 0) {
 				q[0] = p0;
 				q[1] = p1;
@@ -353,16 +365,17 @@ static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVe
 				q[1] = p0;
 				q[2] = p1;
 			}
+			{GLVertex tmp1, tmp2;GLfloat tt;
+				tt = clip_proc[clip_bit](&tmp1.pc, &q[0]->pc, &q[1]->pc);
+				updateTmp(c, &tmp1, q[0], q[1], tt);
 
-			tt = clip_proc[clip_bit](&tmp1.pc, &q[0]->pc, &q[1]->pc);
-			updateTmp(c, &tmp1, q[0], q[1], tt);
+				tt = clip_proc[clip_bit](&tmp2.pc, &q[0]->pc, &q[2]->pc);
+				updateTmp(c, &tmp2, q[0], q[2], tt);
 
-			tt = clip_proc[clip_bit](&tmp2.pc, &q[0]->pc, &q[2]->pc);
-			updateTmp(c, &tmp2, q[0], q[2], tt);
-
-			tmp1.edge_flag = 1;
-			tmp2.edge_flag = q[2]->edge_flag;
-			gl_draw_triangle_clip(c, q[0], &tmp1, &tmp2, clip_bit + 1);
+				tmp1.edge_flag = 1;
+				tmp2.edge_flag = q[2]->edge_flag;
+				gl_draw_triangle_clip(c, q[0], &tmp1, &tmp2, clip_bit + 1);
+			}
 		}
 	}
 }
@@ -406,24 +419,24 @@ void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p
 #endif
 	} else if (c->current_shade_model == GL_SMOOTH) {
 		//ZB_fillTriangleSmooth(c->zb, &p0->zp, &p1->zp, &p2->zp);
-		#if TGL_FEATURE_BLEND == 1
-				if(c->zb->enable_blend) 
-					ZB_fillTriangleSmooth(c->zb, &p0->zp, &p1->zp, &p2->zp);
-				else 
-					ZB_fillTriangleSmoothNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
-		#else
-				ZB_fillTriangleSmoothNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
-		#endif
+#if TGL_FEATURE_BLEND == 1
+		if(c->zb->enable_blend) 
+			ZB_fillTriangleSmooth(c->zb, &p0->zp, &p1->zp, &p2->zp);
+		else 
+			ZB_fillTriangleSmoothNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
+#else
+		ZB_fillTriangleSmoothNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
+#endif
 	} else {
 		//ZB_fillTriangleFlat(c->zb, &p0->zp, &p1->zp, &p2->zp);
-		#if TGL_FEATURE_BLEND == 1
-				if(c->zb->enable_blend) 
-					ZB_fillTriangleFlat(c->zb, &p0->zp, &p1->zp, &p2->zp);
-				else 
-					ZB_fillTriangleFlatNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
-		#else
-				ZB_fillTriangleFlatNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
-		#endif
+#if TGL_FEATURE_BLEND == 1
+		if(c->zb->enable_blend) 
+			ZB_fillTriangleFlat(c->zb, &p0->zp, &p1->zp, &p2->zp);
+		else 
+			ZB_fillTriangleFlatNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
+#else
+		ZB_fillTriangleFlatNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
+#endif
 	}
 }
 
