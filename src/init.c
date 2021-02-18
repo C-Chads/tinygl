@@ -223,6 +223,14 @@ void glInit(void* zbuffer1) {
 	/* depth test */
 	c->zb->depth_test = 0;
 	c->zb->depth_write = 1;
+
+	/* raster position */
+	c->rasterpos.v[0] = 0;
+	c->rasterpos.v[1] = 0;
+	c->rasterpos.v[2] = 0;
+	c->rasterposvalid = 0;
+	c->pzoomx = 1;
+	c->pzoomy = 1;
 }
 
 void glClose(void) {

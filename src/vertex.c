@@ -133,11 +133,11 @@ void glopBegin(GLContext* c, GLParam* p) {
 /* TODO : handle all cases */
 static inline void gl_vertex_transform(GLContext* c, GLVertex* v) {
 	GLfloat* m;
-	V4* n;
+	
 
 	if (c->lighting_enabled) {
 		/* eye coordinates needed for lighting */
-
+		V4* n;
 		m = &c->matrix_stack_ptr[0]->m[0][0];
 		v->ec.X = (v->coord.X * m[0] + v->coord.Y * m[1] + v->coord.Z * m[2] + m[3]);
 		v->ec.Y = (v->coord.X * m[4] + v->coord.Y * m[5] + v->coord.Z * m[6] + m[7]);
@@ -220,10 +220,6 @@ void glopVertex(GLContext* c, GLParam* p) {
 	} else {
 		v->color = c->current_color;
 	}
-	/* Added by Gek to fix bug with rendering*/
-	// v->zp.r=(GLuint)(v->color.v[0] * 65535) & 65535;
-	// v->zp.g=(GLuint)(v->color.v[1] * 65535) & 65535;
-	// v->zp.b=(GLuint)(v->color.v[2] * 65535) & 65535;
 	/* tex coords */
 
 	if (c->texture_2d_enabled) {

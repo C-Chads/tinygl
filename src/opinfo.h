@@ -75,6 +75,13 @@ ADD_OP(BlendFunc, 2, "%d %d")
 /* point size */
 ADD_OP(PointSize, 1, "%f")
 
+/* raster position */
+ADD_OP(RasterPos, 4, "%f %f %f %f")
+ADD_OP(PixelZoom, 2, "%f %f")
+/* Draw pixels*/
+/* Width, Height, Data*/
+ADD_OP(DrawPixels, 3, "%d %d %p")
+
 /* Gek's Added Functions */
 ADD_OP(PlotPixel, 2, "%d %d")
 ADD_OP(TextSize, 1, "%d")

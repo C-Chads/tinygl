@@ -228,7 +228,6 @@ typedef struct GLContext {
 
 	/* current vertex state */
 	V4 current_color;
-	// GLuint longcurrent_color[3]; /* precomputed GLinteger color */
 	V4 current_normal;
 	V4 current_tex_coord;
 	GLint current_edge_flag;
@@ -275,6 +274,11 @@ typedef struct GLContext {
 
 	/* depth test */
 	//Moved to Zbuffer.
+
+	/* raster position */
+	V3 rasterpos;
+	GLubyte rasterposvalid;
+	GLfloat pzoomx, pzoomy;
 } GLContext;
 
 extern GLContext* gl_ctx;
@@ -352,5 +356,8 @@ static inline GLint gl_clipcode(GLfloat x, GLfloat y, GLfloat z, GLfloat w1) {
 	w = w1 * (1.0 + CLIP_EPSILON);
 	return (x < -w) | ((x > w) << 1) | ((y < -w) << 2) | ((y > w) << 3) | ((z < -w) << 4) | ((z > w) << 5);
 }
+
+
+
 
 #endif /* _tgl_zgl_h_ */

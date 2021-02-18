@@ -16,7 +16,7 @@ void gl_convertRGB_to_5R6G5B(GLushort* pixmap, GLubyte* rgb, GLint xsize, GLint 
 	}
 }
 
-// This actually converts to ABGR!!!
+// This actually converts to ARGB!!!
 // This is the format of the entire engine!!!
 void gl_convertRGB_to_8A8R8G8B(GLuint* pixmap, GLubyte* rgb, GLint xsize, GLint ysize) {
 	GLint i, n;

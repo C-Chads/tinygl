@@ -30,6 +30,8 @@ enum {
 	GL_2_BYTES			= 0x1407,
 	GL_3_BYTES			= 0x1408,
 	GL_4_BYTES			= 0x1409,
+	GL_UNSIGNED_SHORT_5_6_5 = 0x140A,
+	GL_UNSIGNED_INT_8_8_8_8 = 0x140B,
 
 	/* Primitives */
 	GL_LINES			= 0x0001,
@@ -687,7 +689,7 @@ typedef unsigned short	GLushort;	/* 2-byte unsigned */
 typedef unsigned int	GLuint;		/* 4-byte unsigned */
 typedef float		GLfloat;	/* single precision float */
 typedef double		GLdouble;	/* double precision float */
-typedef int 		GLsizei;
+typedef GLint 		GLsizei; /* Same as GLint */
 
 
 #if COMPILETIME_TINYGL_COMPAT_TEST == 1
@@ -861,6 +863,17 @@ void glDepthMask(GLint);
 
 /* Point Size */
 void glPointSize(GLfloat);
+
+/* Raster rendering */
+void glRasterPos2f(GLfloat, GLfloat);
+void glRasterPos3f(GLfloat, GLfloat, GLfloat);
+void glRasterPos4f(GLfloat, GLfloat, GLfloat, GLfloat);
+
+void glRasterPos2fv(GLfloat* v);
+void glRasterPos3fv(GLfloat* v);
+void glRasterPos4fv(GLfloat* v);
+void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, void* data);
+
 /* not implemented, just added to compile  */
   /*
 inline void glPointSize(GLfloat) {}
