@@ -94,9 +94,11 @@ void drawTB(const char* text, GLuint textcolor, GLfloat x, GLfloat y, GLint size
 			{cw = 0; h++;}
 		if(mw<cw)mw=cw;
 	}
-	float w = (size+1)*8*(mw) / (float)winSizeX;
-	float h_ = (size+1)*8*(h)/(float)winSizeY;
-	drawBox(x-w/8,y-h_/8, w, h_);
+	float w = (size)*8*(mw) / (float)winSizeX;
+	float bw = 3*size/(float)winSizeX;
+	float h_ = (size)*8*(h)/(float)winSizeY;
+	float bh = 3*size/(float)winSizeY;
+	drawBox(x-bw/2,y-bh/2, w+bw, h_+bh);
 	glTextSize(size);
 	glDrawText((unsigned char*)text, x*winSizeX, y*winSizeY, textcolor);
 }

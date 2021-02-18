@@ -111,7 +111,9 @@ void glopEnableDisable(GLContext* c, GLParam* p) {
 			c->offset_states &= ~TGL_OFFSET_FILL;
 		break;
 	case GL_POLYGON_STIPPLE:
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
 		c->zb->dostipple = v;
+#endif
 		break;
 	case GL_POLYGON_OFFSET_POINT:
 		if (v)

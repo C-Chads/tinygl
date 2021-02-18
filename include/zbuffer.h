@@ -227,9 +227,10 @@ typedef struct {
 //    GLint *ctable;
     PIXEL *current_texture;
     /* opengl polygon stipple*/
-    GLuint dostipple;
+
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
     GLubyte stipplepattern[TGL_POLYGON_STIPPLE_BYTES];
+    GLuint dostipple;
 #endif
 	GLenum blendeq, sfactor, dfactor;
     GLint enable_blend;
