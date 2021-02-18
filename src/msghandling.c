@@ -49,13 +49,16 @@ void tgl_fixme(const char* format, ...) {
 void gl_fatal_error(char* format, ...) {
 #ifndef NO_DEBUG_OUTPUT
 	va_list ap;
-
 	va_start(ap, format);
-
 	fprintf(stderr, "TinyGL: fatal error: ");
 	vfprintf(stderr, format, ap);
 	fprintf(stderr, "\n");
 	exit(1);
 	va_end(ap);
+#else
+	exit(1);
 #endif
+	
 }
+
+
