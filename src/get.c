@@ -57,6 +57,7 @@ void glGetIntegerv(GLint pname, GLint* params) {
 #define xstr(s) str(s)
 #define str(s) #s
 
+/*
 const GLubyte* license_string = (const GLubyte*)""
 "Copyright notice:\n"
 "\n"
@@ -80,7 +81,7 @@ const GLubyte* license_string = (const GLubyte*)""
 "\n"
 "If you redistribute modified sources, I would appreciate that you\n"
 "include in the files history information documenting your changes.";
-
+*/
 
 const GLubyte* vendor_string = (const GLubyte*)"Fabrice Bellard, Gek, and the C-Chads";
 const GLubyte* renderer_string = (const GLubyte*)"TinyGL";
@@ -169,7 +170,7 @@ const GLubyte* glGetString(GLenum name){
 		case GL_RENDERER: return renderer_string;
 		case GL_VERSION: return version_string;
 		case GL_EXTENSIONS: return extensions_string;
-		case GL_LICENSE: return license_string;
+		/*case GL_LICENSE: return license_string;*/
 	}
 	return (const GLubyte*)"Erroneous input to glGetString";
 }

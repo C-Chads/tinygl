@@ -4,10 +4,12 @@
 /* It is possible to enable/disable (compile time) features in this
    header file. */
 
-//Enables setting the error flags when there's an error, so you can check it with glGetError, should only be used in development builds.
+//Enables setting the error flags when there's an error, so you can check it with glGetError
+//Disabling this has slight performance gains.
 #define TGL_FEATURE_ERROR_CHECK 1
 //Strict out-of-memory checking. All OpenGL function calls are invalidated (ALL OF THEM) if a GL_OUT_OF_MEMORY error occurs.
-//This slows down the renderer so we don't usually do it.
+//This slows down the renderer so we don't usually do it, but
+//it's part of the GL spec.
 #define TGL_FEATURE_STRICT_OOM_CHECKS 0
 //Clientside Arrays
 #define TGL_FEATURE_ARRAYS         1
