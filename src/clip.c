@@ -393,13 +393,30 @@ void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p
 #ifdef PROFILE
 	{
 		GLint norm;
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(!(
+		(p0->zp.x >= 0 && p0->zp.x < c->zb->xsize) &&
+		(p0->zp.y >= 0 && p0->zp.y < c->zb->ysize) &&
+		(p1->zp.x >= 0 && p1->zp.x < c->zb->xsize) &&
+		
+		(p1->zp.y >= 0 && p1->zp.y < c->zb->ysize) &&
+		(p2->zp.x >= 0 && p2->zp.x < c->zb->xsize) &&
+		(p2->zp.y >= 0 && p2->zp.y < c->zb->ysize)
+	))
+#define ERROR_FLAG GL_INVALID_VALUE
+#include "error_check.h"
+#else
+/*
 		assert(p0->zp.x >= 0 && p0->zp.x < c->zb->xsize);
 		assert(p0->zp.y >= 0 && p0->zp.y < c->zb->ysize);
 		assert(p1->zp.x >= 0 && p1->zp.x < c->zb->xsize);
+
 		assert(p1->zp.y >= 0 && p1->zp.y < c->zb->ysize);
 		assert(p2->zp.x >= 0 && p2->zp.x < c->zb->xsize);
 		assert(p2->zp.y >= 0 && p2->zp.y < c->zb->ysize);
-
+*/
+//Assume it's ok!
+#endif
 		norm = (p1->zp.x - p0->zp.x) * (p2->zp.y - p0->zp.y) - (p2->zp.x - p0->zp.x) * (p1->zp.y - p0->zp.y);
 		count_pixels += abs(norm) / 2;
 		count_triangles++;

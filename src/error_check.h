@@ -6,7 +6,7 @@
 
 #if TGL_FEATURE_ERROR_CHECK == 1
 //LEVEL 1 ERROR_CHECK
-#error should never execute.
+//#error should never execute.
 #ifndef ERROR_FLAG
 //LEVEL 2 ERROR_FLAG
 

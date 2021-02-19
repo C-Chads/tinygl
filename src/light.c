@@ -69,7 +69,12 @@ void glopMaterial(GLContext* c, GLParam* p) {
 		c->current_color.Y = v[1];
 		c->current_color.Z = v[2];
 		c->current_color.W = v[3];
-		assert(0);
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
+	//assert(0);
+#endif
 	}
 }
 
@@ -88,7 +93,15 @@ void glopLight(GLContext* c, GLParam* p) {
 	GLLight* l;
 	GLint i;
 
-	assert(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS);
+	//assert(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS);
+
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(!(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS))
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"
+#else
+	//assert(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS);
+#endif
 
 	l = &c->lights[light - GL_LIGHT0];
 
@@ -131,7 +144,14 @@ void glopLight(GLContext* c, GLParam* p) {
 		break;
 	case GL_SPOT_CUTOFF: {
 		GLfloat a = v.v[0];
-		assert(a == 180 || (a >= 0 && a <= 90));
+
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_INVALID_VALUE
+#include "error_check.h"
+#else
+	//assert(a == 180 || (a >= 0 && a <= 90));
+#endif
+
 		l->spot_cutoff = a;
 		if (a != 180)
 			l->cos_spot_cutoff = cos(a * M_PI / 180.0);
@@ -146,7 +166,11 @@ void glopLight(GLContext* c, GLParam* p) {
 		l->attenuation[2] = v.v[0];
 		break;
 	default:
-		assert(0);
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#endif
+		return;
 	}
 }
 
@@ -167,7 +191,11 @@ void glopLightModel(GLContext* c, GLParam* p) {
 		c->light_model_two_side = (GLint)v[0];
 		break;
 	default:
-		tgl_warning("glopLightModel: illegal pname: 0x%x\n", pname);
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#endif
+//		tgl_warning("glopLightModel: illegal pname: 0x%x\n", pname);
 		// assert(0);
 		break;
 	}

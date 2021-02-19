@@ -1,6 +1,5 @@
 #ifndef _tgl_zgl_h_
 #define _tgl_zgl_h_
-
 #include "../include/GL/gl.h"
 #include "../include/zbuffer.h"
 #include "../include/zfeatures.h"
@@ -11,8 +10,8 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323
 #endif
-#define DEBUG
-/* #define NDEBUG */
+//#define DEBUG
+#define NDEBUG 
 
 enum {
 

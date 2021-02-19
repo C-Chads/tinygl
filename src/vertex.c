@@ -63,9 +63,13 @@ void gl_eval_viewport(GLContext* c) {
 void glopBegin(GLContext* c, GLParam* p) {
 	GLint type;
 	M4 tmp;
-
-	assert(c->in_begin == 0);
-
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(c->in_begin != 0)
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"
+#else
+	//assert(c->in_begin == 0);
+#endif
 	type = p[1].i;
 	c->begin_type = type;
 	c->in_begin = 1;
@@ -183,7 +187,13 @@ void glopVertex(GLContext* c, GLParam* p) {
 	GLVertex* v;
 	GLint n, i, cnt;
 
-	assert(c->in_begin != 0);
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(c->in_begin == 0)
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"
+#else
+	//assert(c->in_begin != 0);
+#endif
 
 	n = c->vertex_n;
 	cnt = c->vertex_cnt;

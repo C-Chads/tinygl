@@ -33,7 +33,7 @@ static void delete_list(GLContext* c, GLint list) {
 		tgl_warning("\nAttempted to delete NULL list!!!!\n");
 		return;
 	}
-	assert(l != NULL);
+	//assert(l != NULL);
 
 	/* free param buffer */
 	pb = l->first_op_buffer;
