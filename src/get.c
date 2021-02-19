@@ -115,6 +115,9 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 #if TGL_FEATURE_STRICT_OOM_CHECKS == 1
 "TGL_FEATURE_STRICT_OOM_CHECKS "
 #endif
+#if TGL_FEATURE_FISR == 1
+"TGL_FEATURE_FISR "
+#endif 
 #if TGL_FEATURE_ARRAYS == 1
 "TGL_FEATURE_ARRAYS "
 #endif

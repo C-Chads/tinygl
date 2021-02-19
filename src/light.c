@@ -274,15 +274,24 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 			d.X = l->position.v[0] - v->ec.v[0];
 			d.Y = l->position.v[1] - v->ec.v[1];
 			d.Z = l->position.v[2] - v->ec.v[2];
-			tmp = fastInvSqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z);
-			//dist = sq_rt(d.X * d.X + d.Y * d.Y + d.Z * d.Z);
+#if TGL_FEATURE_FISR == 1
+			tmp = fastInvSqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z); //FISR IMPL, MATCHED!
 			dist = 1.0f/tmp;
+			if (dist > 1E-3) {
+				d.X *= tmp;
+				d.Y *= tmp;
+				d.Z *= tmp;
+			}
+#else
+			dist = sqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z);
+			//dist = 1.0f/tmp;
 			if (dist > 1E-3) {
 				tmp = 1 / dist;
 				d.X *= tmp;
 				d.Y *= tmp;
 				d.Z *= tmp;
 			}
+#endif
 			att = 1.0f / (l->attenuation[0] + dist * (l->attenuation[1] + dist * l->attenuation[2]));
 		}
 		dot = d.X * n.X + d.Y * n.Y + d.Z * n.Z;
@@ -335,12 +344,19 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 				if (dot_spec > 0) {
 					GLSpecBuf* specbuf;
 					GLint idx;
-					//tmp = sqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z);
-					tmp = fastInvSqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z);
+#if TGL_FEATURE_FISR == 1
+					tmp = fastInvSqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z); //FISR IMPL, MATCHED!
 					if (tmp < 1E+3) {
-//						dot_spec = dot_spec / tmp;
 						dot_spec = dot_spec * tmp;
 					} else dot_spec = 0;
+#else
+				//reference implementation.
+					tmp=sqrt(s.X*s.X+s.Y*s.Y+s.Z*s.Z);
+			        if (tmp > 1E-3) {
+			          dot_spec=dot_spec / tmp;
+			        } else dot_spec = 0;
+#endif
+					
 
 					/* TODO: optimize */
 					/* testing specular buffer code */

@@ -239,9 +239,16 @@ void gl_M3_Inv(M3* a, M3* m) {
 
 int gl_V3_Norm_Fast(V3* a) {
 	GLfloat n;
-	n = fastInvSqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z);
+#if TGL_FEATURE_FISR == 1
+	n = fastInvSqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z); //FISR
+	if(n>1E+3)
+		return 1;
+#else
+	n = sqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z); //NONFISR
 	if (n == 0)
 		return 1;
+	n = 1.0 / n;
+#endif
 	a->X *= n;
 	a->Y *= n;
 	a->Z *= n;

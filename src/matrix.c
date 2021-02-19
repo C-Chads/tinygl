@@ -134,15 +134,18 @@ void glopRotate(GLContext* c, GLParam* p) {
 		GLfloat cost, sint;
 
 		/* normalize vector */
+		
+#if TGL_FEATURE_FISR == 1
 		GLfloat len = u[0]  + u[1] + u[2];
 		if (len == 0.0f)
 			return;
-/*OLD
-		
-*/
-//NEW
-		len = fastInvSqrt(len);
-		//len = 1.0f / sqrt(len);
+		len = fastInvSqrt(len); //FISR
+#else
+		GLfloat len = u[0] * u[0]  + u[1] * u[1] + u[2] * u[2];
+		if (len == 0.0f)
+			return;
+		len = 1.0f / sqrt(len);
+#endif
 		u[0] *= len;
 		u[1] *= len;
 		u[2] *= len;

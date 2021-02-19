@@ -11,6 +11,8 @@
 //This slows down the renderer so we don't usually do it, but
 //it's part of the GL spec.
 #define TGL_FEATURE_STRICT_OOM_CHECKS 0
+//Use Fast Inverse Square Root. Toggleable because it's actually slower on some systems, i've heard.
+#define TGL_FEATURE_FISR 1
 //Clientside Arrays
 #define TGL_FEATURE_ARRAYS         1
 //This library has a super cool opcode system based on function pointers, it's pretty fast too.

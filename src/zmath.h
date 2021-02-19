@@ -52,7 +52,7 @@ V4 gl_V4_New(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
 
 int gl_Matrix_Inv(GLfloat* r, GLfloat* m, GLint n);
 
-
+/*
 static inline GLfloat fastInvSqrt(float x){
 	GLint i; GLfloat y;
 	memcpy(&i, &x, 4);
@@ -61,5 +61,15 @@ static inline GLfloat fastInvSqrt(float x){
 	memcpy(&y, &i, 4);
 	return y * (1.5F - 0.5F * x * y * y);
 }
+*/
+#if TGL_FEATURE_FISR == 1
+static inline GLfloat fastInvSqrt(float x){
+	union{GLfloat f; GLint i;} conv;
+	conv.f = x;
+	conv.i = 0x5F1FFFF9 - (conv.i>>1);
+	conv.f *= 0.703952253f * (2.38924456f - x * conv.f * conv.f);
+	return conv.f;
+}
+#endif
 #endif
 // __ZMATH__
