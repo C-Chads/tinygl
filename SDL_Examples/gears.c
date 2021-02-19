@@ -284,6 +284,7 @@ int main(int argc, char** argv) {
 	unsigned int fps = 0;
 	unsigned int flat = 0;
 	unsigned int setenspec = 1;
+	unsigned int dotext = 1;
 	unsigned int blending = 0;
 	char needsRGBAFix = 0;
 	if (argc > 1) {
@@ -307,6 +308,8 @@ int main(int argc, char** argv) {
 				override_drawmodes = 1;
 			if (!strcmp(argv[i],"-points"))
 				override_drawmodes = 2;
+			if (!strcmp(argv[i],"-notext"))
+				dotext = 0;
 			larg = argv[i];
 		}
 	}
@@ -468,12 +471,13 @@ if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 		// draw scene:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		draw();
+		if(dotext){
+			glDrawText((unsigned char*)"RED text", 0, 0, 0xFF0000);
 
-		glDrawText((unsigned char*)"RED text", 0, 0, 0xFF0000);
+			glDrawText((unsigned char*)"GREEN text", 0, 24, 0x00FF00);
 
-		glDrawText((unsigned char*)"GREEN text", 0, 24, 0x00FF00);
-
-		glDrawText((unsigned char*)"BLUE text", 0, 48, 0xFF);
+			glDrawText((unsigned char*)"BLUE text", 0, 48, 0xFF);
+		}
 		// swap buffers:
 		if (SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen) < 0)) {
 			fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
