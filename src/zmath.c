@@ -134,7 +134,7 @@ int Matrix_Inv(GLfloat* r, GLfloat* m, GLint n) {
 	GLint i, j, k, l;
 	GLfloat max, tmp, t;
 
-	/* identitée dans r */
+	/* identitï¿½e dans r */
 	for (i = 0; i < n * n; i++)
 		r[i] = 0;
 	for (i = 0; i < n; i++)
@@ -235,6 +235,20 @@ void gl_M3_Inv(M3* a, M3* m) {
 
 /* vector arithmetic */
 
+//NEW
+
+int gl_V3_Norm_Fast(V3* a) {
+	GLfloat n;
+	n = fastInvSqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z);
+	if (n == 0)
+		return 1;
+	a->X *= n;
+	a->Y *= n;
+	a->Z *= n;
+	return 0;
+}
+
+// OLD
 int gl_V3_Norm(V3* a) {
 	GLfloat n;
 	n = sqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z);

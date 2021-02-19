@@ -268,6 +268,15 @@ void initScene() {
 	// glEnable( GL_NORMALIZE );
 }
 
+static inline GLfloat TEST_fastInvSqrt(float x){
+	GLint i; GLfloat y;
+	memcpy(&i, &x, 4);
+	i = 0x5f3759df - (i>>1);
+	//y = (union{GLint l; GLfloat f; }){i}.f;
+	memcpy(&y, &i, 4);
+	return y * (1.5F - 0.5F * x * y * y);
+}
+
 int main(int argc, char** argv) {
 	// initialize SDL video:
 	int winSizeX = 640;
@@ -420,9 +429,12 @@ if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 
 	// main loop:
 	int isRunning = 1;
+	//float test = 0;
 	while (isRunning) {
 		++frames;
 		tNow = SDL_GetTicks();
+	//	test = TEST_fastInvSqrt(tNow);
+	//	printf("\n%f",test);
 		// do event handling:
 		SDL_Event evt;
 		while (SDL_PollEvent(&evt))

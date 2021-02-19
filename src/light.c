@@ -115,7 +115,8 @@ void glopLight(GLContext* c, GLParam* p) {
 			l->norm_position.X = pos.X;
 			l->norm_position.Y = pos.Y;
 			l->norm_position.Z = pos.Z;
-			gl_V3_Norm(&l->norm_position);
+			//gl_V3_Norm(&l->norm_position);
+			gl_V3_Norm_Fast(&l->norm_position);
 		}
 	} break;
 	case GL_SPOT_DIRECTION:
@@ -123,7 +124,7 @@ void glopLight(GLContext* c, GLParam* p) {
 			l->spot_direction.v[i] = v.v[i];
 			l->norm_spot_direction.v[i] = v.v[i];
 		}
-		gl_V3_Norm(&l->norm_spot_direction);
+		gl_V3_Norm_Fast(&l->norm_spot_direction);
 		break;
 	case GL_SPOT_EXPONENT:
 		l->spot_exponent = v.v[0];
@@ -242,7 +243,9 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 			d.X = l->position.v[0] - v->ec.v[0];
 			d.Y = l->position.v[1] - v->ec.v[1];
 			d.Z = l->position.v[2] - v->ec.v[2];
-			dist = sqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z);
+			tmp = fastInvSqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z);
+			//dist = sq_rt(d.X * d.X + d.Y * d.Y + d.Z * d.Z);
+			dist = 1.0f/tmp;
 			if (dist > 1E-3) {
 				tmp = 1 / dist;
 				d.X *= tmp;
@@ -285,7 +288,8 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 					vcoord.X = v->ec.X;
 					vcoord.Y = v->ec.Y;
 					vcoord.Z = v->ec.Z;
-					gl_V3_Norm(&vcoord);
+					//gl_V3_Norm(&vcoord);
+					gl_V3_Norm_Fast(&vcoord);
 					s.X = d.X - vcoord.X;
 					s.Y = d.Y - vcoord.X;
 					s.Z = d.Z - vcoord.X;
@@ -300,10 +304,12 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 				if (dot_spec > 0) {
 					GLSpecBuf* specbuf;
 					GLint idx;
-					tmp = sqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z);
-					if (tmp > 1E-3) {
-						dot_spec = dot_spec / tmp;
-					}
+					//tmp = sqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z);
+					tmp = fastInvSqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z);
+					if (tmp < 1E+3) {
+//						dot_spec = dot_spec / tmp;
+						dot_spec = dot_spec * tmp;
+					} else dot_spec = 0;
 
 					/* TODO: optimize */
 					/* testing specular buffer code */
@@ -311,7 +317,7 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 					specbuf = specbuf_get_buffer(c, m->shininess_i, m->shininess);
 					idx = (GLint)(dot_spec * SPECULAR_BUFFER_SIZE);
 					if (idx > SPECULAR_BUFFER_SIZE)
-						idx = SPECULAR_BUFFER_SIZE;
+						idx = SPECULAR_BUFFER_SIZE; //NOTE by GEK: this is poorly written, it's actually 1 larger.
 					dot_spec = specbuf->buf[idx];
 					lR += dot_spec * l->specular.v[0] * m->specular.v[0];
 					lG += dot_spec * l->specular.v[1] * m->specular.v[1];

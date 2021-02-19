@@ -95,6 +95,8 @@ void glopPopMatrix(GLContext* c, GLParam* p) {
 	gl_matrix_update(c);
 }
 
+
+
 void glopRotate(GLContext* c, GLParam* p) {
 	M4 m;
 	GLfloat u[3];
@@ -132,14 +134,18 @@ void glopRotate(GLContext* c, GLParam* p) {
 		GLfloat cost, sint;
 
 		/* normalize vector */
-		GLfloat len = u[0] * u[0] + u[1] * u[1] + u[2] * u[2];
+		GLfloat len = u[0]  + u[1] + u[2];
 		if (len == 0.0f)
 			return;
-		len = 1.0f / sqrt(len);
+/*OLD
+		
+*/
+//NEW
+		len = fastInvSqrt(len);
+		//len = 1.0f / sqrt(len);
 		u[0] *= len;
 		u[1] *= len;
 		u[2] *= len;
-
 		/* store cos and sin values */
 		cost = cos(angle);
 		sint = sin(angle);

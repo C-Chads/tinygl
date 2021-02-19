@@ -159,7 +159,7 @@ static inline void gl_vertex_transform(GLContext* c, GLVertex* v) {
 		v->normal.Z = (n->X * m[8] + n->Y * m[9] + n->Z * m[10]);
 
 		if (c->normalize_enabled) {
-			gl_V3_Norm(&v->normal);
+			gl_V3_Norm_Fast(&v->normal);
 		}
 	} else {
 		/* no eye coordinates needed, no normal */
