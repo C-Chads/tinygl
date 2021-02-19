@@ -1,6 +1,7 @@
 #include "msghandling.h"
 #include "zgl.h"
 #define TINYGL_VERSION 0.8
+#define TINYGL_USE_DATE_TIME 0
 void glGetIntegerv(GLint pname, GLint* params) {
 	GLContext* c = gl_get_context();
 #include "error_check.h"
@@ -88,29 +89,21 @@ xstr(TINYGL_VERSION)
 " TinyGLv"
 xstr(TINYGL_VERSION)
 " "
-#ifdef __DATE__
-"Compiled on "
-__DATE__
-#ifdef __TIME__
-" at "
-__TIME__
-#endif
 #ifdef __GNUC__
-" using GCC "
+"Compiled using GCC "
 __VERSION__
 #endif
 #ifdef __TINYC__
-" using Tiny C Compiler "
+"Compiled using Tiny C Compiler "
 xstr(__TINYC__)
 #endif
 #ifdef _MSVC_VER
-" using the worst compiler on earth, M$VC"
+"Compiled using the worst compiler on earth, M$VC. Fuck you!"
 #endif
 #ifdef __clang__
-" Using Clang "
+"Compiled Using Clang "
 __clang_version__
 #endif
-#endif //Endof date.
 ;
 const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 "TGL_SMOOTHSHADING "
