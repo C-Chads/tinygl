@@ -130,7 +130,8 @@ void glShadeModel(GLint mode) {
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	assert(mode == GL_FLAT || mode == GL_SMOOTH);
+//	assert(mode == GL_FLAT || mode == GL_SMOOTH);
+//Assume that they know what they're doing.
 #endif
 	p[0].op = OP_ShadeModel;
 	p[1].i = mode;
@@ -146,7 +147,8 @@ void glCullFace(GLint mode) {
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	assert(mode == GL_BACK || mode == GL_FRONT || mode == GL_FRONT_AND_BACK);
+	//assert(mode == GL_BACK || mode == GL_FRONT || mode == GL_FRONT_AND_BACK);
+	//Assume it's alrgiht.
 #endif
 	p[0].op = OP_CullFace;
 	p[1].i = mode;
@@ -162,7 +164,8 @@ void glFrontFace(GLint mode) {
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	assert(mode == GL_CCW || mode == GL_CW);
+	//assert(mode == GL_CCW || mode == GL_CW);
+	//It's alright. No error checking!
 #endif
 	mode = (mode != GL_CCW);
 
@@ -181,10 +184,10 @@ if(!(  (face == GL_BACK || face == GL_FRONT || face == GL_FRONT_AND_BACK)&&
   )
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
+#else
+	//assert(face == GL_BACK || face == GL_FRONT || face == GL_FRONT_AND_BACK);
+	//assert(mode == GL_POINT || mode == GL_LINE || mode == GL_FILL);
 #endif
-	assert(face == GL_BACK || face == GL_FRONT || face == GL_FRONT_AND_BACK);
-	assert(mode == GL_POINT || mode == GL_LINE || mode == GL_FILL);
-
 	p[0].op = OP_PolygonMode;
 	p[1].i = face;
 	p[2].i = mode;
@@ -365,7 +368,7 @@ void glMaterialfv(GLint mode, GLint type, GLfloat* v) {
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	assert(mode == GL_FRONT || mode == GL_BACK || mode == GL_FRONT_AND_BACK);
+	//assert(mode == GL_FRONT || mode == GL_BACK || mode == GL_FRONT_AND_BACK);
 #endif 
 	p[0].op = OP_Material;
 	p[1].i = mode;

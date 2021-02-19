@@ -71,8 +71,8 @@ if(!l || !ob)
 #include "error_check.h"
 
 #else
-if(!l || !ob)
-	gl_fatal_error("GL_OUT_OF_MEMORY");
+//if(!l || !ob) //Do no error checks!
+//	gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 	ob->next = NULL;
 	l->first_op_buffer = ob;
@@ -125,11 +125,11 @@ void gl_compile_op(GLContext* c, GLParam* p) {
 
 		ob1 = gl_zalloc(sizeof(GLParamBuffer));
 if(!ob1)
-#if TGL_FEATURE_ERROR_CHECK
+#if TGL_FEATURE_ERROR_CHECK == 1
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
-	gl_fatal_error("GL_OUT_OF_MEMORY");
+	{}//gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 		ob1->next = NULL;
 
@@ -180,8 +180,9 @@ void glopCallList(GLContext* c, GLParam* p) {
 	list = p[1].ui;
 	l = find_list(c, list);
 
-	if (l == NULL)
-		{tgl_warning("\nBAD CALL LIST OP");}
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if (l == NULL) {gl_fatal_error("Bad list op, not defined");}
+#endif
 	p = l->first_op_buffer->ops;
 
 	while (1) {
@@ -213,8 +214,8 @@ void glNewList(GLuint list, GLint mode) {
 #include "error_check.h"
 
 #else
-	assert(mode == GL_COMPILE || mode == GL_COMPILE_AND_EXECUTE);
-	assert(c->compile_flag == 0);
+	//assert(mode == GL_COMPILE || mode == GL_COMPILE_AND_EXECUTE);
+	//assert(c->compile_flag == 0);
 #endif
 	l = find_list(c, list);
 	if (l != NULL)
@@ -226,7 +227,7 @@ void glNewList(GLuint list, GLint mode) {
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
-	if(l==NULL) gl_fatal_error("Could not find or allocate list.");
+	//if(l==NULL) gl_fatal_error("Could not find or allocate list.");
 #endif
 	c->current_op_buffer = l->first_op_buffer;
 	c->current_op_buffer_index = 0;
@@ -244,7 +245,7 @@ void glEndList(void) {
 #define ERROR_FLAG GL_INVALID_OPERATION
 #include "error_check.h"
 #else
-	assert(c->compile_flag == 1);
+//	assert(c->compile_flag == 1);
 #endif
 	/* end of list */
 	p[0].op = OP_EndList;

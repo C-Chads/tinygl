@@ -25,7 +25,7 @@ void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize) {
 #define RETVAL NULL
 #include "error_check.h"
 #else
-	assert(text >= 0 && level < MAX_TEXTURE_LEVELS);
+	//assert(text >= 0 && level < MAX_TEXTURE_LEVELS);
 #endif
 	tex = find_texture(c, text);
 	if (!tex)
@@ -177,11 +177,14 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 	GLubyte* pixels1;
 	GLint do_free;
 
-	if (!(target == GL_TEXTURE_2D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE)) {
-#if TGL_FEATURE_ERROR_CHECK
+	 {
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if (!(target == GL_TEXTURE_2D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
+
 #else
+	if (!(target == GL_TEXTURE_2D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
 		gl_fatal_error("glTexImage2D: combination of parameters not handled!!");
 #endif
 	}
@@ -205,38 +208,38 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 		gl_free(im->pixmap);
 #if TGL_FEATURE_RENDER_BITS == 24
 	im->pixmap = gl_malloc(width * height * 3);
-	if (im->pixmap  || !(TGL_FEATURE_ERROR_CHECK == 1)) {
+	if (im->pixmap) {
 		memcpy(im->pixmap, pixels1, width * height * 3);
 	} else {
 #if TGL_FEATURE_ERROR_CHECK == 1
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
-		{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+		gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 	}
 #elif TGL_FEATURE_RENDER_BITS == 32
 	im->pixmap = gl_malloc(width * height * 4);
-	if (im->pixmap || !(TGL_FEATURE_ERROR_CHECK == 1)) {
+	if (im->pixmap) {
 		gl_convertRGB_to_8A8R8G8B(im->pixmap, pixels1, width, height);
 	}else {
 #if TGL_FEATURE_ERROR_CHECK == 1
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
-		{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+		gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 	}
 #elif TGL_FEATURE_RENDER_BITS == 16
 	im->pixmap = gl_malloc(width * height * 2);
-	if (im->pixmap  || !(TGL_FEATURE_ERROR_CHECK == 1)) {
+	if (im->pixmap) {
 		gl_convertRGB_to_5R6G5B(im->pixmap, pixels1, width, height);
 	}else {
 #if TGL_FEATURE_ERROR_CHECK == 1
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
-		{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+		gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 	}
 #else
@@ -261,7 +264,6 @@ void glopTexEnv(GLContext* c, GLParam* p) {
 #include "error_check.h"
 #else
 		gl_fatal_error("glTexParameter: unsupported option");
-		exit(1);
 #endif
 		
 	}

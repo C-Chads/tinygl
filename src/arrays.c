@@ -125,7 +125,7 @@ void glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* poin
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	assert(type == GL_FLOAT);
+	//assert(type == GL_FLOAT); Everything is fine!
 #endif
 	p[0].op = OP_VertexPointer;
 	p[1].i = size;
@@ -148,7 +148,7 @@ void glColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* point
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	assert(type == GL_FLOAT);
+	//assert(type == GL_FLOAT);
 #endif
 	p[0].op = OP_ColorPointer;
 	p[1].i = size;
@@ -170,7 +170,7 @@ void glNormalPointer(GLenum type, GLsizei stride, const GLvoid* pointer) {
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	assert(type == GL_FLOAT);
+	//assert(type == GL_FLOAT);
 #endif
 	p[0].op = OP_NormalPointer;
 	p[1].i = stride;
@@ -192,7 +192,7 @@ void glTexCoordPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* po
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	assert(type == GL_FLOAT);
+	//assert(type == GL_FLOAT);
 #endif
 	p[0].op = OP_TexCoordPointer;
 	p[1].i = size;
