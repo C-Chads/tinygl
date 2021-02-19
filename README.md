@@ -301,7 +301,7 @@ make sure that only ONE of these values is 1.
 ## ALSO COMPATIBLE WITH 16 BIT 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## BENCHMARK RESULTS
+## BENCHMARK RESULTS (Old- the library is faster now)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ### CPU: i7-6700 (Gek)
 ### OS: Linux Mint Debian Edition
