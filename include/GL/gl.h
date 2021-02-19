@@ -590,6 +590,7 @@ enum {
 	GL_CONSTANT_ALPHA_EXT		= 0x8003,
 	GL_ONE_MINUS_CONSTANT_ALPHA_EXT	= 0x8004,
 	GL_BLEND_EQUATION_EXT		= 0x8009,
+	GL_BLEND_EQUATION			= 0x8009,
 	GL_MIN_EXT			= 0x8007,
 	GL_MAX_EXT			= 0x8008,
 	GL_FUNC_ADD_EXT			= 0x8006,
@@ -840,6 +841,7 @@ void glFlush(void);
 void glHint(GLint target,GLint mode);
 void glGetIntegerv(GLint pname,GLint *params);
 void glGetFloatv(GLint pname, GLfloat *v);
+const GLubyte* glGetString(GLenum name);
 void glFrontFace(GLint mode);
 
 /* opengl 1.2 arrays */

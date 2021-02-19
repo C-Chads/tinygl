@@ -66,7 +66,7 @@ void glRasterPos4fv(GLfloat* v){glRasterPos4f(v[0],v[1],v[2],v[3]);}
 
 
 void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, void* data){
-	/* TODO */
+	/* TODO: Come up with a clever scheme for storing the data to avoid pointer dependency. */
 #if TGL_FEATURE_RENDER_BITS == 32
 	if( type != GL_UNSIGNED_INT &&
 		type != GL_UNSIGNED_INT_8_8_8_8 )
@@ -100,13 +100,10 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 	if(!c->rasterposvalid) return;
 	GLint w = p[1].i;
 	GLint h = p[2].i;
-#if TGL_FEATURE_RENDER_BITS == 32
-	unsigned int* d = p[3].p;
-#elif TGL_FEATURE_RENDER_BITS == 16
-	unsigned short* d = p[3].p;
-#else
-#error "bad TGL_FEATURE_RENDER_BITS"
-#endif
+	V3 rastpos = c->rasterpos;
+	PIXEL* d = p[3].p;
+	PIXEL* targ = c->zb->pbuf;
+
 	/*GLint mult = textsize;
 		for (GLint i = 0; i < mult; i++)
 		for (GLint j = 0; j < mult; j++)

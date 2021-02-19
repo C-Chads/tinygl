@@ -1,7 +1,7 @@
 #include "../include/GL/gl.h"
 #include "zgl.h"
 #include <stdarg.h>
-#include <stdio.h>
+//#include <stdio.h>
 #define NDEBUG
 
 #ifdef NDEBUG

@@ -374,6 +374,11 @@ int main(int argc, char** argv) {
 	if(!frameBuffer){printf("\nZB_open failed!");exit(1);}
 	glInit(frameBuffer);
 
+	//Print version info
+	printf("\nVersion string:\n%s",glGetString(GL_VERSION));
+	printf("\nVendor string:\n%s",glGetString(GL_VENDOR));
+	printf("\nRenderer string:\n%s",glGetString(GL_RENDERER));
+	printf("\nExtensions string:\n%s",glGetString(GL_EXTENSIONS));
 	// initialize GL:
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glViewport(0, 0, winSizeX, winSizeY);

@@ -12,12 +12,12 @@ clean:
 	rm -f $(ALL_T) *.exe
 	rm -f menu
 texture:
-	gcc texture.c $(LIB) -o texture $(GL_INCLUDES) $(SDL_LIBS) $(SDL_MIXERLIBS) $(GL_LIBS) $(CFLAGS) -lm
+	$(CC) texture.c $(LIB) -o texture $(GL_INCLUDES) $(SDL_LIBS) $(SDL_MIXERLIBS) $(GL_LIBS) $(CFLAGS) -lm
 menu:
-	gcc menu.c $(LIB) -o menu $(GL_INCLUDES) $(SDL_LIBS) $(SDL_MIXERLIBS) $(GL_LIBS) $(CFLAGS) -lm
+	$(CC) menu.c $(LIB) -o menu $(GL_INCLUDES) $(SDL_LIBS) $(SDL_MIXERLIBS) $(GL_LIBS) $(CFLAGS) -lm
 helloworld:
-	gcc helloworld.c $(LIB) -o helloworld $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) $(SDL_LIBS) $(SDL_MIXERLIBS) -lm
+	$(CC) helloworld.c $(LIB) -o helloworld $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) $(SDL_LIBS) $(SDL_MIXERLIBS) -lm
 model:
-	gcc model.c $(LIB) -o model $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) $(SDL_LIBS) $(SDL_MIXERLIBS) -lm
+	$(CC) model.c $(LIB) -o model $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) $(SDL_LIBS) $(SDL_MIXERLIBS) -lm
 gears:
-	gcc gears.c $(LIB) -o gears $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) $(SDL_LIBS) $(SDL_MIXERLIBS) -lm
+	$(CC) gears.c $(LIB) -o gears $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) $(SDL_LIBS) $(SDL_MIXERLIBS) -lm
