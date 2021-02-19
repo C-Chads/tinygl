@@ -50,7 +50,7 @@ void glopMaterial(GLContext* c, GLParam* p) {
 		break;
 	case GL_SHININESS:
 		m->shininess = v[0];
-		m->shininess_i = (v[0] / 128.0f) * SPECULAR_BUFFER_RESOLUTION;
+		m->shininess_i = (v[0] / 128.0f) * SPECULAR_BUFFER_SIZE;
 		break;
 	case GL_AMBIENT_AND_DIFFUSE:
 		// printf("\nRECEIVED AMBIENT AND DIFFUSE COLOR %f, %f, %f, %f", v[0], v[1], v[2], v[3]);

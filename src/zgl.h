@@ -28,9 +28,9 @@ enum {
 #define MAX_SPECULAR_BUFFERS 32
 //#define MAX_SPECULAR_BUFFERS 16
 /* # of entries in specular buffer */
-#define SPECULAR_BUFFER_SIZE 1024
+#define SPECULAR_BUFFER_SIZE 512
 /* specular buffer granularity */
-#define SPECULAR_BUFFER_RESOLUTION 1024
+//#define SPECULAR_BUFFER_RESOLUTION 1024
 
 #define MAX_MODELVIEW_STACK_DEPTH 32
 #define MAX_PROJECTION_STACK_DEPTH 8
