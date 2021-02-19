@@ -5,7 +5,7 @@
    header file. */
 
 //Enables setting the error flags when there's an error, so you can check it with glGetError, should only be used in development builds.
-#define TGL_FEATURE_ERROR_CHECK    1
+#define TGL_FEATURE_ERROR_CHECK 1
 //Strict out-of-memory checking. All OpenGL function calls are invalidated (ALL OF THEM) if a GL_OUT_OF_MEMORY error occurs.
 //This slows down the renderer so we don't usually do it.
 #define TGL_FEATURE_STRICT_OOM_CHECKS 0
