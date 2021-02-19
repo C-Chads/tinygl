@@ -1,5 +1,6 @@
 #include "msghandling.h"
 #include "zgl.h"
+#define TINYGL_VERSION 0.8
 void glGetIntegerv(GLint pname, GLint* params) {
 	GLContext* c = gl_get_context();
 
@@ -81,9 +82,12 @@ const GLubyte* license_string = (const GLubyte*)""
 
 
 const GLubyte* vendor_string = (const GLubyte*)"Fabrice Bellard, Gek, and the C-Chads";
-const GLubyte* renderer_string = (const GLubyte*)"TinyGL v0.8, Maintainer: Gek (DMHSW)";
+const GLubyte* renderer_string = (const GLubyte*)"TinyGL";
 const GLubyte* version_string = (const GLubyte*)"" 
-"0.8 TinyGLv0.8 "
+xstr(TINYGL_VERSION)
+" TinyGLv"
+xstr(TINYGL_VERSION)
+" "
 #ifdef __DATE__
 "Compiled on "
 __DATE__
@@ -101,7 +105,11 @@ xstr(__TINYC__)
 #endif
 #ifdef _MSVC_VER
 " using the worst compiler on earth, M$VC"
-#endif 
+#endif
+#ifdef __clang__
+" Using Clang "
+__clang_version__
+#endif
 #endif //Endof date.
 ;
 const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
@@ -172,40 +180,40 @@ void glGetFloatv(GLint pname, GLfloat* v) {
 	GLint mnr = 0; /* just a trick to return the correct matrix */
 	GLContext* c = gl_get_context();
 	switch (pname) {
-	case GL_TEXTURE_MATRIX:
-		mnr++;
-	case GL_PROJECTION_MATRIX:
-		mnr++;
-	case GL_MODELVIEW_MATRIX: {
-		GLfloat* p = &c->matrix_stack_ptr[mnr]->m[0][0];
-		;
-		for (i = 0; i < 4; i++) {
-			*v++ = p[0];
-			*v++ = p[4];
-			*v++ = p[8];
-			*v++ = p[12];
-			p++;
-		}
-	} break;
-	case GL_LINE_WIDTH:
-		*v = 1.0f;
-		break;
-	case GL_LINE_WIDTH_RANGE:
-		v[0] = v[1] = 1.0f;
-		break;
-	case GL_POINT_SIZE:
-		*v = c->zb->pointsize;
-		break;
-	case GL_ZOOM_X:
-		*v = c->pzoomx;
-		break;
-	case GL_ZOOM_Y:
-		*v = c->pzoomy;
-		break;
-	case GL_POINT_SIZE_RANGE:
-		v[0] = v[1] = 1.0f;
-	default:
-		tgl_warning("warning: unknown pname in glGetFloatv()\n");
-		break;
+		case GL_TEXTURE_MATRIX:
+			mnr++;
+		case GL_PROJECTION_MATRIX:
+			mnr++;
+		case GL_MODELVIEW_MATRIX: {
+			GLfloat* p = &c->matrix_stack_ptr[mnr]->m[0][0];
+			;
+			for (i = 0; i < 4; i++) {
+				*v++ = p[0];
+				*v++ = p[4];
+				*v++ = p[8];
+				*v++ = p[12];
+				p++;
+			}
+		} break;
+		case GL_LINE_WIDTH:
+			*v = 1.0f;
+			break;
+		case GL_LINE_WIDTH_RANGE:
+			v[0] = v[1] = 1.0f;
+			break;
+		case GL_POINT_SIZE:
+			*v = c->zb->pointsize;
+			break;
+		case GL_ZOOM_X:
+			*v = c->pzoomx;
+			break;
+		case GL_ZOOM_Y:
+			*v = c->pzoomy;
+			break;
+		case GL_POINT_SIZE_RANGE:
+			v[0] = v[1] = 1.0f;
+		default:
+			tgl_warning("warning: unknown pname in glGetFloatv()\n");
+			break;
 	}
 }
