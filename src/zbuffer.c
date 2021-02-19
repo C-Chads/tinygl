@@ -20,10 +20,11 @@ ZBuffer* ZB_open(GLint xsize, GLint ysize, GLint mode,
 	if (zb == NULL)
 		return NULL;
 
-	zb->xsize = xsize;
+	zb->xsize = xsize & ~3; //The xsize will ALWAYS be a multiple of four!
 	zb->ysize = ysize;
 	zb->mode = mode;
-	zb->linesize = (xsize * PSZB + 3) & ~3;
+	//zb->linesize = (xsize * PSZB + 3) & ~3;
+	zb->linesize = (xsize * PSZB);
 
 	switch (mode) {
 #if TGL_FEATURE_8_BITS ==1 
@@ -94,7 +95,7 @@ void ZB_resize(ZBuffer* zb, void* frame_buffer, GLint xsize, GLint ysize) {
 
 	zb->xsize = xsize;
 	zb->ysize = ysize;
-	zb->linesize = (xsize * PSZB + 3) & ~3;
+	zb->linesize = (xsize * PSZB);
 
 	size = zb->xsize * zb->ysize * sizeof(GLushort);
 

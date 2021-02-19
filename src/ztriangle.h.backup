@@ -20,7 +20,7 @@ Things to keep in mind:
  */
 
 {
-	GLfloat fdx1, fdx2, fdy1, fdy2, d1, d2;
+	GLfloat fdx1, fdx2, fdy1, fdy2;
 	GLushort* pz1;
 	PIXEL* pp1;
 	GLint update_left, update_right;
@@ -88,27 +88,27 @@ Things to keep in mind:
 	//and then
 #ifdef INTERP_Z
 {
-	d1 = p1->z - p0->z; //d1 first usage
-	d2 = p2->z - p0->z;
+	GLfloat d1 = p1->z - p0->z; //d1 first usage
+	GLfloat d2 = p2->z - p0->z;
 	dzdx = (GLint)(fdy2 * d1 - fdy1 * d2);
 	dzdy = (GLint)(fdx1 * d2 - fdx2 * d1);
 }
 #endif
 
 #ifdef INTERP_RGB
-{
+{GLfloat d1, d2;
 	d1 = p1->r - p0->r;
 	d2 = p2->r - p0->r;
 	drdx = (GLint)(fdy2 * d1 - fdy1 * d2);
 	drdy = (GLint)(fdx1 * d2 - fdx2 * d1);
 }
-{
+{GLfloat d1, d2;
 	d1 = p1->g - p0->g;
 	d2 = p2->g - p0->g;
 	dgdx = (GLint)(fdy2 * d1 - fdy1 * d2);
 	dgdy = (GLint)(fdx1 * d2 - fdx2 * d1);
 }
-{
+{GLfloat d1, d2;
 	d1 = p1->b - p0->b;
 	d2 = p2->b - p0->b;
 	dbdx = (GLint)(fdy2 * d1 - fdy1 * d2);
@@ -117,13 +117,13 @@ Things to keep in mind:
 #endif
 
 #ifdef INTERP_ST
-{
+{GLfloat d1, d2;
 	d1 = p1->s - p0->s;
 	d2 = p2->s - p0->s;
 	dsdx = (GLint)(fdy2 * d1 - fdy1 * d2);
 	dsdy = (GLint)(fdx1 * d2 - fdx2 * d1);
 }
-{
+{GLfloat d1, d2;
 	d1 = p1->t - p0->t;
 	d2 = p2->t - p0->t;
 	dtdx = (GLint)(fdy2 * d1 - fdy1 * d2);
@@ -144,13 +144,13 @@ Things to keep in mind:
 		p2->sz = (GLfloat)p2->s * zedzed;
 		p2->tz = (GLfloat)p2->t * zedzed;
 	}
-	{
+	{GLfloat d1, d2;
 		d1 = p1->sz - p0->sz;
 		d2 = p2->sz - p0->sz;
 		dszdx = (fdy2 * d1 - fdy1 * d2);
 		dszdy = (fdx1 * d2 - fdx2 * d1);
 	}
-	{
+	{GLfloat d1, d2;
 		d1 = p1->tz - p0->tz;
 		d2 = p2->tz - p0->tz;
 		dtzdx = (fdy2 * d1 - fdy1 * d2);
@@ -290,7 +290,7 @@ Things to keep in mind:
 #endif
 
 				n = (x2 >> 16) - x1;
-				//pp = (PIXEL*)((GLbyte*)pp1 + x1 * PS_ZB);
+				//pp = (PIXEL*)((GLbyte*)pp1 + x1 * PSZB);
 				pp = (PIXEL*)pp1 + x1;
 #ifdef INTERP_Z
 				pz = pz1 + x1;
@@ -317,18 +317,16 @@ Things to keep in mind:
 #ifdef INTERP_Z
 					pz += 4;
 #endif
-//					pp = (PIXEL*)((GLbyte*)pp + 4 * PS_ZB);
+//					pp = (PIXEL*)((GLbyte*)pp + 4 * PSZB);
 					pp += 4;
 					n -= 4;
 				}
 				while (n >= 0) {
 					PUT_PIXEL(0); /*the_x++;*/
 #ifdef INTERP_Z
-					//pz += 1;
-					pz++;
+					pz += 1;
 #endif
-					/*pp = (PIXEL*)((GLbyte*)pp + PS_ZB);*/
-					pp++;
+					pp = (PIXEL*)((GLbyte*)pp + PSZB);
 					n--;
 				}
 			}
@@ -381,8 +379,7 @@ Things to keep in mind:
 			x2 += dx2dy2;
 
 			/* screen coordinates */
-			//pp1 = (PIXEL*)((GLbyte*)pp1 + zb->linesize);
-			pp1 += zb->xsize;
+			pp1 = (PIXEL*)((GLbyte*)pp1 + zb->linesize);
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 			the_y++;
 #endif

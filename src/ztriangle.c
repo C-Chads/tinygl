@@ -401,7 +401,8 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
 			PUT_PIXEL(6); /*the_x++;*/                                                                                                                         \
 			PUT_PIXEL(7); /*the_x-=7;*/                                                                                                                        \
 			pz += NB_INTERP;                                                                                                                                   \
-			pp = (PIXEL*)((GLbyte*)pp + NB_INTERP * PSZB); /*the_x+=NB_INTERP * PSZB;*/                                                                        \
+			/*pp = (PIXEL*)((GLbyte*)pp + NB_INTERP * PSZB);*/ /*the_x+=NB_INTERP * PSZB;*/                                                                        \
+			pp += NB_INTERP; /*the_x+=NB_INTERP * PSZB;*/                                                                        \
 			n -= NB_INTERP;                                                                                                                                    \
 			sz += ndszdx;                                                                                                                                      \
 			tz += ndtzdx;                                                                                                                                      \
@@ -419,7 +420,8 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
 			while (n >= 0) {                                                                                                                                       \
 				PUT_PIXEL(0);                                                                                                                    				\
 				pz += 1;                                                                                                                                        \
-				pp = (PIXEL*)((GLbyte*)pp + PSZB);                                                                                                              \
+				/*pp = (PIXEL*)((GLbyte*)pp + PSZB);*/                                                                                                          \
+				pp ++;                                                                                                              							\
 				n -= 1;                                                                                                                                         \
 			}																																					\
 		}                                                                                                                                                   \
