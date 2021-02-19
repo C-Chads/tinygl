@@ -572,6 +572,7 @@ enum {
 	GL_RENDERER			= 0x1F01,
 	GL_VERSION			= 0x1F02,
 	GL_EXTENSIONS			= 0x1F03,
+	GL_LICENSE			= 0x1F04,
 
 	/* Errors */
 	GL_INVALID_VALUE		= 0x0501,
@@ -875,7 +876,7 @@ void glRasterPos2fv(GLfloat* v);
 void glRasterPos3fv(GLfloat* v);
 void glRasterPos4fv(GLfloat* v);
 void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, void* data);
-
+void glPixelZoom(GLfloat x, GLfloat y);
 /* not implemented, just added to compile  */
   /*
 inline void glPointSize(GLfloat) {}

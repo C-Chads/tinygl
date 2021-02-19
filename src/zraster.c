@@ -40,7 +40,7 @@ void glopRasterPos(GLContext* c, GLParam* p){
 	v.coord.Z = p[3].f;
 	v.coord.W = p[4].f;
 	gl_vertex_transform_raster(c, &v);
-	if (v.clip_code == 0)
+//	if (v.clip_code == 0)
 		{
 			{
 				GLfloat winv = 1.0 / v.pc.W;
@@ -53,8 +53,8 @@ void glopRasterPos(GLContext* c, GLParam* p){
 			c->rasterpos.v[2] = v.zp.z;
 			c->rasterposvalid = 1;
 		}
-	else
-		c->rasterposvalid = 0;
+//	else
+//		c->rasterposvalid = 0;
 }
 
 void glRasterPos2f(GLfloat x, GLfloat y){glRasterPos4f(x,y,0,1);}
@@ -95,6 +95,7 @@ void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, voi
 	p[3].p = data;
 	gl_add_op(p);
 }
+#define CLIPTEST(_x,_y,_w,_h)((0<=_x) && (_w>_x) && (0<=_y) && (_h>_y))
 void glopDrawPixels(GLContext* c, GLParam* p){
 	// p[3]
 	if(!c->rasterposvalid) return;
@@ -102,8 +103,28 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 	GLint h = p[2].i;
 	V3 rastpos = c->rasterpos;
 	PIXEL* d = p[3].p;
-	PIXEL* targ = c->zb->pbuf;
-
+	PIXEL* pbuf = c->zb->pbuf;
+	GLint tw = c->zb->xsize;
+	GLint th = c->zb->ysize;
+	GLfloat pzoomx = c->pzoomx;
+	GLfloat pzoomy = c->pzoomy;
+	V4 rastoffset;
+	rastoffset.v[0] = rastpos.v[0];
+	rastoffset.v[1] = rastpos.v[1];
+	//Looping over the source pixels.
+	for(GLint sx = 0; sx < w; sx++)
+	for(GLint sy = 0; sy < h; sy++)
+	{
+		PIXEL col = d[sy*w+sx];
+		rastoffset.v[0] = rastpos.v[0] +  (GLfloat)sx * pzoomx;
+		rastoffset.v[1] = rastpos.v[1] - ((GLfloat)(h-sy) * pzoomy);
+		rastoffset.v[2] = rastoffset.v[0] + pzoomx;
+		rastoffset.v[3] = rastoffset.v[1] - pzoomy;
+		for(GLint tx = rastoffset.v[0]; (GLfloat)tx < rastoffset.v[2];tx++)
+		for(GLint ty = rastoffset.v[1]; (GLfloat)ty > rastoffset.v[3];ty--)
+			if(CLIPTEST(tx,ty,tw,th))
+				pbuf[tx+ty*tw] = col;
+	}
 	/*GLint mult = textsize;
 		for (GLint i = 0; i < mult; i++)
 		for (GLint j = 0; j < mult; j++)
@@ -124,5 +145,5 @@ void glPixelZoom(GLfloat x, GLfloat y){
 
 void glopPixelZoom(GLContext* c, GLParam* p){
 	c->pzoomx = p[1].f;
-	c->pzoomx = p[2].f;
+	c->pzoomy = p[2].f;
 }

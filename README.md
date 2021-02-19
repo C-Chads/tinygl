@@ -69,6 +69,14 @@ The changelog is as such:
 
 * ADDED BLENDING SUPPORT!
 
+* Added glDrawPixels
+
+* Added glPixelZoom
+
+* Added glRasterPos2f,3f,4f,2fv,3fv,4fv
+
+* Added glGetString() for GL_VENDOR, GL_RENDERER, GL_VERSION, and GL_LICENSE
+
 * Fixed a myriad of bugs and... weirdnesses
 
 

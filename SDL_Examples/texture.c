@@ -1,8 +1,7 @@
-/* sdlGears.c */
+/* texture.c */
 /*
- * 3-D gear wheels by Brian Paul. This program is in the public domain.
- *
- * ported to libSDL/TinyGL by Gerald Franz (gfz@o2online.de)
+ * Texture test written by Gek
+ * 
  */
 //#define PLAY_MUSIC
 
@@ -239,6 +238,16 @@ int main(int argc, char** argv) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		draw();
 		glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x000000FF);
+		glPixelZoom(0.5,1);
+		glRasterPos2f(-1,-1);
+		{
+			GLint xsize, ysize;
+			void* data = glGetTexturePixmap(tex, 0, &xsize,  &ysize);
+			if(data)
+				glDrawPixels(xsize,ysize, GL_RGB, 
+				(TGL_FEATURE_RENDER_BITS==32)?GL_UNSIGNED_INT:GL_UNSIGNED_SHORT, data
+				);
+		}
 		// swap buffers:
 		if (SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen) < 0)) {
 			fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());

@@ -379,6 +379,7 @@ int main(int argc, char** argv) {
 	printf("\nVendor string:\n%s",glGetString(GL_VENDOR));
 	printf("\nRenderer string:\n%s",glGetString(GL_RENDERER));
 	printf("\nExtensions string:\n%s",glGetString(GL_EXTENSIONS));
+	printf("\nLicense string:\n%s",glGetString(GL_LICENSE));
 	// initialize GL:
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glViewport(0, 0, winSizeX, winSizeY);

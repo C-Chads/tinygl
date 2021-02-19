@@ -31,27 +31,7 @@
 #define TGL_COLOR_MASK 0x00ffffff
 //^ mask to check for while drawing/copying.
 
-/*
- * Matrix of internal and external pixel formats supported. 'Y' means
- * supported.
- * 
- *           External  8    16    24    32
- * Internal 
- *  15                 .     .     .     .
- *  16                 .     Y     .     .
- *  24                 .     .     .     .  (Stupid and pointless)
- *  32                 .     .     .     Y
- * 
- *
- * 15 bpp does not work yet (although it is easy to add it - ask me if
- * you need it).
- * 
- * Internal pixel format: see TGL_FEATURE_RENDER_BITS
- * External pixel format: see TGL_FEATURE_xxx_BITS 
- */
 
-/* enable various convertion code from internal pixel format (usually
-   16 bits per pixel) to any external format */
 #define TGL_FEATURE_8_BITS         0
 #define TGL_FEATURE_24_BITS        0
 //These are the only maintained modes.
