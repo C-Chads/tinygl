@@ -71,8 +71,8 @@ if(!l || !ob)
 #include "error_check.h"
 
 #else
-//if(!l || !ob) //Do no error checks!
-//	gl_fatal_error("GL_OUT_OF_MEMORY");
+if(!l || !ob)
+	gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 	ob->next = NULL;
 	l->first_op_buffer = ob;
@@ -129,7 +129,7 @@ if(!ob1)
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
-	{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+	gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 		ob1->next = NULL;
 
@@ -227,7 +227,7 @@ void glNewList(GLuint list, GLint mode) {
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
-	//if(l==NULL) gl_fatal_error("Could not find or allocate list.");
+	if(l==NULL) gl_fatal_error("Could not find or allocate list.");
 #endif
 	c->current_op_buffer = l->first_op_buffer;
 	c->current_op_buffer_index = 0;
