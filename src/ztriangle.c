@@ -439,7 +439,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 #define INTERP_Z
 #define INTERP_STZ
 
-
+//NB_INTERP refers to some sort of texture mapping speedup enhancement.
 #define NB_INTERP 8
 
 #define DRAW_INIT()                                                                                                                                            \
@@ -580,8 +580,6 @@ void ZB_fillTriangleMappingPerspectiveNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBu
 	}
 #endif
 #define DRAW_LINE() {DRAW_LINE_TRI_TEXTURED()}
-
-
 #include "ztriangle.h"
 }
 

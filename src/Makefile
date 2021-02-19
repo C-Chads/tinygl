@@ -1,4 +1,4 @@
-include config.mk
+include ../config.mk
 
 OBJS= api.o list.o vertex.o init.o matrix.o texture.o \
       misc.o clear.o light.o clip.o select.o get.o \

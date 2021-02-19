@@ -1,5 +1,6 @@
-CC= gcc
-CFLAGS = -g -Wall -O3 -w
+include ../config.mk
+#CC= gcc
+#CFLAGS = -g -Wall -O3 -w
 GL_LIBS= -L../ 
 GL_INCLUDES= -I../include/
 ALL_T= gears texture model helloworld

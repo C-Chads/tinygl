@@ -20,7 +20,7 @@ Things to keep in mind:
  */
 
 {
-	GLfloat fdx1, fdx2, fdy1, fdy2, d1, d2;
+	GLfloat fdx1, fdx2, fdy1, fdy2;
 	GLushort* pz1;
 	PIXEL* pp1;
 	GLint update_left, update_right;
@@ -86,6 +86,8 @@ Things to keep in mind:
 	fdx2 *= fz;
 	fdy2 *= fz;
 	//and then
+{
+GLfloat d1, d2;
 #ifdef INTERP_Z
 {
 	d1 = p1->z - p0->z; //d1 first usage
@@ -157,7 +159,7 @@ Things to keep in mind:
 		dtzdy = (fdx1 * d2 - fdx2 * d1);
 	}
 #endif
-
+} //EOF d1, d2 lifetimes.
 	/* screen coordinates */
 
 	pp1 = (PIXEL*)(zb->pbuf) + zb->xsize * p0->y; //pp1 first usage
