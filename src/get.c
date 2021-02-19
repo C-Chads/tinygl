@@ -3,7 +3,7 @@
 #define TINYGL_VERSION 0.8
 void glGetIntegerv(GLint pname, GLint* params) {
 	GLContext* c = gl_get_context();
-
+#include "error_check.h"
 	switch (pname) {
 	case GL_BLEND:
 		*params = c->zb->enable_blend;
@@ -115,6 +115,12 @@ __clang_version__
 const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 "TGL_SMOOTHSHADING "
 "TGL_LIGHTING "
+#if TGL_FEATURE_ERROR_CHECK == 1
+"TGL_FEATURE_ERROR_CHECK "
+#endif 
+#if TGL_FEATURE_STRICT_OOM_CHECKS == 1
+"TGL_FEATURE_STRICT_OOM_CHECKS "
+#endif
 #if TGL_FEATURE_ARRAYS == 1
 "TGL_FEATURE_ARRAYS "
 #endif
@@ -179,6 +185,7 @@ void glGetFloatv(GLint pname, GLfloat* v) {
 	GLint i;
 	GLint mnr = 0; /* just a trick to return the correct matrix */
 	GLContext* c = gl_get_context();
+#include "error_check.h"
 	switch (pname) {
 		case GL_TEXTURE_MATRIX:
 			mnr++;

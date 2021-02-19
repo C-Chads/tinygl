@@ -4,7 +4,7 @@
 
 void glVertex4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
 	GLParam p[5];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Vertex;
 	p[1].f = x;
 	p[2].f = y;
@@ -24,7 +24,7 @@ void glVertex3fv(GLfloat* v) { glVertex4f(v[0], v[1], v[2], 1); }
 
 void glNormal3f(GLfloat x, GLfloat y, GLfloat z) {
 	GLParam p[4];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Normal;
 	p[1].f = x;
 	p[2].f = y;
@@ -39,7 +39,7 @@ void glNormal3fv(GLfloat* v) { glNormal3f(v[0], v[1], v[2]); }
 
 void glColor4f(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
 	GLParam p[8];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Color;
 	p[1].f = r;
 	p[2].f = g;
@@ -62,7 +62,7 @@ void glColor4f(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
 
 void glColor4fv(GLfloat* v) {
 	GLParam p[8];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Color;
 	p[1].f = v[0];
 	p[2].f = v[1];
@@ -92,7 +92,7 @@ void glColor3fv(GLfloat* v) { glColor4f(v[0], v[1], v[2], 1); }
 
 void glTexCoord4f(GLfloat s, GLfloat t, GLfloat r, GLfloat q) {
 	GLParam p[5];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_TexCoord;
 	p[1].f = s;
 	p[2].f = t;
@@ -108,7 +108,12 @@ void glTexCoord2fv(GLfloat* v) { glTexCoord4f(v[0], v[1], 0, 1); }
 
 void glEdgeFlag(GLint flag) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+if(flag != GL_TRUE && flag != GL_FALSE)
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#endif
 	p[0].op = OP_EdgeFlag;
 	p[1].i = flag;
 
@@ -119,9 +124,14 @@ void glEdgeFlag(GLint flag) {
 
 void glShadeModel(GLint mode) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(mode != GL_FLAT && mode != GL_SMOOTH)
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
 	assert(mode == GL_FLAT || mode == GL_SMOOTH);
-
+#endif
 	p[0].op = OP_ShadeModel;
 	p[1].i = mode;
 
@@ -130,9 +140,14 @@ void glShadeModel(GLint mode) {
 
 void glCullFace(GLint mode) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(!(mode == GL_BACK || mode == GL_FRONT || mode == GL_FRONT_AND_BACK))
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
 	assert(mode == GL_BACK || mode == GL_FRONT || mode == GL_FRONT_AND_BACK);
-
+#endif
 	p[0].op = OP_CullFace;
 	p[1].i = mode;
 
@@ -141,9 +156,14 @@ void glCullFace(GLint mode) {
 
 void glFrontFace(GLint mode) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(!(mode == GL_CCW || mode == GL_CW))
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
 	assert(mode == GL_CCW || mode == GL_CW);
-
+#endif
 	mode = (mode != GL_CCW);
 
 	p[0].op = OP_FrontFace;
@@ -154,7 +174,14 @@ void glFrontFace(GLint mode) {
 
 void glPolygonMode(GLint face, GLint mode) {
 	GLParam p[3];
-
+#include "error_check_no_context.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+if(!(  (face == GL_BACK || face == GL_FRONT || face == GL_FRONT_AND_BACK)&&
+		(mode == GL_POINT || mode == GL_LINE || mode == GL_FILL) )
+  )
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#endif
 	assert(face == GL_BACK || face == GL_FRONT || face == GL_FRONT_AND_BACK);
 	assert(mode == GL_POINT || mode == GL_LINE || mode == GL_FILL);
 
@@ -166,13 +193,14 @@ void glPolygonMode(GLint face, GLint mode) {
 }
 
 void glDepthMask(GLint i){
+#include "error_check_no_context.h"
 	gl_get_context()->zb->depth_write = (i==GL_TRUE);
 }
 /* glEnable / glDisable */
-
+//TODO go to glopEnableDisable and add error checking there on values there.
 void glEnable(GLint cap) {
 	GLParam p[3];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_EnableDisable;
 	p[1].i = cap;
 	p[2].i = 1;
@@ -182,7 +210,7 @@ void glEnable(GLint cap) {
 
 void glDisable(GLint cap) {
 	GLParam p[3];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_EnableDisable;
 	p[1].i = cap;
 	p[2].i = 0;
@@ -194,7 +222,7 @@ void glDisable(GLint cap) {
 
 void glBegin(GLint mode) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Begin;
 	p[1].i = mode;
 
@@ -203,7 +231,7 @@ void glBegin(GLint mode) {
 
 void glEnd(void) {
 	GLParam p[1];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_End;
 
 	gl_add_op(p);
@@ -213,7 +241,7 @@ void glEnd(void) {
 
 void glMatrixMode(GLint mode) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_MatrixMode;
 	p[1].i = mode;
 
@@ -223,7 +251,7 @@ void glMatrixMode(GLint mode) {
 void glLoadMatrixf(const GLfloat* m) {
 	GLParam p[17];
 	GLint i;
-
+#include "error_check_no_context.h"
 	p[0].op = OP_LoadMatrix;
 	for (i = 0; i < 16; i++)
 		p[i + 1].f = m[i];
@@ -233,7 +261,7 @@ void glLoadMatrixf(const GLfloat* m) {
 
 void glLoadIdentity(void) {
 	GLParam p[1];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_LoadIdentity;
 
 	gl_add_op(p);
@@ -242,7 +270,7 @@ void glLoadIdentity(void) {
 void glMultMatrixf(const GLfloat* m) {
 	GLParam p[17];
 	GLint i;
-
+#include "error_check_no_context.h"
 	p[0].op = OP_MultMatrix;
 	for (i = 0; i < 16; i++)
 		p[i + 1].f = m[i];
@@ -252,7 +280,7 @@ void glMultMatrixf(const GLfloat* m) {
 
 void glPushMatrix(void) {
 	GLParam p[1];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_PushMatrix;
 
 	gl_add_op(p);
@@ -260,7 +288,7 @@ void glPushMatrix(void) {
 
 void glPopMatrix(void) {
 	GLParam p[1];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_PopMatrix;
 
 	gl_add_op(p);
@@ -268,7 +296,7 @@ void glPopMatrix(void) {
 
 void glRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
 	GLParam p[5];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Rotate;
 	p[1].f = angle;
 	p[2].f = x;
@@ -280,7 +308,7 @@ void glRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
 
 void glTranslatef(GLfloat x, GLfloat y, GLfloat z) {
 	GLParam p[4];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Translate;
 	p[1].f = x;
 	p[2].f = y;
@@ -291,7 +319,7 @@ void glTranslatef(GLfloat x, GLfloat y, GLfloat z) {
 
 void glScalef(GLfloat x, GLfloat y, GLfloat z) {
 	GLParam p[4];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Scale;
 	p[1].f = x;
 	p[2].f = y;
@@ -302,7 +330,7 @@ void glScalef(GLfloat x, GLfloat y, GLfloat z) {
 
 void glViewport(GLint x, GLint y, GLint width, GLint height) {
 	GLParam p[5];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Viewport;
 	p[1].i = x;
 	p[2].i = y;
@@ -314,7 +342,7 @@ void glViewport(GLint x, GLint y, GLint width, GLint height) {
 
 void glFrustum(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near, GLdouble farv) {
 	GLParam p[7];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Frustum;
 	p[1].f = left;
 	p[2].f = right;
@@ -331,9 +359,14 @@ void glFrustum(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLd
 void glMaterialfv(GLint mode, GLint type, GLfloat* v) {
 	GLParam p[7];
 	GLint i, n;
-
+#include "error_check_no_context.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(!(mode == GL_FRONT || mode == GL_BACK || mode == GL_FRONT_AND_BACK))
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
 	assert(mode == GL_FRONT || mode == GL_BACK || mode == GL_FRONT_AND_BACK);
-
+#endif 
 	p[0].op = OP_Material;
 	p[1].i = mode;
 	p[2].i = type;
@@ -351,7 +384,7 @@ void glMaterialfv(GLint mode, GLint type, GLfloat* v) {
 void glMaterialf(GLint mode, GLint type, GLfloat v) {
 	GLParam p[7];
 	GLint i;
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Material;
 	p[1].i = mode;
 	p[2].i = type;
@@ -364,7 +397,7 @@ void glMaterialf(GLint mode, GLint type, GLfloat v) {
 
 void glColorMaterial(GLint mode, GLint type) {
 	GLParam p[3];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_ColorMaterial;
 	p[1].i = mode;
 	p[2].i = type;
@@ -375,11 +408,11 @@ void glColorMaterial(GLint mode, GLint type) {
 void glLightfv(GLint light, GLint type, GLfloat* v) {
 	GLParam p[7];
 	GLint i;
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Light;
 	p[1].i = light;
 	p[2].i = type;
-	/* TODO: 3 composants ? */
+	/* TODO: 3 components ? */
 	for (i = 0; i < 4; i++)
 		p[3 + i].f = v[i];
 
@@ -389,7 +422,7 @@ void glLightfv(GLint light, GLint type, GLfloat* v) {
 void glLightf(GLint light, GLint type, GLfloat v) {
 	GLParam p[7];
 	GLint i;
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Light;
 	p[1].i = light;
 	p[2].i = type;
@@ -402,7 +435,7 @@ void glLightf(GLint light, GLint type, GLfloat v) {
 
 void glLightModeli(GLint pname, GLint param) {
 	GLParam p[6];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_LightModel;
 	p[1].i = pname;
 	p[2].f = (GLfloat)param;
@@ -417,7 +450,7 @@ void glLightModeli(GLint pname, GLint param) {
 void glLightModelfv(GLint pname, GLfloat* param) {
 	GLParam p[6];
 	GLint i;
-
+#include "error_check_no_context.h"
 	p[0].op = OP_LightModel;
 	p[1].i = pname;
 	for (i = 0; i < 4; i++)
@@ -430,7 +463,7 @@ void glLightModelfv(GLint pname, GLfloat* param) {
 
 void glClear(GLint mask) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Clear;
 	p[1].i = mask;
 
@@ -439,7 +472,7 @@ void glClear(GLint mask) {
 
 void glClearColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
 	GLParam p[5];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_ClearColor;
 	p[1].f = r;
 	p[2].f = g;
@@ -451,7 +484,7 @@ void glClearColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
 
 void glClearDepth(GLdouble depth) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_ClearDepth;
 	p[1].f = depth;
 
@@ -459,10 +492,10 @@ void glClearDepth(GLdouble depth) {
 }
 
 /* textures */
-
+//TODO Check inputs into glopTexImage2D
 void glTexImage2D(GLint target, GLint level, GLint components, GLint width, GLint height, GLint border, GLint format, GLint type, void* pixels) {
 	GLParam p[10];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_TexImage2D;
 	p[1].i = target;
 	p[2].i = level;
@@ -479,7 +512,7 @@ void glTexImage2D(GLint target, GLint level, GLint components, GLint width, GLin
 
 void glBindTexture(GLint target, GLint texture) {
 	GLParam p[3];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_BindTexture;
 	p[1].i = target;
 	p[2].i = texture;
@@ -489,7 +522,7 @@ void glBindTexture(GLint target, GLint texture) {
 
 void glTexEnvi(GLint target, GLint pname, GLint param) {
 	GLParam p[8];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_TexEnv;
 	p[1].i = target;
 	p[2].i = pname;
@@ -504,7 +537,7 @@ void glTexEnvi(GLint target, GLint pname, GLint param) {
 
 void glTexParameteri(GLint target, GLint pname, GLint param) {
 	GLParam p[8];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_TexParameter;
 	p[1].i = target;
 	p[2].i = pname;
@@ -519,7 +552,7 @@ void glTexParameteri(GLint target, GLint pname, GLint param) {
 
 void glPixelStorei(GLint pname, GLint param) {
 	GLParam p[3];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_PixelStore;
 	p[1].i = pname;
 	p[2].i = param;
@@ -531,7 +564,7 @@ void glPixelStorei(GLint pname, GLint param) {
 
 void glInitNames(void) {
 	GLParam p[1];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_InitNames;
 
 	gl_add_op(p);
@@ -539,7 +572,7 @@ void glInitNames(void) {
 
 void glPushName(GLuint name) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_PushName;
 	p[1].i = name;
 
@@ -548,7 +581,7 @@ void glPushName(GLuint name) {
 
 void glPopName(void) {
 	GLParam p[1];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_PopName;
 
 	gl_add_op(p);
@@ -556,7 +589,7 @@ void glPopName(void) {
 
 void glLoadName(GLuint name) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_LoadName;
 	p[1].i = name;
 
@@ -565,6 +598,7 @@ void glLoadName(GLuint name) {
 
 void glPolygonOffset(GLfloat factor, GLfloat units) {
 	GLParam p[3];
+#include "error_check_no_context.h"
 	p[0].op = OP_PolygonOffset;
 	p[1].f = factor;
 	p[2].f = units;
@@ -575,19 +609,20 @@ void glPolygonOffset(GLfloat factor, GLfloat units) {
 
 void glCallList(GLuint list) {
 	GLParam p[2];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_CallList;
 	p[1].i = list;
 
 	gl_add_op(p);
 }
 
+//TODO: Implement a barrier for worker threads if we ever add multithreading support.
 void glFlush(void) { /* nothing to do */
 }
 
 void glHint(GLint target, GLint mode) {
 	GLParam p[3];
-
+#include "error_check_no_context.h"
 	p[0].op = OP_Hint;
 	p[1].i = target;
 	p[2].i = mode;
@@ -599,5 +634,6 @@ void glHint(GLint target, GLint mode) {
 
 void glDebug(GLint mode) {
 	GLContext* c = gl_get_context();
+#include "error_check.h"
 	c->print_flag = mode;
 }

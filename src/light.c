@@ -202,7 +202,10 @@ void gl_enable_disable_light(GLContext* c, GLint light, GLint v) {
 
 // FEATURES
 int zEnableSpecular = 1; // Enable specular lighting
-void glSetEnableSpecular(GLint s) { zEnableSpecular = s; }
+void glSetEnableSpecular(GLint s) { 
+#include "error_check_no_context.h"
+	zEnableSpecular = s; 
+}
 /* non optimized lightening model */
 void gl_shade_vertex(GLContext* c, GLVertex* v) {
 	GLfloat R, G, B, A;
@@ -315,6 +318,15 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 					/* testing specular buffer code */
 					/* dot_spec= pow(dot_spec,m->shininess);*/
 					specbuf = specbuf_get_buffer(c, m->shininess_i, m->shininess);
+#if TGL_FEATURE_ERROR_CHECK == 1
+//The GL_OUT_OF_MEMORY flag will already be set.
+#include "error_check.h"
+#else
+				//As it turns out, this is actually handled inside of specbuf_get_buffer!
+					//if(!specbuf)
+					//	gl_fatal_error("BAD SPECBUF_GET_BUFFER");
+#endif
+
 					idx = (GLint)(dot_spec * SPECULAR_BUFFER_SIZE);
 					if (idx > SPECULAR_BUFFER_SIZE)
 						idx = SPECULAR_BUFFER_SIZE; //NOTE by GEK: this is poorly written, it's actually 1 larger.

@@ -19,10 +19,23 @@ static GLTexture* find_texture(GLContext* c, GLint h) {
 void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize) {
 	GLTexture* tex;
 	GLContext* c = gl_get_context();
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(!(text >= 0 && level < MAX_TEXTURE_LEVELS))
+#define ERROR_FLAG GL_INVALID_ENUM
+#define RETVAL NULL
+#include "error_check.h"
+#else
 	assert(text >= 0 && level < MAX_TEXTURE_LEVELS);
+#endif
 	tex = find_texture(c, text);
 	if (!tex)
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_INVALID_ENUM
+#define RETVAL NULL
+#include "error_check.h"
+#else
 		return NULL;
+#endif
 	*xsize = tex->images[level].xsize;
 	*ysize = tex->images[level].ysize;
 	return tex->images[level].pixmap;
@@ -54,8 +67,17 @@ static void free_texture(GLContext* c, GLint h) {
 
 GLTexture* alloc_texture(GLContext* c, GLint h) {
 	GLTexture *t, **ht;
-
+#define RETVAL NULL
+#include "error_check.h"
 	t = gl_zalloc(sizeof(GLTexture));
+	if(!t)
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#define RETVAL NULL
+#include "error_check.h"
+#else
+		{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+#endif
 
 	ht = &c->shared_state.texture_hash_table[h % TEXTURE_HASH_TABLE_SIZE];
 
@@ -81,7 +103,7 @@ void glGenTextures(GLint n, GLuint* textures) {
 	GLContext* c = gl_get_context();
 	GLint max, i;
 	GLTexture* t;
-
+#include "error_check.h"
 	max = 0;
 	for (i = 0; i < TEXTURE_HASH_TABLE_SIZE; i++) {
 		t = c->shared_state.texture_hash_table[i];
@@ -92,7 +114,7 @@ void glGenTextures(GLint n, GLuint* textures) {
 		}
 	}
 	for (i = 0; i < n; i++) {
-		textures[i] = max + i + 1;
+		textures[i] = max + i + 1; //MARK: How texture handles are created.
 	}
 }
 
@@ -100,12 +122,13 @@ void glDeleteTextures(GLint n, const GLuint* textures) {
 	GLContext* c = gl_get_context();
 	GLint i;
 	GLTexture* t;
-
+#include "error_check.h"
 	for (i = 0; i < n; i++) {
 		t = find_texture(c, textures[i]);
 		if (t != NULL && t != 0) {
 			if (t == c->current_texture) {
 				glBindTexture(GL_TEXTURE_2D, 0);
+#include "error_check.h"
 			}
 			free_texture(c, textures[i]);
 		}
@@ -116,12 +139,26 @@ void glopBindTexture(GLContext* c, GLParam* p) {
 	GLint target = p[1].i;
 	GLint texture = p[2].i;
 	GLTexture* t;
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(!(target == GL_TEXTURE_2D && target > 0))
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
 
-	assert(target == GL_TEXTURE_2D && texture >= 0);
-
+#else
+	//assert(target == GL_TEXTURE_2D && target > 0);
+#endif
 	t = find_texture(c, texture);
 	if (t == NULL) {
 		t = alloc_texture(c, texture);
+#include "error_check.h"
+	}
+	if(t == NULL) { //Failed malloc.
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#include "error_check.h"
+#else
+		{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+#endif
 	}
 	c->current_texture = t;
 }
@@ -141,7 +178,12 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 	GLint do_free;
 
 	if (!(target == GL_TEXTURE_2D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE)) {
+#if TGL_FEATURE_ERROR_CHECK
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
 		gl_fatal_error("glTexImage2D: combination of parameters not handled!!");
+#endif
 	}
 
 	do_free = 0;
@@ -163,18 +205,39 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 		gl_free(im->pixmap);
 #if TGL_FEATURE_RENDER_BITS == 24
 	im->pixmap = gl_malloc(width * height * 3);
-	if (im->pixmap) {
+	if (im->pixmap  || !(TGL_FEATURE_ERROR_CHECK == 1)) {
 		memcpy(im->pixmap, pixels1, width * height * 3);
+	} else {
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#include "error_check.h"
+#else
+		{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+#endif
 	}
 #elif TGL_FEATURE_RENDER_BITS == 32
 	im->pixmap = gl_malloc(width * height * 4);
-	if (im->pixmap) {
+	if (im->pixmap || !(TGL_FEATURE_ERROR_CHECK == 1)) {
 		gl_convertRGB_to_8A8R8G8B(im->pixmap, pixels1, width, height);
+	}else {
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#include "error_check.h"
+#else
+		{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+#endif
 	}
 #elif TGL_FEATURE_RENDER_BITS == 16
 	im->pixmap = gl_malloc(width * height * 2);
-	if (im->pixmap) {
+	if (im->pixmap  || !(TGL_FEATURE_ERROR_CHECK == 1)) {
 		gl_convertRGB_to_5R6G5B(im->pixmap, pixels1, width, height);
+	}else {
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#include "error_check.h"
+#else
+		{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+#endif
 	}
 #else
 #error TODO
@@ -190,8 +253,17 @@ void glopTexEnv(GLContext* c, GLParam* p) {
 	GLint param = p[3].i;
 
 	if (target != GL_TEXTURE_ENV) {
+
 	error:
+#if TGL_FEATURE_ERROR_CHECK == 1
+
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
 		gl_fatal_error("glTexParameter: unsupported option");
+		exit(1);
+#endif
+		
 	}
 
 	if (pname != GL_TEXTURE_ENV_MODE)
@@ -221,6 +293,7 @@ void glopTexParameter(GLContext* c, GLParam* p) {
 	}
 }
 
+//TODO: implement this.
 void glopPixelStore(GLContext* c, GLParam* p) {
 	GLint pname = p[1].i;
 	GLint param = p[2].i;

@@ -5,9 +5,13 @@ GLContext* gl_ctx;
 void initSharedState(GLContext* c) {
 	GLSharedState* s = &c->shared_state;
 	s->lists = gl_zalloc(sizeof(GLList*) * MAX_DISPLAY_LISTS);
+	if(!s->lists)
+		gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	s->texture_hash_table = gl_zalloc(sizeof(GLTexture*) * TEXTURE_HASH_TABLE_SIZE);
-
-	alloc_texture(c, 0); // MEMORY LEAK
+	if(!s->texture_hash_table)
+		gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
+	alloc_texture(c, 0);
+#include "error_check.h"
 }
 
 void endSharedState(GLContext* c) {
@@ -66,14 +70,17 @@ void glInit(void* zbuffer1) {
 	GLint i;
 
 	c = gl_zalloc(sizeof(GLContext));
+	if(!c) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	gl_ctx = c;
 
 	c->zb = zbuffer;
-
+#if TGL_FEATURE_ERROR_CHECK == 1
+	c->error_flag = GL_NO_ERROR;
+#endif
 	/* allocate GLVertex array */
 	c->vertex_max = POLYGON_MAX_VERTEX;
 	c->vertex = gl_malloc(POLYGON_MAX_VERTEX * sizeof(GLVertex));
-
+	if(!c->vertex) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	/* viewport */
 	v = &c->viewport;
 	v->xmin = 0;
@@ -84,7 +91,8 @@ void glInit(void* zbuffer1) {
 
 	/* shared state */
 	initSharedState(c);
-
+	/* ztext */
+	c->textsize = 1;
 	/* lists */
 
 	c->exec_flag = 1;
@@ -194,6 +202,7 @@ void glInit(void* zbuffer1) {
 
 	for (i = 0; i < 3; i++) {
 		c->matrix_stack[i] = gl_zalloc(c->matrix_stack_depth_max[i] * sizeof(M4));
+		if (!(c->matrix_stack[i])) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 		c->matrix_stack_ptr[i] = c->matrix_stack[i];
 	}
 

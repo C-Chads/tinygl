@@ -575,6 +575,7 @@ enum {
 	GL_LICENSE			= 0x1F04,
 
 	/* Errors */
+	GL_NO_ERROR				= 0x0,
 	GL_INVALID_VALUE		= 0x0501,
 	GL_INVALID_ENUM			= 0x0500,
 	GL_INVALID_OPERATION		= 0x0502,
@@ -651,7 +652,8 @@ typedef enum {
 	GL_TEXT_SIZE40x40 = 5,
 	GL_TEXT_SIZE48x48 = 6,
 	GL_TEXT_SIZE56x56 = 7,
-	GL_TEXT_SIZE64x64 = 8
+	GL_TEXT_SIZE64x64 = 8,
+	GL_MAX_TEXT_SIZE = 8
 } GLTEXTSIZE;
 enum {
 	GL_CURRENT_BIT		= 0x00000001,
@@ -843,6 +845,7 @@ void glHint(GLint target,GLint mode);
 void glGetIntegerv(GLint pname,GLint *params);
 void glGetFloatv(GLint pname, GLfloat *v);
 const GLubyte* glGetString(GLenum name);
+GLenum glGetError();
 void glFrontFace(GLint mode);
 
 /* opengl 1.2 arrays */

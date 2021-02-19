@@ -156,7 +156,9 @@ typedef void (*gl_draw_triangle_func)(struct GLContext* c, GLVertex* p0, GLVerte
 typedef struct GLContext {
 	/* Z buffer */
 	ZBuffer* zb;
-
+#if TGL_FEATURE_ERROR_CHECK == 1
+	GLenum error_flag;
+#endif
 	/* lights */
 	GLLight lights[MAX_LIGHTS];
 	GLLight* first_light;
@@ -279,6 +281,9 @@ typedef struct GLContext {
 	V3 rasterpos;
 	GLubyte rasterposvalid;
 	GLfloat pzoomx, pzoomy;
+
+	/* text */
+	GLTEXTSIZE textsize;
 } GLContext;
 
 extern GLContext* gl_ctx;

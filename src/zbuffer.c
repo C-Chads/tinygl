@@ -106,6 +106,7 @@ void ZB_resize(ZBuffer* zb, void* frame_buffer, GLint xsize, GLint ysize) {
 
 	if (frame_buffer == NULL) {
 		zb->pbuf = gl_malloc(zb->ysize * zb->linesize);
+		if(!zb->pbuf) exit(1);
 		zb->frame_buffer_allocated = 1;
 	} else {
 		zb->pbuf = frame_buffer;

@@ -407,18 +407,21 @@ void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p
 #endif
 
 	if (c->texture_2d_enabled) {
+		//if(c->current_texture)
+		{
 #ifdef PROFILE
-		count_triangles_textured++;
+			count_triangles_textured++;
 #endif
-		ZB_setTexture(c->zb, c->current_texture->images[0].pixmap);
+			ZB_setTexture(c->zb, c->current_texture->images[0].pixmap);
 #if TGL_FEATURE_BLEND == 1
-		if(c->zb->enable_blend) 
-			ZB_fillTriangleMappingPerspective(c->zb, &p0->zp, &p1->zp, &p2->zp);
-		else 
-			ZB_fillTriangleMappingPerspectiveNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
+			if(c->zb->enable_blend) 
+				ZB_fillTriangleMappingPerspective(c->zb, &p0->zp, &p1->zp, &p2->zp);
+			else 
+				ZB_fillTriangleMappingPerspectiveNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
 #else
-		ZB_fillTriangleMappingPerspectiveNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
+			ZB_fillTriangleMappingPerspectiveNOBLEND(c->zb, &p0->zp, &p1->zp, &p2->zp);
 #endif
+		}
 	} else if (c->current_shade_model == GL_SMOOTH) {
 		//ZB_fillTriangleSmooth(c->zb, &p0->zp, &p1->zp, &p2->zp);
 #if TGL_FEATURE_BLEND == 1

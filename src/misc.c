@@ -4,9 +4,10 @@
 void glPolygonStipple(void* a) {
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 	GLContext* c = gl_get_context();
+#include "error_check.h"
 	ZBuffer* zb = c->zb;
 
-	gl_memcpy(zb->stipplepattern, a, TGL_POLYGON_STIPPLE_BYTES);
+	memcpy(zb->stipplepattern, a, TGL_POLYGON_STIPPLE_BYTES);
 	for (GLint i = 0; i < TGL_POLYGON_STIPPLE_BYTES; i++) {
 		zb->stipplepattern[i] = ((GLubyte*)a)[i];
 	}
@@ -49,6 +50,7 @@ void glopViewport(GLContext* c, GLParam* p) {
 }
 void glBlendFunc(GLenum sfactor, GLenum dfactor) {
 	GLParam p[3];
+#include "error_check_no_context.h"
 	p[0].op = OP_BlendFunc;
 	p[1].i = sfactor;
 	p[2].i = dfactor;
@@ -63,6 +65,7 @@ void glopBlendFunc(GLContext* c, GLParam* p) {
 
 void glBlendEquation(GLenum mode) {
 	GLParam p[2];
+#include "error_check_no_context.h"
 	p[0].op = OP_BlendEquation;
 	p[1].i = mode;
 	gl_add_op(p);
@@ -74,6 +77,7 @@ void glopPointSize(GLContext* c, GLParam* p){
 }
 void glPointSize(GLfloat f){
 	GLParam p[2]; p[0].op = OP_PointSize;
+#include "error_check_no_context.h"
 	p[1].f = f;
 	gl_add_op(p);
 }
@@ -184,4 +188,16 @@ void glopHint(GLContext* c, GLParam* p) {
 void glopPolygonOffset(GLContext* c, GLParam* p) {
 	c->offset_factor = p[1].f;
 	c->offset_units = p[2].f;
+}
+
+GLenum glGetError(){
+#if TGL_FEATURE_ERROR_CHECK == 1
+	GLContext* c = gl_get_context();
+	GLenum eflag = c->error_flag;
+	if(eflag != GL_OUT_OF_MEMORY) //Unrecoverable!
+		c->error_flag = GL_NO_ERROR;
+	return eflag;
+#else
+	return GL_NO_ERROR;
+#endif
 }

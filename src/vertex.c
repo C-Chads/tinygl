@@ -193,11 +193,16 @@ void glopVertex(GLContext* c, GLParam* p) {
 	/* quick fix to avoid crashes on large polygons */
 	if (n >= c->vertex_max) {
 		GLVertex* newarray;
-		c->vertex_max <<= 1; /* just GLdouble size */
+		c->vertex_max <<= 1; /* just double size */
 		newarray = gl_malloc(sizeof(GLVertex) * c->vertex_max);
-		if (!newarray) {
-			gl_fatal_error("unable to allocate GLVertex array.\n");
-		}
+#if TGL_FEATURE_ERROR_CHECK == 1
+		if (!newarray)
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#include "error_check.h"
+
+#else
+		//Assume it went alright.
+#endif
 		memcpy(newarray, c->vertex, n * sizeof(GLVertex));
 		gl_free(c->vertex);
 		c->vertex = newarray;
@@ -217,6 +222,8 @@ void glopVertex(GLContext* c, GLParam* p) {
 
 	if (c->lighting_enabled) {
 		gl_shade_vertex(c, v);
+#include "error_check.h"
+//^ Don't proceed on an OUT OF MEMORY error.
 	} else {
 		v->color = c->current_color;
 	}
@@ -324,8 +331,14 @@ void glopVertex(GLContext* c, GLParam* p) {
 }
 
 void glopEnd(GLContext* c, GLParam* param) {
-	assert(c->in_begin == 1);
-
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(c->in_begin != 1)
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"
+#else
+	//assert(c->in_begin == 1);
+	//Assume it went alright.
+#endif
 	if (c->begin_type == GL_LINE_LOOP) {
 		if (c->vertex_cnt >= 3) {
 			gl_draw_line(c, &c->vertex[0], &c->vertex[2]);

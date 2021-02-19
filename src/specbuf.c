@@ -30,8 +30,15 @@ GLSpecBuf* specbuf_get_buffer(GLContext* c, const GLint shininess_i, const GLflo
 	if (oldest == NULL || c->specbuf_num_buffers < MAX_SPECULAR_BUFFERS) {
 		/* create new buffer */
 		GLSpecBuf* buf = gl_malloc(sizeof(GLSpecBuf));
-		if (!buf)
-			gl_fatal_error("could not allocate specular buffer");
+#if TGL_FEATURE_ERROR_CHECK == 1
+		if(!buf)
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#define RETVAL NULL
+#include "error_check.h"
+#else
+//		if (!buf)
+//			gl_fatal_error("GL_OUT_OF_MEMORY: CANNOT ALLOCATE SPECBUF");
+#endif
 		c->specbuf_num_buffers++;
 		buf->next = c->specbuf_first;
 		c->specbuf_first = buf;

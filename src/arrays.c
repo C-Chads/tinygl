@@ -51,6 +51,7 @@ void glopArrayElement(GLContext* c, GLParam* param) {
 
 void glArrayElement(GLint i) {
 	GLParam p[2];
+#include "error_check_no_context.h"
 	p[0].op = OP_ArrayElement;
 	p[1].i = i;
 	gl_add_op(p);
@@ -60,6 +61,7 @@ void glopEnableClientState(GLContext* c, GLParam* p) { c->client_states |= p[1].
 
 void glEnableClientState(GLenum array) {
 	GLParam p[2];
+#include "error_check_no_context.h"
 	p[0].op = OP_EnableClientState;
 
 	switch (array) {
@@ -86,6 +88,7 @@ void glopDisableClientState(GLContext* c, GLParam* p) { c->client_states &= p[1]
 
 void glDisableClientState(GLenum array) {
 	GLParam p[2];
+#include "error_check_no_context.h"
 	p[0].op = OP_DisableClientState;
 
 	switch (array) {
@@ -116,7 +119,14 @@ void glopVertexPointer(GLContext* c, GLParam* p) {
 
 void glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* pointer) {
 	GLParam p[4];
+#include "error_check_no_context.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(type != GL_FLOAT)
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
 	assert(type == GL_FLOAT);
+#endif
 	p[0].op = OP_VertexPointer;
 	p[1].i = size;
 	p[2].i = stride;
@@ -132,7 +142,14 @@ void glopColorPointer(GLContext* c, GLParam* p) {
 
 void glColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* pointer) {
 	GLParam p[4];
+#include "error_check_no_context.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(type != GL_FLOAT)
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
 	assert(type == GL_FLOAT);
+#endif
 	p[0].op = OP_ColorPointer;
 	p[1].i = size;
 	p[2].i = stride;
@@ -147,7 +164,14 @@ void glopNormalPointer(GLContext* c, GLParam* p) {
 
 void glNormalPointer(GLenum type, GLsizei stride, const GLvoid* pointer) {
 	GLParam p[3];
+#include "error_check_no_context.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(type != GL_FLOAT)
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
 	assert(type == GL_FLOAT);
+#endif
 	p[0].op = OP_NormalPointer;
 	p[1].i = stride;
 	p[2].p = (void*)pointer;
@@ -162,7 +186,14 @@ void glopTexCoordPointer(GLContext* c, GLParam* p) {
 
 void glTexCoordPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* pointer) {
 	GLParam p[4];
+#include "error_check_no_context.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(type != GL_FLOAT)
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#else
 	assert(type == GL_FLOAT);
+#endif
 	p[0].op = OP_TexCoordPointer;
 	p[1].i = size;
 	p[2].i = stride;
