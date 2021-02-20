@@ -730,11 +730,7 @@ extern char TGL_BUILDT_RshiftGLushort[ 1-2*((GLushort)65280>>8 != 255)];
 extern char TGL_BUILDT_LshiftGLshort[ 1-2*(((GLshort)255<<8) != 65280)];
 extern char TGL_BUILDT_RshiftGLshort[ 1-2*((GLshort)65280>>8 != -1)];
 //Testing floating point
-#define TGL_BUILDT_T1_FLOAT ((GLfloat)-10.7)
-#define TGL_BUILDT_T1_HEX 0xC12B3333
-#define TGL_BUILDT_T2_FLOAT 23
-#define TGL_BUILDT_T2_HEX 0x41B80000
-#define TGL_BUILDT_UNION_CAST(i) ((union{GLuint l; GLfloat f; }){i})
+
 //extern char TGL_BUILDT_FLOATT1[ 1-2*((TGL_BUILDT_UNION_CAST(TGL_BUILDT_T1_HEX)).f == TGL_BUILDT_T1_FLOAT)];
 //extern char TGL_BUILDT_FLOATT2[ 1-2*((TGL_BUILDT_UNION_CAST(TGL_BUILDT_T2_FLOAT)).l == TGL_BUILDT_T2_HEX)];
 #undef T

@@ -63,12 +63,40 @@ void endSharedState(GLContext* c) {
 	gl_free(s->texture_hash_table);
 }
 
+#if TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST == 1
+
+#define TGL_RUNT_UNION_CAST(i) ((union{GLuint l; GLfloat f;}){i})
+int TinyGLRuntimeCompatibilityTest(){
+	GLfloat t = -0;
+	GLint t2 = 1<<31;
+	if(TGL_RUNT_UNION_CAST(t2).f != -0)
+		return 1;
+	t2 = 3212836864;
+	t = -1;
+	if(TGL_RUNT_UNION_CAST(t2).f != t)
+		return 1;
+	if(((GLint)255<<8) != 65280) return 1;
+	if((GLint)65280>>8 != 255) return 1;
+	if( ((GLint)-1)>>14  != -1 ) return 1;
+	if(((GLuint)255<<8) != 65280) return 1;
+	if((GLuint)65280>>8 != 255) return 1;
+	if(((GLushort)255<<8) != 65280) return 1;
+	if((GLushort)65280>>8 != 255) return 1;
+	if(((GLshort)255<<8) != 65280) return 1;
+	if((GLshort)65280>>8 != -1) return 1;
+	return 0;
+}
+#endif
+
+
 void glInit(void* zbuffer1) {
 	ZBuffer* zbuffer = (ZBuffer*)zbuffer1;
 	GLContext* c;
 	GLViewport* v;
 	GLint i;
-
+#if TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST == 1
+	if(TinyGLRuntimeCompatibilityTest()) gl_fatal_error("TINYGL_FAILED_RUNTIME_COMPAT_TEST");
+#endif
 	c = gl_zalloc(sizeof(GLContext));
 	if(!c) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	gl_ctx = c;

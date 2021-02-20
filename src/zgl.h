@@ -11,8 +11,9 @@
 #define M_PI 3.14159265358979323
 #endif
 //#define DEBUG
+#ifndef NDEBUG
 #define NDEBUG 
-
+#endif
 enum {
 
 #define ADD_OP(a, b, c) OP_##a,

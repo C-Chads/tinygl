@@ -5,7 +5,7 @@
 
 //Enables setting the error flags when there's an error, so you can check it with glGetError
 //Disabling this has slight performance gains.
-#define TGL_FEATURE_ERROR_CHECK 1
+#define TGL_FEATURE_ERROR_CHECK 0
 //Strict out-of-memory checking. All OpenGL function calls are invalidated (ALL OF THEM) if a GL_OUT_OF_MEMORY error occurs.
 //The checks slow down the renderer so it is not recommended , but
 //it's part of the GL spec and it was relatively easy to add so I added it.
@@ -82,6 +82,8 @@
 //The fraction bits in the fixed point values used for S and T in interpolatiion.
 #define ZB_POINT_S_FRAC_BITS 10
 #define ZB_POINT_T_FRAC_BITS (ZB_POINT_S_FRAC_BITS + TGL_FEATURE_TEXTURE_POW2)
+
+#define TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST 1
 
 #endif 
 /* _tgl_features_h_ */
