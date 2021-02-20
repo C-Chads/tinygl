@@ -183,7 +183,7 @@ void glopCallList(GLContext* c, GLParam* p) {
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if (l == NULL) {gl_fatal_error("Bad list op, not defined");}
 #else
-	if(l == NULL)return; //MARK <COST>
+	//if(l == NULL)return; //MARK <COST>
 #endif
 	p = l->first_op_buffer->ops;
 
@@ -216,8 +216,8 @@ void glNewList(GLuint list, GLint mode) {
 #include "error_check.h"
 
 #else
-	assert(mode == GL_COMPILE || mode == GL_COMPILE_AND_EXECUTE); //MARK <COST>
-	assert(c->compile_flag == 0); //MARK <COST>
+	//assert(mode == GL_COMPILE || mode == GL_COMPILE_AND_EXECUTE); //MARK <COST>
+	//assert(c->compile_flag == 0); //MARK <COST>
 #endif
 	l = find_list(c, list);
 	if (l != NULL)
@@ -247,7 +247,7 @@ void glEndList(void) {
 #define ERROR_FLAG GL_INVALID_OPERATION
 #include "error_check.h"
 #else
-	assert(c->compile_flag == 1); //MARK <COST>
+	//assert(c->compile_flag == 1); //MARK <COST>
 #endif
 	/* end of list */
 	p[0].op = OP_EndList;

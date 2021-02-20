@@ -26,7 +26,7 @@ typedef unsigned char uchar;
 #endif
 #include <SDL/SDL.h>
 #include <time.h>
-
+int noSDL = 0;
 #ifndef M_PI
 #define M_PI 3.14159265
 #endif
@@ -318,7 +318,11 @@ int main(int argc, char** argv) {
 		break;
 	}
 
-	ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0);
+	ZBuffer* frameBuffer = NULL;
+	if(TGL_FEATURE_RENDER_BITS == 32)
+	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
+	else
+	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, 0);
 	glInit(frameBuffer);
 
 	srand(time(NULL));

@@ -5,7 +5,7 @@
 
 //Enables setting the error flags when there's an error, so you can check it with glGetError
 //Disabling this has slight performance gains.
-#define TGL_FEATURE_ERROR_CHECK 0
+#define TGL_FEATURE_ERROR_CHECK 1
 //Strict out-of-memory checking. All OpenGL function calls are invalidated (ALL OF THEM) if a GL_OUT_OF_MEMORY error occurs.
 //The checks slow down the renderer so it is not recommended , but
 //it's part of the GL spec and it was relatively easy to add so I added it.

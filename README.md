@@ -118,6 +118,9 @@ textured triangles will appear black.
 
 * the X dimension of the rendering window with must be a multiple of 4.
 
+* Line and point rendering have no blending. Point rendering is planned to be updated but line rendering is a secondary priority.
+(Games don't use wireframe rendering very much- but point rendering is useful for fast point sprites)
+
 * <Undocumented limitations that have not been tested>
 
 ### HOW DO I USE THIS LIBRARY???

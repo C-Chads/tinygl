@@ -25,7 +25,7 @@
 typedef unsigned char uchar;
 #endif
 #include <SDL/SDL.h>
-
+int noSDL = 0;
 #ifndef M_PI
 #define M_PI 3.14159265
 #endif
@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
 
 	unsigned int fps = 0;
 	char needsRGBAFix = 0;
-	if (argc > 2) {
+	if (argc > 1) {
 		char* larg = argv[1];
 		for (int i = 0; i < argc; i++) {
 			if (!strcmp(larg, "-w"))
@@ -128,53 +128,63 @@ int main(int argc, char** argv) {
 				winSizeY = atoi(argv[i]);
 			if (!strcmp(larg, "-fps"))
 				fps = strtoull(argv[i], 0, 10);
+			if (!strcmp(argv[i],"-nosdl"))
+				noSDL = 1;
 			larg = argv[i];
 		}
 	}
+	if(!noSDL){
 #ifdef PLAY_MUSIC
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 #else
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 #endif
-		fprintf(stderr, "ERROR: cannot initialize SDL video.\n");
-		return 1;
-	}
+			fprintf(stderr, "ERROR: cannot initialize SDL video.\n");
+			return 1;
+		}
+	} else if(SDL_Init(0) < 0) fprintf(stderr, "ERROR: cannot initialize SDL without video.\n");
 #ifdef PLAY_MUSIC
-	ainit(0);
+	if(!noSDL)ainit(0);
 #endif
 	SDL_Surface* screen = NULL;
+	if(!noSDL)
 	if ((screen = SDL_SetVideoMode(winSizeX, winSizeY, TGL_FEATURE_RENDER_BITS, SDL_SWSURFACE)) == 0) {
 		fprintf(stderr, "ERROR: Video mode set failed.\n");
 		return 1;
 	}
-	printf("\nRMASK IS %u", screen->format->Rmask);
-	printf("\nGMASK IS %u", screen->format->Gmask);
-	printf("\nBMASK IS %u", screen->format->Bmask);
-	printf("\nAMASK IS %u", screen->format->Amask);
+	if(!noSDL){
+		printf("\nRMASK IS %u", screen->format->Rmask);
+		printf("\nGMASK IS %u", screen->format->Gmask);
+		printf("\nBMASK IS %u", screen->format->Bmask);
+		printf("\nAMASK IS %u", screen->format->Amask);
+	}
 #if TGL_FEATURE_RENDER_BITS == 32
+	if(!noSDL)
 	if (screen->format->Rmask != 0x00FF0000 || screen->format->Gmask != 0x0000FF00 || screen->format->Bmask != 0x000000FF) {
 		needsRGBAFix = 1;
 		printf("\nYour screen is using an RGBA output different than this library expects.");
 		printf("\nYou should consider using the 16 bit version for optimal performance");
 	}
 #endif
-
-	printf("\nRSHIFT IS %u", screen->format->Rshift);
-	printf("\nGSHIFT IS %u", screen->format->Gshift);
-	printf("\nBSHIFT IS %u", screen->format->Bshift);
-	printf("\nASHIFT IS %u\n", screen->format->Ashift);
+	if(!noSDL){
+		printf("\nRSHIFT IS %u", screen->format->Rshift);
+		printf("\nGSHIFT IS %u", screen->format->Gshift);
+		printf("\nBSHIFT IS %u", screen->format->Bshift);
+		printf("\nASHIFT IS %u\n", screen->format->Ashift);
+	}
 	fflush(stdout);
 #ifdef PLAY_MUSIC
 	track* myTrack = NULL;
-	myTrack = lmus("WWGW.mp3");
-	mplay(myTrack, -1, 1000);
+	if(!noSDL) myTrack = lmus("WWGW.mp3");
+	if(!noSDL) mplay(myTrack, -1, 1000);
 #endif
-	SDL_ShowCursor(SDL_DISABLE);
-	SDL_WM_SetCaption(argv[0], 0);
+	if(!noSDL)SDL_ShowCursor(SDL_DISABLE);
+	if(!noSDL)SDL_WM_SetCaption(argv[0], 0);
 
 	// initialize TinyGL:
 	// unsigned int pitch;
 	int mode;
+	if(!noSDL)
 	switch (screen->format->BitsPerPixel) {
 	case 8:
 		fprintf(stderr, "ERROR: Palettes are currently not supported.\n");
@@ -200,7 +210,11 @@ int main(int argc, char** argv) {
 		return 1;
 		break;
 	}
-	ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0);
+	ZBuffer* frameBuffer = NULL;
+	if(TGL_FEATURE_RENDER_BITS == 32)
+	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
+	else
+	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, 0);
 	glInit(frameBuffer);
 
 	// initialize GL:
@@ -252,6 +266,7 @@ int main(int argc, char** argv) {
 		draw();
 		glDrawText((unsigned char*)"Hello World!\nFrom TinyGL", 0, 0, 0x00FFFFFF);
 		// swap buffers:
+		if(!noSDL)
 		if (SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen) < 0)) {
 			fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
 			return 1;
@@ -271,19 +286,20 @@ int main(int argc, char** argv) {
 						 ((DATONE & 0x00FF0000) >> 16) << screen->format->Bshift;
 			}
 #endif
-		ZB_copyFrameBuffer(frameBuffer, screen->pixels, screen->pitch);
-		if (SDL_MUSTLOCK(screen))
-			SDL_UnlockSurface(screen);
-		SDL_Flip(screen);
-		if (fps > 0)
+		if(!noSDL) ZB_copyFrameBuffer(frameBuffer, screen->pixels, screen->pitch);
+		if(!noSDL) if (SDL_MUSTLOCK(screen)) SDL_UnlockSurface(screen);
+		if(!noSDL) SDL_Flip(screen);
+		if(!noSDL) if (fps > 0)
 			if ((1000 / fps) > (SDL_GetTicks() - tNow)) {
 				SDL_Delay((1000 / fps) - (SDL_GetTicks() - tNow)); // Yay stable framerate!
 			}
 		// check for error conditions:
+		{
 		char* sdl_error = SDL_GetError();
 		if (sdl_error[0] != '\0') {
 			fprintf(stderr, "SDL ERROR: \"%s\"\n", sdl_error);
 			SDL_ClearError();
+		}
 		}
 		// update fps:
 		if (tNow >= tLastFps + 5000) {
@@ -297,12 +313,13 @@ int main(int argc, char** argv) {
 	// cleanup:
 	ZB_close(frameBuffer);
 	glClose();
+	if(!noSDL)
 	if (SDL_WasInit(SDL_INIT_VIDEO))
 		SDL_QuitSubSystem(SDL_INIT_VIDEO);
 #ifdef PLAY_MUSIC
-	mhalt();
-	Mix_FreeMusic(myTrack);
-	acleanup();
+	if(!noSDL)mhalt();
+	if(!noSDL)Mix_FreeMusic(myTrack);
+	if(!noSDL)acleanup();
 #endif
 	SDL_Quit();
 	return 0;
