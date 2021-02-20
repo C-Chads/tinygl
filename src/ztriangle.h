@@ -9,14 +9,14 @@ Before committing any changes, run gears, model, and texture on your changed cod
 fuck up!
 
 Things to keep in mind:
- 1) Tight control of the lifetimes of variables lets us use registers more often and memory less
+ 1) Tight control of the lifetimes, scopes, and usage of variables lets us use registers more often and memory less
  2) Doing the same operation on multiple items is faster than doing different things on different items, generally, because
    they will be able to take advantage of any/all applicable SIMD/vector ops on your hardware.
  3) Divide operations are vastly more expensive than add/sub/bitwise/etc
  4) Bit shifting is your friend, it's the fast way to multiply or divide by 2.
  5) Fixed point math is used for the depth "z" buffer
  6) We're not just using floats for everything because this is still supposed to be fast on platforms without SSE2
- 7) 
+ 7) Fewer variables is usually better
  */
 
 {

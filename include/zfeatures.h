@@ -1,7 +1,5 @@
 #ifndef _tgl_features_h_
 #define _tgl_features_h_
-//This include is for debugging, you can safely remove it if it's enabled
-//#include <stdio.h>
 /* It is possible to enable/disable (compile time) features in this
    header file. */
 
@@ -9,8 +7,8 @@
 //Disabling this has slight performance gains.
 #define TGL_FEATURE_ERROR_CHECK 1
 //Strict out-of-memory checking. All OpenGL function calls are invalidated (ALL OF THEM) if a GL_OUT_OF_MEMORY error occurs.
-//This slows down the renderer so we don't usually do it, but
-//it's part of the GL spec.
+//The checks slow down the renderer so it is not recommended , but
+//it's part of the GL spec and it was relatively easy to add so I added it.
 #define TGL_FEATURE_STRICT_OOM_CHECKS 0
 //Use Fast Inverse Square Root. Toggleable because it's actually slower on some systems, i've heard.
 #define TGL_FEATURE_FISR 1
