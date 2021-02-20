@@ -21,7 +21,7 @@
 //Lighting is expensive on texture-mapped polygons.
 #define TGL_FEATURE_LIT_TEXTURES   1
 //NOTE: Polygon Offset does nothing at the moment.
-#define TGL_FEATURE_POLYGON_OFFSET 0
+#define TGL_FEATURE_POLYGON_OFFSET 1
 //Enable the patternized "discard"-ing of pixels.
 #define TGL_FEATURE_POLYGON_STIPPLE 0
 //Enable GL_BLEND functionality
