@@ -171,7 +171,13 @@ SDL is used as a reasonable means of displaying the output of TinyGL for testing
 
 There is no FILE* usage, or I/O outside of 'msghandling.c' so if you want to remove all stdio dependency, just stub out the calls there.
 
+```
+it is recommended that for best performance you keep TinyGL on a separate thread from SDL, and to guard TinyGL's buffer with a mutex.
 
+This is not done in the demos but you can test the... thickness of the SDL stack by invoking gears or helloworld with -nosdl
+
+The framerate doubles.
+```
 ### NEW FUNCTIONS 
 
 These are functions not in the GL 1.1 spec that i've added to make this library more useful.
