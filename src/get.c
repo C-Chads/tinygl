@@ -1,7 +1,6 @@
 #include "msghandling.h"
 #include "zgl.h"
 #define TINYGL_VERSION 0.8
-#define TINYGL_USE_DATE_TIME 0
 void glGetIntegerv(GLint pname, GLint* params) {
 	GLContext* c = gl_get_context();
 #include "error_check.h"
@@ -38,7 +37,7 @@ void glGetIntegerv(GLint pname, GLint* params) {
 		*params = MAX_LIGHTS;
 		break;
 	case GL_MAX_TEXTURE_SIZE:
-		*params = 256; /* not completely true, but... */
+		*params = TGL_FEATURE_TEXTURE_DIM; /* not completely true, but... */
 		break;
 	case GL_CULL_FACE:
 		*params = c->cull_face_enabled;
@@ -124,7 +123,11 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 #if TGL_FEATURE_DISPLAYLISTS == 1
 "TGL_FEATURE_DISPLAYLISTS "
 #endif
-
+#if ZB_POINT_T_FRAC_BITS == (ZB_POINT_S_FRAC_BITS + TGL_FEATURE_TEXTURE_POW2)
+"TGL_FEATURE_OPTIMIZED_TEXTURE_ACCESS "
+#endif
+"TGL_FEATURE_TEXTURE_POW2=" xstr(TGL_FEATURE_TEXTURE_POW2) " "
+"TGL_FEATURE_TEXTURE_DIM=" xstr(xstr(TGL_FEATURE_TEXTURE_DIM)) " "
 #if TGL_FEATURE_LIT_TEXTURES == 1
 "TGL_FEATURE_LIT_TEXTURES "
 #endif

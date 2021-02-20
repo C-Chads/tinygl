@@ -22,7 +22,8 @@ enum {
 };
 
 /* initially # of allocated GLVertexes (will grow when necessary) */
-#define POLYGON_MAX_VERTEX 16
+/* Just large enough to hold a quad... because most users will never render anything larger. */
+#define POLYGON_MAX_VERTEX 4
 
 /* Max # of specular light pow buffers */
 #define MAX_SPECULAR_BUFFERS 32
@@ -36,13 +37,13 @@ enum {
 #define MAX_PROJECTION_STACK_DEPTH 8
 #define MAX_TEXTURE_STACK_DEPTH 8
 #define MAX_NAME_STACK_DEPTH 64
-#define MAX_TEXTURE_LEVELS 11
+#define MAX_TEXTURE_LEVELS 1
 #define MAX_LIGHTS 16
 
-#define VERTEX_HASH_SIZE 1031
+//#define VERTEX_HASH_SIZE 1031
 
 #define MAX_DISPLAY_LISTS 1024
-#define OP_BUFFER_MAX_SIZE 1024
+#define OP_BUFFER_MAX_SIZE 4096
 
 #define TGL_OFFSET_FILL 0x1
 #define TGL_OFFSET_LINE 0x2

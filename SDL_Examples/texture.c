@@ -30,7 +30,7 @@ typedef unsigned char uchar;
 #endif
 
 GLuint tex = 0;
-
+GLfloat texture_mult = 1.0;
 GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
 	GLuint t = 0;
 	glGenTextures(1, &t);
@@ -61,19 +61,19 @@ void draw() {
 	glTexCoord2f(0, 0);
 	glVertex3f(-1, -1, 0.5);
 
-	glTexCoord2f(1, -1);
+	glTexCoord2f(1 * texture_mult, -1 * texture_mult);
 	glVertex3f(1, 1, 0.5);
 
-	glTexCoord2f(0, -1);
+	glTexCoord2f(0, -1* texture_mult);
 	glVertex3f(-1, 1, 0.5);
 	// TRIANGLE 2
 	glTexCoord2f(0, 0);
 	glVertex3f(-1, -1, 0.5);
 
-	glTexCoord2f(1, 0);
+	glTexCoord2f(1 * texture_mult, 0);
 	glVertex3f(1, -1, 0.5);
 
-	glTexCoord2f(1, -1);
+	glTexCoord2f(1 * texture_mult, -1 * texture_mult);
 	glVertex3f(1, 1, 0.5);
 	glEnd();
 }
@@ -125,6 +125,8 @@ int main(int argc, char** argv) {
 				winSizeY = atoi(argv[i]);
 			if (!strcmp(larg, "-fps"))
 				fps = strtoull(argv[i], 0, 10);
+			if (!strcmp(larg, "-texscale"))
+				texture_mult = atof(argv[i]);
 			larg = argv[i];
 		}
 	}

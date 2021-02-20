@@ -211,7 +211,7 @@ void glopVertex(GLContext* c, GLParam* p) {
 #include "error_check.h"
 
 #else
-		//Assume it went alright.
+		assert(0);
 #endif
 		memcpy(newarray, c->vertex, n * sizeof(GLVertex));
 		gl_free(c->vertex);

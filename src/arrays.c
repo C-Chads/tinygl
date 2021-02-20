@@ -19,7 +19,7 @@ void glopArrayElement(GLContext* c, GLParam* param) {
 		p[1].f = c->color_array[i];
 		p[2].f = c->color_array[i + 1];
 		p[3].f = c->color_array[i + 2];
-		p[4].f = size > 3 ? c->color_array[i + 3] : 1.0f;
+		p[4].f = (size > 3) ? c->color_array[i + 3] : 1.0f;
 		glopColor(c, p);
 	}
 	if (states & NORMAL_ARRAY) {
@@ -34,8 +34,8 @@ void glopArrayElement(GLContext* c, GLParam* param) {
 		i = idx * (size + c->texcoord_array_stride);
 		c->current_tex_coord.X = c->texcoord_array[i];
 		c->current_tex_coord.Y = c->texcoord_array[i + 1];
-		c->current_tex_coord.Z = size > 2 ? c->texcoord_array[i + 2] : 0.0f;
-		c->current_tex_coord.W = size > 3 ? c->texcoord_array[i + 3] : 1.0f;
+		c->current_tex_coord.Z = (size > 2) ? c->texcoord_array[i + 2] : 0.0f;
+		c->current_tex_coord.W = (size > 3) ? c->texcoord_array[i + 3] : 1.0f;
 	}
 	if (states & VERTEX_ARRAY) {
 		GLParam p[5];
@@ -43,8 +43,8 @@ void glopArrayElement(GLContext* c, GLParam* param) {
 		i = idx * (size + c->vertex_array_stride);
 		p[1].f = c->vertex_array[i];
 		p[2].f = c->vertex_array[i + 1];
-		p[3].f = size > 2 ? c->vertex_array[i + 2] : 0.0f;
-		p[4].f = size > 3 ? c->vertex_array[i + 3] : 1.0f;
+		p[3].f = (size > 2) ? c->vertex_array[i + 2] : 0.0f;
+		p[4].f = (size > 3) ? c->vertex_array[i + 3] : 1.0f;
 		glopVertex(c, p);
 	}
 }

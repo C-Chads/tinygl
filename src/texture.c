@@ -25,7 +25,7 @@ void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize) {
 #define RETVAL NULL
 #include "error_check.h"
 #else
-	//assert(text >= 0 && level < MAX_TEXTURE_LEVELS);
+	assert(text >= 0 && level < MAX_TEXTURE_LEVELS);
 #endif
 	tex = find_texture(c, text);
 	if (!tex)
@@ -76,7 +76,7 @@ GLTexture* alloc_texture(GLContext* c, GLint h) {
 #define RETVAL NULL
 #include "error_check.h"
 #else
-		{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+		gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 
 	ht = &c->shared_state.texture_hash_table[h % TEXTURE_HASH_TABLE_SIZE];
@@ -190,13 +190,13 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 	}
 
 	do_free = 0;
-	if (width != 256 || height != 256) {
-		pixels1 = gl_malloc(256 * 256 * 3);
+	if (width != TGL_FEATURE_TEXTURE_DIM || height != TGL_FEATURE_TEXTURE_DIM) {
+		pixels1 = gl_malloc(TGL_FEATURE_TEXTURE_DIM * TGL_FEATURE_TEXTURE_DIM * 3);
 		/* no GLinterpolation is done here to respect the original image aliasing ! */
-		gl_resizeImageNoInterpolate(pixels1, 256, 256, pixels, width, height);
+		gl_resizeImageNoInterpolate(pixels1, TGL_FEATURE_TEXTURE_DIM, TGL_FEATURE_TEXTURE_DIM, pixels, width, height);
 		do_free = 1;
-		width = 256;
-		height = 256;
+		width = TGL_FEATURE_TEXTURE_DIM;
+		height = TGL_FEATURE_TEXTURE_DIM;
 	} else {
 		pixels1 = pixels;
 	}
@@ -242,6 +242,7 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 		gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 	}
+
 #else
 #error TODO
 #endif

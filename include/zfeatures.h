@@ -25,6 +25,14 @@
 #define TGL_FEATURE_POLYGON_STIPPLE 0
 //Enable GL_BLEND functionality
 #define TGL_FEATURE_BLEND 			1
+//The width of textures as a power of 2. Must be divisible by 2.
+#define TGL_FEATURE_TEXTURE_POW2	8
+#define TGL_FEATURE_TEXTURE_DIM		(1<<TGL_FEATURE_TEXTURE_POW2)
+#define TGL_FEATURE_TEXTURE_POW2_HALF 	(TGL_FEATURE_TEXTURE_POW2>>1)
+
+#if TGL_FEATURE_TEXTURE_POW2%2 != 0
+#error "bad TGL_FEATURE_TEXTURE_POW2"
+#endif
 
 //A stipple pattern is 128 bytes in size.
 #define TGL_POLYGON_STIPPLE_BYTES 128
@@ -71,6 +79,10 @@
 #error "Unsupported TGL_FEATURE_XX_BITS"
 
 #endif
+
+//The fraction bits in the fixed point values used for S and T in interpolatiion.
+#define ZB_POINT_S_FRAC_BITS 10
+#define ZB_POINT_T_FRAC_BITS (ZB_POINT_S_FRAC_BITS + TGL_FEATURE_TEXTURE_POW2)
 
 #endif 
 /* _tgl_features_h_ */

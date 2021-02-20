@@ -27,8 +27,8 @@ void gl_transform_to_viewport(GLContext* c, GLVertex* v) {
 	/* texture */
 
 	if (c->texture_2d_enabled) {
-		v->zp.s = (GLint)(v->tex_coord.X * (ZB_POINT_S_MAX - ZB_POINT_S_MIN) + ZB_POINT_S_MIN);
-		v->zp.t = (GLint)(v->tex_coord.Y * (ZB_POINT_T_MAX - ZB_POINT_T_MIN) + ZB_POINT_T_MIN);
+		v->zp.s = (GLint)(v->tex_coord.X * (ZB_POINT_S_MAX - ZB_POINT_S_MIN) + ZB_POINT_S_MIN); //MARKED
+		v->zp.t = (GLint)(v->tex_coord.Y * (ZB_POINT_T_MAX - ZB_POINT_T_MIN) + ZB_POINT_T_MIN); //MARKED
 	}
 }
 
@@ -199,24 +199,6 @@ static inline void updateTmp(GLContext* c, GLVertex* q, GLVertex* p0, GLVertex* 
 		q->color.v[0] = p0->color.v[0] + (p1->color.v[0] - p0->color.v[0]) * t;
 		q->color.v[1] = p0->color.v[1] + (p1->color.v[1] - p0->color.v[1]) * t;
 		q->color.v[2] = p0->color.v[2] + (p1->color.v[2] - p0->color.v[2]) * t;
-//		q->zp.r = p0->zp.r + (p1->zp.r - p0->zp.r) * t;
-//		q->zp.g = p0->zp.g + (p1->zp.g - p0->zp.g) * t;
-//		q->zp.b = p0->zp.b + (p1->zp.b - p0->zp.b) * t;
-
-/*
-		v->zp.r = (GLuint)(v->color.v[0] * 65535) & 65535;
-		v->zp.g = (GLuint)(v->color.v[1] * 65535) & 65535;
-		v->zp.b = (GLuint)(v->color.v[2] * 65535) & 65535;
-
-*/
-/*
-		q->zp.r = 0xffFF * p0->color.v[0];
-		q->zp.g = 0xffFF * p0->color.v[1];
-		q->zp.b = 0xffFF * p0->color.v[2];
-*/
-//		q->zp.r = (GLuint)(p0->color.v[0] * 65535) & 65535;
-//		q->zp.g = (GLuint)(p0->color.v[1] * 65535) & 65535;
-//		q->zp.b = (GLuint)(p0->color.v[2] * 65535) & 65535;
 	}
 	//	*/
 	if (c->texture_2d_enabled) {

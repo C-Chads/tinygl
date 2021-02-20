@@ -1,11 +1,11 @@
 #include "../include/GL/gl.h"
 #include "zgl.h"
 #include <stdarg.h>
-//#include <stdio.h>
+#include <stdio.h>
 //#define NDEBUG
 
 #ifdef NDEBUG
-#define NO_DEBUG_OUTPUT
+//#define NO_DEBUG_OUTPUT
 #endif
 
 /* Use this function to output messages when something unexpected

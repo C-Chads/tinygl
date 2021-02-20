@@ -13,10 +13,29 @@
 
 #define ZB_POINT_Z_FRAC_BITS 14
 
-#define ZB_POINT_S_MIN ( (1<<13) )
-#define ZB_POINT_S_MAX ( (1<<22)-(1<<13) )
-#define ZB_POINT_T_MIN ( (1<<21) )
-#define ZB_POINT_T_MAX ( (1<<30)-(1<<21) )
+//a "1" in bit FRAC_BITS+1 (starting at zero) = 1.
+
+#define ZB_POINT_S_MIN ( (1<<ZB_POINT_S_FRAC_BITS) )
+#define ZB_POINT_S_MAX ( (1<<(1+TGL_FEATURE_TEXTURE_POW2+ZB_POINT_S_FRAC_BITS))-(1<<ZB_POINT_S_FRAC_BITS) )
+#define ZB_POINT_T_MIN ( (1<<ZB_POINT_T_FRAC_BITS) )
+#define ZB_POINT_T_MAX ( (1<<(1+TGL_FEATURE_TEXTURE_POW2+ZB_POINT_T_FRAC_BITS))-(1<<ZB_POINT_T_FRAC_BITS) )
+#define ZB_POINT_S_VALUE (ZB_POINT_S_FRAC_BITS + TGL_FEATURE_TEXTURE_POW2_HALF)
+#define ZB_POINT_T_VALUE (ZB_POINT_T_FRAC_BITS - TGL_FEATURE_TEXTURE_POW2_HALF)
+#define ZB_S_MASK ((TGL_FEATURE_TEXTURE_DIM-1)<<(ZB_POINT_S_FRAC_BITS+1))
+#define ZB_T_MASK ((TGL_FEATURE_TEXTURE_DIM-1)<<(ZB_POINT_T_FRAC_BITS+1))
+//PSZSH is 5 at 32 bit, or 4 at 16 bit.
+//Basically what's happening here is this:
+//0x3FC000 is 255<<14
+///0x3FC00000 is 255<<22
+//22-14 = 8 (The number of )
+//a single factor of 2 separates 32 bit and 16 bit rendering, and this is reflected here.
+//Twice as many bytes need to be skipped in 32 bit rendering mode.
+//If you chose 
+#if ZB_POINT_T_FRAC_BITS == (ZB_POINT_S_FRAC_BITS + TGL_FEATURE_TEXTURE_POW2)
+#define ST_TO_TEXTURE_BYTE_OFFSET(s,t) ( ((s & ZB_S_MASK) | (t & ZB_T_MASK)) >> (ZB_POINT_S_VALUE-PSZSH))
+#else
+#define ST_TO_TEXTURE_BYTE_OFFSET(s,t) ( ((s & ZB_S_MASK)>>(ZB_POINT_S_VALUE-PSZSH)) | ((t & ZB_T_MASK)>>(ZB_POINT_T_VALUE-PSZSH))  )
+#endif
 /*
 #define ZB_POINT_RED_MIN ( (1<<10) )
 #define ZB_POINT_RED_MAX ( (1<<16)-(1<<10) )

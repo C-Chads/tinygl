@@ -1,5 +1,6 @@
 #include "zgl.h"
-
+//#warning STDIO INCLUDE!!! REMOVE!!!
+//#include <stdio.h>
 /*
  * image conversion
  */
@@ -52,7 +53,7 @@ void gl_resizeImage(GLubyte* dest, GLint xsize_dest, GLint ysize_dest, GLubyte* 
 
 	pix = dest;
 	pix_src = src;
-
+//	puts("\nIn here\n");
 	x1inc = (GLfloat)(xsize_src - 1) / (GLfloat)(xsize_dest - 1);
 	y1inc = (GLfloat)(ysize_src - 1) / (GLfloat)(ysize_dest - 1);
 
@@ -84,6 +85,7 @@ void gl_resizeImage(GLubyte* dest, GLint xsize_dest, GLint ysize_dest, GLubyte* 
 		}
 		y1 += y1inc;
 	}
+//	puts("\nNot here\n");
 }
 
 #define FRAC_BITS 16

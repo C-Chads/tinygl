@@ -244,20 +244,6 @@ void ZB_fillTriangleSmoothNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p
 #define DRAW_INIT()                                                                                                                                            \
 	{}
 
-	/*
-	#define PUT_PIXEL(_a)				\
-	{						\
-		zz=z >> ZB_POINT_Z_FRAC_BITS;		\
-		if (ZCMP(zz,pz[_a],_a)) {				\
-		  pp[_a] = RGB_TO_PIXEL(or1, og1, ob1);\
-		  pz[_a]=zz;				\
-		}\
-		z+=dzdx;					\
-		og1+=dgdx;					\
-		or1+=drdx;					\
-		ob1+=dbdx;					\
-	}
-	*/
 
 #if TGL_FEATURE_NO_DRAW_COLOR != 1
 #define PUT_PIXEL(_a)                                                                                                                                          \
@@ -362,6 +348,12 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
  */
 
 #if 1 // IF 1
+
+
+#define TEXTURE_SAMPLE(texture, s, t)														\
+ (*(PIXEL*)( (GLbyte*)texture + 															\
+ ST_TO_TEXTURE_BYTE_OFFSET(s,t) 								\
+ ))
 
 #define DRAW_LINE_TRI_TEXTURED()                                                                                                                               \
 	{                                                                                                                                                          \
@@ -474,9 +466,8 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 	{                                                                                                                                                          \
 		register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
 		if (ZCMP(zz, pz[_a], _a, 0)) {                                                                                                                         \
-			/*pp[_a] = RGB_MIX_FUNC(or1, og1, ob1, *(PIXEL*)((GLbyte*)texture + (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH))));*/                   \
-			TGL_BLEND_FUNC(RGB_MIX_FUNC(or1, og1, ob1, *(PIXEL*)((GLbyte*)texture + (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH)))), pp[_a])         \
-			if(zbdw) pz[_a] = zz;                                                                                                                   \
+			TGL_BLEND_FUNC(RGB_MIX_FUNC(or1, og1, ob1, TEXTURE_SAMPLE(texture, s, t)), pp[_a]);      						   								\
+			if(zbdw) pz[_a] = zz;                                                                                                                   		\
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
 		s += dsdx;                                                                                                                                             \
@@ -486,8 +477,8 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 #else
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
-		register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
-		c = *(PIXEL*)((GLbyte*)texture + (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH)));                                                             \
+		register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                         \
+		c = TEXTURE_SAMPLE(texture, s, t);                                                        					     										\
 		if (ZCMP(zz, pz[_a], _a, c)) {                                                                                                                         \
 			/*pp[_a] = RGB_MIX_FUNC(or1, og1, ob1, c);*/                                                                                                       \
 			TGL_BLEND_FUNC(RGB_MIX_FUNC(or1, og1, ob1, c), (pp[_a]));                                                                                          \
@@ -555,7 +546,7 @@ void ZB_fillTriangleMappingPerspectiveNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBu
 	{                                                                                                                                                          \
 		register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
 		if (ZCMP(zz, pz[_a], _a, 0)) {                                                                                                                         \
-			pp[_a] = RGB_MIX_FUNC(or1, og1, ob1, *(PIXEL*)((GLbyte*)texture + (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH))));                   		\
+			pp[_a] = RGB_MIX_FUNC(or1, og1, ob1, TEXTURE_SAMPLE(texture, s, t));                   				\
 			if(zbdw) pz[_a] = zz;                                                                                                                   			\
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
@@ -567,7 +558,7 @@ void ZB_fillTriangleMappingPerspectiveNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBu
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
 		register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
-		c = *(PIXEL*)((GLbyte*)texture + (((t & 0x3FC00000) | (s & 0x003FC000)) >> (17 - PSZSH)));                                                             \
+		c = TEXTURE_SAMPLE(texture, s, t);                                                             															\
 		if (ZCMP(zz, pz[_a], _a, c)) {                                                                                                                         \
 			pp[_a] = RGB_MIX_FUNC(or1, og1, ob1, c);                                                                                                       		\
 			/*TGL_BLEND_FUNC(RGB_MIX_FUNC(or1, og1, ob1, c), (pp[_a]));*/                                                                                          \

@@ -7,8 +7,6 @@ Tightly tweaked for performance.
 
 Valgrind'd for memory leaks in the demos.
 
-It's also lightning fast.
-
 Without Polygon Stipple:
 
 ![GIF Video of demo](capture.gif)
@@ -77,8 +75,11 @@ The changelog is as such:
 
 * Added glGetString() for GL_VENDOR, GL_RENDERER, GL_VERSION, and GL_LICENSE
 
+* Added comprehensive glGetError() functionality
+
 * Fixed a myriad of bugs and... weirdnesses
 
+* Tuned the triangle rasterizer to near-perfection.
 
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
@@ -97,6 +98,10 @@ Notable limitations:
 The "implementation specific multiplier" is 0.
 
 * There is no stencil buffer.
+
+* There is no mipmapping, antialiasing, or any form of texture filtering.
+
+* The only wrap mode is wrapping. You cannot change it.
 
 * Lit triangles will use the current material properties, even if they are textures. If the diffuse color is black, then your
 textured triangles will appear black.
