@@ -85,6 +85,8 @@ The changelog is as such:
 
 * Tuned the transformations to absolute perfection
 
+* Added glDrawArrays
+
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
 

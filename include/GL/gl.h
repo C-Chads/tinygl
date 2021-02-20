@@ -732,6 +732,10 @@ void glPolygonMode(GLint face,GLint mode);
 void glBegin(GLint type);
 void glEnd(void);
 
+
+void glDrawArrays(	GLenum mode,
+ 					GLint first,
+ 					GLsizei count);
 //NEW functions added by GEK!!!
 void glSetEnableSpecular(GLint s); //Toggle specular rendering (Speedup!!!)
 void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize); //Get the raw data of a texture!

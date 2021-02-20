@@ -57,6 +57,18 @@ void glArrayElement(GLint i) {
 	gl_add_op(p);
 }
 
+void glDrawArrays(	GLenum mode,
+ 					GLint first,
+ 					GLsizei count){
+	//Temporary implementation until I figure out MR's "batch geometry processing" idea
+#include "error_check_no_context.h"
+	GLint end = first+count;
+	glBegin(mode);
+	for(GLint i = first;i<end;i++)
+		glArrayElement(i);
+	glEnd();
+}
+
 void glopEnableClientState(GLContext* c, GLParam* p) { c->client_states |= p[1].i; }
 
 void glEnableClientState(GLenum array) {
