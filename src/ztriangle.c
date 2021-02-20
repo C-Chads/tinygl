@@ -480,7 +480,6 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 		register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                         \
 		c = TEXTURE_SAMPLE(texture, s, t);                                                        					     										\
 		if (ZCMP(zz, pz[_a], _a, c)) {                                                                                                                         \
-			/*pp[_a] = RGB_MIX_FUNC(or1, og1, ob1, c);*/                                                                                                       \
 			TGL_BLEND_FUNC(RGB_MIX_FUNC(or1, og1, ob1, c), (pp[_a]));                                                                                          \
 			if(zbdw) pz[_a] = zz;                                                                                                                   			\
 		}                                                                                                                                                      \

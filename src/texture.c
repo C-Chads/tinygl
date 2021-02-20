@@ -143,9 +143,8 @@ void glopBindTexture(GLContext* c, GLParam* p) {
 	if(!(target == GL_TEXTURE_2D && target > 0))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
-
 #else
-	//assert(target == GL_TEXTURE_2D && target > 0);
+	assert(target == GL_TEXTURE_2D && target > 0);
 #endif
 	t = find_texture(c, texture);
 	if (t == NULL) {
@@ -193,6 +192,7 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 	if (width != TGL_FEATURE_TEXTURE_DIM || height != TGL_FEATURE_TEXTURE_DIM) {
 		pixels1 = gl_malloc(TGL_FEATURE_TEXTURE_DIM * TGL_FEATURE_TEXTURE_DIM * 3);
 		/* no GLinterpolation is done here to respect the original image aliasing ! */
+		//printf("\nYes this is being called.");
 		gl_resizeImageNoInterpolate(pixels1, TGL_FEATURE_TEXTURE_DIM, TGL_FEATURE_TEXTURE_DIM, pixels, width, height);
 		do_free = 1;
 		width = TGL_FEATURE_TEXTURE_DIM;
@@ -206,19 +206,7 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 	im->ysize = height;
 	if (im->pixmap != NULL)
 		gl_free(im->pixmap);
-#if TGL_FEATURE_RENDER_BITS == 24
-	im->pixmap = gl_malloc(width * height * 3);
-	if (im->pixmap) {
-		memcpy(im->pixmap, pixels1, width * height * 3);
-	} else {
-#if TGL_FEATURE_ERROR_CHECK == 1
-#define ERROR_FLAG GL_OUT_OF_MEMORY
-#include "error_check.h"
-#else
-		gl_fatal_error("GL_OUT_OF_MEMORY");
-#endif
-	}
-#elif TGL_FEATURE_RENDER_BITS == 32
+#if TGL_FEATURE_RENDER_BITS == 32
 	im->pixmap = gl_malloc(width * height * 4);
 	if (im->pixmap) {
 		gl_convertRGB_to_8A8R8G8B(im->pixmap, pixels1, width, height);

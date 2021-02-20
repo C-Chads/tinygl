@@ -1,6 +1,7 @@
 #ifndef _tgl_features_h_
 #define _tgl_features_h_
-
+//This include is for debugging, you can safely remove it if it's enabled
+//#include <stdio.h>
 /* It is possible to enable/disable (compile time) features in this
    header file. */
 
@@ -25,14 +26,14 @@
 #define TGL_FEATURE_POLYGON_STIPPLE 0
 //Enable GL_BLEND functionality
 #define TGL_FEATURE_BLEND 			1
-//The width of textures as a power of 2. Must be divisible by 2.
+//The width of textures as a power of 2. The default is 8, or 256x256 textures.
 #define TGL_FEATURE_TEXTURE_POW2	8
 #define TGL_FEATURE_TEXTURE_DIM		(1<<TGL_FEATURE_TEXTURE_POW2)
-#define TGL_FEATURE_TEXTURE_POW2_HALF 	(TGL_FEATURE_TEXTURE_POW2>>1)
+//#define TGL_FEATURE_TEXTURE_POW2_HALF 	(TGL_FEATURE_TEXTURE_POW2>>1)
 
-#if TGL_FEATURE_TEXTURE_POW2%2 != 0
-#error "bad TGL_FEATURE_TEXTURE_POW2"
-#endif
+//#if TGL_FEATURE_TEXTURE_POW2%2 != 0
+//#error "bad TGL_FEATURE_TEXTURE_POW2"
+//#endif
 
 //A stipple pattern is 128 bytes in size.
 #define TGL_POLYGON_STIPPLE_BYTES 128

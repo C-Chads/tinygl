@@ -55,9 +55,11 @@ The changelog is as such:
 
 * Disabled 8, 15, and 24 bit rendering modes. 16 and 32 are the only supported rendering modes (Coincidentally, they are also the fastest)
 
+* Allowed the fixed texture size to be changed at compile time. It must be a power of 2, but that is the only limitation.
+
 * Removed the entire GLX/NanoGLX part of the library. Not portable and mostly useless.
 
-* Implemented new functions and some of GL 1.1's prototypes including polygon stipple.
+* Implemented new functions and some more of GL 1.1's prototypes including polygon stipple.
 
 * Triangles can now be lit and textured at the same time!
 
@@ -75,11 +77,13 @@ The changelog is as such:
 
 * Added glGetString() for GL_VENDOR, GL_RENDERER, GL_VERSION, and GL_LICENSE
 
-* Added comprehensive glGetError() functionality
+* Added comprehensive, usable glGetError() functionality for debugging.
 
 * Fixed a myriad of bugs and... weirdnesses
 
 * Tuned the triangle rasterizer to near-perfection.
+
+* Tuned the transformations to absolute perfection
 
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
@@ -99,11 +103,13 @@ The "implementation specific multiplier" is 0.
 
 * There is no stencil buffer.
 
+* Blending can't use alpha values. the rasterizer has no concept of alpha.
+
 * There is no mipmapping, antialiasing, or any form of texture filtering.
 
-* The only wrap mode is wrapping. You cannot change it.
+* No edge clamping. S and T are wrapped.
 
-* Lit triangles will use the current material properties, even if they are textures. If the diffuse color is black, then your
+* Lit triangles will use the current material properties, even if they are textured. If the diffuse color is black, then your
 textured triangles will appear black.
 
 * Lit textured triangles are smoothly shaded, irrespective of glShadeModel (Untextured triangles do not have this bug)
