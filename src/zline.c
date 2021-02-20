@@ -3,7 +3,8 @@
 
 #define ZCMP(z, zpix) (!(zbdt) || z >= (zpix))
 
-/* TODO: Implement point size */
+/* TODO: Implement point size. */
+/* TODO: Implement blending for lines and points. */
 
 void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 	GLushort* pz;
@@ -11,14 +12,14 @@ void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 	GLint zz;
 	GLubyte zbdw = zb->depth_write; 
 	GLubyte zbdt = zb->depth_test;
-	TGL_BLEND_VARS
+	//TGL_BLEND_VARS
 	//	PIXEL col;
 	pz = zb->zbuf + (p->y * zb->xsize + p->x);
 	pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * p->y + p->x * PSZB);
 	zz = p->z >> ZB_POINT_Z_FRAC_BITS;
 	if (ZCMP(zz, *pz)) {
-		//*pp =
-		TGL_BLEND_FUNC_RGB(p->r, p->g, p->b, (*pp))
+		*pp = RGB_TO_PIXEL(p->r, p->g, p->b);
+		//TGL_BLEND_FUNC_RGB(p->r, p->g, p->b, (*pp))
 		if(zbdw)
 			*pz = zz;
 	}

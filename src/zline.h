@@ -46,6 +46,7 @@
 #define RGBPIXEL pp[0] = r >> 16, pp[1] = g >> 16, pp[2] = b >> 16
 #else
 #define RGBPIXEL *pp = RGB_TO_PIXEL(r >> 8, g >> 8, b >> 8)
+//#define RGBPIXEL TGL_BLEND_FUNC_RGB(r>>8, g>>8, b>>8, (*pp))
 #endif
 #else /* INTERP_RGB */
 #define RGB(x)
@@ -53,6 +54,7 @@
 #define RGBPIXEL pp[0] = r, pp[1] = g, pp[2] = b
 #else
 #define RGBPIXEL *pp = color
+//#define RGBPIXEL *pp = color
 #endif
 #endif /* INTERP_RGB */
 
