@@ -717,7 +717,27 @@ extern char TGL_BUILDT_GLuint[ 1-2*(sizeof(GLuint) != 4)];
 extern char TGL_BUILDT_GLfloat[ 1-2*(sizeof(GLfloat) != 4)];
 extern char TGL_BUILDT_GLubyte[ 1-2*(sizeof(GLubyte) != 1)];
 extern char TGL_BUILDT_GLushort[ 1-2*(sizeof(GLushort) != 2)];
+//Testing bit shifting on the processor.
+extern char TGL_BUILDT_LshiftGLint[ 1-2*(((GLint)255<<8) != 65280)];
+extern char TGL_BUILDT_RshiftGLint[ 1-2*((GLint)65280>>8 != 255)];
+extern char TGL_BUILDT_RshiftGLint2[ 1-2*( ((GLint)-1)>>14  != -1 )];
+extern char TGL_BUILDT_LshiftGLuint[ 1-2*(((GLuint)255<<8) != 65280)];
+extern char TGL_BUILDT_RshiftGLuint[ 1-2*((GLuint)65280>>8 != 255)];
 
+extern char TGL_BUILDT_LshiftGLushort[ 1-2*(((GLushort)255<<8) != 65280)];
+extern char TGL_BUILDT_RshiftGLushort[ 1-2*((GLushort)65280>>8 != 255)];
+
+extern char TGL_BUILDT_LshiftGLshort[ 1-2*(((GLshort)255<<8) != 65280)];
+extern char TGL_BUILDT_RshiftGLshort[ 1-2*((GLshort)65280>>8 != -1)];
+//Testing floating point
+#define TGL_BUILDT_T1_FLOAT ((GLfloat)-10.7)
+#define TGL_BUILDT_T1_HEX 0xC12B3333
+#define TGL_BUILDT_T2_FLOAT 23
+#define TGL_BUILDT_T2_HEX 0x41B80000
+#define TGL_BUILDT_UNION_CAST(i) ((union{GLuint l; GLfloat f; }){i})
+//extern char TGL_BUILDT_FLOATT1[ 1-2*((TGL_BUILDT_UNION_CAST(TGL_BUILDT_T1_HEX)).f == TGL_BUILDT_T1_FLOAT)];
+//extern char TGL_BUILDT_FLOATT2[ 1-2*((TGL_BUILDT_UNION_CAST(TGL_BUILDT_T2_FLOAT)).l == TGL_BUILDT_T2_HEX)];
+#undef T
 #endif
 /* functions */
 
