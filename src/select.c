@@ -18,6 +18,15 @@ GLint glRenderMode(GLint mode) {
 		c->select_ptr = c->select_buffer;
 		c->name_stack_size = 0;
 		break;
+	case GL_FEEDBACK:
+		if(c->feedback_overflow)
+			result = -c->feedback_hits;
+		else
+			result = c->feedback_hits;
+		c->feedback_overflow = 0;
+		c->feedback_hits = 0;
+		c->feedback_ptr = c->feedback_buffer;
+	break;
 	default:
 		assert(0);
 	}
@@ -33,6 +42,11 @@ GLint glRenderMode(GLint mode) {
 		c->select_overflow = 0;
 		c->select_hit = NULL;
 		break;
+	case GL_FEEDBACK:
+		c->render_mode = GL_FEEDBACK;
+		c->feedback_hits = 0;
+		c->feedback_ptr = c->feedback_buffer;
+	break;
 	default:
 		assert(0);
 	}
@@ -41,9 +55,13 @@ GLint glRenderMode(GLint mode) {
 
 void glSelectBuffer(GLint size, GLuint* buf) {
 	GLContext* c = gl_get_context();
-
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(c->render_mode == GL_SELECT)
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"
+#else
 	assert(c->render_mode != GL_SELECT);
-
+#endif
 	c->select_buffer = buf;
 	c->select_size = size;
 }
@@ -86,7 +104,7 @@ void gl_add_select(GLContext* c, GLuint zmin, GLuint zmax) {
 	if (!c->select_overflow) {
 		if (c->select_hit == NULL) {
 			n = c->name_stack_size;
-			if ((c->select_ptr - c->select_buffer + 3 + n) > c->select_size) {
+			if ((c->select_ptr - c->select_buffer + 3 + n) > c->select_size) { //Detect overflows
 				c->select_overflow = 1;
 			} else {
 				ptr = c->select_ptr;

@@ -40,21 +40,23 @@ void glopRasterPos(GLContext* c, GLParam* p){
 	v.coord.Z = p[3].f;
 	v.coord.W = p[4].f;
 	gl_vertex_transform_raster(c, &v);
-//	if (v.clip_code == 0)
+	if (v.clip_code == 0)
 		{
 			{
 				GLfloat winv = 1.0 / v.pc.W;
 				v.zp.x = (GLint)(v.pc.X * winv * c->viewport.scale.X + c->viewport.trans.X);
 				v.zp.y = (GLint)(v.pc.Y * winv * c->viewport.scale.Y + c->viewport.trans.Y);
 				v.zp.z = (GLint)(v.pc.Z * winv * c->viewport.scale.Z + c->viewport.trans.Z);
+				
 			}
 			c->rasterpos.v[0] = v.zp.x;
 			c->rasterpos.v[1] = v.zp.y;
-			c->rasterpos.v[2] = v.zp.z;
+			//c->rasterpos.v[2] = v.zp.z;
+			c->rasterpos_zz = v.zp.z >> ZB_POINT_Z_FRAC_BITS; //I believe this is it?
 			c->rasterposvalid = 1;
 		}
-//	else
-//		c->rasterposvalid = 0;
+	else
+		c->rasterposvalid = 0;
 }
 
 void glRasterPos2f(GLfloat x, GLfloat y){glRasterPos4f(x,y,0,1);}
@@ -95,6 +97,7 @@ void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, voi
 	p[3].p = data;
 	gl_add_op(p);
 }
+#define ZCMP(z, zpix) (!(zbdt) || z >= (zpix))
 #define CLIPTEST(_x,_y,_w,_h)((0<=_x) && (_w>_x) && (0<=_y) && (_h>_y))
 void glopDrawPixels(GLContext* c, GLParam* p){
 	// p[3]
@@ -102,16 +105,30 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 	GLint w = p[1].i;
 	GLint h = p[2].i;
 	V3 rastpos = c->rasterpos;
+	ZBuffer* zb = c->zb;
 	PIXEL* d = p[3].p;
-	PIXEL* pbuf = c->zb->pbuf;
-	GLint tw = c->zb->xsize;
-	GLint th = c->zb->ysize;
+	PIXEL* pbuf = zb->pbuf;
+	GLushort* zbuf = zb->zbuf;
+	GLushort* pz;
+	GLubyte zbdw = zb->depth_write; 
+	GLubyte zbdt = zb->depth_test;
+	GLint tw = zb->xsize;
+	GLint th = zb->ysize;
 	GLfloat pzoomx = c->pzoomx;
 	GLfloat pzoomy = c->pzoomy;
 	V4 rastoffset;
 	rastoffset.v[0] = rastpos.v[0];
 	rastoffset.v[1] = rastpos.v[1];
+	GLint zz = c->rasterpos_zz;
+	TGL_BLEND_VARS
 	//Looping over the source pixels.
+	if(c->render_mode == GL_SELECT){
+		gl_add_select(c, 0, 0);
+		return;
+	} else if(c->render_mode == GL_FEEDBACK){
+		//TODO
+		return;
+	}
 	for(GLint sx = 0; sx < w; sx++)
 	for(GLint sy = 0; sy < h; sy++)
 	{
@@ -122,8 +139,21 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 		rastoffset.v[3] = rastoffset.v[1] - pzoomy;
 		for(GLint tx = rastoffset.v[0]; (GLfloat)tx < rastoffset.v[2];tx++)
 		for(GLint ty = rastoffset.v[1]; (GLfloat)ty > rastoffset.v[3];ty--)
-			if(CLIPTEST(tx,ty,tw,th))
-				pbuf[tx+ty*tw] = col;
+			if(CLIPTEST(tx,ty,tw,th)){
+			pz = zbuf + (ty * tw + tx);
+
+				if(ZCMP(zz,*pz)){
+#if TGL_FEATURE_BLEND == 1
+					if(!zb->enable_blend)
+						pbuf[tx+ty*tw] = col;
+					else
+						TGL_BLEND_FUNC(col, pbuf[tx+ty*tw])
+#else
+					pbuf[tx+ty*tw] = col;
+#endif
+					if(zbdw) *pz = zz;
+				}
+			}
 	}
 	/*GLint mult = textsize;
 		for (GLint i = 0; i < mult; i++)

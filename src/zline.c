@@ -14,11 +14,12 @@ void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 	GLubyte zbdt = zb->depth_test;
 	GLfloat zbps = zb->pointsize;
 	TGL_BLEND_VARS
+	zz = p->z >> ZB_POINT_Z_FRAC_BITS;
 	//	PIXEL col;
 	if(zbps == 1){
 		pz = zb->zbuf + (p->y * zb->xsize + p->x);
 		pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * p->y + p->x * PSZB);
-		zz = p->z >> ZB_POINT_Z_FRAC_BITS;
+		
 		if (ZCMP(zz, *pz)) {
 			if(!zb->enable_blend)
 				*pp = RGB_TO_PIXEL(p->r, p->g, p->b);
@@ -41,7 +42,7 @@ void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 		{
 			pz = zb->zbuf + (y * zb->xsize + x);
 			pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * y + x * PSZB);
-			zz = p->z >> ZB_POINT_Z_FRAC_BITS;
+			//zz = p->z >> ZB_POINT_Z_FRAC_BITS;
 			if (ZCMP(zz, *pz)) {
 				if(!zb->enable_blend)
 					*pp = col;

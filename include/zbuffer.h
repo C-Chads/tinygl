@@ -12,7 +12,6 @@
 #define ZB_Z_BITS 16
 
 #define ZB_POINT_Z_FRAC_BITS 14
-
 //a "1" in bit FRAC_BITS+1 (starting at zero) = 1.
 
 #define ZB_POINT_S_MIN ( (1<<ZB_POINT_S_FRAC_BITS) )

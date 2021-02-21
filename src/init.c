@@ -241,6 +241,12 @@ void glInit(void* zbuffer1) {
 	c->select_buffer = NULL;
 	c->name_stack_size = 0;
 
+	/* feedback */
+	c->feedback_buffer = NULL;
+	c->feedback_ptr = NULL;
+	c->feedback_size = 0;
+	c->feedback_hits = 0;
+	c->feedback_overflow = 0;
 	/* matrix */
 	c->matrix_mode = 0;
 

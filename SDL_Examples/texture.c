@@ -26,6 +26,7 @@ typedef unsigned char uchar;
 #include <SDL/SDL.h>
 int noSDL = 0;
 
+#include <math.h>
 #ifndef M_PI
 #define M_PI 3.14159265
 #endif
@@ -216,11 +217,12 @@ int main(int argc, char** argv) {
 	unsigned int frames = 0;
 	unsigned int tNow = SDL_GetTicks();
 	unsigned int tLastFps = tNow;
-
+	unsigned int frames_notreset = 0;
 	// main loop:
 	int isRunning = 1;
 	while (isRunning) {
 		++frames;
+		frames_notreset++;
 		tNow = SDL_GetTicks();
 		// do event handling:
 		SDL_Event evt;
@@ -246,7 +248,7 @@ int main(int argc, char** argv) {
 		draw();
 		glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x000000FF);
 		glPixelZoom(0.5,1);
-		glRasterPos2f(-1,-1);
+		glRasterPos3f(-1,-1,fabs(sinf(frames_notreset/200.0)));
 		{
 			GLint xsize, ysize;
 			void* data = glGetTexturePixmap(tex, 0, &xsize,  &ysize);

@@ -69,9 +69,6 @@ static inline void GLinterpolate(GLVertex* q, GLVertex* p0, GLVertex* p1, GLfloa
 
 	for(int i = 0; i < 3; i++)
 		q->color.v[i] = p0->color.v[i] + (p1->color.v[i] - p0->color.v[i]) * t;
-//	q->color.v[0] = p0->color.v[0] + (p1->color.v[0] - p0->color.v[0]) * t;
-//	q->color.v[1] = p0->color.v[1] + (p1->color.v[1] - p0->color.v[1]) * t;
-//	q->color.v[2] = p0->color.v[2] + (p1->color.v[2] - p0->color.v[2]) * t;
 }
 
 /*

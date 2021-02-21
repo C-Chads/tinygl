@@ -231,6 +231,14 @@ typedef struct GLContext {
 	GLint select_overflow;
 	GLint select_hits;
 
+	/* feedback */
+	//render_mode as seen above
+	GLfloat* feedback_buffer;
+	GLfloat* feedback_ptr;
+	GLuint feedback_size;
+	GLint feedback_hits;
+	GLubyte feedback_overflow;
+	
 	/* names */
 	GLuint name_stack[MAX_NAME_STACK_DEPTH];
 	GLint name_stack_size;
@@ -290,6 +298,7 @@ typedef struct GLContext {
 
 	/* raster position */
 	V3 rasterpos;
+	GLint rasterpos_zz;
 	GLubyte rasterposvalid;
 	GLfloat pzoomx, pzoomy;
 
