@@ -1,5 +1,5 @@
 #include "zgl.h"
-
+#include "msghandling.h"
 GLContext* gl_ctx;
 
 void initSharedState(GLContext* c) {
@@ -9,6 +9,9 @@ void initSharedState(GLContext* c) {
 		gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	s->texture_hash_table = gl_zalloc(sizeof(GLTexture*) * TEXTURE_HASH_TABLE_SIZE);
 	if(!s->texture_hash_table)
+		gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
+	s->buffers = gl_zalloc(sizeof(GLBuffer*) * MAX_BUFFERS);
+	if(!s->buffers)
 		gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	alloc_texture(c, 0);
 #include "error_check.h"
@@ -61,6 +64,17 @@ void endSharedState(GLContext* c) {
 		}
 	}
 	gl_free(s->texture_hash_table);
+	for(i = 0; i < MAX_BUFFERS; i++){
+		if(s->buffers[i])
+		{
+			//tgl_warning("\nFound a buffer that needs deleting! its handle is %d\n",i+1);
+			if(s->buffers[i]->data){
+				gl_free(s->buffers[i]->data);
+				//tgl_warning("\nIt has data too! its handle is %d\n",i+1);
+			}
+			gl_free(s->buffers[i]);
+		}
+	}
 }
 
 #if TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST == 1
@@ -121,6 +135,12 @@ void glInit(void* zbuffer1) {
 	initSharedState(c);
 	/* ztext */
 	c->textsize = 1;
+	/* buffer */
+	c->boundarraybuffer = 0; //no bound buffer
+	c->boundvertexbuffer = 0; //no bound buffer
+	c->boundcolorbuffer = 0; //no bound buffer
+	c->boundnormalbuffer = 0; //no bound buffer
+	c->boundtexcoordbuffer = 0; //no bound buffer
 	/* lists */
 
 	c->exec_flag = 1;

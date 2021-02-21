@@ -89,6 +89,8 @@ The changelog is as such:
 
 * Added glDrawArrays
 
+* Added Buffers
+
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
 
@@ -217,6 +219,13 @@ Set size of text drawn to the buffer in aforementioned function.
 This function can be added to display lists.
 
 Plot pixel directly to the buffer.
+
+### glGenBuffers, glDeleteBuffers, glBindBuffer (valid target: ARRAY_BUFFER), glBindBufferAsArray
+
+Serverside buffers! Makes it a bit easier to do clientside array stuff at the moment. 
+may be the site of future hardware acceleration.
+
+Please look at the model.c demo to see how to use these functions. They function very similarly to their GL 2.0+ counterparts.
 
 ## TOGGLEABLE FEATURES
 

@@ -287,6 +287,7 @@ int main(int argc, char** argv) {
 	char needsRGBAFix = 0;
 	unsigned int count = 40;
 	GLuint modelDisplayList = 0;
+	GLuint buffers[4]; //pos,color,normal,texcoord
 	int dlExists = 0;
 	int doTextures = 1;
 	char* modelName = "extrude.obj";
@@ -438,6 +439,7 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 			dlExists = 1;
 			} else {
 				LoadModelArrays(m.d, m.npoints, m.c, m.n, m.t);
+				/*
 				if(ModelArray.colors)glEnableClientState(GL_COLOR_ARRAY);
 				if(ModelArray.points)glEnableClientState(GL_VERTEX_ARRAY);
 				if(ModelArray.normals)glEnableClientState(GL_NORMAL_ARRAY);
@@ -447,6 +449,47 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 				if(ModelArray.normals)glNormalPointer(GL_FLOAT,0,ModelArray.normals); //Must be 3!
 				if(ModelArray.colors)glColorPointer(3,GL_FLOAT,0,ModelArray.colors);
 				if(ModelArray.texcoords)glTexCoordPointer(2,GL_FLOAT,0,ModelArray.texcoords);
+				*/
+				glGenBuffers(4, buffers);
+				for(int i = 0; i < 4; i++){
+				printf("\nBuffer %d is %d", i , buffers[i]);
+					if(buffers[i] == 0){
+						printf("\nBuffer allocation failed for buffer %d!\n", i);
+						return 1;
+					}
+				}
+				glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+				glBufferData(GL_ARRAY_BUFFER, 
+							sizeof(GLfloat) * 3 * ModelArray.npoints,
+							ModelArray.points,
+							GL_STATIC_DRAW);
+				if(glMapBuffer(GL_ARRAY_BUFFER,0) == NULL) 
+					printf("\nglBufferData failed for buffer %d!\n", 0);
+				glBindBufferAsArray(GL_VERTEX_BUFFER, buffers[0],GL_FLOAT,3,0);
+				if(ModelArray.colors){
+					glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+					glBufferData(GL_ARRAY_BUFFER, 
+								sizeof(GLfloat) * 3 * ModelArray.npoints,
+								ModelArray.colors,
+								GL_STATIC_DRAW);
+					glBindBufferAsArray(GL_COLOR_BUFFER, buffers[1],GL_FLOAT,3,0);
+				}
+				if(ModelArray.normals){
+					glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
+					glBufferData(GL_ARRAY_BUFFER, 
+								sizeof(GLfloat) * 3 * ModelArray.npoints,
+								ModelArray.normals,
+								GL_STATIC_DRAW);
+					glBindBufferAsArray(GL_NORMAL_BUFFER, buffers[2],GL_FLOAT,3,0);
+				}
+				if(ModelArray.texcoords){
+					glBindBuffer(GL_ARRAY_BUFFER, buffers[3]);
+					glBufferData(GL_ARRAY_BUFFER, 
+								sizeof(GLfloat) * 2 * ModelArray.npoints,
+								ModelArray.texcoords,
+								GL_STATIC_DRAW);
+					glBindBufferAsArray(GL_TEXTURE_COORD_BUFFER,buffers[3],GL_FLOAT,2,0);
+				}
 			}
 			freemodel(&m);
 		}

@@ -46,12 +46,18 @@ enum {
 	GL_POLYGON			= 0x0009,
 	GL_EDGE_FLAG			= 0x0B43,
 
+	/* Necessary for glBufferData */
+	GL_STATIC_DRAW          = 0x88E4,	
 	/* Vertex Arrays */
 	GL_VERTEX_ARRAY			= 0x8074,
+	GL_VERTEX_BUFFER		= 0x8074,
 	GL_NORMAL_ARRAY			= 0x8075,
+	GL_NORMAL_BUFFER		= 0x8075,
 	GL_COLOR_ARRAY			= 0x8076,
+	GL_COLOR_BUFFER			= 0x8076,
 	GL_INDEX_ARRAY			= 0x8077,
 	GL_TEXTURE_COORD_ARRAY		= 0x8078,
+	GL_TEXTURE_COORD_BUFFER		= 0x8078,
 	GL_EDGE_FLAG_ARRAY		= 0x8079,
 	GL_VERTEX_ARRAY_SIZE		= 0x807A,
 	GL_VERTEX_ARRAY_TYPE		= 0x807B,
@@ -607,7 +613,8 @@ enum {
         GL_POLYGON_OFFSET_EXT           = 0x8037,
         GL_POLYGON_OFFSET_FACTOR_EXT    = 0x8038,
         GL_POLYGON_OFFSET_BIAS_EXT      = 0x8039,
-
+	/* GL */
+		GL_ARRAY_BUFFER                 = 0x8892,
 	/* GL_EXT_vertex_array */
 	GL_VERTEX_ARRAY_EXT		= 0x8074,
 	GL_NORMAL_ARRAY_EXT		= 0x8075,
@@ -880,6 +887,22 @@ void glNormalPointer(GLenum type, GLsizei stride,
                       const GLvoid *pointer);
 void glTexCoordPointer(GLint size, GLenum type, GLsizei stride, 
                        const GLvoid *pointer);
+/* opengl 2.0 buffers */
+void glGenBuffers(	GLsizei n,
+ 					GLuint * buffers);
+void glDeleteBuffers(	GLsizei n,
+					 	const GLuint * buffers);
+void glBindBuffer(	GLenum target,
+ 					GLuint buffer);
+GLboolean glIsBuffer(	GLuint buffer);
+void *glMapBuffer(	GLenum target,
+				 	GLenum access);
+void glBufferData(	GLenum target,
+				 	GLsizei size,
+				 	const void * data,
+				 	GLenum usage);
+//Bonus ducks!
+void glBindBufferAsArray(GLenum target, GLuint buffer, GLenum type, GLint size, GLint stride);
 
 /* opengl 1.2 polygon offset */
 void glPolygonOffset(GLfloat factor, GLfloat units);

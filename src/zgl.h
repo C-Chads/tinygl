@@ -7,6 +7,8 @@
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
+//Needed for memcpy
+#include <string.h>
 #ifndef M_PI
 #define M_PI 3.14159265358979323
 #endif
@@ -49,6 +51,8 @@ enum {
 #define TGL_OFFSET_FILL 0x1
 #define TGL_OFFSET_LINE 0x2
 #define TGL_OFFSET_POINT 0x4
+
+
 
 typedef struct GLSpecBuf {
 	GLint shininess_i;
@@ -134,18 +138,24 @@ typedef struct GLImage {
 /* textures */
 
 #define TEXTURE_HASH_TABLE_SIZE 256
-
 typedef struct GLTexture {
 	GLImage images[MAX_TEXTURE_LEVELS];
 	GLint handle;
 	struct GLTexture *next, *prev;
 } GLTexture;
 
-/* shared state */
+/* buffers */
+#define MAX_BUFFERS 2048
+typedef struct GLBuffer{
+	void* data;
+	GLuint size;
+} GLBuffer;
 
+/* shared state */
 typedef struct GLSharedState {
 	GLList** lists;
 	GLTexture** texture_hash_table;
+	GLBuffer** buffers;
 } GLSharedState;
 
 struct GLContext;
@@ -285,6 +295,13 @@ typedef struct GLContext {
 
 	/* text */
 	GLTEXTSIZE textsize;
+
+	/* buffers */
+	GLint boundarraybuffer; //0 if no buffer is bound.
+	GLint boundvertexbuffer;
+	GLint boundnormalbuffer;
+	GLint boundcolorbuffer;
+	GLint boundtexcoordbuffer;
 } GLContext;
 
 extern GLContext* gl_ctx;

@@ -6,7 +6,6 @@
 
 static GLTexture* find_texture(GLContext* c, GLint h) {
 	GLTexture* t;
-
 	t = c->shared_state.texture_hash_table[h % TEXTURE_HASH_TABLE_SIZE];
 	while (t != NULL) {
 		if (t->handle == h)
