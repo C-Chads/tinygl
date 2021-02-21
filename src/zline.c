@@ -12,16 +12,45 @@ void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 	GLint zz;
 	GLubyte zbdw = zb->depth_write; 
 	GLubyte zbdt = zb->depth_test;
-	//TGL_BLEND_VARS
+	GLfloat zbps = zb->pointsize;
+	TGL_BLEND_VARS
 	//	PIXEL col;
-	pz = zb->zbuf + (p->y * zb->xsize + p->x);
-	pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * p->y + p->x * PSZB);
-	zz = p->z >> ZB_POINT_Z_FRAC_BITS;
-	if (ZCMP(zz, *pz)) {
-		*pp = RGB_TO_PIXEL(p->r, p->g, p->b);
-		//TGL_BLEND_FUNC_RGB(p->r, p->g, p->b, (*pp))
-		if(zbdw)
-			*pz = zz;
+	if(zbps == 1){
+		pz = zb->zbuf + (p->y * zb->xsize + p->x);
+		pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * p->y + p->x * PSZB);
+		zz = p->z >> ZB_POINT_Z_FRAC_BITS;
+		if (ZCMP(zz, *pz)) {
+			if(!zb->enable_blend)
+				*pp = RGB_TO_PIXEL(p->r, p->g, p->b);
+			else
+				TGL_BLEND_FUNC_RGB(p->r, p->g, p->b, (*pp))
+			if(zbdw)
+				*pz = zz;
+		}
+	} else {
+		PIXEL col = RGB_TO_PIXEL(p->r, p->g, p->b);
+		GLfloat hzbps = zbps / 2.0f;
+		GLint bx = (GLfloat)p->x - hzbps; GLint ex = (GLfloat)p->x + hzbps;
+		GLint by = (GLfloat)p->y - hzbps; GLint ey = (GLfloat)p->y + hzbps;
+		bx = (bx<0)?0:bx;
+		by = (by<0)?0:by;
+		ex = (ex>zb->xsize)?zb->xsize:ex;
+		ey = (ey>zb->ysize)?zb->ysize:ey;
+		for(GLint y = by; y < ey; y++)
+		for(GLint x = bx; x < ex; x++)
+		{
+			pz = zb->zbuf + (y * zb->xsize + x);
+			pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * y + x * PSZB);
+			zz = p->z >> ZB_POINT_Z_FRAC_BITS;
+			if (ZCMP(zz, *pz)) {
+				if(!zb->enable_blend)
+					*pp = col;
+				else
+					TGL_BLEND_FUNC_RGB(p->r, p->g, p->b, (*pp))
+				if(zbdw)
+					*pz = zz;
+			}
+		}
 	}
 }
 

@@ -242,7 +242,7 @@ void initScene() {
 	glEnable(GL_POLYGON_STIPPLE);
 //	glDisable(GL_POLYGON_STIPPLE);
 	glPolygonStipple(stipplepattern);
-
+	glPointSize(10.0f);
 	glTextSize(GL_TEXT_SIZE24x24);
 	/* make the gears */
 	gear1 = glGenLists(1);

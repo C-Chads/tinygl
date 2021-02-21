@@ -280,6 +280,7 @@ void glInit(void* zbuffer1) {
 	/* depth test */
 	c->zb->depth_test = 0;
 	c->zb->depth_write = 1;
+	c->zb->pointsize = 1;
 
 	/* raster position */
 	c->rasterpos.v[0] = 0;
