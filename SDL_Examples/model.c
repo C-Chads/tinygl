@@ -39,6 +39,34 @@ const float mouseratiox = 1.0 / 300.0f;
 const float mouseratioy = 1.0 / 300.0f;
 int mousex = 0, mousey = 0;
 
+int ModelArrayLoaded = 0;
+int testingModelArrays = 0;
+struct {
+	float* points;
+	uint npoints;
+	float* normals;
+	float* colors;
+	float* texcoords;
+} ModelArray;
+
+void FreeModelArray(){
+	if(!ModelArrayLoaded){
+		ModelArray.points = NULL;
+		ModelArray.normals = NULL;
+		ModelArray.npoints = 0;
+		ModelArray.colors = NULL;
+		ModelArray.texcoords = NULL;
+		return;
+	}
+	ModelArrayLoaded = 0;
+	if(ModelArray.points)		free(ModelArray.points);
+	if(ModelArray.normals)		free(ModelArray.normals);
+	if(ModelArray.texcoords)	free(ModelArray.texcoords);
+	if(ModelArray.colors)		free(ModelArray.colors);
+	ModelArray.npoints = 0;
+	return;
+}
+
 void rotateCamera() {
 	vec3 a;
 	a.d[1] = (float)mousex * mouseratiox;
@@ -55,16 +83,6 @@ void rotateCamera() {
 GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
 	GLuint t = 0;
 	glGenTextures(1, &t);
-	// for(unsigned int i = 0; i < w * h; i++)
-	// {
-	// unsigned char t = 0;
-	// unsigned char* r = buf + i*3;
-	// // unsigned char* g = buf + i*3+1;
-	// unsigned char* b = buf + i*3+2;
-	// t = *r;
-	// *r = *b;
-	// *b = t;
-	// }
 	glBindTexture(GL_TEXTURE_2D, t);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -74,7 +92,46 @@ GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
 	return t;
 }
 
-void drawModel(
+void LoadModelArrays(
+	// HUGE important note! these depend on the math library using
+	// f_ as float and not double!
+	// Remember that!
+	vec3* points, uint npoints, vec3* colors, vec3* normals, vec3* texcoords) {
+	if (!points)
+		return;
+	FreeModelArray();
+	ModelArray.npoints = npoints;
+	ModelArray.points = malloc(sizeof(float) * npoints * 3);
+	if(normals)
+		ModelArray.normals = malloc(sizeof(float) * npoints * 3);
+	if(texcoords)
+		ModelArray.texcoords = malloc(sizeof(float) * npoints * 2);
+	if(colors)
+		ModelArray.colors = malloc(sizeof(float) * npoints * 3);
+	for (uint i = 0; i < npoints; i++) {
+		if (colors) { // Fix for TinyGL color interpolation.
+			ModelArray.colors[i*3+0] = colors[i].d[0];
+			ModelArray.colors[i*3+1] = colors[i].d[1];
+			ModelArray.colors[i*3+2] = colors[i].d[2];
+		}
+		if (texcoords){
+			ModelArray.texcoords[i*2+0] = texcoords[i].d[0];
+			ModelArray.texcoords[i*2+1] = texcoords[i].d[1];
+		}
+		if (normals){
+			ModelArray.normals[i*3+0] = normals[i].d[0];
+			ModelArray.normals[i*3+1] = normals[i].d[1];
+			ModelArray.normals[i*3+2] = normals[i].d[2];
+		}
+		ModelArray.points[i*3+0] = points[i].d[0];
+		ModelArray.points[i*3+1] = points[i].d[1];
+		ModelArray.points[i*3+2] = points[i].d[2];
+	}
+}
+
+
+//Without display list
+void drawModelArrays(
 	// HUGE important note! these depend on the math library using
 	// f_ as float and not double!
 	// Remember that!
@@ -121,6 +178,9 @@ GLuint createModelDisplayList(
 	glEndList();
 	return ret;
 }
+
+
+
 
 GLubyte stipplepattern[128] = {0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55,
 							   0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55,
@@ -234,9 +294,9 @@ int main(int argc, char** argv) {
 	track* myTrack = NULL;
 #endif
 	unsigned int fps = 0;
-	if (argc > 2) {
-		char* larg = argv[1];
-		for (int i = 0; i < argc; i++) {
+	if (argc > 1) {
+		char* larg = argv[0];
+		for (int i = 1; i < argc; i++) {
 			if (!strcmp(larg, "-w"))
 				winSizeX = atoi(argv[i]);
 			if (!strcmp(larg, "-h"))
@@ -249,6 +309,8 @@ int main(int argc, char** argv) {
 				modelName = argv[i];
 			if (!strcmp(argv[i], "-notexture") || !strcmp(larg, "-notexture"))
 				doTextures = 0;
+			if(!strcmp(argv[i],"-arrays"))
+				testingModelArrays = 1;
 			larg = argv[i];
 		}
 	}
@@ -371,8 +433,21 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 		} else {
 			m = tobj_tomodel(&omodel);
 			printf("\nHas %d points.\n", m.npoints);
+			if(!testingModelArrays){
 			modelDisplayList = createModelDisplayList(m.d, m.npoints, m.c, m.n, m.t);
 			dlExists = 1;
+			} else {
+				LoadModelArrays(m.d, m.npoints, m.c, m.n, m.t);
+				if(ModelArray.colors)glEnableClientState(GL_COLOR_ARRAY);
+				if(ModelArray.points)glEnableClientState(GL_VERTEX_ARRAY);
+				if(ModelArray.normals)glEnableClientState(GL_NORMAL_ARRAY);
+				if(ModelArray.texcoords)glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+				if(ModelArray.points)glVertexPointer(3,GL_FLOAT,0,ModelArray.points);
+				if(ModelArray.normals)glNormalPointer(GL_FLOAT,0,ModelArray.normals); //Must be 3!
+				if(ModelArray.colors)glColorPointer(3,GL_FLOAT,0,ModelArray.colors);
+				if(ModelArray.texcoords)glTexCoordPointer(2,GL_FLOAT,0,ModelArray.texcoords);
+			}
 			freemodel(&m);
 		}
 		freeobjraw(&omodel);
@@ -449,20 +524,40 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 		// glDisable(GL_TEXTURE_2D);
 		// printf("\nNew triangle!\n");
 		if (!dlExists) {
-			glDisable(GL_TEXTURE_2D);
-			glBegin(GL_TRIANGLES);
-			// glColor3f(0,0,1);
-			glColor3f(1, 0, 0);
-			glTexCoord2f(0, 0);
-			glVertex3f(-1, -1, -10);
-			glColor3f(0, 1, 0);
-			glTexCoord2f(1, 0);
-			glVertex3f(1, -1, -10);
-			glColor3f(0, 0, 1);
-			glTexCoord2f(0.5, 1);
-			glVertex3f(0, 1, -10);
-			// glColor3f(0,1,0);
-			glEnd();
+			if(!testingModelArrays){
+				glDisable(GL_TEXTURE_2D);
+				glBegin(GL_TRIANGLES);
+				// glColor3f(0,0,1);
+				glColor3f(1, 0, 0);
+				glTexCoord2f(0, 0);
+				glVertex3f(-1, -1, -10);
+				glColor3f(0, 1, 0);
+				glTexCoord2f(1, 0);
+				glVertex3f(1, -1, -10);
+				glColor3f(0, 0, 1);
+				glTexCoord2f(0.5, 1);
+				glVertex3f(0, 1, -10);
+				// glColor3f(0,1,0);
+				glEnd();
+			} else {
+				if (doTextures)
+					glEnable(GL_TEXTURE_2D);
+				// glDisable(GL_TEXTURE_2D);
+				glEnable(GL_POLYGON_STIPPLE);
+				//puts("\nUSING ARRAYS!");
+				// glDisable(GL_COLOR_MATERIAL);
+				for (unsigned int i = 0; i < count; i++) {
+					glPushMatrix();
+					glTranslatef((float)(i % 10) * 8.0, (float)(i / 10) * 8.0, -10);
+					glBegin(GL_TRIANGLES);
+					for(uint j = 0; j < ModelArray.npoints; j++)
+						glArrayElement(j);
+					glEnd();
+					glPopMatrix();
+				}
+				glDisable(GL_POLYGON_STIPPLE);
+				glDisable(GL_TEXTURE_2D);
+			}
 		} else {
 			if (doTextures)
 				glEnable(GL_TEXTURE_2D);
@@ -538,7 +633,8 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 	// cleanup:
 	glDeleteTextures(1, &tex);
 	// glDeleteList(modelDisplayList);
-	glDeleteLists(modelDisplayList, 1);
+	if(dlExists) glDeleteLists(modelDisplayList, 1);
+	FreeModelArray();
 	ZB_close(frameBuffer);
 	glClose();
 	if (SDL_WasInit(SDL_INIT_VIDEO))

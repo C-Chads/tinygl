@@ -81,6 +81,8 @@ The changelog is as such:
 
 * Fixed a myriad of bugs and... weirdnesses
 
+* Fixed clientside arrays
+
 * Tuned the triangle rasterizer to near-perfection.
 
 * Tuned the transformations to absolute perfection

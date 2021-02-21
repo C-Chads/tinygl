@@ -27,7 +27,7 @@ void glopArrayElement(GLContext* c, GLParam* param) {
 		c->current_normal.X = c->normal_array[i];
 		c->current_normal.Y = c->normal_array[i + 1];
 		c->current_normal.Z = c->normal_array[i + 2];
-		c->current_normal.Z = 0.0f;
+		//c->current_normal.Z = 0.0f;
 	}
 	if (states & TEXCOORD_ARRAY) {
 		GLint size = c->texcoord_array_size;
@@ -137,7 +137,7 @@ void glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* poin
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	//assert(type == GL_FLOAT); Everything is fine!
+	assert(type == GL_FLOAT); Everything is fine!
 #endif
 	p[0].op = OP_VertexPointer;
 	p[1].i = size;
