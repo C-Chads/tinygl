@@ -180,7 +180,7 @@ const GLubyte* glGetString(GLenum name){
 		case GL_EXTENSIONS: return extensions_string;
 		/*case GL_LICENSE: return license_string;*/
 	}
-	return (const GLubyte*)"Erroneous input to glGetString";
+	return NULL;
 }
 
 void glGetFloatv(GLint pname, GLfloat* v) {
