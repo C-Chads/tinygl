@@ -91,6 +91,8 @@ The changelog is as such:
 
 * Added Buffers
 
+* Added glPixelSize (TODO is to implement distance scaling)
+
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
 
