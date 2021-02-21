@@ -257,7 +257,7 @@ void glEndList(void) {
 	c->exec_flag = 1;
 }
 
-int glIsList(GLuint list) {
+GLint glIsList(GLuint list) {
 	GLContext* c = gl_get_context();
 	GLList* l;
 	l = find_list(c, list);

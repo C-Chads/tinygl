@@ -201,3 +201,8 @@ GLenum glGetError(){
 	return GL_NO_ERROR;
 #endif
 }
+
+
+void glFinish(){
+	return;
+}

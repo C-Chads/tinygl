@@ -823,7 +823,7 @@ void glFrustum(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top,
 
 /* lists */
 GLuint glGenLists(GLint range);
-int glIsList(GLuint list);
+GLint glIsList(GLuint list);
 void glNewList(GLuint list,GLint mode);
 void glEndList(void);
 void glCallList(GLuint list);
@@ -835,7 +835,7 @@ void glClearColor(GLfloat r,GLfloat g,GLfloat b,GLfloat a);
 void glClearDepth(GLdouble depth);
 
 /* selection */
-int glRenderMode(GLint mode);
+GLint glRenderMode(GLint mode);
 void glSelectBuffer(GLint size,GLuint *buf);
 
 void glInitNames(void);
@@ -868,6 +868,7 @@ void glLightModelfv(GLint pname,GLfloat *param);
 /* misc */
 
 void glFlush(void);
+void glFinish(void);
 void glHint(GLint target,GLint mode);
 void glGetIntegerv(GLint pname,GLint *params);
 void glGetFloatv(GLint pname, GLfloat *v);
@@ -901,7 +902,7 @@ void glBufferData(	GLenum target,
 				 	GLsizei size,
 				 	const void * data,
 				 	GLenum usage);
-//Bonus ducks!
+//Bonus ducks! OpenGL Buffer objects.
 void glBindBufferAsArray(GLenum target, GLuint buffer, GLenum type, GLint size, GLint stride);
 
 /* opengl 1.2 polygon offset */
@@ -925,7 +926,6 @@ void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, voi
 void glPixelZoom(GLfloat x, GLfloat y);
 /* not implemented, just added to compile  */
   /*
-inline void glPointSize(GLfloat) {}
 inline void glLineWidth(GLfloat) {}
 inline void glDepthFunc(GLint) {}
 
@@ -936,7 +936,6 @@ inline void glDepthMask(GLint) {}
 inline void glFogi(GLint, GLint) {}
 inline void glFogfv(GLint, const GLfloat*) {}
 inline void glFogf(GLint, GLfloat) {}
-inline void glRasterPos2f(GLfloat, GLfloat) {}
 inline void glTexParameterf(GLint, GLint, GLint) {};
   */
 void glPolygonStipple(void* a);

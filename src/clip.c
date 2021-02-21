@@ -213,7 +213,7 @@ static inline void updateTmp(GLContext* c, GLVertex* q, GLVertex* p0, GLVertex* 
 
 static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2, GLint clip_bit);
 
-void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) {
+inline void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) {
 	GLint co, cc[3], front;
 	
 
@@ -364,12 +364,16 @@ static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVe
 	}
 }
 
-void gl_draw_triangle_select(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) { gl_add_select1(c, p0->zp.z, p1->zp.z, p2->zp.z); }
+//see vertex.c to see how the draw functions are assigned.
+void gl_draw_triangle_select(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) { 
+	gl_add_select1(c, p0->zp.z, p1->zp.z, p2->zp.z); 
+}
 
 #ifdef PROFILE
 int count_triangles, count_triangles_textured, count_pixels;
 #endif
 
+//see vertex.c to see how the draw functions are assigned.
 void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) {
 	// puts("\n <yes, it's draw_triangle_fill>");
 #ifdef PROFILE
@@ -388,16 +392,15 @@ void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p
 #define ERROR_FLAG GL_INVALID_VALUE
 #include "error_check.h"
 #else
-/*
-		assert(p0->zp.x >= 0 && p0->zp.x < c->zb->xsize);
-		assert(p0->zp.y >= 0 && p0->zp.y < c->zb->ysize);
-		assert(p1->zp.x >= 0 && p1->zp.x < c->zb->xsize);
-
-		assert(p1->zp.y >= 0 && p1->zp.y < c->zb->ysize);
-		assert(p2->zp.x >= 0 && p2->zp.x < c->zb->xsize);
-		assert(p2->zp.y >= 0 && p2->zp.y < c->zb->ysize);
-*/
-//Assume it's ok!
+	if(!(
+			(p0->zp.x >= 0 && p0->zp.x < c->zb->xsize) &&
+			(p0->zp.y >= 0 && p0->zp.y < c->zb->ysize) &&
+			(p1->zp.x >= 0 && p1->zp.x < c->zb->xsize) &&
+			
+			(p1->zp.y >= 0 && p1->zp.y < c->zb->ysize) &&
+			(p2->zp.x >= 0 && p2->zp.x < c->zb->xsize) &&
+			(p2->zp.y >= 0 && p2->zp.y < c->zb->ysize)
+		)) return;
 #endif
 		norm = (p1->zp.x - p0->zp.x) * (p2->zp.y - p0->zp.y) - (p2->zp.x - p0->zp.x) * (p1->zp.y - p0->zp.y);
 		count_pixels += abs(norm) / 2;

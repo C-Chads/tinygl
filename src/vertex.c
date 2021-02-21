@@ -68,7 +68,7 @@ void glopBegin(GLContext* c, GLParam* p) {
 #define ERROR_FLAG GL_INVALID_OPERATION
 #include "error_check.h"
 #else
-	//assert(c->in_begin == 0);
+	if(c->in_begin != 0)return; //<COST>
 #endif
 	type = p[1].i;
 	c->begin_type = type;

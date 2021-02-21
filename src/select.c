@@ -1,7 +1,7 @@
 #include "zgl.h"
 //Gek does not maintain or test this feature.
 
-int glRenderMode(GLint mode) {
+GLint glRenderMode(GLint mode) {
 	GLContext* c = gl_get_context();
 	GLint result = 0;
 
