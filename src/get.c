@@ -171,6 +171,8 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 "TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST "
 #endif
 "TGL_BUFFER_EXT "
+"TGL_FEEDBACK "
+"TGL_SELECT "
 "TGL_SOFTWARE_ACCELERATED";
 const GLubyte* glGetString(GLenum name){
 	switch(name){

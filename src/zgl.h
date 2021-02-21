@@ -238,7 +238,7 @@ typedef struct GLContext {
 	GLuint feedback_size;
 	GLint feedback_hits;
 	GLubyte feedback_overflow;
-	
+	GLenum feedback_type;
 	/* names */
 	GLuint name_stack[MAX_NAME_STACK_DEPTH];
 	GLint name_stack_size;
@@ -301,7 +301,7 @@ typedef struct GLContext {
 	GLint rasterpos_zz;
 	GLubyte rasterposvalid;
 	GLfloat pzoomx, pzoomy;
-
+	GLVertex rastervertex;
 	/* text */
 	GLTEXTSIZE textsize;
 
@@ -327,6 +327,7 @@ void gl_draw_triangle_point(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* 
 void gl_draw_triangle_line(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2);
 void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2);
 void gl_draw_triangle_select(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2);
+void gl_draw_triangle_feedback(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2);
 
 /* matrix.c */
 void gl_print_matrix(const GLfloat* m);
@@ -334,8 +335,16 @@ void gl_print_matrix(const GLfloat* m);
 void glopLoadIdentity(GLContext *c,GLParam *p);
 void glopTranslate(GLContext *c,GLParam *p);*/
 
-/* light.c */
+/* select.c */
 void gl_add_select(GLContext* c, GLuint zmin, GLuint zmax);
+void gl_add_feedback(GLContext* c, GLfloat token,
+										GLVertex* v1,
+										GLVertex* v2,
+										GLVertex* v3,
+										GLfloat passthrough_token_value
+);
+
+/* light.c */
 void gl_enable_disable_light(GLContext* c, GLint light, GLint v);
 void gl_shade_vertex(GLContext* c, GLVertex* v);
 

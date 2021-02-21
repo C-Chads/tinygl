@@ -106,6 +106,9 @@ void glopBegin(GLContext* c, GLParam* p) {
 	if (c->render_mode == GL_SELECT) {
 		c->draw_triangle_front = gl_draw_triangle_select;
 		c->draw_triangle_back = gl_draw_triangle_select;
+	}else if (c->render_mode == GL_FEEDBACK){
+		c->draw_triangle_front = gl_draw_triangle_feedback;
+		c->draw_triangle_back = gl_draw_triangle_feedback;
 	} else {
 		switch (c->polygon_mode_front) {
 		case GL_POINT:

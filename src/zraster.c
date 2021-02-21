@@ -51,6 +51,7 @@ void glopRasterPos(GLContext* c, GLParam* p){
 			}
 			c->rasterpos.v[0] = v.zp.x;
 			c->rasterpos.v[1] = v.zp.y;
+			c->rastervertex = v;
 			//c->rasterpos.v[2] = v.zp.z;
 			c->rasterpos_zz = v.zp.z >> ZB_POINT_Z_FRAC_BITS; //I believe this is it?
 			c->rasterposvalid = 1;
@@ -123,10 +124,16 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 	TGL_BLEND_VARS
 	//Looping over the source pixels.
 	if(c->render_mode == GL_SELECT){
-		gl_add_select(c, 0, 0);
+		gl_add_select(c, zz, zz);
 		return;
 	} else if(c->render_mode == GL_FEEDBACK){
-		//TODO
+		gl_add_feedback(
+			c,	GL_DRAW_PIXEL_TOKEN,
+			&(c->rastervertex),
+			NULL,
+			NULL,
+			0
+		);
 		return;
 	}
 	for(GLint sx = 0; sx < w; sx++)

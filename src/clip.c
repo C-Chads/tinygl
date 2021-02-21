@@ -53,6 +53,8 @@ void gl_draw_point(GLContext* c, GLVertex* p0) {
 	if (p0->clip_code == 0) {
 		if (c->render_mode == GL_SELECT) {
 			gl_add_select(c, p0->zp.z, p0->zp.z);
+		}else if (c->render_mode == GL_FEEDBACK){
+			gl_add_feedback(c,GL_POINT_TOKEN,p0,NULL,NULL,0);
 		} else {
 			ZB_plot(c->zb, &p0->zp);
 		}
@@ -109,6 +111,14 @@ void gl_draw_line(GLContext* c, GLVertex* p1, GLVertex* p2) {
 	if ((cc1 | cc2) == 0) {
 		if (c->render_mode == GL_SELECT) {
 			gl_add_select1(c, p1->zp.z, p2->zp.z, p2->zp.z);
+		}else if (c->render_mode == GL_FEEDBACK){
+			gl_add_feedback(
+				c,	GL_LINE_TOKEN,
+				p1,
+				p2,
+				NULL,
+				0
+			);
 		} else {
 			if (c->zb->depth_test)
 				ZB_line_z(c->zb, &p1->zp, &p2->zp);
@@ -364,6 +374,15 @@ static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVe
 //see vertex.c to see how the draw functions are assigned.
 void gl_draw_triangle_select(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) { 
 	gl_add_select1(c, p0->zp.z, p1->zp.z, p2->zp.z); 
+}
+void gl_draw_triangle_feedback(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2){
+	gl_add_feedback(
+					c,	GL_POLYGON_TOKEN,
+					p0,
+					p1,
+					p2,
+					0
+				);
 }
 
 #ifdef PROFILE

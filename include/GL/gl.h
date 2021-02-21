@@ -834,6 +834,10 @@ void glClear(GLint mask);
 void glClearColor(GLfloat r,GLfloat g,GLfloat b,GLfloat a);
 void glClearDepth(GLdouble depth);
 
+/* Feedback */
+void glFeedbackBuffer(GLint size, GLenum type, GLfloat* buf);
+void glPassThrough(GLfloat token);
+
 /* selection */
 GLint glRenderMode(GLint mode);
 void glSelectBuffer(GLint size,GLuint *buf);
