@@ -8,13 +8,13 @@ static char* op_table_str[] = {
 #include "opinfo.h"
 };
 */
-static void (*op_table_func[])(GLContext*, GLParam*) = {
+void (*op_table_func[])(GLContext*, GLParam*) = {
 #define ADD_OP(a, b, c) glop##a,
 
 #include "opinfo.h"
 };
 
-static GLint op_table_size[] = {
+GLint op_table_size[] = {
 #define ADD_OP(a, b, c) b + 1,
 
 #include "opinfo.h"
@@ -148,7 +148,7 @@ if(!ob1)
 	}
 	c->current_op_buffer_index = index;
 }
-
+/*
 void gl_add_op(GLParam* p) {
 	GLContext* c = gl_get_context();
 #include "error_check.h"
@@ -166,7 +166,7 @@ void gl_add_op(GLParam* p) {
 		//		gl_print_op(stderr, p);
 	}
 }
-
+*/
 /* this opcode is never called directly */
 void glopEndList(GLContext* c, GLParam* p) { assert(0); }
 
@@ -188,7 +188,7 @@ void glopCallList(GLContext* c, GLParam* p) {
 	p = l->first_op_buffer->ops;
 
 	while (1) {
-		#include "error_check.h"
+#include "error_check.h"
 		op = p[0].op;
 		if (op == OP_EndList)
 			break;

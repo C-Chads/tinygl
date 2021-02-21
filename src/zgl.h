@@ -315,7 +315,27 @@ typedef struct GLContext {
 
 extern GLContext* gl_ctx;
 
-void gl_add_op(GLParam* p);
+//void gl_add_op(GLParam* p);
+extern void (*op_table_func[])(GLContext*, GLParam*);
+extern GLint op_table_size[];
+extern void gl_compile_op(GLContext* c, GLParam* p);
+static inline void gl_add_op(GLParam* p) {
+	GLContext* c = gl_ctx;
+#include "error_check.h"
+	GLint op;
+	op = p[0].op;
+	if (c->exec_flag) {
+		op_table_func[op](c, p);
+#include "error_check.h"
+	}
+	if (c->compile_flag) {
+		gl_compile_op(c, p);
+#include "error_check.h"
+	}
+	if (c->print_flag) {
+		//		gl_print_op(stderr, p);
+	}
+}
 
 /* clip.c */
 void gl_transform_to_viewport(GLContext* c, GLVertex* v);
