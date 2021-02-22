@@ -268,6 +268,7 @@ void glBufferData(	GLenum target,
 	}
 	if(buf->data) gl_free(buf->data);
 	buf->data = NULL; buf->size = 0;
+	if(size == 0 || data == NULL) return; //Allow the user to delete buffer data with glBufferData.
 	buf->data = gl_malloc(size);
 	buf->size = size;
 	if(!(buf->data)){
