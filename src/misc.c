@@ -233,6 +233,37 @@ void glReadBuffer(GLenum mode){
 	c->readbuffer = mode;
 }
 
+//Only ever reads pixels from the depth buffer
+void glReadPixels(	GLint x,
+ 	GLint y,
+ 	GLsizei width,
+ 	GLsizei height,
+ 	GLenum format,
+ 	GLenum type,
+ 	void * data){
+	GLContext* c = gl_get_context();
+	#include "error_check.h"
+	if(c->readbuffer != GL_FRONT ||
+		(format != GL_RGBA && format != GL_RGB && format != GL_DEPTH_COMPONENT) ||
+#if TGL_FEATURE_RENDER_BITS == 32
+		(type != GL_UNSIGNED_INT && type != GL_UNSIGNED_INT_8_8_8_8)
+#elif TGL_FEATURE_RENDER_BITS == 16
+		(type != GL_UNSIGNED_SHORT && type != GL_UNSIGNED_SHORT_5_6_5)
+#else
+#error "Unsupported TGL_FEATURE_RENDER_BITS"
+#endif
+		
+	){
+#if TGL_FEATURE_ERROR_CHECK
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"
+#else
+		return;
+#endif
+	}
+	
+}
+
 void glFinish(){
 	return;
 }

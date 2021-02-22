@@ -772,6 +772,13 @@ void glBegin(GLint type);
 void glEnd(void);
 void glDrawBuffer(GLenum mode);
 void glReadBuffer(GLenum mode);
+void glReadPixels(	GLint x,
+					GLint y,
+					GLsizei width,
+					GLsizei height,
+					GLenum format,
+					GLenum type,
+					void * data);
 void glDrawArrays(	GLenum mode,
  					GLint first,
  					GLsizei count);
@@ -874,6 +881,14 @@ void glBindTexture(GLint target,GLint texture);
 void glTexImage2D( GLint target, GLint level, GLint components,
 		    GLint width, GLint height, GLint border,
                     GLint format, GLint type, void *pixels);
+void glCopyTexImage2D(	GLenum target,
+					 	GLint level,
+					 	GLenum internalformat,
+					 	GLint x,
+					 	GLint y,
+					 	GLsizei width,
+					 	GLsizei height,
+					 	GLint border);
 void glTexEnvi(GLint target,GLint pname,GLint param);
 void glTexParameteri(GLint target,GLint pname,GLint param);
 void glPixelStorei(GLint pname,GLint param);

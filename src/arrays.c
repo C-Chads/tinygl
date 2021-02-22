@@ -414,6 +414,7 @@ void glopVertexPointer(GLContext* c, GLParam* p) {
 
 void glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* pointer) {
 	GLParam p[4];
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(type != GL_FLOAT)
@@ -437,6 +438,7 @@ void glopColorPointer(GLContext* c, GLParam* p) {
 
 void glColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* pointer) {
 	GLParam p[4];
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(type != GL_FLOAT)
@@ -459,6 +461,7 @@ void glopNormalPointer(GLContext* c, GLParam* p) {
 
 void glNormalPointer(GLenum type, GLsizei stride, const GLvoid* pointer) {
 	GLParam p[3];
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(type != GL_FLOAT)
@@ -481,6 +484,7 @@ void glopTexCoordPointer(GLContext* c, GLParam* p) {
 
 void glTexCoordPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* pointer) {
 	GLParam p[4];
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(type != GL_FLOAT)

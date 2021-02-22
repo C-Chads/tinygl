@@ -108,6 +108,7 @@ void glTexCoord2fv(GLfloat* v) { glTexCoord4f(v[0], v[1], 0, 1); }
 
 void glEdgeFlag(GLint flag) {
 	GLParam p[2];
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 if(flag != GL_TRUE && flag != GL_FALSE)
@@ -124,13 +125,14 @@ if(flag != GL_TRUE && flag != GL_FALSE)
 
 void glShadeModel(GLint mode) {
 	GLParam p[2];
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(mode != GL_FLAT && mode != GL_SMOOTH)
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-//	assert(mode == GL_FLAT || mode == GL_SMOOTH);
+	if(mode != GL_FLAT && mode != GL_SMOOTH) return;
 //Assume that they know what they're doing.
 #endif
 	p[0].op = OP_ShadeModel;
@@ -141,6 +143,7 @@ void glShadeModel(GLint mode) {
 
 void glCullFace(GLint mode) {
 	GLParam p[2];
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(!(mode == GL_BACK || mode == GL_FRONT || mode == GL_FRONT_AND_BACK))
@@ -158,6 +161,7 @@ void glCullFace(GLint mode) {
 
 void glFrontFace(GLint mode) {
 	GLParam p[2];
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(!(mode == GL_CCW || mode == GL_CW))
@@ -176,6 +180,7 @@ void glFrontFace(GLint mode) {
 
 void glPolygonMode(GLint face, GLint mode) {
 	GLParam p[3];
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 if(!(  (face == GL_BACK || face == GL_FRONT || face == GL_FRONT_AND_BACK)&&
@@ -361,6 +366,7 @@ void glFrustum(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLd
 void glMaterialfv(GLint mode, GLint type, GLfloat* v) {
 	GLParam p[7];
 	GLint i, n;
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(!(mode == GL_FRONT || mode == GL_BACK || mode == GL_FRONT_AND_BACK))

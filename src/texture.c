@@ -182,6 +182,26 @@ void glopBindTexture(GLContext* c, GLParam* p) {
 	c->current_texture = t;
 }
 
+//TODO: Write this, then
+//Write something to test this. This function is useful for doing render targets in TinyGL
+//- not that you couldn't do that
+//already by manually copying pixels around. But, this is a nifty utility, eh?
+void glCopyTexImage2D(	GLenum target,
+ 	GLint level,
+ 	GLenum internalformat,
+ 	GLint x,
+ 	GLint y,
+ 	GLsizei width,
+ 	GLsizei height,
+ 	GLint border){
+	GLContext* c = gl_get_context();
+#include "error_check.h"
+	//TODO
+}
+void glopCopyTexImage2D(GLContext* c, GLParam* p){
+	//TODO	
+}
+
 void glopTexImage2D(GLContext* c, GLParam* p) {
 	GLint target = p[1].i;
 	GLint level = p[2].i;
@@ -224,8 +244,7 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 	im = &c->current_texture->images[level];
 	im->xsize = width;
 	im->ysize = height;
-	if (im->pixmap != NULL)
-		gl_free(im->pixmap);
+	if (im->pixmap != NULL) gl_free(im->pixmap);
 #if TGL_FEATURE_RENDER_BITS == 32
 	im->pixmap = gl_malloc(width * height * 4);
 	if (im->pixmap) {

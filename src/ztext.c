@@ -9,6 +9,7 @@
 
 
 void glTextSize(GLTEXTSIZE mode) {
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(mode < 1 || GL_MAX_TEXT_SIZE < mode)
