@@ -3,6 +3,8 @@
 #include <math.h>
 #include <stdlib.h>
 
+#if TGL_FEATURE_SPECULAR_BUFFERS == 1
+
 static void calc_buf(GLSpecBuf* buf, const GLfloat shininess) {
 	GLint i;
 	GLfloat val, inc;
@@ -54,3 +56,6 @@ GLSpecBuf* specbuf_get_buffer(GLContext* c, const GLint shininess_i, const GLflo
 	calc_buf(oldest, shininess);
 	return oldest;
 }
+
+
+#endif

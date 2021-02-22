@@ -314,9 +314,11 @@ void glInit(void* zbuffer1) {
 	c->gl_resize_viewport = NULL;
 
 	/* specular buffer */
+#if TGL_FEATURE_SPECULAR_BUFFERS == 1
 	c->specbuf_first = NULL;
 	c->specbuf_used_counter = 0;
 	c->specbuf_num_buffers = 0;
+#endif
 	c->zEnableSpecular = 0;
 	/* depth test */
 	c->zb->depth_test = 0;
@@ -348,12 +350,14 @@ void glClose(void) {
 		// c->matrix_stack_ptr[i] = c->matrix_stack[i];
 	}
 	i = 0;
+#if TGL_FEATURE_SPECULAR_BUFFERS == 1
 	GLSpecBuf* n = NULL;
 	for (GLSpecBuf* b = c->specbuf_first; b != NULL; b = n) {
 		n = b->next;
 		gl_free(b);
 		i++;
 	}
+#endif
 	endSharedState(c);
 	gl_free(c);
 }

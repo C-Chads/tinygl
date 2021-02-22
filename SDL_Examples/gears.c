@@ -228,11 +228,11 @@ void initScene() {
 	static GLfloat green[4] = {0.0, 1.0, 0.0, 0.0};
 	static GLfloat blue[4] = {0.0, 0.0, 1.0, 0.0};
 	static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};
-
+	static GLfloat shininess = 5;
 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
 	// glLightfv( GL_LIGHT0, GL_AMBIENT, white);
-	// glLightfv( GL_LIGHT0, GL_SPECULAR, white);
+	glLightfv( GL_LIGHT0, GL_SPECULAR, white);
 	glEnable(GL_CULL_FACE);
 	
 	glEnable(GL_LIGHT0);
@@ -248,6 +248,8 @@ void initScene() {
 	gear1 = glGenLists(1);
 	glNewList(gear1, GL_COMPILE);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+	glMaterialfv(GL_FRONT, GL_SHININESS, &shininess);
 	glColor3fv(blue);
 	gear(1.0, 4.0, 1.0, 20, 0.7); // The largest gear.
 	glEndList();
@@ -255,6 +257,7 @@ void initScene() {
 	gear2 = glGenLists(1);
 	glNewList(gear2, GL_COMPILE);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 	glColor3fv(red);
 	gear(0.5, 2.0, 2.0, 10, 0.7); // The small gear with the smaller hole, to the right.
 	glEndList();
@@ -262,6 +265,7 @@ void initScene() {
 	gear3 = glGenLists(1);
 	glNewList(gear3, GL_COMPILE);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, green);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 	glColor3fv(green);
 	gear(1.3, 2.0, 0.5, 10, 0.7); // The small gear above with the large hole.
 	glEndList();

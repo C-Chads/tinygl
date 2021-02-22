@@ -26,6 +26,8 @@ void glNormal3f(GLfloat x, GLfloat y, GLfloat z) {
 	GLParam p[4];
 #include "error_check_no_context.h"
 	p[0].op = OP_Normal;
+//NODO: Normalize vector here if it's enabled, so that the display list contains only normalized normals.
+//Redacted because: It would fuck up the matrix math. Dang it!
 	p[1].f = x;
 	p[2].f = y;
 	p[3].f = z;
@@ -378,7 +380,7 @@ void glMaterialfv(GLint mode, GLint type, GLfloat* v) {
 	p[0].op = OP_Material;
 	p[1].i = mode;
 	p[2].i = type;
-	n = 4;
+	n = 4;//This appears to be a hack... to avoid a jump instruction? What the hell?
 	if (type == GL_SHININESS)
 		n = 1;
 	for (i = 0; i < 4; i++)

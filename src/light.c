@@ -50,7 +50,9 @@ void glopMaterial(GLContext* c, GLParam* p) {
 		break;
 	case GL_SHININESS:
 		m->shininess = v[0];
+#if TGL_FEATURE_SPECULAR_BUFFERS == 1
 		m->shininess_i = (v[0] / 128.0f) * SPECULAR_BUFFER_SIZE;
+#endif
 		break;
 	case GL_AMBIENT_AND_DIFFUSE:
 		// printf("\nRECEIVED AMBIENT AND DIFFUSE COLOR %f, %f, %f, %f", v[0], v[1], v[2], v[3]);
@@ -312,7 +314,7 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 					/* no contribution */
 					continue;
 				} else {
-					/* TODO: optimize */
+					/* TODO: pow table for spot_exponent?*/
 					if (l->spot_exponent > 0) {
 						att = att * pow(dot_spot, l->spot_exponent);
 					}
@@ -334,16 +336,22 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 					s.Y = d.Y - vcoord.X;
 					s.Z = d.Z - vcoord.X;
 				} else {
-					s.X = d.X;
-					s.Y = d.Y;
-					s.Z = d.Z + 1.0;
+					s.X = d.X; //+0.0
+					s.Y = d.Y; //+0.0
+					s.Z = d.Z - 1.0; //BLINN-PHONG SHADING: We're doing lighting calculations in Eye coordinates, this is ViewDir + LightDir
+					//s.Z = d.Z + 1.0; //This is what bellard's code did, which I think is wrong.
+					//s.Z = d.Z;
 				}
+				//dot_spec is dot(surfaceNormal, H)
 				dot_spec = n.X * s.X + n.Y * s.Y + n.Z * s.Z;
 				if (twoside && dot_spec < 0)
 					dot_spec = -dot_spec;
 				if (dot_spec > 0) {
+#if TGL_FEATURE_SPECULAR_BUFFERS == 1
 					GLSpecBuf* specbuf;
 					GLint idx;
+#endif
+					dot_spec = clampf(dot_spec, 0, 1);
 #if TGL_FEATURE_FISR == 1
 					tmp = fastInvSqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z); //FISR IMPL, MATCHED!
 					if (tmp < 1E+3) {
@@ -356,25 +364,23 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 			          dot_spec=dot_spec / tmp;
 			        } else dot_spec = 0;
 #endif
-					
-
-					/* TODO: optimize */
-					/* testing specular buffer code */
 					/* dot_spec= pow(dot_spec,m->shininess);*/
+#if TGL_FEATURE_SPECULAR_BUFFERS == 1
 					specbuf = specbuf_get_buffer(c, m->shininess_i, m->shininess);
+//Check for GL_OUT_OF_MEMORY
 #if TGL_FEATURE_ERROR_CHECK == 1
-//The GL_OUT_OF_MEMORY flag will already be set.
 #include "error_check.h"
+#endif
 #else
-				//As it turns out, this is actually handled inside of specbuf_get_buffer!
-					//if(!specbuf)
-					//	gl_fatal_error("BAD SPECBUF_GET_BUFFER");
+					dot_spec= pow(dot_spec,m->shininess);
 #endif
 
+#if TGL_FEATURE_SPECULAR_BUFFERS == 1
 					idx = (GLint)(dot_spec * SPECULAR_BUFFER_SIZE);
 					if (idx > SPECULAR_BUFFER_SIZE)
 						idx = SPECULAR_BUFFER_SIZE; //NOTE by GEK: this is poorly written, it's actually 1 larger.
 					dot_spec = specbuf->buf[idx];
+#endif
 					lR += dot_spec * l->specular.v[0] * m->specular.v[0];
 					lG += dot_spec * l->specular.v[1] * m->specular.v[1];
 					lB += dot_spec * l->specular.v[2] * m->specular.v[2];

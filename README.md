@@ -112,6 +112,10 @@ The changelog is as such:
 
 * Added glPixelSize (TODO is to implement distance scaling)
 
+* Fixed specular rendering
+
+* Added way more compile time options
+
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
 

@@ -291,9 +291,11 @@ typedef struct GLContext {
 
 	/* specular buffer. could probably be shared between contexts,
 	  but that wouldn't be 100% thread safe */
+#if TGL_FEATURE_SPECULAR_BUFFERS == 1
 	GLSpecBuf* specbuf_first;
 	GLint specbuf_used_counter;
 	GLint specbuf_num_buffers;
+#endif 
 	GLint zEnableSpecular; // Enable specular lighting
 	/* opaque structure for user's use */
 	void* opaque;
