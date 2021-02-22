@@ -14,6 +14,9 @@
 #define ZB_POINT_Z_FRAC_BITS 14
 //a "1" in bit FRAC_BITS+1 (starting at zero) = 1.
 
+//This is a complicated as hell fixed point math standard.
+
+//go to zfeatures.h to find out how this stuff is decided
 #define ZB_POINT_S_MIN ( (1<<ZB_POINT_S_FRAC_BITS) )
 #define ZB_POINT_S_MAX ( (1<<(1+TGL_FEATURE_TEXTURE_POW2+ZB_POINT_S_FRAC_BITS))-ZB_POINT_S_MIN )
 #define ZB_POINT_T_MIN ( (1<<ZB_POINT_T_FRAC_BITS) )
@@ -23,26 +26,18 @@
 #define ZB_S_MASK ((TGL_FEATURE_TEXTURE_DIM-1)<<(ZB_POINT_S_FRAC_BITS+1))
 #define ZB_T_MASK ((TGL_FEATURE_TEXTURE_DIM-1)<<(ZB_POINT_T_FRAC_BITS+1))
 //PSZSH is 5 at 32 bit, or 4 at 16 bit.
-//Basically what's happening here is this:
-//0x3FC000 is 255<<14
-///0x3FC00000 is 255<<22
-//22-14 = 8 (The number of )
-//a single factor of 2 separates 32 bit and 16 bit rendering, and this is reflected here.
-//Twice as many bytes need to be skipped in 32 bit rendering mode.
-//If you chose 
 #if ZB_POINT_T_FRAC_BITS == (ZB_POINT_S_FRAC_BITS + TGL_FEATURE_TEXTURE_POW2)
 #define ST_TO_TEXTURE_BYTE_OFFSET(s,t) ( ((s & ZB_S_MASK) | (t & ZB_T_MASK)) >> (ZB_POINT_S_VALUE-PSZSH))
 #else
 #define ST_TO_TEXTURE_BYTE_OFFSET(s,t) ( ((s & ZB_S_MASK)>>(ZB_POINT_S_VALUE-PSZSH)) | ((t & ZB_T_MASK)>>(ZB_POINT_T_VALUE-PSZSH))  )
 #endif
-/*
-#define ZB_POINT_RED_MIN ( (1<<10) )
-#define ZB_POINT_RED_MAX ( (1<<16)-(1<<10) )
-#define ZB_POINT_GREEN_MIN ( (1<<9) )
-#define ZB_POINT_GREEN_MAX ( (1<<16)-(1<<9) )
-#define ZB_POINT_BLUE_MIN ( (1<<10) )
-#define ZB_POINT_BLUE_MAX ( (1<<16)-(1<<10) )
-*/
+
+//This is how textures are sampled. if you want to do some sort of fancy texture filtering,
+//you do it here.
+#define TEXTURE_SAMPLE(texture, s, t)														\
+ (*(PIXEL*)( (GLbyte*)texture + 															\
+ ST_TO_TEXTURE_BYTE_OFFSET(s,t) 								\
+ ))
 /* display modes */
 #define ZB_MODE_5R6G5B  1  /* true color 16 bits */
 #define ZB_MODE_INDEX   2  /* color index 8 bits */

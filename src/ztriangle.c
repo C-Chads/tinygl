@@ -350,10 +350,7 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
 #if 1 // IF 1
 
 
-#define TEXTURE_SAMPLE(texture, s, t)														\
- (*(PIXEL*)( (GLbyte*)texture + 															\
- ST_TO_TEXTURE_BYTE_OFFSET(s,t) 								\
- ))
+
 
 #define DRAW_LINE_TRI_TEXTURED()                                                                                                                               \
 	{                                                                                                                                                          \
