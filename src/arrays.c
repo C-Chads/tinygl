@@ -78,7 +78,7 @@ GLint create_buffer(GLint handle){
 
 void glGenBuffers(	GLsizei n,
  					GLuint * buffers)
-{
+{GLContext* c = gl_get_context();
 	#include "error_check.h"
 	if(n > MAX_BUFFERS) goto error;
 
@@ -105,7 +105,7 @@ void glGenBuffers(	GLsizei n,
 }
 void glDeleteBuffers(	GLsizei n,
 					 	const GLuint * buffers)
-{
+{GLContext* c = gl_get_context();
 	#include "error_check.h"
 	for(GLint i = 0; i < n; i++) free_buffer(buffers[i]);
 }
@@ -275,7 +275,7 @@ void glBufferData(	GLenum target,
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
-		gl_fatal_error("GL_OUT_OF_MEMORY")
+		gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 	}
 	memcpy(buf->data, data, size);
@@ -421,7 +421,7 @@ void glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* poin
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	assert(type == GL_FLOAT); Everything is fine!
+	if(type != GL_FLOAT) return;
 #endif
 	p[0].op = OP_VertexPointer;
 	p[1].i = size;

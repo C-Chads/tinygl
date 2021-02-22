@@ -881,6 +881,10 @@ void glBindTexture(GLint target,GLint texture);
 void glTexImage2D( GLint target, GLint level, GLint components,
 		    GLint width, GLint height, GLint border,
                     GLint format, GLint type, void *pixels);
+
+void glTexImage1D( GLint target, GLint level, GLint components,
+		    		GLint width, GLint border,
+                    GLint format, GLint type, void *pixels);
 void glCopyTexImage2D(	GLenum target,
 					 	GLint level,
 					 	GLenum internalformat,
@@ -890,8 +894,9 @@ void glCopyTexImage2D(	GLenum target,
 					 	GLsizei height,
 					 	GLint border);
 void glTexEnvi(GLint target,GLint pname,GLint param);
+
 void glTexParameteri(GLint target,GLint pname,GLint param);
-void glPixelStorei(GLint pname,GLint param);
+
 GLboolean glAreTexturesResident(	GLsizei n,
 								 	const GLuint * textures,
 								 	GLboolean * residences);

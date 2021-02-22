@@ -518,6 +518,21 @@ void glTexImage2D(GLint target, GLint level, GLint components, GLint width, GLin
 	gl_add_op(p);
 }
 
+void glTexImage1D(GLint target, GLint level, GLint components, GLint width, GLint border, GLint format, GLint type, void* pixels) {
+	GLParam p[10];
+#include "error_check_no_context.h"
+	p[0].op = OP_TexImage1D;
+	p[1].i = target;
+	p[2].i = level;
+	p[3].i = components;
+	p[4].i = width;
+	p[5].i = border;
+	p[6].i = format;
+	p[7].i = type;
+	p[8].p = pixels;
+	gl_add_op(p);
+}
+
 void glBindTexture(GLint target, GLint texture) {
 	GLParam p[3];
 #include "error_check_no_context.h"
@@ -529,35 +544,36 @@ void glBindTexture(GLint target, GLint texture) {
 }
 
 void glTexEnvi(GLint target, GLint pname, GLint param) {
-	GLParam p[8];
+//	GLParam p[8];
 #include "error_check_no_context.h"
-	p[0].op = OP_TexEnv;
-	p[1].i = target;
-	p[2].i = pname;
-	p[3].i = param;
-	p[4].f = 0;
-	p[5].f = 0;
-	p[6].f = 0;
-	p[7].f = 0;
+//	p[0].op = OP_TexEnv;
+//	p[1].i = target;
+//	p[2].i = pname;
+//	p[3].i = param;
+//	p[4].f = 0;
+//	p[5].f = 0;
+//	p[6].f = 0;
+//	p[7].f = 0;
 
-	gl_add_op(p);
+//	gl_add_op(p);
 }
 
 void glTexParameteri(GLint target, GLint pname, GLint param) {
-	GLParam p[8];
+//	GLParam p[8];
 #include "error_check_no_context.h"
-	p[0].op = OP_TexParameter;
-	p[1].i = target;
-	p[2].i = pname;
-	p[3].i = param;
-	p[4].f = 0;
-	p[5].f = 0;
-	p[6].f = 0;
-	p[7].f = 0;
+//	p[0].op = OP_TexParameter;
+//	p[1].i = target;
+//	p[2].i = pname;
+//	p[3].i = param;
+//	p[4].f = 0;
+//	p[5].f = 0;
+//	p[6].f = 0;
+//	p[7].f = 0;
 
-	gl_add_op(p);
+//	gl_add_op(p);
 }
 
+/*
 void glPixelStorei(GLint pname, GLint param) {
 	GLParam p[3];
 #include "error_check_no_context.h"
@@ -567,7 +583,7 @@ void glPixelStorei(GLint pname, GLint param) {
 
 	gl_add_op(p);
 }
-
+*/
 /* selection */
 
 void glInitNames(void) {
@@ -629,13 +645,8 @@ void glFlush(void) { /* nothing to do */
 }
 
 void glHint(GLint target, GLint mode) {
-	GLParam p[3];
 #include "error_check_no_context.h"
-	p[0].op = OP_Hint;
-	p[1].i = target;
-	p[2].i = mode;
-
-	gl_add_op(p);
+	
 }
 
 /* Non standard functions */

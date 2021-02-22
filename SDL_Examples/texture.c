@@ -32,6 +32,8 @@ int noSDL = 0;
 #endif
 
 GLuint tex = 0;
+GLuint do1D = 0;
+GLint Row1D = 30;
 GLfloat texture_mult = 1.0;
 GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
 	GLuint t = 0;
@@ -51,7 +53,10 @@ GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
+	if(!do1D)
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
+	else
+		glTexImage1D(GL_TEXTURE_1D, 0, 3, w, 0, GL_RGB, GL_UNSIGNED_BYTE, buf + Row1D * w * 3);
 	return t;
 }
 
@@ -129,6 +134,10 @@ int main(int argc, char** argv) {
 				fps = strtoull(argv[i], 0, 10);
 			if (!strcmp(larg, "-texscale"))
 				texture_mult = atof(argv[i]);
+			if (!strcmp(larg, "-1D")){
+				do1D = 1;
+				Row1D = atoi(argv[i]);
+			}
 			larg = argv[i];
 		}
 	}

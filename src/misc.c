@@ -175,14 +175,6 @@ void glopPolygonMode(GLContext* c, GLParam* p) {
 	}
 }
 
-void glopHint(GLContext* c, GLParam* p) {
-#if 0
-  GLint target=p[1].i;
-  GLint mode=p[2].i;
-
-  /* do nothing */
-#endif
-}
 
 void glopPolygonOffset(GLContext* c, GLParam* p) {
 	c->offset_factor = p[1].f;

@@ -40,7 +40,7 @@ GLint glRenderMode(GLint mode) {
 #define RETVAL 0
 #include "error_check.h"
 #else
-		if(c->select_buffer == NULL)return;
+		if(c->select_buffer == NULL)return 0;
 #endif
 		c->render_mode = GL_SELECT;
 		c->select_ptr = c->select_buffer;

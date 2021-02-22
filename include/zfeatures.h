@@ -8,8 +8,8 @@
 #define TGL_FEATURE_ERROR_CHECK 1
 //Strict out-of-memory checking. All OpenGL function calls are invalidated (ALL OF THEM) if a GL_OUT_OF_MEMORY error occurs.
 //The checks slow down the renderer so it is not recommended , but
-//it's part of the GL spec and it was relatively easy to add so I added it.
-#define TGL_FEATURE_STRICT_OOM_CHECKS 0
+//it's in the GL spec that this should occur.
+#define TGL_FEATURE_STRICT_OOM_CHECKS 1
 //Use Fast Inverse Square Root. Toggleable because it's actually slower on some systems, i've heard.
 #define TGL_FEATURE_FISR 1
 //Clientside Arrays

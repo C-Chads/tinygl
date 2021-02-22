@@ -89,7 +89,9 @@ The changelog is as such:
 
 * Added glDrawArrays
 
-* Added Buffers
+* Added Buffers (For memory management purposes)
+
+* Added glTexImage1D (... it just resizes it to 2D, but it works!)
 
 * Added glPixelSize (TODO is to implement distance scaling)
 

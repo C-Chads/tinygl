@@ -21,11 +21,13 @@ GLboolean glAreTexturesResident(	GLsizei n,
 GLContext* c = gl_get_context();
 #define RETVAL GL_FALSE
 #include "error_check.h"
+GLboolean retval = GL_TRUE;
 	for(GLint i = 0; i < n; i++)
 		if(find_texture(c, textures[i]))
-			residences[i] = GL_TRUE;
+			{residences[i] = GL_TRUE;}
 		else
-			residences[i] = GL_FALSE;
+			{residences[i] = GL_FALSE;retval = GL_FALSE;}
+	return retval;
 }
 GLboolean glIsTexture(	GLuint texture){
 	GLContext* c = gl_get_context();
@@ -202,6 +204,85 @@ void glopCopyTexImage2D(GLContext* c, GLParam* p){
 	//TODO	
 }
 
+void glopTexImage1D(GLContext* c, GLParam* p){
+	GLint target = p[1].i;
+	GLint level = p[2].i;
+	GLint components = p[3].i;
+	GLint width = p[4].i;
+	//GLint height = p[5].i;
+	GLint height = 1;
+	GLint border = p[5].i;
+	GLint format = p[6].i;
+	GLint type = p[7].i;
+	void* pixels = p[8].p;
+	GLImage* im;
+	GLubyte* pixels1;
+	GLint do_free;
+
+		 {
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if (!(target == GL_TEXTURE_1D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+
+#else
+	if (!(target == GL_TEXTURE_1D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
+		gl_fatal_error("glTexImage2D: combination of parameters not handled!!");
+#endif
+	}
+	if (width != TGL_FEATURE_TEXTURE_DIM || height != TGL_FEATURE_TEXTURE_DIM) {
+		pixels1 = gl_malloc(TGL_FEATURE_TEXTURE_DIM * TGL_FEATURE_TEXTURE_DIM * 3);
+		/* no GLinterpolation is done here to respect the original image aliasing ! */
+		//TODO: Make this more efficient.
+		gl_resizeImageNoInterpolate(pixels1, TGL_FEATURE_TEXTURE_DIM, TGL_FEATURE_TEXTURE_DIM, pixels, width, height);
+		do_free = 1;
+		width = TGL_FEATURE_TEXTURE_DIM;
+		height = TGL_FEATURE_TEXTURE_DIM; //TODO: make this more efficient.
+	} else {
+		pixels1 = pixels;
+	}
+
+
+	im = &c->current_texture->images[level];
+	im->xsize = width;
+	im->ysize = height;
+	if (im->pixmap != NULL) gl_free(im->pixmap);
+#if TGL_FEATURE_RENDER_BITS == 32
+	im->pixmap = gl_malloc(width * height * 4);
+	if (im->pixmap) {
+		gl_convertRGB_to_8A8R8G8B(im->pixmap, pixels1, width, height);
+	}else {
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#include "error_check.h"
+#else
+		gl_fatal_error("GL_OUT_OF_MEMORY");
+#endif
+	}
+#elif TGL_FEATURE_RENDER_BITS == 16
+	im->pixmap = gl_malloc(width * height * 2);
+	if (im->pixmap) {
+		gl_convertRGB_to_5R6G5B(im->pixmap, pixels1, width, height);
+	}else {
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#include "error_check.h"
+#else
+		gl_fatal_error("GL_OUT_OF_MEMORY");
+#endif
+	}
+
+#else
+#error TODO
+#endif
+	if (do_free)
+		gl_free(pixels1);
+
+
+
+
+
+}
 void glopTexImage2D(GLContext* c, GLParam* p) {
 	GLint target = p[1].i;
 	GLint level = p[2].i;
@@ -278,6 +359,7 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 }
 
 /* TODO: not all tests are done */
+/*
 void glopTexEnv(GLContext* c, GLParam* p) {
 	GLint target = p[1].i;
 	GLint pname = p[2].i;
@@ -302,16 +384,19 @@ void glopTexEnv(GLContext* c, GLParam* p) {
 	if (param != GL_DECAL)
 		goto error;
 }
-
+*/
 /* TODO: not all tests are done */
+/*
 void glopTexParameter(GLContext* c, GLParam* p) {
 	GLint target = p[1].i;
 	GLint pname = p[2].i;
 	GLint param = p[3].i;
 
-	if (target != GL_TEXTURE_2D) {
+	if (target != GL_TEXTURE_2D &&
+		target != GL_TEXTURE_1D) {
 	error:
-		gl_fatal_error("glTexParameter: unsupported option");
+		tgl_warning("glTexParameter: unsupported option");
+		return;
 	}
 
 	switch (pname) {
@@ -322,8 +407,9 @@ void glopTexParameter(GLContext* c, GLParam* p) {
 		break;
 	}
 }
-
-//TODO: implement this.
+*/
+//TODO: implement pixel packing?
+/*
 void glopPixelStore(GLContext* c, GLParam* p) {
 	GLint pname = p[1].i;
 	GLint param = p[2].i;
@@ -332,3 +418,4 @@ void glopPixelStore(GLContext* c, GLParam* p) {
 		gl_fatal_error("glPixelStore: unsupported option");
 	}
 }
+*/
