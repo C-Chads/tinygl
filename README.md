@@ -1,11 +1,28 @@
 # TinyGL- New and Improved
 
-A rework of Fabrice Bellard's TinyGL (still compiling with -std=c99) to be
+A major overhaul of Fabrice Bellard's TinyGL (still compiling with -std=c99) to be
 more useful as a software rasterizer.
 
-Tightly tweaked for performance.
+## Tightly tweaked for performance
 
-Valgrind'd for memory leaks in the demos.
+On a single thread on an i7-6700 (Skylake, 2015),
+the standard "gears" demo runs at a higher framerate than glxgears on Mesa using a Ryzen 3900x (2019)
+(NOTE: TinyGL Compared without SDL overhead)
+
+I think I can safely say, this is the fastest single-threaded FOSS software GL implementation in existence.
+
+It's probably also the most portable
+
+## Incredibly portable
+
+TinyGL is written in pure C99, and requires very few functions from the C standard library, it doesn't even require malloc and free
+(The calls are aliased to gl_malloc() and gl_free(), which you can replace with your own memory management model if you desire)
+
+If you are unsure if your target platform can support TinyGL, compile it with the buildtime and runtime tests enabled (They are, by default)
+
+if you get a TGL_BUILDT error, then you've failed the buildtime test.
+
+if you try to initialize the library and you get a crash with a print to standard out "TINYGL_FAILED_RUNTIME_COMPAT_TEST" then you've failed the runtime test.
 
 Without Polygon Stipple:
 
@@ -245,6 +262,8 @@ TinyGL 0.4 by Bellard had incorrect color interpolation and issues with
 GL_FLAT, causing the hello world triangle to look rather...
 wrong. Additionally, per vertex color is just cool.
 
+The whole library was filled with memory leaks and read-past-by-one type errors, and they have been corrected.
+
 ## Notorious bugs from the original that have been fixed
 
 * GLParam is a union of float, int, uint, and void* which is assumed to be 32 bit... but isn't on 64 bit systems
@@ -256,6 +275,8 @@ wrong. Additionally, per vertex color is just cool.
 * Little endian was assumed in a thousand places in the code
 
 * Non-normalized position was used for lights at infinity.
+
+* Lack of error checking functionality
 
 * Insert unknown bugs here.
 

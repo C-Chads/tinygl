@@ -75,15 +75,17 @@ void endSharedState(GLContext* c) {
 			gl_free(s->buffers[i]);
 		}
 	}
+	gl_free(s->buffers);
 }
 
 #if TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST == 1
 
-#define TGL_RUNT_UNION_CAST(i) ((union{GLuint l; GLfloat f;}){i})
+#define TGL_RUNT_UNION_CAST(i) ((union{GLuint l; GLint ii; GLfloat f;}){i})
+#define TGL_FLOAT_ERR(a,b) ((a-b)/b)
 int TinyGLRuntimeCompatibilityTest(){
-	GLfloat t = -0;
+	GLfloat t = -0, tf2;
 	GLint t2 = 1<<31;
-	if(TGL_RUNT_UNION_CAST(t2).f != -0)
+	if(TGL_RUNT_UNION_CAST(t2).f != t)
 		return 1;
 	t2 = 3212836864;
 	t = -1;
@@ -98,6 +100,37 @@ int TinyGLRuntimeCompatibilityTest(){
 	if((GLushort)65280>>8 != 255) return 1;
 	if(((GLshort)255<<8) != 65280) return 1;
 	if((GLshort)65280>>8 != -1) return 1;
+#if TGL_FEATURE_FISR == 1
+	t = fastInvSqrt(37);
+	tf2 = 1.0/sqrt(37);
+	if(TGL_FLOAT_ERR(t,tf2) > 0.05) return 1;
+	t = fastInvSqrt(59);
+	tf2 = 1.0/sqrt(59);
+	if(TGL_FLOAT_ERR(t,tf2) > 0.05) return 1;
+	t = fastInvSqrt(1023);
+	tf2 = 1.0/sqrt(1023);
+	if(TGL_FLOAT_ERR(t,tf2) > 0.05) return 1;
+
+	t = fastInvSqrt(10000);
+	tf2 = 1.0/sqrt(10000);
+	if(TGL_FLOAT_ERR(t,tf2) > 0.05) return 1;
+#endif
+	{	//MEMCPY COMPATIBILITY TEST
+		GLuint buf1[10];
+		GLuint buf2[10];
+		for(int i = 0; i < 10; i++) buf1[i] = (1023<<i) + i + i%-1;
+		for(int i = 0; i < 10; i++) buf2[i] = (14<<i) + i + i%-4;
+		memcpy(buf1,buf2,10*4);
+		for(int i = 0; i < 10; i++) if(buf2[i] != buf1[i]) return 1;
+	}
+	if(sizeof(void*) < 4) return 1;
+	//ZALLOC TEST
+	for(int i = 0; i < 10; i++){
+		GLubyte* data = gl_zalloc(1024); //A kilobyte.
+		if(!data) return 1;
+		for(int i = 0; i <1024; i++) if(data[i] != 0) return 1;
+		gl_free(data);
+	}
 	return 0;
 }
 #endif
