@@ -15,6 +15,27 @@ static GLTexture* find_texture(GLContext* c, GLint h) {
 	return NULL;
 }
 
+GLboolean glAreTexturesResident(	GLsizei n,
+								 	const GLuint * textures,
+								 	GLboolean * residences){
+GLContext* c = gl_get_context();
+#define RETVAL GL_FALSE
+#include "error_check.h"
+	for(GLint i = 0; i < n; i++)
+		if(find_texture(c, textures[i]))
+			residences[i] = GL_TRUE;
+		else
+			residences[i] = GL_FALSE;
+}
+GLboolean glIsTexture(	GLuint texture){
+	GLContext* c = gl_get_context();
+#define RETVAL GL_FALSE
+#include "error_check.h"
+	if(find_texture(c, texture))
+		return GL_TRUE;
+	return GL_FALSE;
+}
+
 void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize) {
 	GLTexture* tex;
 	GLContext* c = gl_get_context();

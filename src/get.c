@@ -1,58 +1,7 @@
 #include "msghandling.h"
 #include "zgl.h"
 #define TINYGL_VERSION 0.8
-void glGetIntegerv(GLint pname, GLint* params) {
-	GLContext* c = gl_get_context();
-#include "error_check.h"
-	switch (pname) {
-	case GL_BLEND:
-		*params = c->zb->enable_blend;
-		break;
-	case GL_BLEND_DST:
-		*params = c->zb->dfactor;
-		break;
-	case GL_BLEND_SRC:
-		*params = c->zb->sfactor;
-		break;
-	case GL_BLEND_EQUATION:
-		*params = c->zb->blendeq;
-		break;
-	case GL_VIEWPORT:
-		params[0] = c->viewport.xmin;
-		params[1] = c->viewport.ymin;
-		params[2] = c->viewport.xsize;
-		params[3] = c->viewport.ysize;
-		break;
-	case GL_MAX_MODELVIEW_STACK_DEPTH:
-		*params = MAX_MODELVIEW_STACK_DEPTH;
-		break;
-	case GL_MAX_PROJECTION_STACK_DEPTH:
-		*params = MAX_PROJECTION_STACK_DEPTH;
-		break;
-	
-	case GL_CULL_FACE_MODE:
-		*params = c->current_cull_face;
-		break;
-	case GL_MAX_LIGHTS:
-		*params = MAX_LIGHTS;
-		break;
-	case GL_MAX_TEXTURE_SIZE:
-		*params = TGL_FEATURE_TEXTURE_DIM; /* not completely true, but... */
-		break;
-	case GL_CULL_FACE:
-		*params = c->cull_face_enabled;
-		break;
-	case GL_MAX_TEXTURE_STACK_DEPTH:
-		*params = MAX_TEXTURE_STACK_DEPTH;
-		break;
-	case GL_CURRENT_RASTER_POSITION_VALID:
-		*params = c->rasterposvalid;
-		break;
-	default:
-		tgl_warning("glGet: option not implemented");
-		break;
-	}
-}
+
 #define xstr(s) str(s)
 #define str(s) #s
 
@@ -185,19 +134,399 @@ const GLubyte* glGetString(GLenum name){
 	return NULL;
 }
 
+//NOTE: You should never be prevented from retrieving values from the GL state, even in GL_OUT_OF_MEMORY
+
+void glGetIntegerv(GLint pname, GLint* params) {
+	GLContext* c = gl_get_context();
+	GLint i = 0;
+	switch (pname) {
+	case GL_LIGHT15:
+		i++;
+	case GL_LIGHT14:
+		i++;
+	case GL_LIGHT13:
+		i++;
+	case GL_LIGHT12:
+		i++;
+	case GL_LIGHT11:
+		i++;
+	case GL_LIGHT10:
+		i++;
+	case GL_LIGHT9:
+		i++;
+	case GL_LIGHT8:
+		i++;
+	case GL_LIGHT7:
+		i++;
+	case GL_LIGHT6:
+		i++;
+	case GL_LIGHT5:
+		i++;
+	case GL_LIGHT4:
+		i++;
+	case GL_LIGHT3:
+		i++;
+	case GL_LIGHT2:
+		i++;
+	case GL_LIGHT1:
+		i++;
+	case GL_LIGHT0:
+		*params = c->lights[i].enabled;
+		break;
+	case GL_COLOR_ARRAY:
+		*params = ((c->client_states & COLOR_ARRAY)!=0);
+		break;
+	case GL_COLOR_ARRAY_SIZE:
+		*params = (c->color_array_size);
+		break;
+	case GL_COLOR_ARRAY_STRIDE:
+		*params = c->color_array_stride;
+		break;
+	case GL_VERTEX_ARRAY:
+		*params = ((c->client_states & VERTEX_ARRAY)!=0);
+		break;
+	case GL_VERTEX_ARRAY_SIZE:
+		*params = c->vertex_array_size;
+		break;
+	case GL_VERTEX_ARRAY_STRIDE:
+		*params = c->vertex_array_stride;
+		break;
+	case GL_TEXTURE_COORD_ARRAY:
+		*params = ((c->client_states & TEXCOORD_ARRAY)!=0);
+		break;
+	case GL_TEXTURE_COORD_ARRAY_SIZE:
+		*params = c->texcoord_array_size;
+		break;
+	case GL_TEXTURE_COORD_ARRAY_STRIDE:
+		*params = c->texcoord_array_stride;
+		break;
+	case GL_NORMAL_ARRAY:
+		*params = ((c->client_states & NORMAL_ARRAY)!=0);
+		break;
+	case GL_NORMAL_ARRAY_STRIDE:
+		*params = c->normal_array_stride;
+		break;
+	case GL_BLEND:
+		*params = c->zb->enable_blend;
+		break;
+	case GL_SHADE_MODEL:
+		*params = c->current_shade_model;
+		break;
+	case GL_BLEND_DST:
+		*params = c->zb->dfactor;
+		break;
+	case GL_BLEND_SRC:
+		*params = c->zb->sfactor;
+		break;
+	case GL_POLYGON_MODE:
+		params[0] = c->polygon_mode_front;
+		params[1] = c->polygon_mode_back;
+		break;
+	case GL_LIST_MODE:
+		params[0] = c->compile_flag;
+		break;
+	case GL_LIST_BASE:
+		*params = c->listbase;
+	break;
+	case GL_LIST_INDEX:
+		params[0] = 0;
+		break;
+	case GL_TEXTURE_2D:
+		params[0] = c->texture_2d_enabled;
+		break;
+	case GL_POLYGON_STIPPLE:
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
+		params[0] = c->zb->GLuint dostipple;
+#else
+		params[0] = GL_FALSE;
+#endif
+		break;
+	case GL_LIGHT_MODEL_LOCAL_VIEWER:
+		*params = c->local_light_model;
+		break;
+	case GL_FOG_INDEX:
+		*params = 0;
+		break;
+	case GL_FOG_COLOR:
+		params[0] = 0;
+		params[1] = 0;
+		params[2] = 0;
+		params[3] = 0;
+		break;
+	case GL_FOG_MODE:
+		*params = GL_EXP;
+		break;
+	case GL_LIGHTING:
+		*params = (c->lighting_enabled != 0);
+		break;
+	case GL_LIGHT_MODEL_TWO_SIDE:
+		*params = (c->light_model_two_side != 0);
+		break;
+	case GL_LINE_STIPPLE_REPEAT:
+		*params = 1;
+	break;
+	case GL_LINE_STIPPLE:
+		*params = 0;
+	break;
+	case GL_LINE_STIPPLE_PATTERN:
+		*params = (GLushort)(~0);
+	break;
+	case GL_NORMALIZE:
+		params[0] = c->normalize_enabled;
+		break;
+	case GL_POINT_SMOOTH_HINT:
+	case GL_FOG_HINT:
+	case GL_LINE_SMOOTH_HINT:
+	case GL_PERSPECTIVE_CORRECTION_HINT:
+	case GL_POLYGON_SMOOTH_HINT:
+		*params = GL_FASTEST;
+		break;
+	case GL_BLUE_SCALE:
+	case GL_RED_SCALE:
+	case GL_GREEN_SCALE:
+	case GL_ALPHA_SCALE:
+		*params = 1;
+		break;
+	case GL_SUBPIXEL_BITS:
+		*params = 6;
+		break;
+	case GL_MATRIX_MODE:
+		if(c->matrix_mode == 0)
+			*params = GL_MODELVIEW;
+		else if (c->matrix_mode == 1)
+			*params = GL_PROJECTION;
+		else if (c->matrix_mode == 2)
+			*params = GL_TEXTURE;
+		break;
+	case GL_BLUE_BIAS:
+	case GL_RED_BIAS:
+	case GL_GREEN_BIAS:
+	case GL_ALPHA_BIAS:
+	case GL_CLIP_PLANE0: //TODO
+	case GL_CLIP_PLANE1:
+	case GL_CLIP_PLANE2:
+	case GL_CLIP_PLANE3:
+	case GL_CLIP_PLANE4:
+	case GL_CLIP_PLANE5:
+	case GL_SCISSOR_TEST:
+	case GL_UNPACK_SWAP_BYTES:
+	case GL_UNPACK_SKIP_ROWS:
+	case GL_UNPACK_SKIP_PIXELS:
+	case GL_UNPACK_ROW_LENGTH:
+	case GL_UNPACK_LSB_FIRST:
+	case GL_TEXTURE_GEN_T:
+	case GL_TEXTURE_GEN_S:
+	case GL_TEXTURE_GEN_R:
+	case GL_TEXTURE_GEN_Q:
+	case GL_TEXTURE_1D: //TODO
+	case GL_STEREO:
+	case GL_PACK_SWAP_BYTES:
+	case GL_PACK_SKIP_ROWS:
+	case GL_PACK_SKIP_PIXELS:
+	case GL_PACK_ROW_LENGTH:
+	case GL_PACK_LSB_FIRST:
+	case GL_STENCIL_TEST:
+	case GL_MAX_PIXEL_MAP_TABLE:
+	case GL_MAX_EVAL_ORDER:
+	case GL_MAX_CLIENT_ATTRIB_STACK_DEPTH:
+		params[0] = 0;
+		break;
+	case GL_MAX_VIEWPORT_DIMS:
+		params[0] = 4096;
+		params[1] = 4096;
+		break;
+	case GL_MAX_LIST_NESTING:
+		*params = 2147483647; //No checking is done, indicate it to the user!
+		break;
+	case GL_STENCIL_FUNC:
+		*params = GL_ALWAYS;
+		break;
+	case GL_STENCIL_CLEAR_VALUE:
+		*params = 0;
+		break;
+	case GL_STENCIL_BITS:
+	case GL_MAP_STENCIL:
+	case GL_MAP_COLOR:
+	case GL_INDEX_SHIFT:
+	case GL_INDEX_OFFSET:
+	case GL_INDEX_MODE:
+	case GL_INDEX_CLEAR_VALUE:
+	case GL_INDEX_BITS:
+	case GL_INDEX_ARRAY:
+		*params = 0;
+		break;
+	case GL_FRONT_FACE:
+		*params = c->current_front_face;
+		break;
+	case GL_STENCIL_PASS_DEPTH_PASS:
+	case GL_STENCIL_PASS_DEPTH_FAIL:
+		*params = GL_KEEP;
+		break;
+	case GL_STENCIL_VALUE_MASK:
+	case GL_INDEX_WRITEMASK:
+		*params = ~0;
+		break;
+	case GL_UNPACK_ALIGNMENT:
+	case GL_PACK_ALIGNMENT:
+		*params = 4;
+		break;
+	case GL_COLOR_ARRAY_TYPE:
+	case GL_NORMAL_ARRAY_TYPE:
+	case GL_TEXTURE_COORD_ARRAY_TYPE:
+	case GL_VERTEX_ARRAY_TYPE:
+		*params = GL_FLOAT;
+		break;
+	case GL_RENDER_MODE:
+		*params = c->render_mode;
+		break;
+	case GL_BLEND_EQUATION:
+		*params = c->zb->blendeq;
+		break;
+	case GL_DRAW_BUFFER:
+		*params = c->drawbuffer;
+		break;
+	case GL_READ_BUFFER:
+		*params = c->readbuffer;
+		break;
+	case GL_AUX_BUFFERS:
+		*params = 0;
+		break;
+	case GL_PIXEL_MAP_S_TO_S_SIZE:
+	case GL_PIXEL_MAP_I_TO_I_SIZE:
+	case GL_PIXEL_MAP_I_TO_R_SIZE:
+	case GL_PIXEL_MAP_I_TO_G_SIZE:
+	case GL_PIXEL_MAP_I_TO_B_SIZE:
+	case GL_PIXEL_MAP_I_TO_A_SIZE:
+	case GL_PIXEL_MAP_R_TO_R_SIZE:
+	case GL_PIXEL_MAP_G_TO_G_SIZE:
+	case GL_PIXEL_MAP_B_TO_B_SIZE:
+	case GL_PIXEL_MAP_A_TO_A_SIZE:
+		*params = 0; 
+		break;
+	case GL_RGBA_MODE:
+		*params = 1; //yes, even in 565 (it's what the spec says)
+		break;
+	case GL_VIEWPORT:
+		params[0] = c->viewport.xmin;
+		params[1] = c->viewport.ymin;
+		params[2] = c->viewport.xsize;
+		params[3] = c->viewport.ysize;
+		break;
+	case GL_MAX_MODELVIEW_STACK_DEPTH:
+		*params = MAX_MODELVIEW_STACK_DEPTH;
+		break;
+	case GL_MAX_NAME_STACK_DEPTH:
+		*params = MAX_NAME_STACK_DEPTH;
+		break;
+	case GL_MAX_PROJECTION_STACK_DEPTH:
+		*params = MAX_PROJECTION_STACK_DEPTH;
+		break;
+	case GL_MAX_TEXTURE_STACK_DEPTH:
+		*params = MAX_TEXTURE_STACK_DEPTH;
+		break;
+	case GL_GREEN_BITS:
+#if TGL_FEATURE_RENDER_BITS == 16
+		*params = 6;
+#elif TGL_FEATURE_RENDER_BITS == 32
+		*params = 8;
+#endif
+		break;	
+	case GL_BLUE_BITS:
+	case GL_RED_BITS:
+#if TGL_FEATURE_RENDER_BITS == 16
+		*params = 5;
+#elif TGL_FEATURE_RENDER_BITS == 32
+		*params = 8;
+#endif
+		break;
+	case GL_POLYGON_OFFSET_FILL:
+		*params = ((c->offset_states & TGL_OFFSET_FILL) != 0);
+		break;
+	case GL_POLYGON_OFFSET_LINE:
+		*params = ((c->offset_states & TGL_OFFSET_LINE) != 0);
+		break;
+	case GL_DEPTH_BITS:
+		*params = 16;
+		break;
+	case GL_POLYGON_OFFSET_POINT:
+		*params = ((c->offset_states & TGL_OFFSET_POINT) != 0);
+		break;
+	case GL_POLYGON_SMOOTH:
+		*params = GL_FALSE;
+	break;
+	case GL_CULL_FACE_MODE:
+		*params = c->current_cull_face;
+		break;
+	case GL_MAX_LIGHTS:
+		*params = MAX_LIGHTS;
+		break;
+	case GL_MAX_TEXTURE_SIZE:
+		*params = TGL_FEATURE_TEXTURE_DIM; /* not completely true, but... */
+		break;
+	case GL_CULL_FACE:
+		*params = c->cull_face_enabled;
+		break;
+	case GL_CURRENT_RASTER_POSITION_VALID:
+		*params = c->rasterposvalid;
+		break;
+	case GL_FOG:
+		*params = GL_FALSE;
+		break;
+	case GL_EDGE_FLAG:
+		*params = c->current_edge_flag;
+		break;
+	case GL_DOUBLEBUFFER: 
+	case GL_DITHER: 
+		*params = GL_FALSE; 
+		break;
+	case GL_DEPTH_TEST:
+		*params = (c->zb->depth_test == 1);
+		break;
+	case GL_DEPTH_FUNC:
+		*params = GL_LESS;
+		break;
+	
+	default:
+		tgl_warning("glGet: option not implemented");
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#endif
+		break;
+	}
+}
+
+
+
 void glGetFloatv(GLint pname, GLfloat* v) {
 	GLint i;
 	GLint mnr = 0; /* just a trick to return the correct matrix */
 	GLContext* c = gl_get_context();
-#include "error_check.h"
 	switch (pname) {
+		case GL_BLUE_SCALE:
+		case GL_RED_SCALE:
+		case GL_GREEN_SCALE:
+		case GL_ALPHA_SCALE:
+		case GL_FOG_END:
+		case GL_FOG_DENSITY:
+			*v = 1;
+			break;
+		case GL_BLUE_BIAS:
+		case GL_RED_BIAS:
+		case GL_GREEN_BIAS:
+		case GL_ALPHA_BIAS:
+		case GL_FOG_START:
+			*v = 0;
+			break;
+		case GL_DEPTH_SCALE:
+			*v = 1;
+			break;
 		case GL_TEXTURE_MATRIX:
 			mnr++;
 		case GL_PROJECTION_MATRIX:
 			mnr++;
 		case GL_MODELVIEW_MATRIX: {
 			GLfloat* p = &c->matrix_stack_ptr[mnr]->m[0][0];
-			;
 			for (i = 0; i < 4; i++) {
 				*v++ = p[0];
 				*v++ = p[4];
@@ -209,12 +538,58 @@ void glGetFloatv(GLint pname, GLfloat* v) {
 		case GL_LINE_WIDTH:
 			*v = 1.0f;
 			break;
+		case GL_DEPTH_CLEAR_VALUE:
+			*v = 1; //This is not entirely true, but... good enough?
+			break;
+		case GL_DEPTH_RANGE:
+			v[0] = 0;
+			v[1] = 1;
+			break;
+		case GL_DEPTH_BIAS:
+			*v = 0;
+			break;
+		case GL_CURRENT_TEXTURE_COORDS:
+			v[0] = c->current_tex_coord.X;
+			v[1] = c->current_tex_coord.Y;
+			v[2] = c->current_tex_coord.Z;
+			v[3] = c->current_tex_coord.W;
+			break;
+		case GL_CURRENT_RASTER_POSITION:
+			v[0] = c->rastervertex.pc.X;
+			v[1] = c->rastervertex.pc.Y;
+			v[2] = c->rastervertex.pc.Z;
+			v[3] = c->rastervertex.pc.W;
+			break;
+		case GL_CURRENT_RASTER_DISTANCE:
+			*v = c->rastervertex.ec.Z;
+			break;
 		case GL_LINE_WIDTH_RANGE:
 			v[0] = v[1] = 1.0f;
 			break;
 		case GL_POINT_SIZE:
+		//case GL_POINT_SIZE_MIN:
+		//case GL_POINT_SIZE_MAX:
 			*v = c->zb->pointsize;
 			break;
+		case GL_FOG_COLOR:
+			v[0] = 0;
+			v[1] = 0;
+			v[2] = 0;
+			v[3] = 0;
+		break;
+		case GL_POINT_SIZE_GRANULARITY:
+			*v = 1.0f; //if we ever implement AA'd points...
+			break;
+		case GL_POLYGON_OFFSET_FACTOR:
+			*v = 0;
+			break;
+		case GL_POLYGON_OFFSET_UNITS:
+			*v = 0;
+			break;
+		case GL_LIGHT_MODEL_AMBIENT:
+			for (i = 0; i < 4; i++)
+				v[i] = c->ambient_light_model.v[i];
+		break;
 		case GL_ZOOM_X:
 			*v = c->pzoomx;
 			break;
@@ -222,7 +597,9 @@ void glGetFloatv(GLint pname, GLfloat* v) {
 			*v = c->pzoomy;
 			break;
 		case GL_POINT_SIZE_RANGE:
-			v[0] = v[1] = 1.0f;
+			v[0] = c->zb->pointsize;
+			v[1] = c->zb->pointsize;
+			break;
 		default:
 			tgl_warning("warning: unknown pname in glGetFloatv()\n");
 			break;

@@ -239,7 +239,7 @@ inline void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex*
 			return;
 
 		front = norm < 0.0;
-		front = front ^ c->current_front_face;
+		front = front ^ c->current_front_face; //I don't know how this works, but it does, GL_CCW is 0x901 and CW is 900.
 
 		/* back face culling */
 		if (c->cull_face_enabled) {

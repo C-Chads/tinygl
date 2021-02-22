@@ -117,6 +117,7 @@ void glopBegin(GLContext* c, GLParam* p) {
 		case GL_LINE:
 			c->draw_triangle_front = gl_draw_triangle_line;
 			break;
+		//case GL_FILL:
 		default:
 			c->draw_triangle_front = gl_draw_triangle_fill;
 			break;

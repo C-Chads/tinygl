@@ -110,6 +110,25 @@ void gl_print_op(FILE* f, GLParam* p) {
 	tgl_warning(f, "\n");
 }
 */
+void glListBase(GLint n){
+	GLContext* c = gl_get_context();
+#include "error_check.h"
+	c->listbase = n;
+}
+void glCallLists(	GLsizei n,
+				 	GLenum type,
+				 	const GLuint* lists){
+	GLContext* c = gl_get_context();
+#include "error_check.h"
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(type != GL_UNSIGNED_INT &&
+		type != GL_INT)
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#endif
+	for(GLint i = 0; i < n; i++)
+		glCallList(c->listbase + lists[i]);
+}
 void gl_compile_op(GLContext* c, GLParam* p) {
 	GLint op, op_size;
 	GLParamBuffer *ob, *ob1;
@@ -247,7 +266,8 @@ void glEndList(void) {
 #define ERROR_FLAG GL_INVALID_OPERATION
 #include "error_check.h"
 #else
-	//assert(c->compile_flag == 1); //MARK <COST>
+	if(c->compile_flag != 1)
+		return;
 #endif
 	/* end of list */
 	p[0].op = OP_EndList;

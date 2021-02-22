@@ -1,8 +1,8 @@
 #ifndef _tgl_zgl_h_
 #define _tgl_zgl_h_
 #include "../include/GL/gl.h"
-#include "../include/zbuffer.h"
 #include "../include/zfeatures.h"
+#include "../include/zbuffer.h"
 #include "zmath.h"
 #include <assert.h>
 #include <math.h>
@@ -43,6 +43,11 @@ enum {
 #define MAX_TEXTURE_LEVELS 1
 #define MAX_LIGHTS 16
 
+
+#define VERTEX_ARRAY 0x0001
+#define COLOR_ARRAY 0x0002
+#define NORMAL_ARRAY 0x0004
+#define TEXCOORD_ARRAY 0x0008
 //#define VERTEX_HASH_SIZE 1031
 
 #define MAX_DISPLAY_LISTS 1024
@@ -195,7 +200,7 @@ typedef struct GLContext {
 	GLParamBuffer* current_op_buffer;
 	GLint current_op_buffer_index;
 	GLint exec_flag, compile_flag, print_flag;
-
+	GLuint listbase;
 	/* matrix */
 
 	GLint matrix_mode;
@@ -230,7 +235,9 @@ typedef struct GLContext {
 	GLuint *select_ptr, *select_hit;
 	GLint select_overflow;
 	GLint select_hits;
-
+	/* glDrawBuffer, glRenderBuffer */
+	GLenum drawbuffer;
+	GLenum readbuffer;
 	/* feedback */
 	//render_mode as seen above
 	GLfloat* feedback_buffer;
@@ -287,7 +294,7 @@ typedef struct GLContext {
 	GLSpecBuf* specbuf_first;
 	GLint specbuf_used_counter;
 	GLint specbuf_num_buffers;
-
+	GLint zEnableSpecular; // Enable specular lighting
 	/* opaque structure for user's use */
 	void* opaque;
 	/* resize viewport function */
@@ -297,7 +304,7 @@ typedef struct GLContext {
 	//Moved to Zbuffer.
 
 	/* raster position */
-	V3 rasterpos;
+	V4 rasterpos;
 	GLint rasterpos_zz;
 	GLubyte rasterposvalid;
 	GLfloat pzoomx, pzoomy;

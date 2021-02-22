@@ -15,7 +15,9 @@ void glPolygonStipple(void* a) {
 }
 
 void glopViewport(GLContext* c, GLParam* p) {
-	GLint xsize, ysize, xmin, ymin, xsize_req, ysize_req;
+	GLint xsize, ysize, 
+			xmin, ymin, 
+			xsize_req, ysize_req;
 
 	xmin = p[1].i;
 	ymin = p[2].i;
@@ -32,14 +34,11 @@ void glopViewport(GLContext* c, GLParam* p) {
 		if (c->gl_resize_viewport && c->gl_resize_viewport(c, &xsize_req, &ysize_req) != 0) {
 			gl_fatal_error("glViewport: error while resizing display");
 		}
-
-		xsize = xsize_req - xmin;
-		ysize = ysize_req - ymin;
 		if (xsize <= 0 || ysize <= 0) {
 			gl_fatal_error("glViewport: size too small");
 		}
 
-		tgl_trace("glViewport: %d %d %d %d\n", xmin, ymin, xsize, ysize);
+		//tgl_trace("glViewport: %d %d %d %d\n", xmin, ymin, xsize, ysize);
 		c->viewport.xmin = xmin;
 		c->viewport.ymin = ymin;
 		c->viewport.xsize = xsize;
@@ -202,6 +201,37 @@ GLenum glGetError(){
 #endif
 }
 
+void glDrawBuffer(GLenum mode){
+	GLContext* c = gl_get_context();
+#include "error_check.h"
+	if((mode != GL_FRONT &&
+		mode != GL_NONE) || c->in_begin)
+	{
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"
+#else
+		return;
+#endif
+	}
+	c->drawbuffer = mode;
+}
+
+void glReadBuffer(GLenum mode){
+	GLContext* c = gl_get_context();
+#include "error_check.h"
+	if((mode != GL_FRONT &&
+		mode != GL_NONE) || c->in_begin)
+	{
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"
+#else
+		return;
+#endif
+	}
+	c->readbuffer = mode;
+}
 
 void glFinish(){
 	return;

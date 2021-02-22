@@ -13,11 +13,18 @@ static inline void gl_vertex_transform_raster(GLContext* c, GLVertex* v) {
 		v->pc.X = (v->coord.X * m[0] + v->coord.Y * m[1] + v->coord.Z * m[2] + m[3]);
 		v->pc.Y = (v->coord.X * m[4] + v->coord.Y * m[5] + v->coord.Z * m[6] + m[7]);
 		v->pc.Z = (v->coord.X * m[8] + v->coord.Y * m[9] + v->coord.Z * m[10] + m[11]);
+
+		
 		if (c->matrix_model_projection_no_w_transform) {
 			v->pc.W = m[15];
 		} else {
 			v->pc.W = (v->coord.X * m[12] + v->coord.Y * m[13] + v->coord.Z * m[14] + m[15]);
 		}
+		m = &c->matrix_stack_ptr[0]->m[0][0];
+		v->ec.X = (v->coord.X * m[0] + v->coord.Y * m[1] + v->coord.Z * m[2] + m[3]);
+		v->ec.Y = (v->coord.X * m[4] + v->coord.Y * m[5] + v->coord.Z * m[6] + m[7]);
+		v->ec.Z = (v->coord.X * m[8] + v->coord.Y * m[9] + v->coord.Z * m[10] + m[11]);
+		v->ec.W = (v->coord.X * m[12] + v->coord.Y * m[13] + v->coord.Z * m[14] + m[15]);
 	}
 
 	v->clip_code = gl_clipcode(v->pc.X, v->pc.Y, v->pc.Z, v->pc.W);
@@ -51,6 +58,8 @@ void glopRasterPos(GLContext* c, GLParam* p){
 			}
 			c->rasterpos.v[0] = v.zp.x;
 			c->rasterpos.v[1] = v.zp.y;
+			//c->rasterpos.v[2] = v.pc.Z;
+			//c->rasterpos.v[3] = v.pc.W;
 			c->rastervertex = v;
 			//c->rasterpos.v[2] = v.zp.z;
 			c->rasterpos_zz = v.zp.z >> ZB_POINT_Z_FRAC_BITS; //I believe this is it?
@@ -105,7 +114,7 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 	if(!c->rasterposvalid) return;
 	GLint w = p[1].i;
 	GLint h = p[2].i;
-	V3 rastpos = c->rasterpos;
+	V4 rastpos = c->rasterpos;
 	ZBuffer* zb = c->zb;
 	PIXEL* d = p[3].p;
 	PIXEL* pbuf = zb->pbuf;

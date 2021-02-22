@@ -117,6 +117,8 @@ The "implementation specific multiplier" is 0.
 
 * No edge clamping. S and T are wrapped.
 
+* Display lists can be infinitely nested and doing so will crash TinyGL.
+
 * Lit triangles will use the current material properties, even if they are textured. If the diffuse color is black, then your
 textured triangles will appear black.
 

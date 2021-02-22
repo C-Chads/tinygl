@@ -175,6 +175,14 @@ enum {
 	GL_LIGHT5			= 0x4005,
 	GL_LIGHT6			= 0x4006,
 	GL_LIGHT7			= 0x4007,
+	GL_LIGHT8			= 0x4008,
+	GL_LIGHT9			= 0x4009,
+	GL_LIGHT10			= 0x400A,
+	GL_LIGHT11			= 0x400B,
+	GL_LIGHT12			= 0x400C,
+	GL_LIGHT13			= 0x400D,
+	GL_LIGHT14			= 0x400E,
+	GL_LIGHT15			= 0x400F,
 	GL_SPOT_EXPONENT		= 0x1205,
 	GL_SPOT_CUTOFF			= 0x1206,
 	GL_CONSTANT_ATTENUATION		= 0x1207,
@@ -660,7 +668,15 @@ typedef enum {
 	GL_TEXT_SIZE48x48 = 6,
 	GL_TEXT_SIZE56x56 = 7,
 	GL_TEXT_SIZE64x64 = 8,
-	GL_MAX_TEXT_SIZE = 8
+	GL_TEXT_SIZE72x72 = 9,
+	GL_TEXT_SIZE80x80 = 10,
+	GL_TEXT_SIZE88x88 = 11,
+	GL_TEXT_SIZE96x96 = 12,
+	GL_TEXT_SIZE104x104 = 13,
+	GL_TEXT_SIZE112x112 = 14,
+	GL_TEXT_SIZE120x120 = 15,
+	GL_TEXT_SIZE128x128 = 16,
+	GL_MAX_TEXT_SIZE = 16
 } GLTEXTSIZE;
 enum {
 	GL_CURRENT_BIT		= 0x00000001,
@@ -754,8 +770,8 @@ void glPolygonMode(GLint face,GLint mode);
 
 void glBegin(GLint type);
 void glEnd(void);
-
-
+void glDrawBuffer(GLenum mode);
+void glReadBuffer(GLenum mode);
 void glDrawArrays(	GLenum mode,
  					GLint first,
  					GLsizei count);
@@ -827,6 +843,10 @@ GLint glIsList(GLuint list);
 void glNewList(GLuint list,GLint mode);
 void glEndList(void);
 void glCallList(GLuint list);
+void glCallLists(	GLsizei n,
+				 	GLenum type,
+				 	const GLuint* lists);
+void glListBase(GLint n);
 void glDeleteList(GLuint list);
 void glDeleteLists(GLuint list, GLuint range);
 /* clear */
@@ -857,7 +877,10 @@ void glTexImage2D( GLint target, GLint level, GLint components,
 void glTexEnvi(GLint target,GLint pname,GLint param);
 void glTexParameteri(GLint target,GLint pname,GLint param);
 void glPixelStorei(GLint pname,GLint param);
-
+GLboolean glAreTexturesResident(	GLsizei n,
+								 	const GLuint * textures,
+								 	GLboolean * residences);
+GLboolean glIsTexture(	GLuint texture);
 /* lighting */
 
 void glMaterialfv(GLint mode,GLint type,GLfloat *v);

@@ -164,8 +164,7 @@ void glFrontFace(GLint mode) {
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	//assert(mode == GL_CCW || mode == GL_CW);
-	//It's alright. No error checking!
+	//if(!(mode == GL_CCW || mode == GL_CW)) return;
 #endif
 	mode = (mode != GL_CCW);
 

@@ -2,10 +2,7 @@
 #include <assert.h>
 //#include <stdio.h>
 
-#define VERTEX_ARRAY 0x0001
-#define COLOR_ARRAY 0x0002
-#define NORMAL_ARRAY 0x0004
-#define TEXCOORD_ARRAY 0x0008
+
 
 //Code for buffers is here too!
 

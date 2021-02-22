@@ -130,7 +130,9 @@ void glInit(void* zbuffer1) {
 	v->xsize = zbuffer->xsize;
 	v->ysize = zbuffer->ysize;
 	v->updated = 1;
-
+	/* buffer stuff GL 1.1 */
+	c->drawbuffer = GL_FRONT;
+	c->readbuffer = GL_FRONT;
 	/* shared state */
 	initSharedState(c);
 	/* ztext */
@@ -146,7 +148,7 @@ void glInit(void* zbuffer1) {
 	c->exec_flag = 1;
 	c->compile_flag = 0;
 	c->print_flag = 0;
-
+	c->listbase = 0;
 	c->in_begin = 0;
 
 	/* lights */
@@ -282,16 +284,22 @@ void glInit(void* zbuffer1) {
 	c->specbuf_first = NULL;
 	c->specbuf_used_counter = 0;
 	c->specbuf_num_buffers = 0;
-
+	c->zEnableSpecular = 0;
 	/* depth test */
 	c->zb->depth_test = 0;
 	c->zb->depth_write = 1;
 	c->zb->pointsize = 1;
 
 	/* raster position */
-	c->rasterpos.v[0] = 0;
-	c->rasterpos.v[1] = 0;
-	c->rasterpos.v[2] = 0;
+	c->rasterpos.X = 0;
+	c->rasterpos.Y = 0;
+	c->rasterpos.Z = 0;
+	c->rasterpos.W = 1;
+
+	c->rastervertex.pc.X = 0;
+	c->rastervertex.pc.Y = 0;
+	c->rastervertex.pc.Z = 0;
+	c->rastervertex.pc.W = 1;
 	c->rasterposvalid = 0;
 	c->pzoomx = 1;
 	c->pzoomy = 1;

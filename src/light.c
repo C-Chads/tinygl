@@ -176,7 +176,7 @@ void glopLight(GLContext* c, GLParam* p) {
 
 void glopLightModel(GLContext* c, GLParam* p) {
 	GLint pname = p[1].i;
-	GLfloat* v = &p[2].f;
+	GLint* v = &p[2].i;
 	GLint i;
 
 	switch (pname) {
@@ -229,10 +229,10 @@ void gl_enable_disable_light(GLContext* c, GLint light, GLint v) {
 }
 
 // FEATURES
-int zEnableSpecular = 1; // Enable specular lighting
+
 void glSetEnableSpecular(GLint s) { 
 #include "error_check_no_context.h"
-	zEnableSpecular = s; 
+	gl_get_context()->zEnableSpecular = s; 
 }
 /* non optimized lightening model */
 void gl_shade_vertex(GLContext* c, GLVertex* v) {
@@ -322,7 +322,7 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 			}
 
 			/* specular light */
-			if (zEnableSpecular) {
+			if (c->zEnableSpecular) {
 				if (c->local_light_model) {
 					V3 vcoord;
 					vcoord.X = v->ec.X;
