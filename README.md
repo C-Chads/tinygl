@@ -152,8 +152,11 @@ textured triangles will appear black.
 
 * the X dimension of the rendering window with must be a multiple of 4.
 
-* Line and point rendering have no blending. Point rendering is planned to be updated but line rendering is a secondary priority.
-(Games don't use wireframe rendering very much- but point rendering is useful for fast point sprites)
+* Line rendering is not blended
+
+* The ARB extension for point sprite size attenuation is not enabled.
+
+* Point smoothing is not implemented, points are always squares of a solid color.
 
 * <Undocumented limitations that have not been tested>
 
