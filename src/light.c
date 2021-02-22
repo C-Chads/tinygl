@@ -339,8 +339,8 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 					//BLINN-PHONG SHADING: We're doing lighting calculations in Eye coordinates, this is ViewDir + LightDir
 					s.X = d.X; //+0.0
 					s.Y = d.Y; //+0.0
-					//s.Z = d.Z - 1.0; 
-					s.Z = d.Z + 1.0; //Verified that this is... "supposed" to be the right thing...
+					s.Z = d.Z - 1.0; 
+					//s.Z = d.Z + 1.0; //Verified that this is... "supposed" to be the right thing...
 					//s.Z = d.Z;
 				}
 				//dot_spec is dot(surfaceNormal, H)
