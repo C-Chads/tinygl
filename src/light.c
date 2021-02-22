@@ -359,7 +359,7 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 					} else dot_spec = 0;
 #else
 				//reference implementation.
-					tmp=sqrt(s.X*s.X+s.Y*s.Y+s.Z*s.Z);
+					tmp= sqrt(s.X*s.X+s.Y*s.Y+s.Z*s.Z);
 			        if (tmp > 1E-3) {
 			          dot_spec=dot_spec / tmp;
 			        } else dot_spec = 0;
