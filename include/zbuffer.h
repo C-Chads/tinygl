@@ -46,7 +46,14 @@
 #define ZB_NB_COLORS    225 /* number of colors for 8 bit display */
 
 
+#define TGL_CLAMPI(imp) ( (imp>0) * (65535 * (imp>65535) + imp * (!(imp>65535)) )      )
+#define TGL_CLAMPI2(imp) ( (imp>0)?((imp>65535)?65535:imp):0   )
 
+//#if TGL_FEATURE_BETTER_COLOR_INTERP == 1
+//#define (imp) imp = TGL_CLAMPI2((imp));
+//#else
+//#define (imp) /*a comment*/
+//#endif
 
 
 #if TGL_FEATURE_RENDER_BITS == 32
@@ -54,7 +61,7 @@
 /* 32 bit mode */
 //#define RGB_TO_PIXEL(r,g,b) ( ((b&65280)<<8) | ((g&65280)) | ((r&65280)>>8) )
 #define RGB_TO_PIXEL(r,g,b) \
-  ((((r) << 8) & 0xff0000) | ((g) & 0xff00) | ((b & 0xff00) >> 8))
+  ((((r) << 8) & 0xff0000) | ((g) & 0xff00) | (((b) & 0xff00) >> 8))
 #define GET_RED(p) ((p & 0xff0000)>>16)
 #define GET_REDDER(p) ((p & 0xff0000)>>8)
 #define GET_GREEN(p) ((p & 0xff00)>>8)
@@ -68,7 +75,7 @@ typedef GLuint PIXEL;
 #elif TGL_FEATURE_RENDER_BITS == 16
 
 /* 16 bit mode */
-#define RGB_TO_PIXEL(r,g,b) (((r) & 0xF800) | (((g & 0xff00) >> 5) & 0x07E0) | ((b & 0xff00) >> 11))
+#define RGB_TO_PIXEL(r,g,b) (((r) & 0xF800) | ((((g) & 0xff00) >> 5) & 0x07E0) | (((b) & 0xff00) >> 11))
 
 #define GET_RED(p) ((p & 0xF800)>>8)
 #define GET_REDDER(p) ((p & 0xF800))
@@ -108,7 +115,7 @@ typedef GLushort PIXEL;
 #define TGL_NO_BLEND_FUNC(source, dest){dest = source;}
 #define TGL_NO_BLEND_FUNC_RGB(rr, gg, bb, dest){dest = RGB_TO_PIXEL(rr,gg,bb);}
 //SORCERY to achieve 32 bit signed integer clamping
-#define TGL_CLAMPI(imp) ( (imp>0) * (65535 * (imp>65535) + imp * (!(imp>65535)) )      )
+
 
 #define TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest) 									\
 		switch(zbblendeq){															\

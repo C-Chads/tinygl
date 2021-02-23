@@ -148,8 +148,6 @@ The "implementation specific multiplier" is 0.
 * Lit triangles will use the current material properties, even if they are textured. If the diffuse color is black, then your
 textured triangles will appear black.
 
-* Lit textured triangles are smoothly shaded, irrespective of glShadeModel (Untextured triangles do not have this bug)
-
 * the X dimension of the rendering window with must be a multiple of 4.
 
 * Line rendering is not blended

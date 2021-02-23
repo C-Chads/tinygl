@@ -20,10 +20,14 @@ void gl_transform_to_viewport(GLContext* c, GLVertex* v) {
 	v->zp.z = (GLint)(v->pc.Z * winv * c->viewport.scale.Z + c->viewport.trans.Z);
 	}
 	/* color */
-	v->zp.r = (GLuint)(v->color.v[0] * 65535) & 65535;
-	v->zp.g = (GLuint)(v->color.v[1] * 65535) & 65535;
-	v->zp.b = (GLuint)(v->color.v[2] * 65535) & 65535;
-
+	{GLuint val;
+	val = (GLuint)(v->color.v[0] * 0xff00) & 65535;
+	v->zp.r = (val<0xff)?0xff:val;
+	val = (GLuint)(v->color.v[1] * 0xff00) & 65535;
+	v->zp.g = (val<0xff)?0xff:val;
+	val = (GLuint)(v->color.v[2] * 0xff00) & 65535;
+	v->zp.b = (val<0xff)?0xff:val;
+	}
 	/* texture */
 
 	if (c->texture_2d_enabled) {
@@ -426,6 +430,17 @@ void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p
 
 	if (c->texture_2d_enabled) {
 		//if(c->current_texture)
+#if TGL_FEATURE_LIT_TEXTURES == 1
+		if(c->current_shade_model != GL_SMOOTH){
+			p1->zp.r = p2->zp.r;
+			p1->zp.g = p2->zp.g;
+			p1->zp.b = p2->zp.b;
+
+			p0->zp.r = p2->zp.r;
+			p0->zp.g = p2->zp.g;
+			p0->zp.b = p2->zp.b;
+		}
+#endif
 		{
 #ifdef PROFILE
 			count_triangles_textured++;

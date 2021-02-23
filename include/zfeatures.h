@@ -9,7 +9,7 @@
 //Strict out-of-memory checking. All OpenGL function calls are invalidated (ALL OF THEM) if a GL_OUT_OF_MEMORY error occurs.
 //The checks slow down the renderer so it is not recommended , but
 //it's in the GL spec that this should occur.
-#define TGL_FEATURE_STRICT_OOM_CHECKS 1
+#define TGL_FEATURE_STRICT_OOM_CHECKS 0
 
 //Swap between using the inline'd malloc(), calloc(), and free() in zbuffer.h, or
 //a replacement gl_malloc(), gl_zalloc(), and gl_free() in memory.c

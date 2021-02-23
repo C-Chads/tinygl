@@ -125,9 +125,9 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 			if(zbdw)pz[_a] = zz;                                                                                                                               \
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                                           \
-		or1 += drdx;                                                                                                                                           \
-		ob1 += dbdx;                                                                                                                                           \
+		og1 += dgdx;                                                                                                                      \
+		or1 += drdx;                                                                                                                      \
+		ob1 += dbdx;                                                                                                                  \
 	}
 #else
 #define PUT_PIXEL(_a)                                                                                                                                          \
@@ -140,9 +140,9 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 			if(zbdw)pz[_a] = zz;                                                                                                                                       \
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                                           \
-		or1 += drdx;                                                                                                                                           \
-		ob1 += dbdx;                                                                                                                                           \
+		og1 += dgdx;                                                                                                                      \
+		or1 += drdx;                                                                                                                      \
+		ob1 += dbdx;                                                                                                                  \
 	}
 #endif
 // END OF 32 bit mode
@@ -164,9 +164,9 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 			if(zbdw)pz[_a] = zz;                                                                                                                   				\
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                                           \
-		or1 += drdx;                                                                                                                                           \
-		ob1 += dbdx;                                                                                                                                           \
+		og1 += dgdx;                                                                                                                      \
+		or1 += drdx;                                                                                                                      \
+		ob1 += dbdx;                                                                                                                  \
 	}
 #else
 #define PUT_PIXEL(_a)                                                                                                                                          \
@@ -179,9 +179,9 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 			if(zbdw) pz[_a] = zz;                                                                                                                   \
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                                           \
-		or1 += drdx;                                                                                                                                           \
-		ob1 += dbdx;                                                                                                                                           \
+		og1 += dgdx;                                                                                                                      \
+		or1 += drdx;                                                                                                                      \
+		ob1 += dbdx;                                                                                                                  \
 	}
 #endif
 
@@ -219,9 +219,9 @@ void ZB_fillTriangleSmoothNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p
 			if(zbdw)pz[_a] = zz;                                                                                                                               \
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                                           \
-		or1 += drdx;                                                                                                                                           \
-		ob1 += dbdx;                                                                                                                                           \
+		og1 += dgdx;                                                                                                                      \
+		or1 += drdx;                                                                                                                      \
+		ob1 += dbdx;                                                                                                                  \
 	}
 #else
 #define PUT_PIXEL(_a)                                                                                                                                          \
@@ -233,9 +233,9 @@ void ZB_fillTriangleSmoothNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p
 			if(zbdw)pz[_a] = zz;                                                                                                                               \
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                                           \
-		or1 += drdx;                                                                                                                                           \
-		ob1 += dbdx;                                                                                                                                           \
+		og1 += dgdx;                                                                                                                      \
+		or1 += drdx;                                                                                                                      \
+		ob1 += dbdx;                                                                                                                  \
 	}
 #endif
 // END OF 32 bit mode
@@ -255,9 +255,9 @@ void ZB_fillTriangleSmoothNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p
 			if(zbdw)pz[_a] = zz;                                                                                                                   				\
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                                           \
-		or1 += drdx;                                                                                                                                           \
-		ob1 += dbdx;                                                                                                                                           \
+		og1 += dgdx;                                                                                                                      \
+		or1 += drdx;                                                                                                                      \
+		ob1 += dbdx;                                                                                                                  \
 	}
 #else
 #define PUT_PIXEL(_a)                                                                                                                                          \
@@ -270,9 +270,9 @@ void ZB_fillTriangleSmoothNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p
 			if(zbdw) pz[_a] = zz;                                                                                                                   \
 		}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                                           \
-		or1 += drdx;                                                                                                                                           \
-		ob1 += dbdx;                                                                                                                                           \
+		og1 += dgdx;                                                                                                                      \
+		or1 += drdx;                                                                                                                      \
+		ob1 += dbdx;                                                                                                                  \
 	}
 #endif
 
@@ -442,14 +442,15 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 #if TGL_FEATURE_LIT_TEXTURES == 1
 #define INTERP_RGB
 #define OR1OG1OB1DECL                                                                                                                                          \
-	register GLuint or1, og1, ob1;                                                                                                                             \
+	register GLint or1, og1, ob1;                                                                                                                             \
 	or1 = r1;                                                                                                                                                  \
 	og1 = g1;                                                                                                                                                  \
 	ob1 = b1;
-#define OR1G1B1INCR                                                                                                                                           \
-	og1 += dgdx;                                                                                                                                               \
-	or1 += drdx;                                                                                                                                               \
-	ob1 += dbdx;
+#define OR1G1B1INCR                                                                                                                                   \
+		og1 += dgdx;                                                                                                                      \
+		or1 += drdx;                                                                                                                      \
+		ob1 += dbdx;                                                                                                                  \
+	
 #else
 #define OR1OG1OB1DECL /*A comment*/
 #define OR1G1B1INCR   /*Another comment*/
@@ -522,14 +523,14 @@ void ZB_fillTriangleMappingPerspectiveNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBu
 	}
 #if TGL_FEATURE_LIT_TEXTURES == 1
 #define OR1OG1OB1DECL                                                                                                                                          \
-	register GLuint or1, og1, ob1;                                                                                                                             \
+	register GLint or1, og1, ob1;                                                                                                                             \
 	or1 = r1;                                                                                                                                                  \
 	og1 = g1;                                                                                                                                                  \
 	ob1 = b1;
-#define OR1G1B1INCR                                                                                                                                            \
-	og1 += dgdx;                                                                                                                                               \
-	or1 += drdx;                                                                                                                                               \
-	ob1 += dbdx;
+#define OR1G1B1INCR                                                                                                                                   \
+		og1 += dgdx;                                                                                                                      \
+		or1 += drdx;                                                                                                                      \
+		ob1 += dbdx;                                                                                                                  
 #else
 #define OR1OG1OB1DECL /*A comment*/
 #define OR1G1B1INCR   /*Another comment*/

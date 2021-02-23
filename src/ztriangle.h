@@ -282,7 +282,7 @@ GLfloat d1, d2;
 				register GLuint z;
 #endif
 #ifdef INTERP_RGB
-				register GLuint or1, og1, ob1;
+				register GLint or1, og1, ob1;
 #endif
 #ifdef INTERP_ST
 				register GLuint s, t;
