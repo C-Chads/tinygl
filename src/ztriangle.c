@@ -454,9 +454,9 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 #else
 #define OR1OG1OB1DECL /*A comment*/
 #define OR1G1B1INCR   /*Another comment*/
-#define or1 0xffff
-#define og1 0xffff
-#define ob1 0xffff
+#define or1 COLOR_MULT_MASK
+#define og1 COLOR_MULT_MASK
+#define ob1 COLOR_MULT_MASK
 #undef INTERP_RGB
 #endif
 #if TGL_FEATURE_NO_DRAW_COLOR != 1
@@ -534,9 +534,9 @@ void ZB_fillTriangleMappingPerspectiveNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBu
 #else
 #define OR1OG1OB1DECL /*A comment*/
 #define OR1G1B1INCR   /*Another comment*/
-#define or1 0xffff
-#define og1 0xffff
-#define ob1 0xffff
+#define or1 COLOR_MULT_MASK
+#define og1 COLOR_MULT_MASK
+#define ob1 COLOR_MULT_MASK
 #endif
 #if TGL_FEATURE_NO_DRAW_COLOR != 1
 #define PUT_PIXEL(_a)                                                                                                                                          \

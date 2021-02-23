@@ -422,7 +422,7 @@ if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 
 	//glDisable( GL_LIGHTING );
 	glEnable(GL_LIGHTING);
-	glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
+	//glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
 	glBlendEquation(GL_FUNC_ADD);
 	if(blending){
 		glDisable(GL_DEPTH_TEST);

@@ -56,9 +56,9 @@ void glColor4f(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
 	p[7].ui = (GLuint) (b * (ZB_POINT_BLUE_MAX - ZB_POINT_BLUE_MIN) +
 							  ZB_POINT_BLUE_MIN);
 	*/
-	p[5].ui = (((GLuint)(r * 65535)) & 65535);
-	p[6].ui = (((GLuint)(g * 65535)) & 65535);
-	p[7].ui = (((GLuint)(b * 65535)) & 65535);
+	p[5].ui = (((GLuint)(r * COLOR_CORRECTED_MULT_MASK) + COLOR_MIN_MULT) & COLOR_MASK);
+	p[6].ui = (((GLuint)(g * COLOR_CORRECTED_MULT_MASK) + COLOR_MIN_MULT) & COLOR_MASK);
+	p[7].ui = (((GLuint)(b * COLOR_CORRECTED_MULT_MASK) + COLOR_MIN_MULT) & COLOR_MASK);
 	gl_add_op(p);
 }
 
@@ -70,18 +70,9 @@ void glColor4fv(GLfloat* v) {
 	p[2].f = v[1];
 	p[3].f = v[2];
 	p[4].f = v[3];
-	/* direct convertion to GLinteger to go faster if no shading */
-	/*
-	p[5].ui = (GLuint) (v[0] * (ZB_POINT_RED_MAX - ZB_POINT_RED_MIN) +
-							  ZB_POINT_RED_MIN);
-	p[6].ui = (GLuint) (v[1] * (ZB_POINT_GREEN_MAX - ZB_POINT_GREEN_MIN) +
-							  ZB_POINT_GREEN_MIN);
-	p[7].ui = (GLuint) (v[2] * (ZB_POINT_BLUE_MAX - ZB_POINT_BLUE_MIN) +
-							  ZB_POINT_BLUE_MIN);
-	*/
-	p[5].ui = (((GLuint)(v[0] * 65535)) & 65535);
-	p[6].ui = (((GLuint)(v[1] * 65535)) & 65535);
-	p[7].ui = (((GLuint)(v[2] * 65535)) & 65535);
+	p[5].ui = (((GLuint)(v[0] * COLOR_CORRECTED_MULT_MASK) + COLOR_MIN_MULT) & COLOR_MASK);
+	p[6].ui = (((GLuint)(v[1] * COLOR_CORRECTED_MULT_MASK) + COLOR_MIN_MULT) & COLOR_MASK);
+	p[7].ui = (((GLuint)(v[2] * COLOR_CORRECTED_MULT_MASK) + COLOR_MIN_MULT) & COLOR_MASK);
 
 	gl_add_op(p);
 }

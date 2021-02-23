@@ -242,7 +242,7 @@ void glGetIntegerv(GLint pname, GLint* params) {
 		break;
 	case GL_POLYGON_STIPPLE:
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
-		params[0] = c->zb->GLuint dostipple;
+		params[0] = c->zb->dostipple;
 #else
 		params[0] = GL_FALSE;
 #endif

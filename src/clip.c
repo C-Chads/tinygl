@@ -20,14 +20,17 @@ void gl_transform_to_viewport(GLContext* c, GLVertex* v) {
 	v->zp.z = (GLint)(v->pc.Z * winv * c->viewport.scale.Z + c->viewport.trans.Z);
 	}
 	/* color */
-	{GLuint val;
-	val = (GLuint)(v->color.v[0] * 0xff00) & 65535;
-	v->zp.r = (val<0xff)?0xff:val;
-	val = (GLuint)(v->color.v[1] * 0xff00) & 65535;
-	v->zp.g = (val<0xff)?0xff:val;
-	val = (GLuint)(v->color.v[2] * 0xff00) & 65535;
-	v->zp.b = (val<0xff)?0xff:val;
-	}
+	//{
+	//GLuint val;
+	v->zp.r = (GLuint)(v->color.v[0] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	//v->zp.r = (val<COLOR_MIN_MULT)?COLOR_MIN_MULT:val;
+	//v->zp.r = val;
+	v->zp.g = (GLuint)(v->color.v[1] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	//v->zp.g = (val<COLOR_MIN_MULT)?COLOR_MIN_MULT:val;
+	//v->zp.g = val;
+	v->zp.b = (GLuint)(v->color.v[2] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	//v->zp.b = val;
+	//}
 	/* texture */
 
 	if (c->texture_2d_enabled) {

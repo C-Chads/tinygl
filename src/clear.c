@@ -11,9 +11,9 @@ void glopClearDepth(GLContext* c, GLParam* p) { c->clear_depth = p[1].f; }
 void glopClear(GLContext* c, GLParam* p) {
 	GLint mask = p[1].i;
 	GLint z = 0;
-	GLint r = (GLint)(c->clear_color.v[0] * 65535);
-	GLint g = (GLint)(c->clear_color.v[1] * 65535);
-	GLint b = (GLint)(c->clear_color.v[2] * 65535);
+	GLint r = (GLint)(c->clear_color.v[0] * COLOR_MULT_MASK);
+	GLint g = (GLint)(c->clear_color.v[1] * COLOR_MULT_MASK);
+	GLint b = (GLint)(c->clear_color.v[2] * COLOR_MULT_MASK);
 
 	/* TODO : correct value of Z */
 

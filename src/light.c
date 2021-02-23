@@ -77,7 +77,7 @@ void glopMaterial(GLContext* c, GLParam* p) {
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	//assert(0);
+	return;
 #endif
 	}
 }

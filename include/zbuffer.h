@@ -32,6 +32,28 @@
 #define ST_TO_TEXTURE_BYTE_OFFSET(s,t) ( ((s & ZB_S_MASK)>>(ZB_POINT_S_VALUE-PSZSH)) | ((t & ZB_T_MASK)>>(ZB_POINT_T_VALUE-PSZSH))  )
 #endif
 
+//The corrected mult mask prevents a bug relating to color interp. it's also why the color bit depth is so damn high.
+#define COLOR_MULT_MASK (0xff0000)
+#define COLOR_CORRECTED_MULT_MASK (0xfe0000)
+#define COLOR_MASK 		(0xffffff)
+#define COLOR_MIN_MULT (COLOR_MASK & ~COLOR_MULT_MASK)
+#define COLOR_SHIFT		16
+
+#define COLOR_R_GET32(r) ((r) & 0xff0000)
+#define COLOR_G_GET32(g) ((g>>8) & 0xff00)
+#define COLOR_B_GET32(b) ((b >>16)&0xff)
+
+#define COLOR_R_GET16(r) ((r>>8) & 0xF800)
+#define COLOR_G_GET16(g) ((((g)) >> 13) & 0x07E0)
+#define COLOR_B_GET16(b) (((b) >> 19) & 31)
+
+#if TGL_FEATURE_RENDER_BITS == 32
+#define RGB_TO_PIXEL(r,g,b) \
+  ( COLOR_R_GET32(r) | COLOR_G_GET32(g) | COLOR_B_GET32(b) )
+#elif TGL_FEATURE_RENDER_BITS == 16
+#define RGB_TO_PIXEL(r,g,b) \
+	( COLOR_R_GET16(r) | COLOR_G_GET16(g) | COLOR_B_GET16(b)  )
+#endif
 //This is how textures are sampled. if you want to do some sort of fancy texture filtering,
 //you do it here.
 #define TEXTURE_SAMPLE(texture, s, t)														\
@@ -46,8 +68,8 @@
 #define ZB_NB_COLORS    225 /* number of colors for 8 bit display */
 
 
-#define TGL_CLAMPI(imp) ( (imp>0) * (65535 * (imp>65535) + imp * (!(imp>65535)) )      )
-#define TGL_CLAMPI2(imp) ( (imp>0)?((imp>65535)?65535:imp):0   )
+//#define TGL_CLAMPI(imp) ( (imp>0) * (COLOR_MASK * (imp>COLOR_MASK) + imp * (!(imp>COLOR_MASK)) )      )
+#define TGL_CLAMPI(imp) ( (imp>0)?((imp>COLOR_MASK)?COLOR_MASK:imp):0   )
 
 //#if TGL_FEATURE_BETTER_COLOR_INTERP == 1
 //#define (imp) imp = TGL_CLAMPI2((imp));
@@ -59,15 +81,14 @@
 #if TGL_FEATURE_RENDER_BITS == 32
 
 /* 32 bit mode */
-//#define RGB_TO_PIXEL(r,g,b) ( ((b&65280)<<8) | ((g&65280)) | ((r&65280)>>8) )
-#define RGB_TO_PIXEL(r,g,b) \
-  ((((r) << 8) & 0xff0000) | ((g) & 0xff00) | (((b) & 0xff00) >> 8))
+
+#define GET_REDDER(p) ((p & COLOR_MULT_MASK))
+#define GET_GREENER(p) ((p & 0xff00)<<8)
+#define GET_BLUEER(p) ((p & 0xff)<<16)
+//These never change, DO NOT CHANGE THESE!!!
 #define GET_RED(p) ((p & 0xff0000)>>16)
-#define GET_REDDER(p) ((p & 0xff0000)>>8)
 #define GET_GREEN(p) ((p & 0xff00)>>8)
-#define GET_GREENER(p) ((p & 0xff00))
 #define GET_BLUE(p) (p & 0xff)
-#define GET_BLUEER(p) ((p & 0xff)<<8)
 typedef GLuint PIXEL;
 #define PSZB 4
 #define PSZSH 5
@@ -75,16 +96,14 @@ typedef GLuint PIXEL;
 #elif TGL_FEATURE_RENDER_BITS == 16
 
 /* 16 bit mode */
-#define RGB_TO_PIXEL(r,g,b) (((r) & 0xF800) | ((((g) & 0xff00) >> 5) & 0x07E0) | (((b) & 0xff00) >> 11))
-
+#define GET_REDDER(p) ((p & 0xF800)<<8)
+#define GET_GREENER(p) ((p & 0x07E0)<<13)
+#define GET_BLUEER(p) ((p & 31)<<19)
+//DO NOT CHANGE THESE BASED ON COLOR INTERP BITDEPTH
 #define GET_RED(p) ((p & 0xF800)>>8)
-#define GET_REDDER(p) ((p & 0xF800))
-
 #define GET_GREEN(p) ((p & 0x07E0)>>3)
-#define GET_GREENER(p) ((p & 0x07E0)<<5)
-
 #define GET_BLUE(p) ((p & 31)<<3)
-#define GET_BLUEER(p) ((p & 31)<<11)
+
 
 typedef GLushort PIXEL;
 #define PSZB 2 
@@ -110,10 +129,12 @@ typedef GLushort PIXEL;
 
 
 
-#if TGL_FEATURE_BLEND == 1
-#define TGL_BLEND_VARS GLuint zbblendeq = zb->blendeq; GLuint sfactor = zb->sfactor; GLuint dfactor = zb->dfactor;
 #define TGL_NO_BLEND_FUNC(source, dest){dest = source;}
 #define TGL_NO_BLEND_FUNC_RGB(rr, gg, bb, dest){dest = RGB_TO_PIXEL(rr,gg,bb);}
+
+#if TGL_FEATURE_BLEND == 1
+#define TGL_BLEND_VARS GLuint zbblendeq = zb->blendeq; GLuint sfactor = zb->sfactor; GLuint dfactor = zb->dfactor;
+
 //SORCERY to achieve 32 bit signed integer clamping
 
 
@@ -160,9 +181,9 @@ typedef GLushort PIXEL;
 			default:																	\
 			break;																		\
 			case GL_ONE_MINUS_SRC_COLOR:												\
-			sr = ~sr & 0xffff;															\
-			sg = ~sg & 0xffff;															\
-			sb = ~sb & 0xffff;															\
+			sr = ~sr & COLOR_MASK;															\
+			sg = ~sg & COLOR_MASK;															\
+			sb = ~sb & COLOR_MASK;															\
 			break;																		\
 			case GL_ZERO:																\
 			sr=0;sg=0;sb=0;break;														\
@@ -173,9 +194,9 @@ typedef GLushort PIXEL;
 				default:																\
 				break;																	\
 				case GL_ONE_MINUS_DST_COLOR:											\
-				dr = ~dr & 0xffff;														\
-				dg = ~dg & 0xffff;														\
-				db = ~db & 0xffff;														\
+				dr = ~dr & COLOR_MASK;														\
+				dg = ~dg & COLOR_MASK;														\
+				db = ~db & COLOR_MASK;														\
 				break;																	\
 				case GL_ZERO:															\
 				dr=0;dg=0;db=0;break;													\
@@ -187,7 +208,7 @@ typedef GLushort PIXEL;
 
 #define TGL_BLEND_FUNC_RGB(rr, gg, bb, dest){											\
 	{																					\
-		GLint sr = rr & 0xFFFF, sg = gg & 0xFFFF, sb = bb & 0xFFFF, dr, dg, db;			\
+		GLint sr = rr & COLOR_MASK, sg = gg & COLOR_MASK, sb = bb & COLOR_MASK, dr, dg, db;			\
 		{GLuint t = dest;																\
 		dr = GET_REDDER(t); dg = GET_GREENER(t); db = GET_BLUEER(t);}					\
 	/*printf("\nShould never reach this point!");*/										\
