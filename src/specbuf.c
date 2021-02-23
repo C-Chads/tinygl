@@ -38,8 +38,7 @@ GLSpecBuf* specbuf_get_buffer(GLContext* c, const GLint shininess_i, const GLflo
 #define RETVAL NULL
 #include "error_check.h"
 #else
-//		if (!buf)
-//			gl_fatal_error("GL_OUT_OF_MEMORY: CANNOT ALLOCATE SPECBUF");
+		if (!buf) gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 		c->specbuf_num_buffers++;
 		buf->next = c->specbuf_first;

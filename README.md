@@ -158,6 +158,8 @@ textured triangles will appear black.
 
 * Point smoothing is not implemented, points are always squares of a solid color.
 
+* glCopyTexImage2D only works with the size of texture you decided at compile time.
+
 * <Undocumented limitations that have not been tested>
 
 ### HOW DO I USE THIS LIBRARY???
@@ -178,7 +180,7 @@ ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0);
 //Tell TinyGL to initialize on that framebuffer
 glInit(frameBuffer);
 
-//Begin making OpenGL calls!
+//Begin making TinyGL calls!
 //At the end of your application, when you want to clean up.
 ZB_close(frameBuffer);
 glClose();
@@ -201,8 +203,8 @@ SDL is used as a reasonable means of displaying the output of TinyGL for testing
 * 32 bit binary float type (IEEE 754)
 * Some floating point type at least as large as a 32 bit float
 * sin and cos functions in math.h
-* memcpy
-* assert in assert.h
+* memcpy in string.h
+* assert in assert.h (for debugging only, it can be stubbed)
 * a minimal C stdlib
 * A memory allocator of some sort with some equivalents or replacements for malloc, calloc, and free.
 
@@ -398,8 +400,12 @@ Low: 804 FPS
 High: 917 FPS
 Average: around 842 FPS
 ```
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+_______________________________________________________________________________________
+
 # Here is the old description of TinyGL, saved for historical/attribution purposes:
+
+### I do not endorse or promote its contents, they are here for attribution only.
 
 ### General Description:
 --------------------

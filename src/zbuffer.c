@@ -9,7 +9,7 @@
 #include <string.h>
 //#include "../include/GL/gl.h"
 #include "../include/zbuffer.h"
-
+#include "msghandling.h"
 ZBuffer* ZB_open(GLint xsize, GLint ysize, GLint mode,
 // GLint nb_colors, GLubyte* color_indexes, GLint* color_table, 
  void* frame_buffer) {
@@ -27,20 +27,11 @@ ZBuffer* ZB_open(GLint xsize, GLint ysize, GLint mode,
 	zb->linesize = (xsize * PSZB);
 
 	switch (mode) {
-#if TGL_FEATURE_8_BITS ==1 
-	case ZB_MODE_INDEX:
-		ZB_initDither(zb, nb_colors, color_indexes, color_table);
-		break;
-#endif
 #if TGL_FEATURE_32_BITS == 1
 	case ZB_MODE_RGBA:	break;
 #endif
-#if TGL_FEATURE_24_BITS == 1
-	case ZB_MODE_RGB24:	break;
-#endif
 #if TGL_FEATURE_16_BITS == 1
 	case ZB_MODE_5R6G5B:
-//		zb->nb_colors = 0;
 	break;
 #endif
 
@@ -101,7 +92,7 @@ void ZB_resize(ZBuffer* zb, void* frame_buffer, GLint xsize, GLint ysize) {
 
 	gl_free(zb->zbuf);
 	zb->zbuf = gl_malloc(size);
-
+	if(zb->zbuf == NULL) exit(1);
 	if (zb->frame_buffer_allocated)
 		gl_free(zb->pbuf);
 

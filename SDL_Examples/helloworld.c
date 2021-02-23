@@ -26,6 +26,7 @@ typedef unsigned char uchar;
 #endif
 #include <SDL/SDL.h>
 int noSDL = 0;
+int do2 = 0;
 #ifndef M_PI
 #define M_PI 3.14159265
 #endif
@@ -36,6 +37,7 @@ int winSizeX = 640;
 int winSizeY = 480;
 
 void draw() {
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// glEnable(GL_TEXTURE_2D);
 	// glBindTexture(GL_TEXTURE_2D,tex);
 	// time_passed += 0.0166666;
@@ -59,7 +61,7 @@ void draw() {
 }
 
 void draw2() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	int x = 0;
 	// Select and setup the projection matrix
 	glMatrixMode(GL_PROJECTION);
@@ -130,6 +132,8 @@ int main(int argc, char** argv) {
 				fps = strtoull(argv[i], 0, 10);
 			if (!strcmp(argv[i],"-nosdl"))
 				noSDL = 1;
+			if (!strcmp(argv[i],"-2"))
+				do2 = 1;
 			larg = argv[i];
 		}
 	}
@@ -262,8 +266,10 @@ int main(int argc, char** argv) {
 
 		// draw scene:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//draw2();
-		draw();
+		if(do2)
+			draw2();
+		else
+			draw();
 		glDrawText((unsigned char*)"Hello World!\nFrom TinyGL", 0, 0, 0x00FFFFFF);
 		// swap buffers:
 		if(!noSDL)

@@ -321,9 +321,17 @@ typedef void (*ZB_fillTriangleFunc)(ZBuffer  *,
 	    ZBufferPoint *,ZBufferPoint *,ZBufferPoint *);
 
 /* memory.c */
+#if TGL_FEATURE_CUSTOM_MALLOC == 1
 void gl_free(void *p);
 void *gl_malloc(GLint size);
 void *gl_zalloc(GLint size);
+#else
+#include<string.h>
+#include<stdlib.h>
+inline void gl_free(void* p) { free(p); }
+inline void* gl_malloc(GLint size) { return malloc(size); }
+inline void* gl_zalloc(GLint size) { return calloc(1, size); }
+#endif
 void gl_memcpy(void* dest, void* src, GLuint size);
 
 #endif /* _tgl_zbuffer_h_ */

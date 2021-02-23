@@ -268,7 +268,7 @@ void glBufferData(	GLenum target,
 	}
 	if(buf->data) gl_free(buf->data);
 	buf->data = NULL; buf->size = 0;
-	if(size == 0 || data == NULL) return; //Allow the user to delete buffer data with glBufferData.
+	if(size == 0) return; //Allow the user to delete buffer data with glBufferData.
 	buf->data = gl_malloc(size);
 	buf->size = size;
 	if(!(buf->data)){
@@ -279,7 +279,8 @@ void glBufferData(	GLenum target,
 		gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 	}
-	memcpy(buf->data, data, size);
+	if(data != NULL)
+		memcpy(buf->data, data, size);
 }
 
 

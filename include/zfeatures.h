@@ -10,6 +10,11 @@
 //The checks slow down the renderer so it is not recommended , but
 //it's in the GL spec that this should occur.
 #define TGL_FEATURE_STRICT_OOM_CHECKS 1
+
+//Swap between using the inline'd malloc(), calloc(), and free() in zbuffer.h, or
+//a replacement gl_malloc(), gl_zalloc(), and gl_free() in memory.c
+#define TGL_FEATURE_CUSTOM_MALLOC 0
+
 //Use Fast Inverse Square Root. Toggleable because it's actually slower on some systems, i've heard.
 #define TGL_FEATURE_FISR 1
 //Clientside Arrays

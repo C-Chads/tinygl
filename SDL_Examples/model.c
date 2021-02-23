@@ -41,6 +41,7 @@ int mousex = 0, mousey = 0;
 
 int ModelArrayLoaded = 0;
 int testingModelArrays = 0;
+int testingCopyImage2D = 0;
 struct {
 	float* points;
 	uint npoints;
@@ -312,6 +313,8 @@ int main(int argc, char** argv) {
 				doTextures = 0;
 			if(!strcmp(argv[i],"-arrays"))
 				testingModelArrays = 1;
+			if(!strcmp(argv[i],"-copy"))
+				testingCopyImage2D = 1;
 			larg = argv[i];
 		}
 	}
@@ -634,6 +637,19 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 		if (SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen) < 0)) {
 			fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
 			return 1;
+		}
+		if(testingCopyImage2D && doTextures){
+			glBindTexture(GL_TEXTURE_2D, tex);
+			glReadBuffer(GL_FRONT);
+			glCopyTexImage2D(	
+				GL_TEXTURE_2D, //1
+			 	0,//2
+			 	GL_RGBA, //3
+			 	0,//4
+			 	256,//5
+			 	256,//6
+			 	256,
+			 	0);
 		}
 		/*
 		printf("\nRMASK IS %u",screen->format->Rmask);

@@ -178,30 +178,100 @@ void glopBindTexture(GLContext* c, GLParam* p) {
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
-		{}//gl_fatal_error("GL_OUT_OF_MEMORY");
+		gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 	}
 	c->current_texture = t;
 }
+//
+
+
 
 //TODO: Write this, then
 //Write something to test this. This function is useful for doing render targets in TinyGL
 //- not that you couldn't do that
 //already by manually copying pixels around. But, this is a nifty utility, eh?
-void glCopyTexImage2D(	GLenum target,
- 	GLint level,
- 	GLenum internalformat,
- 	GLint x,
- 	GLint y,
- 	GLsizei width,
+void glCopyTexImage2D(	
+	GLenum target, //1
+ 	GLint level,//2
+ 	GLenum internalformat, //3
+ 	GLint x,//4
+ 	GLint y,//5
+ 	GLsizei width,//6
  	GLsizei height,
- 	GLint border){
+ 	GLint border)
+{
 	GLContext* c = gl_get_context();
 #include "error_check.h"
-	//TODO
+	GLParam p[9];
+	p[0].op = OP_CopyTexImage2D;
+	p[1].i = target;
+	p[2].i = level;
+	p[3].i = internalformat;
+	p[4].i = x;
+	p[5].i = y;
+	p[6].i = width;
+	p[7].i = height;
+	p[8].i = border;
+	gl_add_op(p);
 }
 void glopCopyTexImage2D(GLContext* c, GLParam* p){
-	//TODO	
+	GLint target = p[1].i;
+	GLint level = p[2].i;
+	//GLenum internalformat = p[3].i;
+	GLint x = p[4].i;
+	GLint y = p[5].i;
+	GLsizei w = p[6].i;
+	GLsizei h = p[7].i;
+	y -= h; //Spec says LOWER left corner. So, let's change it to top left, for our purposes, eh?
+	GLint border = p[8].i;
+	//todo
+	if(c->readbuffer != GL_FRONT ||
+		c->current_texture == NULL ||
+		target != GL_TEXTURE_2D ||
+		border != 0 ||
+		w != TGL_FEATURE_TEXTURE_DIM ||  //TODO Implement image interp
+		h != TGL_FEATURE_TEXTURE_DIM
+	)
+	{
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"	
+#else
+		return;
+#endif
+	}
+	PIXEL* data = gl_malloc(TGL_FEATURE_TEXTURE_DIM * TGL_FEATURE_TEXTURE_DIM * sizeof(PIXEL)); //GUARDED
+	if(!data){
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#include "error_check.h"
+#else
+		gl_fatal_error("GL_OUT_OF_MEMORY");
+#endif
+	}
+	//sample the buffer.
+	//TODO implement the scaling and stuff that the GL spec says it should have.
+	for(GLint j = 0; j < h; j++)
+	for(GLint i = 0; i < w; i++){
+		/*
+		GLfloat dx = (GLfloat)i/(GLfloat)w;
+		GLfloat dy = (GLfloat)j/(GLfloat)h;
+		dx *= TGL_FEATURE_TEXTURE_DIM;
+		dy *= TGL_FEATURE_TEXTURE_DIM;
+		GLuint xdest = (dx<0)?0:((dx>TGL_FEATURE_TEXTURE_DIM-1)?TGL_FEATURE_TEXTURE_DIM-1:dx);
+		GLuint ydest = (dy<0)?0:((dy>TGL_FEATURE_TEXTURE_DIM-1)?TGL_FEATURE_TEXTURE_DIM-1:dy);
+		*/
+		data[i+j*w] = c->zb->pbuf[		((i+x)%(c->zb->xsize))
+									+	((j+y)%(c->zb->ysize))*(c->zb->xsize)];
+	}
+	//TODO: Load this into a texture.
+	GLImage* im = &c->current_texture->images[level];
+	im->xsize = TGL_FEATURE_TEXTURE_DIM;
+	im->ysize = TGL_FEATURE_TEXTURE_DIM;
+	if (im->pixmap != NULL) gl_free(im->pixmap);
+	im->pixmap = data;
+	//if(data)gl_free(data);
 }
 
 void glopTexImage1D(GLContext* c, GLParam* p){
@@ -219,19 +289,27 @@ void glopTexImage1D(GLContext* c, GLParam* p){
 	GLubyte* pixels1;
 	GLint do_free;
 
-		 {
+	{
 #if TGL_FEATURE_ERROR_CHECK == 1
-	if (!(target == GL_TEXTURE_1D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
+	if (!(c->current_texture != NULL && target == GL_TEXTURE_1D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 
 #else
-	if (!(target == GL_TEXTURE_1D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
+	if (!(c->current_texture != NULL && target == GL_TEXTURE_1D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
 		gl_fatal_error("glTexImage2D: combination of parameters not handled!!");
 #endif
 	}
 	if (width != TGL_FEATURE_TEXTURE_DIM || height != TGL_FEATURE_TEXTURE_DIM) {
-		pixels1 = gl_malloc(TGL_FEATURE_TEXTURE_DIM * TGL_FEATURE_TEXTURE_DIM * 3);
+		pixels1 = gl_malloc(TGL_FEATURE_TEXTURE_DIM * TGL_FEATURE_TEXTURE_DIM * 3);//GUARDED
+		if(pixels1 == NULL){
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#include "error_check.h"
+#else
+			gl_fatal_error("GL_OUT_OF_MEMORY");
+#endif
+		}
 		/* no GLinterpolation is done here to respect the original image aliasing ! */
 		//TODO: Make this more efficient.
 		gl_resizeImageNoInterpolate(pixels1, TGL_FEATURE_TEXTURE_DIM, TGL_FEATURE_TEXTURE_DIM, pixels, width, height);
@@ -248,10 +326,10 @@ void glopTexImage1D(GLContext* c, GLParam* p){
 	im->ysize = height;
 	if (im->pixmap != NULL) gl_free(im->pixmap);
 #if TGL_FEATURE_RENDER_BITS == 32
-	im->pixmap = gl_malloc(width * height * 4);
+	im->pixmap = gl_malloc(width * height * 4); //GUARDED
 	if (im->pixmap) {
 		gl_convertRGB_to_8A8R8G8B(im->pixmap, pixels1, width, height);
-	}else {
+	}else { //failed malloc of im->pixmap, glopteximage1d
 #if TGL_FEATURE_ERROR_CHECK == 1
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
@@ -260,7 +338,7 @@ void glopTexImage1D(GLContext* c, GLParam* p){
 #endif
 	}
 #elif TGL_FEATURE_RENDER_BITS == 16
-	im->pixmap = gl_malloc(width * height * 2);
+	im->pixmap = gl_malloc(width * height * 2);//GUARDED
 	if (im->pixmap) {
 		gl_convertRGB_to_5R6G5B(im->pixmap, pixels1, width, height);
 	}else {
@@ -299,19 +377,27 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 
 	 {
 #if TGL_FEATURE_ERROR_CHECK == 1
-	if (!(target == GL_TEXTURE_2D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
+	if (!(c->current_texture != NULL && target == GL_TEXTURE_2D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 
 #else
-	if (!(target == GL_TEXTURE_2D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
+	if (!(c->current_texture != NULL && target == GL_TEXTURE_2D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
 		gl_fatal_error("glTexImage2D: combination of parameters not handled!!");
 #endif
 	}
 
 	do_free = 0;
 	if (width != TGL_FEATURE_TEXTURE_DIM || height != TGL_FEATURE_TEXTURE_DIM) {
-		pixels1 = gl_malloc(TGL_FEATURE_TEXTURE_DIM * TGL_FEATURE_TEXTURE_DIM * 3);
+		pixels1 = gl_malloc(TGL_FEATURE_TEXTURE_DIM * TGL_FEATURE_TEXTURE_DIM * 3);//GUARDED
+		if(pixels1 == NULL){
+#if TGL_FEATURE_ERROR_CHECK == 1
+#define ERROR_FLAG GL_OUT_OF_MEMORY
+#include "error_check.h"
+#else
+			gl_fatal_error("GL_OUT_OF_MEMORY");
+#endif
+		}
 		/* no GLinterpolation is done here to respect the original image aliasing ! */
 		//printf("\nYes this is being called.");
 		gl_resizeImageNoInterpolate(pixels1, TGL_FEATURE_TEXTURE_DIM, TGL_FEATURE_TEXTURE_DIM, pixels, width, height);
@@ -327,7 +413,7 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 	im->ysize = height;
 	if (im->pixmap != NULL) gl_free(im->pixmap);
 #if TGL_FEATURE_RENDER_BITS == 32
-	im->pixmap = gl_malloc(width * height * 4);
+	im->pixmap = gl_malloc(width * height * 4);//GUARDED
 	if (im->pixmap) {
 		gl_convertRGB_to_8A8R8G8B(im->pixmap, pixels1, width, height);
 	}else {
@@ -339,7 +425,7 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 #endif
 	}
 #elif TGL_FEATURE_RENDER_BITS == 16
-	im->pixmap = gl_malloc(width * height * 2);
+	im->pixmap = gl_malloc(width * height * 2);//GUARDED
 	if (im->pixmap) {
 		gl_convertRGB_to_5R6G5B(im->pixmap, pixels1, width, height);
 	}else {
