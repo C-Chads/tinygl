@@ -38,7 +38,7 @@ void gl_convertRGB_to_8A8R8G8B(GLuint* pixmap, GLubyte* rgb, GLint xsize, GLint 
 #define INTERP_NORM_BITS 16
 #define INTERP_NORM (1 << INTERP_NORM_BITS)
 
-static inline GLint GLinterpolate(GLint v00, GLint v01, GLint v10, GLint xf, GLint yf) {
+static inline GLint GLinterpolate_imutil(GLint v00, GLint v01, GLint v10, GLint xf, GLint yf) {
 	return v00 + (((v01 - v00) * xf + (v10 - v00) * yf) >> INTERP_NORM_BITS);
 }
 
@@ -68,14 +68,14 @@ void gl_resizeImage(GLubyte* dest, GLint xsize_dest, GLint ysize_dest, GLubyte* 
 
 			if ((xf + yf) <= INTERP_NORM) {
 				for (j = 0; j < 3; j++) {
-					pix[j] = GLinterpolate(pix_src[(yi * xsize_src + xi) * 3 + j], pix_src[(yi * xsize_src + xi + 1) * 3 + j],
+					pix[j] = GLinterpolate_imutil(pix_src[(yi * xsize_src + xi) * 3 + j], pix_src[(yi * xsize_src + xi + 1) * 3 + j],
 										   pix_src[((yi + 1) * xsize_src + xi) * 3 + j], xf, yf);
 				}
 			} else {
 				xf = INTERP_NORM - xf;
 				yf = INTERP_NORM - yf;
 				for (j = 0; j < 3; j++) {
-					pix[j] = GLinterpolate(pix_src[((yi + 1) * xsize_src + xi + 1) * 3 + j], pix_src[((yi + 1) * xsize_src + xi) * 3 + j],
+					pix[j] = GLinterpolate_imutil(pix_src[((yi + 1) * xsize_src + xi + 1) * 3 + j], pix_src[((yi + 1) * xsize_src + xi) * 3 + j],
 										   pix_src[(yi * xsize_src + xi + 1) * 3 + j], xf, yf);
 				}
 			}

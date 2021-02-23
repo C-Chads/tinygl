@@ -134,6 +134,29 @@ void glopBegin(GLContext* c, GLParam* p) {
 	}
 }
 
+static inline void gl_transform_to_viewport_vertex_c(GLContext* c, GLVertex* v) {
+
+	/* coordinates */
+	{
+		GLfloat winv = 1.0 / v->pc.W;
+		v->zp.x = (GLint)(v->pc.X * winv * c->viewport.scale.X + c->viewport.trans.X);
+		v->zp.y = (GLint)(v->pc.Y * winv * c->viewport.scale.Y + c->viewport.trans.Y);
+		v->zp.z = (GLint)(v->pc.Z * winv * c->viewport.scale.Z + c->viewport.trans.Z);
+	}
+	/* color */
+	v->zp.r = (GLuint)(v->color.v[0] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.g = (GLuint)(v->color.v[1] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.b = (GLuint)(v->color.v[2] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+
+	/* texture */
+
+	if (c->texture_2d_enabled) {
+		v->zp.s = (GLint)(v->tex_coord.X * (ZB_POINT_S_MAX - ZB_POINT_S_MIN) + ZB_POINT_S_MIN); //MARKED
+		v->zp.t = (GLint)(v->tex_coord.Y * (ZB_POINT_T_MAX - ZB_POINT_T_MIN) + ZB_POINT_T_MIN); //MARKED
+	}
+}
+
+
 /* coords, tranformation , clip code and projection */
 /* TODO : handle all cases */
 static inline void gl_vertex_transform(GLContext* c, GLVertex* v) {
@@ -253,7 +276,7 @@ void glopVertex(GLContext* c, GLParam* p) {
 	}
 	/* precompute the mapping to the viewport */
 	if (v->clip_code == 0)
-		gl_transform_to_viewport(c, v);
+		gl_transform_to_viewport_vertex_c(c, v);
 
 	/* edge flag */
 
