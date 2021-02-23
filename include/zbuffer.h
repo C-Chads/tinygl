@@ -171,10 +171,10 @@ typedef GLushort PIXEL;
 #define TGL_BLEND_FUNC(source, dest){													\
 	{																					\
 	GLuint sr, sg, sb, dr, dg, db;														\
-	{	GLuint t = source;																\
-	sr = GET_REDDER(t); sg = GET_GREENER(t); sb = GET_BLUEER(t);						\
-	t = dest;																			\
-	dr = GET_REDDER(t); dg = GET_GREENER(t); db = GET_BLUEER(t);}						\
+	{	GLuint temp = source;																\
+	sr = GET_REDDER(temp); sg = GET_GREENER(temp); sb = GET_BLUEER(temp);						\
+	temp = dest;																			\
+	dr = GET_REDDER(temp); dg = GET_GREENER(temp); db = GET_BLUEER(temp);}						\
 		/*printf("\nShould never reach this point!");*/									\
 		switch(sfactor){															\
 			case GL_ONE:																\
@@ -209,17 +209,17 @@ typedef GLushort PIXEL;
 #define TGL_BLEND_FUNC_RGB(rr, gg, bb, dest){											\
 	{																					\
 		GLint sr = rr & COLOR_MASK, sg = gg & COLOR_MASK, sb = bb & COLOR_MASK, dr, dg, db;			\
-		{GLuint t = dest;																\
-		dr = GET_REDDER(t); dg = GET_GREENER(t); db = GET_BLUEER(t);}					\
+		{GLuint temp = dest;																\
+		dr = GET_REDDER(temp); dg = GET_GREENER(temp); db = GET_BLUEER(temp);}					\
 	/*printf("\nShould never reach this point!");*/										\
 		switch(sfactor){																\
 			case GL_ONE:																\
 			default:																	\
 			break;																		\
 			case GL_ONE_MINUS_SRC_COLOR:												\
-			sr = ~sr & 0xffff;															\
-			sg = ~sg & 0xffff;															\
-			sb = ~sb & 0xffff;															\
+			sr = ~sr & COLOR_MASK;															\
+			sg = ~sg & COLOR_MASK;															\
+			sb = ~sb & COLOR_MASK;															\
 			break;																		\
 			case GL_ZERO:																\
 			sr=0;sg=0;sb=0;break;														\
@@ -230,9 +230,9 @@ typedef GLushort PIXEL;
 				default:																\
 				break;																	\
 				case GL_ONE_MINUS_DST_COLOR:											\
-				dr = ~dr & 0xffff;														\
-				dg = ~dg & 0xffff;														\
-				db = ~db & 0xffff;														\
+				dr = ~dr & COLOR_MASK;														\
+				dg = ~dg & COLOR_MASK;														\
+				db = ~db & COLOR_MASK;														\
 				break;																	\
 				case GL_ZERO:															\
 				dr=0;dg=0;db=0;break;													\

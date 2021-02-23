@@ -27,6 +27,7 @@ typedef unsigned char uchar;
 #include <SDL/SDL.h>
 #include <time.h>
 int noSDL = 0;
+int doblend = 0;
 #ifndef M_PI
 #define M_PI 3.14159265
 #endif
@@ -315,6 +316,8 @@ int main(int argc, char** argv) {
 				testingModelArrays = 1;
 			if(!strcmp(argv[i],"-copy"))
 				testingCopyImage2D = 1;
+			if(!strcmp(argv[i],"-blend"))
+				doblend = 1;
 			larg = argv[i];
 		}
 	}
@@ -567,6 +570,15 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 		if (doTextures)
 			glBindTexture(GL_TEXTURE_2D, tex);
 		// glDisable(GL_BLEND);
+		// Testing blending for textured triangles.
+		//glDisable(GL_DEPTH_TEST);
+		if(doblend){
+			glEnable(GL_BLEND);
+			glDepthMask(GL_FALSE);
+			glDisable(GL_DEPTH_TEST);
+		}else  {glDisable(GL_BLEND);}
+		glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR);
+		glBlendEquation(GL_FUNC_ADD);
 		// glDisable(GL_TEXTURE_2D);
 		// printf("\nNew triangle!\n");
 		if (!dlExists) {
