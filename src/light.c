@@ -1,6 +1,8 @@
 #include "msghandling.h"
 #include "zgl.h"
 
+
+
 void glopMaterial(GLContext* c, GLParam* p) {
 	GLint mode = p[1].i;
 	GLint type = p[2].i;
@@ -25,11 +27,11 @@ void glopMaterial(GLContext* c, GLParam* p) {
 	switch (type) {
 	case GL_EMISSION:
 		for (i = 0; i < 4; i++)
-			m->emission.v[i] = v[i];
+			m->emission.v[i] = clampf(v[i],0,1);
 		break;
 	case GL_AMBIENT:
 		for (i = 0; i < 4; i++)
-			m->ambient.v[i] = v[i];
+			m->ambient.v[i] = clampf(v[i],0,1);
 		// c->current_color.X=v[0];
 		// c->current_color.Y=v[1];
 		// c->current_color.Z=v[2];
@@ -37,7 +39,7 @@ void glopMaterial(GLContext* c, GLParam* p) {
 		break;
 	case GL_DIFFUSE:
 		for (i = 0; i < 4; i++)
-			m->diffuse.v[i] = v[i];
+			m->diffuse.v[i] = clampf(v[i],0,1);
 
 		// c->current_color.X=v[0];
 		// c->current_color.Y=v[1];
@@ -46,7 +48,7 @@ void glopMaterial(GLContext* c, GLParam* p) {
 		break;
 	case GL_SPECULAR:
 		for (i = 0; i < 4; i++)
-			m->specular.v[i] = v[i];
+			m->specular.v[i] = clampf(v[i],0,1);
 		break;
 	case GL_SHININESS:
 		m->shininess = v[0];
@@ -57,20 +59,20 @@ void glopMaterial(GLContext* c, GLParam* p) {
 	case GL_AMBIENT_AND_DIFFUSE:
 		// printf("\nRECEIVED AMBIENT AND DIFFUSE COLOR %f, %f, %f, %f", v[0], v[1], v[2], v[3]);
 		for (i = 0; i < 4; i++)
-			m->diffuse.v[i] = v[i];
+			m->diffuse.v[i] = clampf(v[i],0,1);
 		// c->current_color.X=v[0];
 		// c->current_color.Y=v[1];
 		// c->current_color.Z=v[2];
 		// c->current_color.W=v[3];
 
 		for (i = 0; i < 4; i++)
-			m->ambient.v[i] = v[i];
+			m->ambient.v[i] = clampf(v[i],0,1);
 		break;
 	default:
-		c->current_color.X = v[0];
-		c->current_color.Y = v[1];
-		c->current_color.Z = v[2];
-		c->current_color.W = v[3];
+		//c->current_color.X = clampf(v[0],0,1)
+		//c->current_color.Y = clampf(v[1],0,1)
+		//c->current_color.Z = clampf(v[2],0,1)
+		//c->current_color.W = clampf(v[3],0,1)
 #if TGL_FEATURE_ERROR_CHECK == 1
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
@@ -108,7 +110,12 @@ void glopLight(GLContext* c, GLParam* p) {
 	l = &c->lights[light - GL_LIGHT0];
 
 	for (i = 0; i < 4; i++)
-		v.v[i] = p[3 + i].f;
+		if(type != GL_POSITION && type != GL_SPOT_DIRECTION && type != GL_SPOT_EXPONENT && 
+		type != GL_SPOT_CUTOFF && 
+		type != GL_LINEAR_ATTENUATION && type != GL_CONSTANT_ATTENUATION && type != GL_QUADRATIC_ATTENUATION)
+			v.v[i] = clampf(p[3 + i].f,0,1);
+		else
+			v.v[i] = p[3 + i].f;
 
 	switch (type) {
 	case GL_AMBIENT:
@@ -203,14 +210,7 @@ void glopLightModel(GLContext* c, GLParam* p) {
 	}
 }
 
-static inline GLfloat clampf(GLfloat a, GLfloat min, GLfloat max) {
-	if (a < min)
-		return min;
-	else if (a > max)
-		return max;
-	else
-		return a;
-}
+
 
 void gl_enable_disable_light(GLContext* c, GLint light, GLint v) {
 	GLLight* l = &c->lights[light];
@@ -254,7 +254,7 @@ void gl_shade_vertex(GLContext* c, GLVertex* v) {
 	R = m->emission.v[0] + m->ambient.v[0] * c->ambient_light_model.v[0];
 	G = m->emission.v[1] + m->ambient.v[1] * c->ambient_light_model.v[1];
 	B = m->emission.v[2] + m->ambient.v[2] * c->ambient_light_model.v[2];
-	A = clampf(m->diffuse.v[3], 0, 1);
+	A =  m->diffuse.v[3];
 
 	for (l = c->first_light; l != NULL; l = l->next) {
 		GLfloat lR, lB, lG;

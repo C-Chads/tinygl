@@ -427,7 +427,14 @@ static inline GLint gl_clipcode(GLfloat x, GLfloat y, GLfloat z, GLfloat w1) {
 	return (x < -w) | ((x > w) << 1) | ((y < -w) << 2) | ((y > w) << 3) | ((z < -w) << 4) | ((z > w) << 5);
 }
 
-
+static inline GLfloat clampf(GLfloat a, GLfloat min, GLfloat max) {
+	if (a < min)
+		return min;
+	else if (a > max)
+		return max;
+	else
+		return a;
+}
 
 
 #endif /* _tgl_zgl_h_ */
