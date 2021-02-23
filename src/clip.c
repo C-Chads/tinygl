@@ -20,17 +20,10 @@ void gl_transform_to_viewport(GLContext* c, GLVertex* v) {
 	v->zp.z = (GLint)(v->pc.Z * winv * c->viewport.scale.Z + c->viewport.trans.Z);
 	}
 	/* color */
-	//{
-	//GLuint val;
 	v->zp.r = (GLuint)(v->color.v[0] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
-	//v->zp.r = (val<COLOR_MIN_MULT)?COLOR_MIN_MULT:val;
-	//v->zp.r = val;
 	v->zp.g = (GLuint)(v->color.v[1] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
-	//v->zp.g = (val<COLOR_MIN_MULT)?COLOR_MIN_MULT:val;
-	//v->zp.g = val;
 	v->zp.b = (GLuint)(v->color.v[2] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
-	//v->zp.b = val;
-	//}
+
 	/* texture */
 
 	if (c->texture_2d_enabled) {
@@ -69,7 +62,7 @@ void gl_draw_point(GLContext* c, GLVertex* p0) {
 }
 
 /* line */
-
+//Used only for lines.
 static inline void GLinterpolate(GLVertex* q, GLVertex* p0, GLVertex* p1, GLfloat t) {
 	q->pc.X = p0->pc.X + (p1->pc.X - p0->pc.X) * t;
 	q->pc.Y = p0->pc.Y + (p1->pc.Y - p0->pc.Y) * t;
@@ -172,7 +165,7 @@ void gl_draw_line(GLContext* c, GLVertex* p1, GLVertex* p2) {
  * We compute the point 'c' of GLintersection and the value of the parameter 't'
  * of the GLintersection if x=a+t(b-a).
  */
-
+//MARK <POSSIBLE_PERF_BONUS>
 #define clip_func(name, sign, dir, dir1, dir2)                                                                                                                 \
 	static GLfloat name(V4* c, V4* a, V4* b) {                                                                                                                 \
 		GLfloat t, dX, dY, dZ, dW, den;                                                                                                                        \
@@ -191,7 +184,7 @@ void gl_draw_line(GLContext* c, GLVertex* p1, GLVertex* p2) {
 		c->dir = sign c->W;                                                                                                                                    \
 		return t;                                                                                                                                              \
 	}
-
+//MARK <POSSIBLE_PERF_BONUS>
 clip_func(clip_xmin, -, X, Y, Z)
 
 	clip_func(clip_xmax, +, X, Y, Z)
@@ -199,7 +192,7 @@ clip_func(clip_xmin, -, X, Y, Z)
 		clip_func(clip_ymin, -, Y, X, Z)
 
 			clip_func(clip_ymax, +, Y, X, Z)
-
+//MARK <POSSIBLE_PERF_BONUS>
 				clip_func(clip_zmin, -, Z, X, Y)
 
 					clip_func(clip_zmax, +, Z, X, Y)
@@ -242,7 +235,7 @@ inline void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex*
 		GLfloat norm;
 		norm = (GLfloat)(p1->zp.x - p0->zp.x) * (GLfloat)(p2->zp.y - p0->zp.y) - (GLfloat)(p2->zp.x - p0->zp.x) * (GLfloat)(p1->zp.y - p0->zp.y);
 
-		if (norm == 0)
+		if (norm == 0) //MARK <POSSIBLE_PERF_BONUS>
 			return;
 
 		front = norm < 0.0;
@@ -304,7 +297,7 @@ static void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVe
 		}
 
 		/* this test can be true only in case of rounding errors */
-		if (clip_bit == 6) {
+		if (clip_bit == 6) { //The 2 bit and the 4 bit.
 #if 0
       tgl_warning("Error:\n");tgl_warning("%f %f %f %f\n",p0->pc.X,p0->pc.Y,p0->pc.Z,p0->pc.W);tgl_warning("%f %f %f %f\n",p1->pc.X,p1->pc.Y,p1->pc.Z,p1->pc.W);tgl_warning("%f %f %f %f\n",p2->pc.X,p2->pc.Y,p2->pc.Z,p2->pc.W);
 #endif
@@ -394,42 +387,11 @@ void gl_draw_triangle_feedback(GLContext* c, GLVertex* p0, GLVertex* p1, GLVerte
 
 #ifdef PROFILE
 int count_triangles, count_triangles_textured, count_pixels;
+#warning "Compile with PROFILE slows down everything"
 #endif
 
 //see vertex.c to see how the draw functions are assigned.
 void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2) {
-	// puts("\n <yes, it's draw_triangle_fill>");
-#ifdef PROFILE
-	{
-		GLint norm;
-#if TGL_FEATURE_ERROR_CHECK == 1
-	if(!(
-		(p0->zp.x >= 0 && p0->zp.x < c->zb->xsize) &&
-		(p0->zp.y >= 0 && p0->zp.y < c->zb->ysize) &&
-		(p1->zp.x >= 0 && p1->zp.x < c->zb->xsize) &&
-		
-		(p1->zp.y >= 0 && p1->zp.y < c->zb->ysize) &&
-		(p2->zp.x >= 0 && p2->zp.x < c->zb->xsize) &&
-		(p2->zp.y >= 0 && p2->zp.y < c->zb->ysize)
-	))
-#define ERROR_FLAG GL_INVALID_VALUE
-#include "error_check.h"
-#else
-	if(!(
-			(p0->zp.x >= 0 && p0->zp.x < c->zb->xsize) &&
-			(p0->zp.y >= 0 && p0->zp.y < c->zb->ysize) &&
-			(p1->zp.x >= 0 && p1->zp.x < c->zb->xsize) &&
-			
-			(p1->zp.y >= 0 && p1->zp.y < c->zb->ysize) &&
-			(p2->zp.x >= 0 && p2->zp.x < c->zb->xsize) &&
-			(p2->zp.y >= 0 && p2->zp.y < c->zb->ysize)
-		)) return;
-#endif
-		norm = (p1->zp.x - p0->zp.x) * (p2->zp.y - p0->zp.y) - (p2->zp.x - p0->zp.x) * (p1->zp.y - p0->zp.y);
-		count_pixels += abs(norm) / 2;
-		count_triangles++;
-	}
-#endif
 
 	if (c->texture_2d_enabled) {
 		//if(c->current_texture)
@@ -445,9 +407,9 @@ void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p
 		}
 #endif
 		{
-#ifdef PROFILE
-			count_triangles_textured++;
-#endif
+//#ifdef PROFILE
+//			count_triangles_textured++;
+//#endif
 			ZB_setTexture(c->zb, c->current_texture->images[0].pixmap);
 #if TGL_FEATURE_BLEND == 1
 			if(c->zb->enable_blend) 

@@ -32,19 +32,10 @@ void glopMaterial(GLContext* c, GLParam* p) {
 	case GL_AMBIENT:
 		for (i = 0; i < 4; i++)
 			m->ambient.v[i] = clampf(v[i],0,1);
-		// c->current_color.X=v[0];
-		// c->current_color.Y=v[1];
-		// c->current_color.Z=v[2];
-		// c->current_color.W=v[3];
 		break;
 	case GL_DIFFUSE:
 		for (i = 0; i < 4; i++)
 			m->diffuse.v[i] = clampf(v[i],0,1);
-
-		// c->current_color.X=v[0];
-		// c->current_color.Y=v[1];
-		// c->current_color.Z=v[2];
-		// c->current_color.W=v[3];
 		break;
 	case GL_SPECULAR:
 		for (i = 0; i < 4; i++)
@@ -57,27 +48,19 @@ void glopMaterial(GLContext* c, GLParam* p) {
 #endif
 		break;
 	case GL_AMBIENT_AND_DIFFUSE:
-		// printf("\nRECEIVED AMBIENT AND DIFFUSE COLOR %f, %f, %f, %f", v[0], v[1], v[2], v[3]);
 		for (i = 0; i < 4; i++)
 			m->diffuse.v[i] = clampf(v[i],0,1);
-		// c->current_color.X=v[0];
-		// c->current_color.Y=v[1];
-		// c->current_color.Z=v[2];
-		// c->current_color.W=v[3];
 
 		for (i = 0; i < 4; i++)
 			m->ambient.v[i] = clampf(v[i],0,1);
 		break;
-	default:
-		//c->current_color.X = clampf(v[0],0,1)
-		//c->current_color.Y = clampf(v[1],0,1)
-		//c->current_color.Z = clampf(v[2],0,1)
-		//c->current_color.W = clampf(v[3],0,1)
+	
 #if TGL_FEATURE_ERROR_CHECK == 1
+	default:
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	return;
+	//default: return;
 #endif
 	}
 }
@@ -103,8 +86,9 @@ void glopLight(GLContext* c, GLParam* p) {
 	if(!(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS))
 #define ERROR_FLAG GL_INVALID_OPERATION
 #include "error_check.h"
+
 #else
-	//assert(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS);
+//	if(!(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS)) return;
 #endif
 
 	l = &c->lights[light - GL_LIGHT0];

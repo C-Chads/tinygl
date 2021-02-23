@@ -2,7 +2,7 @@
    the function names :-) */
 
 #include "zmath.h"
-#include <math.h>
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -237,25 +237,10 @@ void gl_M3_Inv(M3* a, M3* m) {
 
 //NEW
 
-int gl_V3_Norm_Fast(V3* a) {
-	GLfloat n;
-#if TGL_FEATURE_FISR == 1
-	n = fastInvSqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z); //FISR
-	if(n>1E+3)
-		return 1;
-#else
-	n = sqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z); //NONFISR
-	if (n == 0)
-		return 1;
-	n = 1.0 / n;
-#endif
-	a->X *= n;
-	a->Y *= n;
-	a->Z *= n;
-	return 0;
-}
+
 
 // OLD
+/*
 int gl_V3_Norm(V3* a) {
 	GLfloat n;
 	n = sqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z);
@@ -266,7 +251,7 @@ int gl_V3_Norm(V3* a) {
 	a->Z /= n;
 	return 0;
 }
-
+*/
 V3 gl_V3_New(GLfloat x, GLfloat y, GLfloat z) {
 	V3 a;
 	a.X = x;
