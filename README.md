@@ -198,7 +198,7 @@ SDL is used as a reasonable means of displaying the output of TinyGL for testing
 (Try compiling the demos with -D PLAY_MUSIC if you have mixer!)
 * A c99 compiler
 * 32 bit signed and unsigned integer types
-* 32 bit binary float type (IEEE 754)
+* 32 bit binary float type (STDC_IEC_559)
 * Some floating point type at least as large as a 32 bit float
 * sin and cos functions in math.h
 * memcpy in string.h
