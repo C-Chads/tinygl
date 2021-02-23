@@ -54,7 +54,7 @@
 /* 32 bit mode */
 //#define RGB_TO_PIXEL(r,g,b) ( ((b&65280)<<8) | ((g&65280)) | ((r&65280)>>8) )
 #define RGB_TO_PIXEL(r,g,b) \
-  ((((r) << 8) & 0xff0000) | ((g) & 0xff00) | ((b) >> 8))
+  ((((r) << 8) & 0xff0000) | ((g) & 0xff00) | ((b & 0xff00) >> 8))
 #define GET_RED(p) ((p & 0xff0000)>>16)
 #define GET_REDDER(p) ((p & 0xff0000)>>8)
 #define GET_GREEN(p) ((p & 0xff00)>>8)
@@ -68,7 +68,7 @@ typedef GLuint PIXEL;
 #elif TGL_FEATURE_RENDER_BITS == 16
 
 /* 16 bit mode */
-#define RGB_TO_PIXEL(r,g,b) (((r) & 0xF800) | (((g) >> 5) & 0x07E0) | ((b) >> 11))
+#define RGB_TO_PIXEL(r,g,b) (((r) & 0xF800) | (((g & 0xff00) >> 5) & 0x07E0) | ((b & 0xff00) >> 11))
 
 #define GET_RED(p) ((p & 0xF800)>>8)
 #define GET_REDDER(p) ((p & 0xF800))
