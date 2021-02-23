@@ -53,7 +53,7 @@
 #define TGL_POLYGON_STIPPLE_MASK_Y 31
 
 //Use lookup tables for calculating specular light.
-#define TGL_FEATURE_SPECULAR_BUFFERS 0
+#define TGL_FEATURE_SPECULAR_BUFFERS 1
 
 //Prevent ZB_copyFrameBuffer from copying certain colors.
 #define TGL_FEATURE_NO_COPY_COLOR 0
