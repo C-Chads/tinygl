@@ -36,7 +36,7 @@
 #define COLOR_MULT_MASK (0xff0000)
 #define COLOR_CORRECTED_MULT_MASK (0xfe0000)
 #define COLOR_MASK 		(0xffffff)
-#define COLOR_MIN_MULT (COLOR_MASK & ~COLOR_MULT_MASK)
+#define COLOR_MIN_MULT (0x00ffff)
 #define COLOR_SHIFT		16
 
 #define COLOR_R_GET32(r) ((r) & 0xff0000)
@@ -82,13 +82,13 @@
 
 /* 32 bit mode */
 
-#define GET_REDDER(p) ((p & COLOR_MULT_MASK))
+#define GET_REDDER(p) ((p & 0xff0000))
 #define GET_GREENER(p) ((p & 0xff00)<<8)
 #define GET_BLUEER(p) ((p & 0xff)<<16)
-//These never change, DO NOT CHANGE THESE!!!
-#define GET_RED(p) ((p & 0xff0000)>>16)
-#define GET_GREEN(p) ((p & 0xff00)>>8)
-#define GET_BLUE(p) (p & 0xff)
+//These never change, DO NOT CHANGE THESE BASED ON COLOR INTERP BIT DEPTH
+#define GET_RED(p) ((p>>16)&0xff)
+#define GET_GREEN(p) ((p>>8)&0xff)
+#define GET_BLUE(p) (p&0xff)
 typedef GLuint PIXEL;
 #define PSZB 4
 #define PSZSH 5
@@ -111,9 +111,7 @@ typedef GLushort PIXEL;
 
 
 #else
-
-#error "wrong TGL_FEATURE_RENDER_BITS buddy"
-
+#error "wrong TGL_FEATURE_RENDER_BITS"
 #endif
 
 #if TGL_FEATURE_LIT_TEXTURES == 1

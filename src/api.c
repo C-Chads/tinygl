@@ -222,10 +222,28 @@ void glDisable(GLint cap) {
 
 void glBegin(GLint mode) {
 	GLParam p[2];
+#define NEED_CONTEXT
 #include "error_check_no_context.h"
 	p[0].op = OP_Begin;
 	p[1].i = mode;
-
+#if TGL_FEATURE_ERROR_CHECK ==1
+//Check for compatibility of selection
+if(mode != GL_POINTS &&
+mode != GL_LINES &&
+mode != GL_LINE_LOOP &&
+mode != GL_LINE_STRIP &&
+#if TGL_FEATURE_GL_POLYGON == 1
+mode != GL_POLYGON &&
+#endif
+mode != GL_TRIANGLES &&
+mode != GL_TRIANGLE_FAN &&
+mode != GL_TRIANGLE_STRIP &&
+mode != GL_QUADS &&
+mode != GL_QUAD_STRIP
+)
+#define ERROR_FLAG GL_INVALID_ENUM
+#include "error_check.h"
+#endif
 	gl_add_op(p);
 }
 

@@ -197,7 +197,7 @@ void draw() {
 	glPushMatrix();
 	glRotatef(view_rotx, 1.0, 0.0, 0.0);
 	glRotatef(view_roty, 0.0, 1.0, 0.0);
-	// glRotatef( view_rotz, 0.0, 0.0, 1.0 );
+	//glRotatef( view_rotz, 0.0, 0.0, 1.0 );
 
 	glPushMatrix();
 	glTranslatef(-3.0, -2.0, 0.0);
@@ -271,15 +271,6 @@ void initScene() {
 	gear(1.3, 2.0, 0.5, 10, 0.7); // The small gear above with the large hole.
 	glEndList();
 	// glEnable( GL_NORMALIZE );
-}
-
-static inline GLfloat TEST_fastInvSqrt(float x){
-	GLint i; GLfloat y;
-	memcpy(&i, &x, 4);
-	i = 0x5f3759df - (i>>1);
-	//y = (union{GLint l; GLfloat f; }){i}.f;
-	memcpy(&y, &i, 4);
-	return y * (1.5F - 0.5F * x * y * y);
 }
 
 int main(int argc, char** argv) {
@@ -371,7 +362,7 @@ int main(int argc, char** argv) {
 
 	// initialize TinyGL:
 	// unsigned int pitch;
-	int mode;
+	//int mode;
 	if(!noSDL)
 	switch (screen->format->BitsPerPixel) {
 	case 8:
@@ -381,18 +372,18 @@ int main(int argc, char** argv) {
 	case 16:
 		// pitch = screen->pitch;
 		// fprintf(stderr,"\nUnsupported by maintainer!!!");
-		mode = ZB_MODE_5R6G5B;
+		//mode = ZB_MODE_5R6G5B;
 		// return 1;
 		break;
 	case 24:
 		// pitch = ( screen->pitch * 2 ) / 3;
 		fprintf(stderr, "\nUnsupported by maintainer!!!");
-		mode = ZB_MODE_RGB24;
+		//mode = ZB_MODE_RGB24;
 		return 1;
 		break;
 	case 32:
 		// pitch = screen->pitch / 2;
-		mode = ZB_MODE_RGBA;
+		//mode = ZB_MODE_RGBA;
 		break;
 	default:
 		return 1;

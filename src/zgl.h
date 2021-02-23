@@ -25,9 +25,14 @@ enum {
 };
 
 /* initially # of allocated GLVertexes (will grow when necessary) */
-/* Just large enough to hold a quad... because most users will never render anything larger. */
+//
+#if TGL_FEATURE_GL_POLYGON == 1
+//Large enough for your nice juicy GL_POLYGONs
+#define POLYGON_MAX_VERTEX 16
+#else 
+//Just large enough for a quad!
 #define POLYGON_MAX_VERTEX 4
-
+#endif
 /* Max # of specular light pow buffers */
 #define MAX_SPECULAR_BUFFERS 32
 //#define MAX_SPECULAR_BUFFERS 16
@@ -323,12 +328,12 @@ typedef struct GLContext {
 } GLContext;
 
 extern GLContext* gl_ctx;
-
+static inline GLContext* gl_get_context(void) { return gl_ctx; }
 //void gl_add_op(GLParam* p);
 extern void (*op_table_func[])(GLContext*, GLParam*);
 extern GLint op_table_size[];
 extern void gl_compile_op(GLContext* c, GLParam* p);
-inline void gl_add_op(GLParam* p) {
+static inline void gl_add_op(GLParam* p) {
 	GLContext* c = gl_ctx;
 #include "error_check.h"
 	GLint op;
@@ -341,9 +346,9 @@ inline void gl_add_op(GLParam* p) {
 		gl_compile_op(c, p);
 #include "error_check.h"
 	}
-	if (c->print_flag) {
+	//if (c->print_flag) {
 		//		gl_print_op(stderr, p);
-	}
+	//}
 }
 
 /* select.c */
@@ -747,7 +752,7 @@ void gl_convertRGB_to_8A8R8G8B(GLuint* pixmap, GLubyte* rgb, GLint xsize, GLint 
 void gl_resizeImage(GLubyte* dest, GLint xsize_dest, GLint ysize_dest, GLubyte* src, GLint xsize_src, GLint ysize_src);
 void gl_resizeImageNoInterpolate(GLubyte* dest, GLint xsize_dest, GLint ysize_dest, GLubyte* src, GLint xsize_src, GLint ysize_src);
 
-GLContext* gl_get_context(void);
+//static GLContext* gl_get_context(void);
 
 void gl_fatal_error(char* format, ...);
 

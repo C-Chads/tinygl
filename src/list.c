@@ -20,9 +20,9 @@ GLint op_table_size[] = {
 #include "opinfo.h"
 };
 
-GLContext* gl_get_context(void) { return gl_ctx; }
 
-static GLList* find_list(GLContext* c, GLuint list) { return c->shared_state.lists[list]; }
+
+static inline GLList* find_list(GLContext* c, GLuint list) { return c->shared_state.lists[list]; }
 
 static void delete_list(GLContext* c, GLint list) {
 	GLParamBuffer *pb, *pb1;
@@ -30,7 +30,7 @@ static void delete_list(GLContext* c, GLint list) {
 
 	l = find_list(c, list);
 	if (l == NULL) {
-		tgl_warning("\nAttempted to delete NULL list!!!!\n");
+		//tgl_warning("\nAttempted to delete NULL list!!!!\n");
 		return;
 	}
 	//assert(l != NULL);
@@ -167,25 +167,6 @@ if(!ob1)
 	}
 	c->current_op_buffer_index = index;
 }
-/*
-void gl_add_op(GLParam* p) {
-	GLContext* c = gl_get_context();
-#include "error_check.h"
-	GLint op;
-	op = p[0].op;
-	if (c->exec_flag) {
-		op_table_func[op](c, p);
-#include "error_check.h"
-	}
-	if (c->compile_flag) {
-		gl_compile_op(c, p);
-#include "error_check.h"
-	}
-	if (c->print_flag) {
-		//		gl_print_op(stderr, p);
-	}
-}
-*/
 /* this opcode is never called directly */
 void glopEndList(GLContext* c, GLParam* p) { assert(0); }
 
@@ -194,7 +175,7 @@ void glopNextBuffer(GLContext* c, GLParam* p) { assert(0); }
 
 void glopCallList(GLContext* c, GLParam* p) {
 	GLList* l;
-	GLint list, op;
+	GLint list;
 #include "error_check.h"
 	list = p[1].ui;
 	l = find_list(c, list);
@@ -208,7 +189,7 @@ void glopCallList(GLContext* c, GLParam* p) {
 
 	while (1) {
 #include "error_check.h"
-		op = p[0].op;
+		GLint op = p[0].op;
 		if (op == OP_EndList)
 			break;
 		if (op == OP_NextBuffer) {

@@ -93,8 +93,9 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 "TGL_FEATURE_POLYGON_STIPPLE "
 #endif
-
-
+#if TGL_FEATURE_GL_POLYGON == 1
+"TGL_FEATURE_GL_POLYGON "
+#endif
 #if TGL_FEATURE_NO_COPY_COLOR == 1
 "TGL_FEATURE_NO_COPY_COLOR "
 #endif

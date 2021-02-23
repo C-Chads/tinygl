@@ -27,6 +27,11 @@
 #define TGL_FEATURE_POLYGON_OFFSET 1
 //Enable the patternized "discard"-ing of pixels.
 #define TGL_FEATURE_POLYGON_STIPPLE 0
+//Enable the rendering of arbitrarily large polygons (they are rendered as triangles)- it slows down glopVertex and glopBegin.
+//It also enables the rendering of line loops of arbitrary size- without it,
+//line loops beyond a certain size will cause a crash.
+//so don't enable it if you don't need it.
+#define TGL_FEATURE_GL_POLYGON      0
 //Enable GL_BLEND functionality
 #define TGL_FEATURE_BLEND 			1
 //The width of textures as a power of 2. The default is 8, or 256x256 textures.
