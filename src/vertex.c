@@ -133,7 +133,7 @@ void glopBegin(GLContext* c, GLParam* p) {
 		}
 	}
 }
-/*
+
 static inline void gl_transform_to_viewport_vertex_c(GLContext* c, GLVertex* v) {
 
 	
@@ -155,7 +155,7 @@ static inline void gl_transform_to_viewport_vertex_c(GLContext* c, GLVertex* v) 
 		v->zp.t = (GLint)(v->tex_coord.Y * (ZB_POINT_T_MAX - ZB_POINT_T_MIN) + ZB_POINT_T_MIN); //MARKED
 	}
 }
-*/
+
 static inline void gl_vertex_transform(GLContext* c, GLVertex* v) {
 	GLfloat* m;
 	
@@ -274,7 +274,7 @@ void glopVertex(GLContext* c, GLParam* p) {
 	}
 	/* precompute the mapping to the viewport */
 	if (v->clip_code == 0)
-		gl_transform_to_viewport_clip_c(c, v);
+		gl_transform_to_viewport_vertex_c(c, v);
 
 	/* edge flag */
 	v->edge_flag = c->current_edge_flag;
