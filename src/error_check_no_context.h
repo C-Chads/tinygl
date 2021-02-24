@@ -13,6 +13,9 @@
 	GLContext* c = gl_get_context();
 #endif
 
+
+
+
 #endif 
 
 #undef RETVAL

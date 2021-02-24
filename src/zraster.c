@@ -58,8 +58,6 @@ void glopRasterPos(GLContext* c, GLParam* p){
 			}
 			c->rasterpos.v[0] = v.zp.x;
 			c->rasterpos.v[1] = v.zp.y;
-			//c->rasterpos.v[2] = v.pc.Z;
-			//c->rasterpos.v[3] = v.pc.W;
 			c->rastervertex = v;
 			//c->rasterpos.v[2] = v.zp.z;
 			c->rasterpos_zz = v.zp.z >> ZB_POINT_Z_FRAC_BITS; //I believe this is it?

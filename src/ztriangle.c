@@ -19,28 +19,28 @@
 #define YSTIP (the_y & TGL_POLYGON_STIPPLE_MASK_Y)
 // NOTES                                                           Divide by 8 to get the byte        Get the actual bit
 #define STIPBIT(_a) (zbstipplepattern[(XSTIP(_a) | (YSTIP << TGL_POLYGON_STIPPLE_POW2_WIDTH)) >> 3] & (1 << (XSTIP(_a) & 7)))
-#define STIPTEST(_a) (!(zbdostipple && !STIPBIT(_a)))
+#define STIPTEST(_a) && (!(zbdostipple && !STIPBIT(_a)))
 
 #else
 
 #define TGL_STIPPLEVARS /* a comment */
-#define STIPTEST(_a) (1)
+#define STIPTEST(_a) /* a comment*/
 
 
 #endif
 
 #if TGL_FEATURE_NO_DRAW_COLOR == 1
-#define NODRAWTEST(c) ((c & TGL_COLOR_MASK) != TGL_NO_DRAW_COLOR)
+#define NODRAWTEST(c) && ((c & TGL_COLOR_MASK) != TGL_NO_DRAW_COLOR)
 #else
-#define NODRAWTEST(c) (1)
+#define NODRAWTEST(c) /* a comment */
 #endif
 
-#define ZCMP(z, zpix, _a, c) ( ((!zbdt) || (z >= zpix)) && STIPTEST(_a) && NODRAWTEST(c))
-#define ZCMPSIMP(z, zpix, _a, crabapple) ( ((!zbdt) || (z >= zpix)) && STIPTEST(_a) )
+#define ZCMP(z, zpix, _a, c) ( ((!zbdt) || (z >= zpix)) STIPTEST(_a) NODRAWTEST(c))
+#define ZCMPSIMP(z, zpix, _a, crabapple) ( ((!zbdt) || (z >= zpix)) STIPTEST(_a) )
 
 void ZB_fillTriangleFlat(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
-
-	PIXEL color = RGB_TO_PIXEL(p2->r, p2->g, p2->b); GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
+GLubyte zbdt = zb->depth_test;GLubyte zbdw = zb->depth_write;
+	GLuint color;
 	TGL_BLEND_VARS
 	TGL_STIPPLEVARS
 	
@@ -52,7 +52,7 @@ void ZB_fillTriangleFlat(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuffe
 #define INTERP_Z
 //#define INTERP_RGB
 
-#define DRAW_INIT()	{  }
+#define DRAW_INIT()	{color=RGB_TO_PIXEL(p2->r, p2->g, p2->b);}
 
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
@@ -117,12 +117,12 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 #if TGL_FEATURE_NO_DRAW_COLOR != 1
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
-		register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
+		{register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
 		if (ZCMPSIMP(zz, pz[_a], _a, 0)) {                                                                                                                     \
 			/*pp[_a] = RGB_TO_PIXEL(or1, og1, ob1);*/                                                                                                          \
 			TGL_BLEND_FUNC_RGB(or1, og1, ob1, (pp[_a]));                                                                                                       \
 			if(zbdw)pz[_a] = zz;                                                                                                                               \
-		}                                                                                                                                                      \
+		}}                                                                                                                                                      \
 		z += dzdx;                                                                                                                                             \
 		og1 += dgdx;                                                                                                                      \
 		or1 += drdx;                                                                                                                      \

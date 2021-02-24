@@ -29,8 +29,7 @@ static void delete_list(GLContext* c, GLint list) {
 	GLList* l;
 
 	l = find_list(c, list);
-	if (l == NULL) {
-		//tgl_warning("\nAttempted to delete NULL list!!!!\n");
+	if (l == NULL) { //MARK <COST>
 		return;
 	}
 	//assert(l != NULL);
@@ -71,8 +70,8 @@ if(!l || !ob)
 #include "error_check.h"
 
 #else
-if(!l || !ob)
-	gl_fatal_error("GL_OUT_OF_MEMORY");
+	//if(!l || !ob) gl_fatal_error("GL_OUT_OF_MEMORY");
+	//This will crash a few lines down, so, let it!
 #endif
 	ob->next = NULL;
 	l->first_op_buffer = ob;
@@ -119,6 +118,8 @@ void glCallLists(	GLsizei n,
 				 	GLenum type,
 				 	const GLuint* lists){
 	GLContext* c = gl_get_context();
+//A ridiculously expensive error check.
+/*
 #include "error_check.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(type != GL_UNSIGNED_INT &&
@@ -126,6 +127,7 @@ void glCallLists(	GLsizei n,
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #endif
+*/
 	for(GLint i = 0; i < n; i++)
 		glCallList(c->listbase + lists[i]);
 }
@@ -143,12 +145,14 @@ void gl_compile_op(GLContext* c, GLParam* p) {
 	if ((index + op_size) > (OP_BUFFER_MAX_SIZE - 2)) {
 
 		ob1 = gl_zalloc(sizeof(GLParamBuffer));
-if(!ob1)
+
 #if TGL_FEATURE_ERROR_CHECK == 1
+if(!ob1)
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
-	gl_fatal_error("GL_OUT_OF_MEMORY");
+	//if(!ob1) gl_fatal_error("GL_OUT_OF_MEMORY");
+	//This will crash a few lines down, so, let it!
 #endif
 		ob1->next = NULL;
 
@@ -211,6 +215,7 @@ void glNewList(GLuint list, GLint mode) {
 	if(!(mode == GL_COMPILE || mode == GL_COMPILE_AND_EXECUTE))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
+
 	if(!(c->compile_flag == 0))
 #define ERROR_FLAG GL_INVALID_OPERATION
 #include "error_check.h"
@@ -220,8 +225,7 @@ void glNewList(GLuint list, GLint mode) {
 	//assert(c->compile_flag == 0); //MARK <COST>
 #endif
 	l = find_list(c, list);
-	if (l != NULL)
-		delete_list(c, list);
+	if (l != NULL) delete_list(c, list);
 	l = alloc_list(c, list);
 #include "error_check.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
@@ -229,6 +233,7 @@ void glNewList(GLuint list, GLint mode) {
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #include "error_check.h"
 #else
+	//Nearly cost-free
 	if(l==NULL) gl_fatal_error("Could not find or allocate list.");
 #endif
 	c->current_op_buffer = l->first_op_buffer;

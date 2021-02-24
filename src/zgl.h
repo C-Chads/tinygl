@@ -335,16 +335,22 @@ extern GLint op_table_size[];
 extern void gl_compile_op(GLContext* c, GLParam* p);
 static inline void gl_add_op(GLParam* p) {
 	GLContext* c = gl_ctx;
+#if TGL_FEATURE_ERROR_CHECK == 1
 #include "error_check.h"
+#endif
 	GLint op;
 	op = p[0].op;
 	if (c->exec_flag) {
 		op_table_func[op](c, p);
+#if TGL_FEATURE_ERROR_CHECK == 1
 #include "error_check.h"
+#endif
 	}
 	if (c->compile_flag) {
 		gl_compile_op(c, p);
+#if TGL_FEATURE_ERROR_CHECK == 1
 #include "error_check.h"
+#endif
 	}
 	//if (c->print_flag) {
 		//		gl_print_op(stderr, p);
