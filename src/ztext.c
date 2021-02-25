@@ -41,6 +41,7 @@ void renderchar(GLbyte* bitmap, GLint _x, GLint _y, GLuint p) {
 void glopPlotPixel(GLContext* c, GLParam* p) {
 	GLint x = p[1].i;
 	PIXEL pix = p[2].ui;;
+/*
 #if TGL_FEATURE_BLEND == 1
 	ZBuffer* zb = c->zb;
 	PIXEL* targ = zb->pbuf + x;
@@ -50,9 +51,9 @@ void glopPlotPixel(GLContext* c, GLParam* p) {
 	}else{
 		*targ = pix;
 	}
-#else
+#else*/
 	c->zb->pbuf[x] = pix;
-#endif
+//#endif
 }
 
 void glPlotPixel(GLint x, GLint y, GLuint pix) {
