@@ -1,0 +1,4 @@
+*.config
+*.creator*
+*.files
+*.includes
