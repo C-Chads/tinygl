@@ -23,6 +23,7 @@ typedef struct {
 void init_lsthread(lsthread* t);
 void start_lsthread(lsthread* t);
 void kill_lsthread(lsthread* t);
+void destroy_lsthread(lsthread* t);
 void lock(lsthread* t);
 void step(lsthread* t);
 void* lsthread_func(void* me_void);
