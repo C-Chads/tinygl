@@ -24,7 +24,7 @@ int invmat4(const mat4 m, mat4* invOut);
 mat4 perspective(f_ fov, f_ aspect, f_ near, f_ far);
 vec3 viewport(uint xdim, uint ydim, vec3 input);
 mat4 rotate(vec3 rotation);
-vec3 rotatev3(vec3 in,vec3 axis, f_ ang);
+vec3 rotatev3(vec3 in, vec3 axis, f_ ang);
 mat4 translate(vec3 t);
 f_ clampf(f_ a, f_ min, f_ max);
 f_ lengthv3(vec3 a);

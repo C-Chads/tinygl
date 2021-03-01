@@ -73,13 +73,28 @@ void rotateCamera() {
 	vec3 a;
 	a.d[1] = (float)mousex * mouseratiox;
 	a.d[2] = (float)mousey * mouseratioy;
-	// if(fabsf(camforw.d[0]) < 0.001) camforw.d[0] = 0.001;
-	vec3 right = normalizev3(crossv3(normalizev3(camforw), normalizev3(camup)));
+	
+	
+
+	vec3 right = normalizev3(crossv3(camforw, camup));
 	right.d[1] = 0;
-	vec3 result = rotatev3(camforw, right, -a.d[2]);
-	camup = crossv3(right, camforw);
-	camforw = rotatev3(result, camup, -a.d[1]);
-	// if(fabsf(camforw.d[0]) < 0.001) camforw.d[0] = 0.001;
+	//vec3 forward = glm::vec3(glm::normalize(glm::rotate(angle, right) * glm::vec4(forward, 0.0)));
+	
+	camforw = normalizev3(rotatev3(camforw, right, -a.d[2]));
+	//up = glm::normalize(glm::cross(forward, right));
+	camup = normalizev3(crossv3(right, camforw));
+
+
+	//Perform the rotation about the Y axis last.
+	static const vec3 UP = (vec3){{0,1,0}};
+	static const vec3 DOWN = (vec3){{0,-1,0}};
+	if(dotv3(UP, camup)<0){
+		camforw = normalizev3(rotatev3(camforw, DOWN, -a.d[1]));
+		camup = normalizev3(rotatev3(camup, DOWN, -a.d[1]));
+	} else {
+		camforw = normalizev3(rotatev3(camforw, UP, -a.d[1]));
+		camup = normalizev3(rotatev3(camup,UP, -a.d[1]));
+	}
 }
 
 GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
@@ -553,8 +568,8 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 		glLoadIdentity();
 		glPushMatrix(); // Pushing on the LookAt Matrix.
 
-		vec3 right = normalizev3(crossv3(normalizev3(camforw), normalizev3(camup)));
-		right.d[1] = 0;
+		vec3 right = normalizev3(crossv3(camforw, camup));
+		//right.d[1] = 0;
 		matrix = (lookAt(campos, addv3(campos, camforw), camup)); // Using right vector to correct for screen rotation.
 		glLoadMatrixf(matrix.d);
 		if (wasdstate[0])
