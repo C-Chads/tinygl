@@ -24,6 +24,8 @@ if you get a TGL_BUILDT error, then you've failed the buildtime test.
 
 if you try to initialize the library and you get a crash with a print to standard out "TINYGL_FAILED_RUNTIME_COMPAT_TEST" then you've failed the runtime test.
 
+The SDL examples have been tested building on Debian 10 and Windows 10, while tinygl itself has been confirmed to compile on many more platforms.
+
 Without Polygon Stipple:
 
 ![GIF Video of demo](capture.gif)
