@@ -5,7 +5,13 @@ GL_LIBS= -L../
 GL_INCLUDES= -I../include/
 ALL_T= gears texture model helloworld
 LIB= ../lib/libTinyGL.a
+
+#For GCC on good OSes:
 SDL_LIBS= -lSDL 
+#for MinGW users:
+#SDL_LIBS= -lmingw32 -lSDLmain -lSDL 
+
+
 #SDL_MIXERLIBS= -lSDL_mixer -lmad -logg -lmikmod -logg
 SDL_MIXERLIBS= 
 all: $(ALL_T)

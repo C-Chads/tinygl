@@ -1,0 +1,14 @@
+
+RMASK IS 16711680
+GMASK IS 65280
+BMASK IS 255
+AMASK IS 0
+RSHIFT IS 16
+GSHIFT IS 8
+BSHIFT IS 0
+ASHIFT IS 0
+
+Has 11808 points.
+158 frames in 5.216000 secs, 30.291410 frames per second.
+233 frames in 5.018000 secs, 46.432842 frames per second.
+14 frames in 0.329000 secs, 42.553192 frames per second.
