@@ -164,8 +164,19 @@ textured triangles will appear black.
 
 ### HOW DO I USE THIS LIBRARY???
 
+TinyGL is not header only, it is a combination of C files, internal headers, and external headers.
+
+The internal headers are only used while compiling the library,
+
+the external headers (gl.h, zfeatures.h, zbuffer.h) are requires to use the library.
+
+You CAN compile the library along with your final program into a single compilation unit without separating out the library.
+
+Doing so is the most likely compiling method for embedded platforms and how I got TinyGL running on the 3DS.
+
 ```c
 //First you have to include
+//(Note that you must either link against libTinyGL.a or compile it in the same compilation unit as your program)
 #include "../include/GL/gl.h"
 #include "../include/zbuffer.h"
 
@@ -181,6 +192,14 @@ ZBuffer* frameBuffer = ZB_open(winSizeX, winSizeY, mode, 0);
 glInit(frameBuffer);
 
 //Begin making TinyGL calls!
+
+//When you want to copy to your target screen
+//Pitch is the width of the target in bytes, or bytes per pixel times width;
+ZB_copyFrameBuffer(frameBuffer, screen->pixels, screen->pitch);
+
+
+
+
 //At the end of your application, when you want to clean up.
 ZB_close(frameBuffer);
 glClose();
