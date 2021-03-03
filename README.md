@@ -18,6 +18,20 @@ It's probably also the most portable
 TinyGL is written in pure C99, and requires very few functions from the C standard library, it doesn't even require malloc and free
 (The calls are aliased to gl_malloc() and gl_free(), which you can replace with your own memory management model if you desire)
 
+You can test compiling TinyGL and running it on platforms without SDL by running the RAW DEMOS, which do not require ANYTHING
+Except the C standard library and stdio. You may have to change the destination written to by the raw demos on platforms
+without standard file systems.
+
+These are the C standard library includes used in the RAW DEMOS.
+
+```c
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
+```
+
 If you are unsure if your target platform can support TinyGL, compile it with the buildtime and runtime tests enabled (They are, by default)
 
 if you get a TGL_BUILDT error, then you've failed the buildtime test.
@@ -26,8 +40,7 @@ if you try to initialize the library and you get a crash with a print to standar
 
 The SDL examples have been tested building on Debian 10 and Windows 10, while tinygl itself has been confirmed to compile on many more platforms.
 
-### You can test compiling TinyGL and running it on platforms without SDL by running the RAW DEMOS, which do not require ANYTHING
-### Except the C standard library.
+
 
 Without Polygon Stipple:
 

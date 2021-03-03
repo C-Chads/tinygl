@@ -7,17 +7,37 @@
 
 //#define PLAY_MUSIC
 
+//Only C standard library includes.
+//These are ALL the external dependencies of this program!!! ALL of them!!!
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
+
+//Doesn't drag in anything.
 #include "../include/GL/gl.h"
 
+//Doesn't drag in anything.
 #include "../include/zbuffer.h"
 #define CHAD_MATH_IMPL
+
+//Drags in Math and String (which are already dragged in above.)
 #include "include/3dMath.h"
 
+//Requires 
+/*
+#include <math.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+
+and
+#include <assert.h>
+if I didn't define STBIW_ASSERT
+*/
+#define STBIW_ASSERT(x) /* a comment */
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "include/stb_image_write.h"
 
