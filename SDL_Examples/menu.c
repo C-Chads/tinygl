@@ -1,9 +1,10 @@
-/* sdlGears.c */
-/*
- * 3-D gear wheels by Brian Paul. This program is in the public domain.
- *
- * ported to libSDL/TinyGL by Gerald Franz (gfz@o2online.de)
- */
+/* OPENIMGUI STANDARD DEMO
+
+Demo of Gek's proposed Open Immediate Mode Gui Standard
+
+
+
+*/
 //#define PLAY_MUSIC
 
 #include <math.h>
@@ -24,6 +25,10 @@ typedef unsigned char uchar;
 #endif
 #include <SDL/SDL.h>
 
+//Gek's OpenIMGUI standard.
+#define OPENIMGUI_IMPL
+#include "include/openimgui.h"
+
 
 #ifndef M_PI
 #define M_PI 3.14159265
@@ -31,10 +36,13 @@ typedef unsigned char uchar;
 
 int winSizeX = 640;
 int winSizeY = 480;
-int mousepos[2];
-int mb = 0;
 double tpassed = 0;
 int isRunning = 1;
+int dirbstates[4] = {0,0,0,0}; //up,down,left,right
+int mousepos[2] = {0,0};
+int using_cursorkeys = 0; //Switches to cursor keys upon pressing a key.
+int mb = 0; //cursor button
+int mb2 = 0; //cursor second button.
 
 #define BEGIN_EVENT_HANDLER void events(SDL_Event* e){switch(e->type){
 #define E_KEYSYM e->key.keysym.sym
@@ -47,22 +55,14 @@ int isRunning = 1;
 #define E_WINW e->window.data1
 #define E_WINH e->window.data2
 
-vec3 mouse_to_normal(){
+vec3 mouse_to_normal(int mx, int my){
 	vec3 r;
-	r.d[0] = mousepos[0] / (float) winSizeX;
-	r.d[1] = mousepos[1] / (float) winSizeY;
+	r.d[0] = mx / (float) winSizeX;
+	r.d[1] = my / (float) winSizeY;
 	return r;
 }
 
-int drawBox(GLfloat x, GLfloat y, GLfloat xdim, GLfloat ydim){ //0,0 is top left, 1,1 is bottom right
-	vec3 r = mouse_to_normal(); 
-	int retval = 0;
-	if(
-		(x <= r.d[0]) &&
-		(x+xdim >= r.d[0]) &&
-		(y <= r.d[1]) &&
-		(y+ydim >= r.d[1])
-	) retval = 1;
+void drawBox(GLfloat x, GLfloat y, GLfloat xdim, GLfloat ydim){ //0,0 is top left, 1,1 is bottom right
 
 	x*=2;xdim*=2;
 	y*=2;ydim*=2;
@@ -86,26 +86,23 @@ int drawBox(GLfloat x, GLfloat y, GLfloat xdim, GLfloat ydim){ //0,0 is top left
 	glTexCoord2f(1, -1);
 	glVertex3f(-1+x+xdim, 1-y , 0.5); //Top Right Corner
 	glEnd();
-	return retval;
+	return;
 }
 
 
 
 void drawMouse(){
-	vec3 r;
-	r.d[0] = mousepos[0] / (float) winSizeX;
-	r.d[1] = mousepos[1] / (float) winSizeY;
-	if(!mb)
+	if(!omg_cb)
 		glColor3f(0.7,0.7,0.7);
 	else
 		glColor3f(1.0,0.1,0.1);
-	drawBox(r.d[0], r.d[1], 0.03, 0.03);
+	drawBox(omg_cursorpos[0],omg_cursorpos[1], 0.03, 0.03);
 }
 
-int drawTB(const char* text, GLuint textcolor, GLfloat x, GLfloat y, GLint size){
+void drawTB(const char* text, GLuint textcolor, GLfloat x, GLfloat y, GLint size, float* tw, float* th){
 	size = (size>64)?64:((size<8)?8:size); 
 	size >>= 3; //divide by 8 to get the GLTEXTSIZE
-	if(!size || !text) return 0;
+	if(!size || !text) return;
 	int mw = 0, h = 1, cw = 0; //max width, height, current width
 	for(int i = 0; text[i] != '\0' && (text[i] & 127);i++){
 		if(text[i] != '\n') 
@@ -118,17 +115,46 @@ int drawTB(const char* text, GLuint textcolor, GLfloat x, GLfloat y, GLint size)
 	float bw = 3*size/(float)winSizeX;
 	float h_ = (size)*8*(h)/(float)winSizeY;
 	float bh = 3*size/(float)winSizeY;
-	int retval = drawBox(x-bw/2,y-bh/2, w+bw, h_+bh);
+	drawBox(x,y, w, h_);
+	*tw = w+bw;
+	*th = h_+bh;
 	glTextSize(size);
 	glDrawText((unsigned char*)text, x*winSizeX, y*winSizeY, textcolor);
-	return retval;
+	return;
+}
+
+int omg_box(float x, float y, float xdim, float ydim, int sucks, float buttonjumpx, float buttonjumpy, int hints){
+	//hints is the color of the box.
+	float r = ((hints & 0xFF0000)>>16) 	/ 255.0;
+	float g = ((hints & 0xFF00)>>8) 	/ 255.0;
+	float b = ((hints & 0xFF)) 			/ 255.0;
+	glColor3f(r,g,b);
+	drawBox(x,y,xdim,ydim);
+	omg_box_suck(x, y, xdim, ydim, sucks, buttonjumpx, buttonjumpy);
+	return omg_box_retval(x, y, xdim, ydim);
+}
+
+int omg_textbox(float x, float y, const char* text, int textsize, int sucks, float buttonjumpx, float buttonjumpy, int hints, int hintstext){
+	float r = ((hints & 0xFF0000)>>16) 	/ 255.0;
+	float g = ((hints & 0xFF00)>>8) 	/ 255.0;
+	float b = ((hints & 0xFF)) 			/ 255.0;
+	glColor3f(r,g,b);
+	float xdim = 0, ydim = 0;
+	drawTB(text, (GLuint)hintstext, x,y,textsize, &xdim, &ydim);
+	omg_box_suck(x, y, xdim, ydim, sucks, buttonjumpx, buttonjumpy);
+	return omg_box_retval(x, y, xdim, ydim);
 }
 
 int haveclicked = 0;
 vec3 tbcoords = (vec3){{0.4,0.4,0}};
 void draw() {
-	glColor3f(1,1,1);
-	if(drawTB("Click me and I toggle color!", haveclicked?0xFF0000:0x00, tbcoords.d[0], tbcoords.d[1],16) && mb == 1)
+	if(mb2){
+		tbcoords.d[0] = omg_cursorpos[0];
+		tbcoords.d[1] =  omg_cursorpos[1];
+		haveclicked = 0;
+	}
+	if(
+	omg_textbox(tbcoords.d[0], tbcoords.d[1], "Click me and I toggle color!", 16, 1, 20, 20, 0xFFFFFF, haveclicked?0xFF0000:0x00) && omg_cb == 1)
 		{puts("Detected click! EVENT FIRED!\n");haveclicked = !haveclicked; }
 	drawMouse();
 }
@@ -163,15 +189,16 @@ void initScene() {
 
 BEGIN_EVENT_HANDLER
 	case SDL_KEYDOWN:
+		using_cursorkeys = 1;
 		switch(E_KEYSYM){
 			case SDLK_ESCAPE:
 			case SDLK_q:
 				isRunning = 0;
 			break;
-			case SDLK_UP: mousepos[1] -= 4;  mousepos[1]%= winSizeY; break;
-			case SDLK_DOWN: mousepos[1] += 4;mousepos[1]%= winSizeY; break;
-			case SDLK_LEFT: mousepos[0] -= 4;mousepos[0]%= winSizeX; break;
-			case SDLK_RIGHT: mousepos[0] += 4;mousepos[0]%= winSizeX; break;
+			case SDLK_UP:   dirbstates[0] = 1; break;
+			case SDLK_DOWN: dirbstates[1] = 1; break;
+			case SDLK_LEFT: dirbstates[2] = 1; break;
+			case SDLK_RIGHT:dirbstates[3] = 1; break;
 			case SDLK_SPACE: case SDLK_RETURN:
 				mb = 1;
 			break;
@@ -190,14 +217,15 @@ BEGIN_EVENT_HANDLER
 	case SDL_MOUSEBUTTONDOWN:
 		if(E_BUTTON==SDL_BUTTON_LEFT) mb = 1;
 		if(E_BUTTON==SDL_BUTTON_RIGHT) {
-			tbcoords = mouse_to_normal();
-			haveclicked = 0;
+			mb2 = 1;
 		}
 		break;
 	case SDL_MOUSEBUTTONUP:
-		if(E_BUTTON==SDL_BUTTON_LEFT) mb = 2;
+		if(E_BUTTON==SDL_BUTTON_LEFT) mb = 0;
+		if(E_BUTTON==SDL_BUTTON_RIGHT) mb2 = 0;
 		break;
 	case SDL_MOUSEMOTION:
+		using_cursorkeys = 0;
 		mousepos[0] = E_MOTION.x;
 		mousepos[1] = E_MOTION.y;
 	break;
@@ -312,9 +340,13 @@ int main(int argc, char** argv) {
 		tNow = SDL_GetTicks();
 		// do event handling:
 		SDL_Event ev;
-		mb = 0; //Very important
 		while (SDL_PollEvent(&ev)) events(&ev);
-
+		if(using_cursorkeys)
+			omg_update_keycursor(dirbstates[0], dirbstates[1], dirbstates[2], dirbstates[3], mb);
+		else{
+			vec3 r = mouse_to_normal(mousepos[0], mousepos[1]);
+			omg_update_mcursor(r.d[0], r.d[1], mb);
+		}
 		// draw scene:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//This is where we render our GUI!
