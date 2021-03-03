@@ -26,6 +26,9 @@ if you try to initialize the library and you get a crash with a print to standar
 
 The SDL examples have been tested building on Debian 10 and Windows 10, while tinygl itself has been confirmed to compile on many more platforms.
 
+### You can test compiling TinyGL and running it on platforms without SDL by running the RAW DEMOS, which do not require ANYTHING
+### Except the C standard library.
+
 Without Polygon Stipple:
 
 ![GIF Video of demo](capture.gif)
