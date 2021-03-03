@@ -128,10 +128,8 @@ int haveclicked = 0;
 vec3 tbcoords = (vec3){{0.4,0.4,0}};
 void draw() {
 	glColor3f(1,1,1);
-	if(drawTB("I hate text", 0x00, tbcoords.d[0], tbcoords.d[1],16) && mb > 0)
-		puts("Detected click!\n");
-	else
-		puts("No Click!\n");
+	if(drawTB("Click me and I toggle color!", haveclicked?0xFF0000:0x00, tbcoords.d[0], tbcoords.d[1],16) && mb == 1)
+		{puts("Detected click! EVENT FIRED!\n");haveclicked = !haveclicked; }
 	drawMouse();
 }
 
@@ -193,10 +191,11 @@ BEGIN_EVENT_HANDLER
 		if(E_BUTTON==SDL_BUTTON_LEFT) mb = 1;
 		if(E_BUTTON==SDL_BUTTON_RIGHT) {
 			tbcoords = mouse_to_normal();
+			haveclicked = 0;
 		}
 		break;
 	case SDL_MOUSEBUTTONUP:
-		if(E_BUTTON==SDL_BUTTON_LEFT) mb = 0;
+		if(E_BUTTON==SDL_BUTTON_LEFT) mb = 2;
 		break;
 	case SDL_MOUSEMOTION:
 		mousepos[0] = E_MOTION.x;
@@ -313,11 +312,12 @@ int main(int argc, char** argv) {
 		tNow = SDL_GetTicks();
 		// do event handling:
 		SDL_Event ev;
-		SDL_Event* e = &ev;
-		while (SDL_PollEvent(e)) events(e);
+		mb = 0; //Very important
+		while (SDL_PollEvent(&ev)) events(&ev);
 
 		// draw scene:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//This is where we render our GUI!
 		draw();
 		//glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x000000FF);
 		// swap buffers:
@@ -325,12 +325,6 @@ int main(int argc, char** argv) {
 			fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
 			return 1;
 		}
-		/*
-		printf("\nRMASK IS %u",screen->format->Rmask);
-		printf("\nGMASK IS %u",screen->format->Gmask);
-		printf("\nBMASK IS %u",screen->format->Bmask);
-		printf("\nAMASK IS %u",screen->format->Amask);
-		*/
 		// Quickly convert all pixels to the correct format
 #if TGL_FEATURE_RENDER_BITS == 32
 		if (needsRGBAFix)
