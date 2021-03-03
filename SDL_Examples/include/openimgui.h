@@ -68,6 +68,7 @@
 extern float omg_cursorpos[2]; //Defaults to zero
 extern float omg_cursorpos_presuck[2]; //Defaults to zero
 extern int omg_cursor_has_been_sucked;
+extern int omg_cursor_was_inside;  //Set 
 extern float omg_buttonjump[2]; //Defaults to zero
 // Setting for users using 
 
@@ -164,7 +165,7 @@ static inline int omg_box_retval(float x, float y, float xdim, float ydim){
 }
 static inline void omg_box_suck(float x, float y, float xdim, float ydim, int sucks, float buttonjumpx, float buttonjumpy){
 	 if(omg_cursorpos_presuck[0] != -1 && sucks){ //Do not attempt to suck if this graphical element does not suck or sucking is not enabled.
-		int btest = 0;
+		int btest = omg_boxtest(x,y,xdim,ydim, omg_cursorpos_presuck[0], omg_cursorpos_presuck[1]);
 		 if(!omg_cursor_has_been_sucked){
 		 	//We are free to try to suck up the cursor without a check.
 			omg_cursorpos[0] = x + xdim/2.0;
@@ -172,7 +173,7 @@ static inline void omg_box_suck(float x, float y, float xdim, float ydim, int su
 			omg_cursor_has_been_sucked = 1;
 		  	omg_buttonjump[0] = buttonjumpx;
 		  	omg_buttonjump[1] = buttonjumpy;
-		  	if(omg_boxtest(x,y,xdim,ydim, omg_cursorpos_presuck[0], omg_cursorpos_presuck[1])) omg_cursor_was_inside = 1;
+		  	if(btest) omg_cursor_was_inside = 1;
 		  	//puts("Initial grab...\n");
 		  	//printf("Cx = %f, Cy = %f\n", omg_cursorpos[0], omg_cursorpos[1]);
 		} else if (
@@ -180,9 +181,9 @@ static inline void omg_box_suck(float x, float y, float xdim, float ydim, int su
 		omg_sqrlinelength(x+xdim/2.0, y+ydim/2.0, 			omg_cursorpos_presuck[0],  omg_cursorpos_presuck[1]) < 
 		           omg_sqrlinelength(omg_cursorpos[0], omg_cursorpos[1], omg_cursorpos_presuck[0],  omg_cursorpos_presuck[1])
 		 ) || //Cursor was inside, if it's inside this one as well, pick the closest.
-		 (!omg_cursor_was_inside && omg_boxtest(x,y,xdim,ydim, omg_cursorpos_presuck[0], omg_cursorpos_presuck[1])) ||
+		 (!omg_cursor_was_inside && btest) ||
 		  (
-		  (omg_boxtest(x,y,xdim,ydim, omg_cursorpos_presuck[0], omg_cursorpos_presuck[1])) && 
+		  	btest && 
 			omg_sqrlinelength(x+xdim/2.0, y+ydim/2.0, 			omg_cursorpos_presuck[0],  omg_cursorpos_presuck[1]) < 
 		    omg_sqrlinelength(omg_cursorpos[0], omg_cursorpos[1], omg_cursorpos_presuck[0],  omg_cursorpos_presuck[1])
 		  )
