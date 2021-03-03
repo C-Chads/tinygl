@@ -77,6 +77,7 @@ extern int omg_cb; //Set to zero every iteration.
 float omg_cursorpos[2]; //Defaults to zero
 float omg_cursorpos_presuck[2]; //Defaults to zero
 int omg_cursor_has_been_sucked;
+int omg_cursor_was_inside;  //Set 
 float omg_buttonjump[2]; //Defaults to zero
 // Setting for users using 
 
@@ -98,22 +99,35 @@ static inline float omg_wrapf(float x){
 	return f;
 }
 
-static inline void omg_update_keycursor(int up, int down, int left, int right, int bstate){
+static inline void omg_update_keycursor(int _up, int _down, int _left, int _right, int bstate){
 	static int bstate_old = 0;
+	static int udlr_old[4] = {0,0,0,0};
+	omg_cursor_was_inside = 0;
+	int up = _up && ! udlr_old[0];
+	int down = _down && ! udlr_old[1];
+	int left = _left && ! udlr_old[2];
+	int right = _right && ! udlr_old[3];
+	udlr_old[0] = _up;
+	udlr_old[1] = _down;
+	udlr_old[2] = _left;
+	udlr_old[3] = _right;
 	omg_cursor_has_been_sucked = 0;
-	if(left) omg_cursorpos[0] -= omg_buttonjump[0];
-	if(right) omg_cursorpos[0] += omg_buttonjump[0];
-	if(up) omg_cursorpos[1] -= omg_buttonjump[1];
+	omg_cursorpos_presuck[0] = omg_cursorpos[0];
+	omg_cursorpos_presuck[1] = omg_cursorpos[1];
+	if(up)   omg_cursorpos[1] -= omg_buttonjump[1];
 	if(down) omg_cursorpos[1] += omg_buttonjump[1];
+	if(left) omg_cursorpos[0] -= omg_buttonjump[0];
+	if(right)omg_cursorpos[0] += omg_buttonjump[0];
+	
 	//Clamp the cursorpos
 	omg_cursorpos[0] = omg_wrapf(omg_cursorpos[0]);
 	omg_cursorpos[1] = omg_wrapf(omg_cursorpos[1]);
 	omg_cursorpos_presuck[0] = omg_cursorpos[0];
 	omg_cursorpos_presuck[1] = omg_cursorpos[1];
-
-	//omb_cb = 0; 
+	//printf("BEGIN! Cx = %f, Cy = %f\n", omg_cursorpos[0], omg_cursorpos[1]);
+	omg_cb = 0; 
 	if(bstate && !bstate_old) omg_cb = 1;
-	else omg_cb = 0;
+	else if (!bstate && bstate_old) omg_cb = 2;
 	bstate_old = bstate;
 }
 
@@ -121,6 +135,7 @@ static inline void omg_update_keycursor(int up, int down, int left, int right, i
 static inline void omg_update_mcursor(float ncx, float ncy, int bstate){
 	static int bstate_old = 0;
 	omg_cursor_has_been_sucked = 0;
+	omg_cursor_was_inside = 0;
 	omg_cursorpos[0] = ncx;
 	omg_cursorpos[1] = ncy;
 	// Clamp the cursorpos (if necessary)
@@ -149,21 +164,39 @@ static inline int omg_box_retval(float x, float y, float xdim, float ydim){
 }
 static inline void omg_box_suck(float x, float y, float xdim, float ydim, int sucks, float buttonjumpx, float buttonjumpy){
 	 if(omg_cursorpos_presuck[0] != -1 && sucks){ //Do not attempt to suck if this graphical element does not suck or sucking is not enabled.
+		int btest = 0;
 		 if(!omg_cursor_has_been_sucked){
 		 	//We are free to try to suck up the cursor without a check.
 			omg_cursorpos[0] = x + xdim/2.0;
 			omg_cursorpos[1] = y + ydim/2.0;
 			omg_cursor_has_been_sucked = 1;
-		  omg_buttonjump[0] = buttonjumpx;
-		  omg_buttonjump[1] = buttonjumpy;
-		} else if (omg_sqrlinelength(x+xdim/2.0, y+ydim/2.0, omg_cursorpos_presuck[0],  omg_cursorpos_presuck[1]) < 
-		           omg_sqrlinelength(omg_cursorpos[0], omg_cursorpos[1], omg_cursorpos_presuck[0],  omg_cursorpos_presuck[1])){ 
+		  	omg_buttonjump[0] = buttonjumpx;
+		  	omg_buttonjump[1] = buttonjumpy;
+		  	if(omg_boxtest(x,y,xdim,ydim, omg_cursorpos_presuck[0], omg_cursorpos_presuck[1])) omg_cursor_was_inside = 1;
+		  	//puts("Initial grab...\n");
+		  	//printf("Cx = %f, Cy = %f\n", omg_cursorpos[0], omg_cursorpos[1]);
+		} else if (
+		(!omg_cursor_was_inside && //Cursor was not inside.
+		omg_sqrlinelength(x+xdim/2.0, y+ydim/2.0, 			omg_cursorpos_presuck[0],  omg_cursorpos_presuck[1]) < 
+		           omg_sqrlinelength(omg_cursorpos[0], omg_cursorpos[1], omg_cursorpos_presuck[0],  omg_cursorpos_presuck[1])
+		 ) || //Cursor was inside, if it's inside this one as well, pick the closest.
+		 (!omg_cursor_was_inside && omg_boxtest(x,y,xdim,ydim, omg_cursorpos_presuck[0], omg_cursorpos_presuck[1])) ||
+		  (
+		  (omg_boxtest(x,y,xdim,ydim, omg_cursorpos_presuck[0], omg_cursorpos_presuck[1])) && 
+			omg_sqrlinelength(x+xdim/2.0, y+ydim/2.0, 			omg_cursorpos_presuck[0],  omg_cursorpos_presuck[1]) < 
+		    omg_sqrlinelength(omg_cursorpos[0], omg_cursorpos[1], omg_cursorpos_presuck[0],  omg_cursorpos_presuck[1])
+		  )
+		           ){
 		           //The box is closer than the current suck position.
 			omg_cursorpos[0] = x+xdim/2.0;
 			omg_cursorpos[1] = y+ydim/2.0;
 			omg_cursor_has_been_sucked = 1;
 		  omg_buttonjump[0] = buttonjumpx;
 		  omg_buttonjump[1] = buttonjumpy;
+		  //if(boxtest(x,y,xdim,ydim)) omg_cursor_was_inside = 1;
+		  omg_cursor_was_inside = omg_boxtest(x,y,xdim,ydim, omg_cursorpos_presuck[0], omg_cursorpos_presuck[1]);
+		  //puts("Found a different button!\n");
+		  //printf("Cx = %f, Cy = %f\n", omg_cursorpos[0], omg_cursorpos[1]);
 		}
 	}
 }

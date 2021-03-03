@@ -96,7 +96,10 @@ void drawMouse(){
 		glColor3f(0.7,0.7,0.7);
 	else
 		glColor3f(1.0,0.1,0.1);
-	drawBox(omg_cursorpos[0],omg_cursorpos[1], 0.03, 0.03);
+	if(!using_cursorkeys)
+		drawBox(omg_cursorpos[0],omg_cursorpos[1], 0.03, 0.03);
+	else
+		drawBox(omg_cursorpos_presuck[0],omg_cursorpos_presuck[1], 0.03, 0.03);
 }
 
 void drawTB(const char* text, GLuint textcolor, GLfloat x, GLfloat y, GLint size, float* tw, float* th){
@@ -153,8 +156,16 @@ void draw() {
 		tbcoords.d[1] =  omg_cursorpos[1];
 		haveclicked = 0;
 	}
+
+	if(omg_textbox(0.01, 0,   "\nEntry 1\n", 24, 1,   0.4, 0.2, 0xFFFFFF, 0) && omg_cb == 2 )
+		puts("Entry 1");
+	if(omg_textbox(0.01, 0.2,   "\nEntry 2\n", 24, 1,   0.4, 0.2, 0xFFFFFF, 0) && omg_cb == 2)
+		puts("Entry 2");
+	if(omg_textbox(0.01, 0.4,   "\nEntry 3\n", 24, 1,   0.4, 0.2, 0xFFFFFF, 0) && omg_cb == 2)
+		puts("Entry 3");
+	
 	if(
-	omg_textbox(tbcoords.d[0], tbcoords.d[1], "Click me and I toggle color!", 16, 1, 20, 20, 0xFFFFFF, haveclicked?0xFF0000:0x00) && omg_cb == 1)
+	omg_textbox(tbcoords.d[0], tbcoords.d[1], "\nClick me and I toggle color!\n", 16, 1, 0.4, 0.3, 0xFFFFFF, haveclicked?0xFF0000:0x00) && omg_cb == 1)
 		{puts("Detected click! EVENT FIRED!\n");haveclicked = !haveclicked; }
 	drawMouse();
 }
@@ -206,10 +217,15 @@ BEGIN_EVENT_HANDLER
 		}
 	break;
 	case SDL_KEYUP:
+		using_cursorkeys = 1;
 		switch(E_KEYSYM){
 			case SDLK_SPACE: case SDLK_RETURN:
 				mb = 0;
 			break;
+			case SDLK_UP:   dirbstates[0] = 0; break;
+			case SDLK_DOWN: dirbstates[1] = 0; break;
+			case SDLK_LEFT: dirbstates[2] = 0; break;
+			case SDLK_RIGHT:dirbstates[3] = 0; break;
 			default: break;
 		}
 	break;
