@@ -401,6 +401,15 @@ High: 917 FPS
 Average: around 842 FPS
 ```
 
+### OpenIMGUI Standard
+
+TinyGL includes an implementation of the OpenIMGUI standard, visible in SDL_EXAMPLES/menu.c
+
+it is a standards proposal I've created for cross-platform immediate mode GUIs as a replacement
+for common solutions like "imgui" and Nuklear, which have glaring flaws when discussing their portability.
+
+Consider using it!
+
 _______________________________________________________________________________________
 
 # Here is the old description of TinyGL, saved for historical/attribution purposes:
