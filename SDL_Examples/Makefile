@@ -3,7 +3,7 @@ include ../config.mk
 #CFLAGS = -g -Wall -O3 -w
 GL_LIBS= -L../ 
 GL_INCLUDES= -I../include/
-ALL_T= gears texture model helloworld
+ALL_T= gears texture model helloworld menu
 LIB= ../lib/libTinyGL.a
 
 #For GCC on good OSes:
@@ -17,7 +17,6 @@ SDL_MIXERLIBS=
 all: $(ALL_T)
 clean:
 	rm -f $(ALL_T) *.exe
-	rm -f menu
 texture:
 	$(CC) texture.c $(LIB) -o texture $(GL_INCLUDES) $(SDL_LIBS) $(SDL_MIXERLIBS) $(GL_LIBS) $(CFLAGS) -lm
 menu:

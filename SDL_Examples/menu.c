@@ -22,42 +22,48 @@
 #else
 typedef unsigned char uchar;
 #endif
-#define STB_IMAGE_IMPLEMENTATION
-#include "include/stb_image.h"
 #include <SDL/SDL.h>
+
 
 #ifndef M_PI
 #define M_PI 3.14159265
 #endif
 
-GLuint tex = 0;
 int winSizeX = 640;
 int winSizeY = 480;
+int mousepos[2];
+int mb = 0;
 double tpassed = 0;
+int isRunning = 1;
 
-GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
-	GLuint t = 0;
-	glGenTextures(1, &t);
-	// for(unsigned int i = 0; i < w * h; i++)
-	// {
-	// unsigned char t = 0;
-	// unsigned char* r = buf + i*3;
-	// // unsigned char* g = buf + i*3+1;
-	// unsigned char* b = buf + i*3+2;
-	// t = *r;
-	// *r = *b;
-	// *b = t;
-	// }
-	glBindTexture(GL_TEXTURE_2D, t);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
-	return t;
+#define BEGIN_EVENT_HANDLER void events(SDL_Event* e){switch(e->type){
+#define E_KEYSYM e->key.keysym.sym
+
+#define END_EVENT_HANDLER }}
+#define EVENT_HANDLER events
+#define E_MOTION e->motion
+#define E_BUTTON e->button.button
+#define E_WINEVENT e->window.event
+#define E_WINW e->window.data1
+#define E_WINH e->window.data2
+
+vec3 mouse_to_normal(){
+	vec3 r;
+	r.d[0] = mousepos[0] / (float) winSizeX;
+	r.d[1] = mousepos[1] / (float) winSizeY;
+	return r;
 }
 
-void drawBox(GLfloat x, GLfloat y, GLfloat xdim, GLfloat ydim){ //0,0 is top left, 1,1 is bottom right
+int drawBox(GLfloat x, GLfloat y, GLfloat xdim, GLfloat ydim){ //0,0 is top left, 1,1 is bottom right
+	vec3 r = mouse_to_normal(); 
+	int retval = 0;
+	if(
+		(x <= r.d[0]) &&
+		(x+xdim >= r.d[0]) &&
+		(y <= r.d[1]) &&
+		(y+ydim >= r.d[1])
+	) retval = 1;
+
 	x*=2;xdim*=2;
 	y*=2;ydim*=2;
 	glBegin(GL_TRIANGLES);
@@ -80,12 +86,26 @@ void drawBox(GLfloat x, GLfloat y, GLfloat xdim, GLfloat ydim){ //0,0 is top lef
 	glTexCoord2f(1, -1);
 	glVertex3f(-1+x+xdim, 1-y , 0.5); //Top Right Corner
 	glEnd();
+	return retval;
 }
 
-void drawTB(const char* text, GLuint textcolor, GLfloat x, GLfloat y, GLint size){
+
+
+void drawMouse(){
+	vec3 r;
+	r.d[0] = mousepos[0] / (float) winSizeX;
+	r.d[1] = mousepos[1] / (float) winSizeY;
+	if(!mb)
+		glColor3f(0.7,0.7,0.7);
+	else
+		glColor3f(1.0,0.1,0.1);
+	drawBox(r.d[0], r.d[1], 0.03, 0.03);
+}
+
+int drawTB(const char* text, GLuint textcolor, GLfloat x, GLfloat y, GLint size){
 	size = (size>64)?64:((size<8)?8:size); 
 	size >>= 3; //divide by 8 to get the GLTEXTSIZE
-	if(!size || !text) return;
+	if(!size || !text) return 0;
 	int mw = 0, h = 1, cw = 0; //max width, height, current width
 	for(int i = 0; text[i] != '\0' && (text[i] & 127);i++){
 		if(text[i] != '\n') 
@@ -98,40 +118,21 @@ void drawTB(const char* text, GLuint textcolor, GLfloat x, GLfloat y, GLint size
 	float bw = 3*size/(float)winSizeX;
 	float h_ = (size)*8*(h)/(float)winSizeY;
 	float bh = 3*size/(float)winSizeY;
-	drawBox(x-bw/2,y-bh/2, w+bw, h_+bh);
+	int retval = drawBox(x-bw/2,y-bh/2, w+bw, h_+bh);
 	glTextSize(size);
 	glDrawText((unsigned char*)text, x*winSizeX, y*winSizeY, textcolor);
+	return retval;
 }
 
+int haveclicked = 0;
+vec3 tbcoords = (vec3){{0.4,0.4,0}};
 void draw() {
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glBegin(GL_TRIANGLES);
-	// TRIANGLE 1,
-	glTexCoord2f(0, 0);
-	glVertex3f(-1, -1, 0.5);
-
-	glTexCoord2f(1, -1);
-	glVertex3f(1, 1, 0.5);
-
-	glTexCoord2f(0, -1);
-	glVertex3f(-1, 1, 0.5);
-	// TRIANGLE 2
-	glTexCoord2f(0, 0);
-	glVertex3f(-1, -1, 0.5);
-
-	glTexCoord2f(1, 0);
-	glVertex3f(1, -1, 0.5);
-
-	glTexCoord2f(1, -1);
-	glVertex3f(1, 1, 0.5);
-	glEnd();
-	glColor4f(1,1,1,1);
-	//glDisable(GL_TEXTURE_2D);
-	drawBox(0.8,0.8,0.2,0.2);
 	glColor3f(1,1,1);
-	glDisable(GL_TEXTURE_2D);
-	drawTB("I hate text", 0x00, 0.4, 0.4 + 0.1 * sinf(tpassed),24);
+	if(drawTB("I hate text", 0x00, tbcoords.d[0], tbcoords.d[1],16) && mb > 0)
+		puts("Detected click!\n");
+	else
+		puts("No Click!\n");
+	drawMouse();
 }
 
 void initScene() {
@@ -147,29 +148,67 @@ void initScene() {
 	glDisable( GL_CULL_FACE );
 	glDisable(GL_BLEND);
 	//glEnable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 	// glEnable( GL_LIGHT0 );
 	glDisable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
 	glShadeModel(GL_SMOOTH);
 	glTextSize(GL_TEXT_SIZE24x24);
-	{
-		int sw = 0, sh = 0, sc = 0; // sc goes unused.
-		uchar* source_data = stbi_load("texture.png", &sw, &sh, &sc, 3);
-		if (source_data) {
-			tex = loadRGBTexture(source_data, sw, sh);
-			free(source_data);
-		} else {
-			printf("\nCan't load texture!\n");
-		}
-	}
 	glEnable(GL_NORMALIZE);
 }
 
+
+
+
+
+BEGIN_EVENT_HANDLER
+	case SDL_KEYDOWN:
+		switch(E_KEYSYM){
+			case SDLK_ESCAPE:
+			case SDLK_q:
+				isRunning = 0;
+			break;
+			case SDLK_UP: mousepos[1] -= 4;  mousepos[1]%= winSizeY; break;
+			case SDLK_DOWN: mousepos[1] += 4;mousepos[1]%= winSizeY; break;
+			case SDLK_LEFT: mousepos[0] -= 4;mousepos[0]%= winSizeX; break;
+			case SDLK_RIGHT: mousepos[0] += 4;mousepos[0]%= winSizeX; break;
+			case SDLK_SPACE: case SDLK_RETURN:
+				mb = 1;
+			break;
+			default: break;
+		}
+	break;
+	case SDL_KEYUP:
+		switch(E_KEYSYM){
+			case SDLK_SPACE: case SDLK_RETURN:
+				mb = 0;
+			break;
+			default: break;
+		}
+	break;
+	case SDL_QUIT:isRunning = 0;break;
+	case SDL_MOUSEBUTTONDOWN:
+		if(E_BUTTON==SDL_BUTTON_LEFT) mb = 1;
+		if(E_BUTTON==SDL_BUTTON_RIGHT) {
+			tbcoords = mouse_to_normal();
+		}
+		break;
+	case SDL_MOUSEBUTTONUP:
+		if(E_BUTTON==SDL_BUTTON_LEFT) mb = 0;
+		break;
+	case SDL_MOUSEMOTION:
+		mousepos[0] = E_MOTION.x;
+		mousepos[1] = E_MOTION.y;
+	break;
+END_EVENT_HANDLER
+
+
 int main(int argc, char** argv) {
 	// initialize SDL video:
-
+	
+	
 	unsigned int fps = 0;
 	char needsRGBAFix = 0;
 	if (argc > 2) {
@@ -267,29 +306,15 @@ int main(int argc, char** argv) {
 	unsigned int tLastFps = tNow;
 
 	// main loop:
-	int isRunning = 1;
+	
 	while (isRunning) {
 		++frames;
 		tpassed += frames * 16.666666/1000.0;
 		tNow = SDL_GetTicks();
 		// do event handling:
-		SDL_Event evt;
-		while (SDL_PollEvent(&evt))
-			switch (evt.type) {
-			case SDL_KEYDOWN:
-				switch (evt.key.keysym.sym) {
-					break;
-				case SDLK_ESCAPE:
-				case SDLK_q:
-					isRunning = 0;
-				default:
-					break;
-				}
-				break;
-			case SDL_QUIT:
-				isRunning = 0;
-				break;
-			}
+		SDL_Event ev;
+		SDL_Event* e = &ev;
+		while (SDL_PollEvent(e)) events(e);
 
 		// draw scene:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -331,13 +356,13 @@ int main(int argc, char** argv) {
 		}
 		// update fps:
 		if (tNow >= tLastFps + 5000) {
-			printf("%i frames in %f secs, %f frames per second.\n", frames, (float)(tNow - tLastFps) * 0.001f,
+			printf("%llu frames in %f secs, %f frames per second.\n", frames, (float)(tNow - tLastFps) * 0.001f,
 				   (float)frames * 1000.0f / (float)(tNow - tLastFps));
 			tLastFps = tNow;
 			frames = 0;
 		}
 	}
-	printf("%i frames in %f secs, %f frames per second.\n", frames, (float)(tNow - tLastFps) * 0.001f, (float)frames * 1000.0f / (float)(tNow - tLastFps));
+	printf("%llu frames in %f secs, %f frames per second.\n", frames, (float)(tNow - tLastFps) * 0.001f, (float)frames * 1000.0f / (float)(tNow - tLastFps));
 	// cleanup:
 	ZB_close(frameBuffer);
 	glClose();
@@ -348,6 +373,7 @@ int main(int argc, char** argv) {
 	Mix_FreeMusic(myTrack);
 	acleanup();
 #endif
+
 	SDL_Quit();
 	return 0;
 }
