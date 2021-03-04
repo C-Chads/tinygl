@@ -170,8 +170,7 @@ void glopPolygonMode(GLContext* c, GLParam* p) {
 		c->polygon_mode_front = mode;
 		c->polygon_mode_back = mode;
 		break;
-	default:
-		assert(0);
+	default:break;
 	}
 }
 

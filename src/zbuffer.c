@@ -3,7 +3,6 @@
  * Z buffer: 16 bits Z / 16 bits color
  *
  */
-#include <assert.h>
 //#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

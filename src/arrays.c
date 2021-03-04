@@ -1,5 +1,4 @@
 #include "zgl.h"
-#include <assert.h>
 //#include <stdio.h>
 #include "msghandling.h"
 
@@ -375,7 +374,6 @@ void glEnableClientState(GLenum array) {
 		p[1].i = TEXCOORD_ARRAY;
 		break;
 	default:
-		assert(0);
 		break;
 	}
 	gl_add_op(p);
@@ -402,7 +400,6 @@ void glDisableClientState(GLenum array) {
 		p[1].i = ~TEXCOORD_ARRAY;
 		break;
 	default:
-		assert(0);
 		break;
 	}
 	gl_add_op(p);
@@ -470,7 +467,7 @@ void glNormalPointer(GLenum type, GLsizei stride, const GLvoid* pointer) {
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	//assert(type == GL_FLOAT);
+	
 #endif
 	p[0].op = OP_NormalPointer;
 	p[1].i = stride;
@@ -493,7 +490,7 @@ void glTexCoordPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* po
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	//assert(type == GL_FLOAT);
+	
 #endif
 	p[0].op = OP_TexCoordPointer;
 	p[1].i = size;

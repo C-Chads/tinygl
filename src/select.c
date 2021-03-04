@@ -250,7 +250,7 @@ void glopInitNames(GLContext* c, GLParam* p) {
 
 void glopPushName(GLContext* c, GLParam* p) {
 	if (c->render_mode == GL_SELECT) {
-		assert(c->name_stack_size < MAX_NAME_STACK_DEPTH);
+		//assert(c->name_stack_size < MAX_NAME_STACK_DEPTH);
 		c->name_stack[c->name_stack_size++] = p[1].i;
 		c->select_hit = NULL;
 	}
@@ -263,7 +263,7 @@ void glopPushName(GLContext* c, GLParam* p) {
 
 void glopPopName(GLContext* c, GLParam* p) {
 	if (c->render_mode == GL_SELECT) {
-		assert(c->name_stack_size > 0);
+		//assert(c->name_stack_size > 0);
 		c->name_stack_size--;
 		c->select_hit = NULL;
 	}
@@ -271,7 +271,7 @@ void glopPopName(GLContext* c, GLParam* p) {
 
 void glopLoadName(GLContext* c, GLParam* p) {
 	if (c->render_mode == GL_SELECT) {
-		assert(c->name_stack_size > 0);
+		//assert(c->name_stack_size > 0);
 		c->name_stack[c->name_stack_size - 1] = p[1].i;
 		c->select_hit = NULL;
 	}

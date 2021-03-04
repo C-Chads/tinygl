@@ -47,7 +47,7 @@ void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize) {
 #define RETVAL NULL
 #include "error_check.h"
 #else
-	assert(text >= 0 && level < MAX_TEXTURE_LEVELS);
+	//assert(text >= 0 && level < MAX_TEXTURE_LEVELS);
 #endif
 	tex = find_texture(c, text);
 	if (!tex)
@@ -166,7 +166,7 @@ void glopBindTexture(GLContext* c, GLParam* p) {
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	assert(target == GL_TEXTURE_2D && target > 0);
+	//assert(target == GL_TEXTURE_2D && target > 0);
 #endif
 	t = find_texture(c, texture);
 	if (t == NULL) {

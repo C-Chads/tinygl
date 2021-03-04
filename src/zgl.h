@@ -4,7 +4,6 @@
 #include "../include/zfeatures.h"
 #include "../include/zbuffer.h"
 #include "zmath.h"
-#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 //Needed for memcpy

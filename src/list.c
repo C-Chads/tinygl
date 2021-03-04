@@ -172,10 +172,10 @@ if(!ob1)
 	c->current_op_buffer_index = index;
 }
 /* this opcode is never called directly */
-void glopEndList(GLContext* c, GLParam* p) { assert(0); }
+void glopEndList(GLContext* c, GLParam* p) { exit(1); }
 
 /* this opcode is never called directly */
-void glopNextBuffer(GLContext* c, GLParam* p) { assert(0); }
+void glopNextBuffer(GLContext* c, GLParam* p) { exit(1); }
 
 void glopCallList(GLContext* c, GLParam* p) {
 	GLList* l;

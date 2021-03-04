@@ -22,8 +22,8 @@ void glopMatrixMode(GLContext* c, GLParam* p) {
 	case GL_TEXTURE:
 		c->matrix_mode = 2;
 		break;
-	default:
-		assert(0);
+	default:break;
+		//assert(0);
 	}
 }
 
@@ -78,7 +78,8 @@ void glopPushMatrix(GLContext* c, GLParam* p) {
 	GLint n = c->matrix_mode;
 	M4* m;
 
-	assert((c->matrix_stack_ptr[n] - c->matrix_stack[n] + 1) < c->matrix_stack_depth_max[n]);
+	//TODO add error check.
+	//assert((c->matrix_stack_ptr[n] - c->matrix_stack[n] + 1) < c->matrix_stack_depth_max[n]);
 
 	m = ++c->matrix_stack_ptr[n];
 
@@ -90,7 +91,7 @@ void glopPushMatrix(GLContext* c, GLParam* p) {
 void glopPopMatrix(GLContext* c, GLParam* p) {
 	GLint n = c->matrix_mode;
 
-	assert(c->matrix_stack_ptr[n] > c->matrix_stack[n]);
+	//assert(c->matrix_stack_ptr[n] > c->matrix_stack[n]);
 	c->matrix_stack_ptr[n]--;
 	gl_matrix_update(c);
 }

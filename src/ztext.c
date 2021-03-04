@@ -2,7 +2,7 @@
 #include "../include/zbuffer.h"
 #include "font8x8_basic.h"
 #include "zgl.h"
-#include <assert.h>
+
 //#include <stdio.h>
 #include <stdlib.h>
 //#include <string.h>
