@@ -354,9 +354,9 @@ void *gl_zalloc(GLint size);
 #else
 #include<string.h>
 #include<stdlib.h>
-inline void gl_free(void* p) { free(p); }
-inline void* gl_malloc(GLint size) { return malloc(size); }
-inline void* gl_zalloc(GLint size) { return calloc(1, size); }
+static inline void gl_free(void* p) { free(p); }
+static inline void* gl_malloc(GLint size) { return malloc(size); }
+static inline void* gl_zalloc(GLint size) { return calloc(1, size); }
 #endif
 void gl_memcpy(void* dest, void* src, GLuint size);
 

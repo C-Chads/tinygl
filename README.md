@@ -184,12 +184,29 @@ TinyGL is not header only, it is a combination of C files, internal headers, and
 
 The internal headers are only used while compiling the library,
 
-the external headers (gl.h, zfeatures.h, zbuffer.h) are requires to use the library.
+the external headers (gl.h, zfeatures.h, zbuffer.h) are required to use the library.
 
 You CAN compile the library along with your final program into a single compilation unit without separating out the library.
 
 Doing so is the most likely compiling method for embedded platforms and how I got TinyGL running on the 3DS.
 
+The codebase uses very simple compiler flags to compile- in fact it will compile if you just compile all c files together
+
+in the src/ directory.
+
+You can compile the code yourself without makefiles using these directives:
+```
+# inside the src directory
+gcc -Wno-uninitialized -O3 -c *.c 
+ar rcs libTinyGL.a *.o
+# the library is now compiled
+cp libTinyGL.a ../lib
+cd ..
+cd SDL_Examples/
+# build the menu demo
+gcc -O3 menu.c -o menu -lSDL ../lib/libTinyGL.a -lm
+# gears
+gcc -O3 gears.c -o gears -lSDL ../lib/libTinyGL.a -lm
 ```c
 //First you have to include
 //(Note that you must either link against libTinyGL.a or compile it in the same compilation unit as your program)
