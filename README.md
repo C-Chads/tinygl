@@ -320,6 +320,17 @@ See `include/zfeatures.h`
 
 This changes too often to maintain documentation here.
 
+To disable or enable the compiletime tests, see include/GL/gl.h
+
+You may need to disable it if you want to compile the library
+even though you failed the compatibility test.
+
+```c
+//at the top of include/GL/gl.h
+//Enable TinyGL's Compiletime Compatibility Test (Scroll down)
+#define COMPILETIME_TINYGL_COMPAT_TEST 1
+```
+
 ## FIXED BUGS FROM THE ORIGINAL!
 
 TinyGL 0.4 by Bellard had incorrect color interpolation and issues with
