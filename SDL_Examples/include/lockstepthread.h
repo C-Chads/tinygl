@@ -87,7 +87,6 @@ void* lsthread_func(void* me_void){
 	lsthread* me = (lsthread*) me_void;
 	int ret = 0;
 	if (!me)pthread_exit(NULL);
-	if(!me->execute)pthread_exit(NULL);
 	while (1) {
 		//ret = pthread_cond_wait(&(me->myCond), &(me->myMutex));
 		pthread_barrier_wait(&me->myBarrier);
