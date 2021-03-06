@@ -10,7 +10,7 @@ Written by Gek (DMHSW) in 2020
 #ifndef LOCKSTEPTHREAD_H
 #define LOCKSTEPTHREAD_H
 #include <pthread.h>
-#include <stdio.h>
+#include <stdlib.h>
 typedef struct {
 	pthread_mutex_t myMutex;
 	pthread_barrier_t myBarrier;
@@ -18,7 +18,8 @@ typedef struct {
 	int isThreadLive;
 	int shouldKillThread;
 	int state;
-	void (*execute)();
+	void (*execute)(void*);
+	void* argument;
 } lsthread;
 void init_lsthread(lsthread* t);
 void start_lsthread(lsthread* t);
@@ -37,6 +38,7 @@ void init_lsthread(lsthread* t){
 	t->shouldKillThread = 0;
 	t->state = 0;
 	t->execute = NULL;
+	t->argument = NULL;
 }
 void destroy_lsthread(lsthread* t){
 	pthread_mutex_destroy(&t->myMutex);
@@ -95,7 +97,7 @@ void* lsthread_func(void* me_void){
 		//exit(1)
 		//if(ret)pthread_exit(NULL);
 		if (!(me->shouldKillThread) && me->execute)
-			me->execute();
+			me->execute(me->argument);
 		else if(me->shouldKillThread){
 			pthread_mutex_unlock(&me->myMutex);
 			//exit(1)
