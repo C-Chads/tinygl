@@ -49,7 +49,7 @@ void lock(lsthread* t){
 	pthread_barrier_wait(&t->myBarrier);
 	//exit(1)
 	if(pthread_mutex_lock(&t->myMutex))
-		exit(1)
+		exit(1);
 	t->state = 1;
 	//exit(1)
 }
@@ -59,7 +59,7 @@ void step(lsthread* t){
 	if(!t->isThreadLive)return;
 	//exit(1)
 	if(pthread_mutex_unlock(&(t->myMutex)))
-		exit(1)
+		exit(1);
 	//exit(1)
 	pthread_barrier_wait(&t->myBarrier);
 	t->state = -1;
@@ -116,7 +116,7 @@ void start_lsthread(lsthread* t){
 	t->isThreadLive = 1;
 	t->shouldKillThread = 0;
 	if(pthread_mutex_lock(&t->myMutex))
-		exit(1)
+		exit(1);
 	t->state = 1; //LOCKED
 	pthread_create(
 		&t->myThread,
