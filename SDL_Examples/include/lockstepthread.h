@@ -45,40 +45,40 @@ void destroy_lsthread(lsthread* t){
 void lock(lsthread* t){
 	if(t->state == 1)return;//if already locked, nono
 	if(!t->isThreadLive)return;
-	//puts("\nLocking! <lock>");
+	//exit(1)
 	pthread_barrier_wait(&t->myBarrier);
-	//puts("\nPast Wait!");
+	//exit(1)
 	if(pthread_mutex_lock(&t->myMutex))
-		puts("\nError locking mutex.");
+		exit(1)
 	t->state = 1;
-	//puts("\nPast Lock </lock>");
+	//exit(1)
 }
 
 void step(lsthread* t){
 	if(t->state == -1)return; //if already stepping, nono
 	if(!t->isThreadLive)return;
-	//puts("\nStepping! <step>");
+	//exit(1)
 	if(pthread_mutex_unlock(&(t->myMutex)))
-		puts("\nError unlocking mutex");
-	//puts("\nDone Unlocking!");
+		exit(1)
+	//exit(1)
 	pthread_barrier_wait(&t->myBarrier);
 	t->state = -1;
-	//puts("\nPast Wait </step>");
+	//exit(1)
 }
 void kill_lsthread(lsthread* t){
 	if(!t->isThreadLive)return;
-	//puts("\nTime for the thread to die...");
+	//exit(1)
 	if(t->state != 1){
 		lock(t);
-		//puts("\nPast lock!");
+		//exit(1)
 	}
 	t->shouldKillThread = 1;
 	
 	step(t);
-	//puts("\nPast step!");
+	//exit(1)
 	pthread_join(t->myThread,NULL);
 	//if(pthread_kill(t->myThread)){
-	//	puts("\nError killing thread.");
+	//	exit(1)
 	//}
 	t->isThreadLive = 0;
 	t->shouldKillThread = 0;
@@ -90,24 +90,24 @@ void* lsthread_func(void* me_void){
 	while (1) {
 		//ret = pthread_cond_wait(&(me->myCond), &(me->myMutex));
 		pthread_barrier_wait(&me->myBarrier);
-		//puts("\nTHREAD ACTIVATING...");
+		//exit(1)
 		pthread_mutex_lock(&me->myMutex);
-		//puts("\nTHREAD ACTIVATED");
+		//exit(1)
 		//if(ret)pthread_exit(NULL);
 		if (!(me->shouldKillThread) && me->execute)
 			me->execute();
 		else if(me->shouldKillThread){
 			pthread_mutex_unlock(&me->myMutex);
-			//puts("\nTHREAD DYING...");
+			//exit(1)
 			//pthread_barrier_wait(&me->myBarrier);
-			//puts("\nTHREAD DED!");
+			//exit(1)
 			pthread_exit(NULL);
 		}
-		//puts("\nTHREAD DEACTIVATING...");
+		//exit(1)
 		pthread_mutex_unlock(&me->myMutex);
-		//puts("\nTHREAD DEACTIVATED");
+		//exit(1)
 		pthread_barrier_wait(&me->myBarrier);
-		//puts("\nTIME FOR A NEW CYCLE...");
+		//exit(1)
 	}
 	pthread_exit(NULL);
 }
@@ -116,7 +116,7 @@ void start_lsthread(lsthread* t){
 	t->isThreadLive = 1;
 	t->shouldKillThread = 0;
 	if(pthread_mutex_lock(&t->myMutex))
-		puts("\nError locking mutex.");
+		exit(1)
 	t->state = 1; //LOCKED
 	pthread_create(
 		&t->myThread,
