@@ -4,10 +4,10 @@
 
 #ifndef CHAD_MATH_H
 #define CHAD_MATH_H
-
+#define CHAD_MATH_NO_ALIGN
 #ifndef CHAD_MATH_NO_ALIGN
 #include <stdalign.h>
-#define CHAD_ALIGN alignas(16)
+#define CHAD_ALIGN alignas(32)
 #else
 #define CHAD_ALIGN /*a comment*/
 #endif

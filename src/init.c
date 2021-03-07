@@ -67,10 +67,8 @@ void endSharedState(GLContext* c) {
 	for(i = 0; i < MAX_BUFFERS; i++){
 		if(s->buffers[i])
 		{
-			//tgl_warning("\nFound a buffer that needs deleting! its handle is %d\n",i+1);
 			if(s->buffers[i]->data){
 				gl_free(s->buffers[i]->data);
-				//tgl_warning("\nIt has data too! its handle is %d\n",i+1);
 			}
 			gl_free(s->buffers[i]);
 		}
