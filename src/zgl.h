@@ -326,14 +326,14 @@ typedef struct GLContext {
 	GLint boundtexcoordbuffer;
 } GLContext;
 
-extern GLContext* gl_ctx;
-static inline GLContext* gl_get_context(void) { return gl_ctx; }
+extern GLContext gl_ctx;
+static inline GLContext* gl_get_context(void) { return &gl_ctx; }
 //void gl_add_op(GLParam* p);
 extern void (*op_table_func[])(GLContext*, GLParam*);
 extern GLint op_table_size[];
 extern void gl_compile_op(GLContext* c, GLParam* p);
 static inline void gl_add_op(GLParam* p) {
-	GLContext* c = gl_ctx;
+	GLContext* c = gl_get_context();
 #if TGL_FEATURE_ERROR_CHECK == 1
 #include "error_check.h"
 #endif

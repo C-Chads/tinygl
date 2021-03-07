@@ -1,6 +1,6 @@
 #include "zgl.h"
 #include "msghandling.h"
-GLContext* gl_ctx;
+GLContext gl_ctx;
 
 void initSharedState(GLContext* c) {
 	GLSharedState* s = &c->shared_state;
@@ -144,10 +144,11 @@ void glInit(void* zbuffer1) {
 #if TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST == 1
 	if(TinyGLRuntimeCompatibilityTest()) gl_fatal_error("TINYGL_FAILED_RUNTIME_COMPAT_TEST");
 #endif
-	c = gl_zalloc(sizeof(GLContext));
+	//c = gl_zalloc(sizeof(GLContext));
+	c = &gl_ctx;
 	if(!c) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
-	gl_ctx = c;
-
+	//gl_ctx = c;
+	
 	c->zb = zbuffer;
 #if TGL_FEATURE_ERROR_CHECK == 1
 	c->error_flag = GL_NO_ERROR;
@@ -359,5 +360,5 @@ void glClose(void) {
 	}
 #endif
 	endSharedState(c);
-	gl_free(c);
+	//gl_free(c);
 }
