@@ -7,7 +7,7 @@
 
 #ifndef CHAD_MATH_NO_ALIGN
 #include <stdalign.h>
-#define CHAD_ALIGN alignas(32)
+#define CHAD_ALIGN alignas(16)
 #else
 #define CHAD_ALIGN /*a comment*/
 #endif
