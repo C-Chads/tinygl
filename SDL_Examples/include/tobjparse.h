@@ -11,7 +11,6 @@ Written by Gek (DMHSW) in 2020
 #ifndef TOBJ_PARSE_H
 #define TOBJ_PARSE_H
 #include "3dMath.h"
-#include "stretchy_buffer.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -23,6 +22,7 @@ typedef struct{
 	long long unsigned int vc;
 }facedef;
 typedef struct{
+	unsigned int npos, nnorm, ntexcoords, ncolors, nfaces;
 	vec3* positions;
 	vec3* normals;
 	vec3* texcoords;
@@ -38,6 +38,11 @@ typedef struct{
 }model;
 objraw initobjraw(){
 	return (objraw){
+		.npos=0,
+		.nnorm=0,
+		.ntexcoords=0,
+		.ncolors=0,
+		.nfaces=0,
 		.positions=NULL,
 		.normals=NULL,
 		.texcoords=NULL,
@@ -54,11 +59,11 @@ model initmodel(){
 	};
 }
 void freeobjraw(objraw* o){
-	sb_free(o->positions);
-	sb_free(o->texcoords);
-	sb_free(o->normals);
-	sb_free(o->colors);
-	sb_free(o->faces);
+	free(o->positions);
+	free(o->texcoords);
+	free(o->normals);
+	free(o->colors);
+	free(o->faces);
 }
 void freemodel(model* o){
 	free(o->d);
@@ -74,23 +79,23 @@ model tobj_tomodel(objraw* raw){
 	}
 	model ret = initmodel();
 	ret.npoints = 0;
-	ret.d=malloc(sizeof(vec3) * sb_count(raw->faces));
-	if(raw->normals)ret.n=malloc(sizeof(vec3) * sb_count(raw->faces));
-	if(raw->texcoords)ret.t=malloc(sizeof(vec3) * sb_count(raw->faces));
-	if(raw->colors)ret.c=malloc(sizeof(vec3) * sb_count(raw->faces));
+	ret.d= malloc(sizeof(vec3) * raw->nfaces);
+	if(raw->normals)ret.n=malloc(sizeof(vec3) * raw->nfaces);
+	if(raw->texcoords)ret.t=malloc(sizeof(vec3) * raw->nfaces);
+	if(raw->colors)ret.c=malloc(sizeof(vec3) * raw->nfaces);
 	long long unsigned int piter = 0;
 	long long unsigned int niter = 0;
 	long long unsigned int titer = 0;
 	long long unsigned int citer = 0;
 	//printf("\nsb_count of faces is %d",sb_count(raw->faces));
-	for(long long int i = 0; i < sb_count(raw->faces);i++){
+	for(long long int i = 0; i < raw->nfaces;i++){
 		//printf("\n::%lld:: 0\n",i);
 		long long unsigned int p = raw->faces[i].p-1;
 		long long unsigned int n = raw->faces[i].n-1;
 		long long unsigned int t = raw->faces[i].tc-1;
 		long long unsigned int c = raw->faces[i].vc-1;
 		
-		if(p < (long long unsigned int)sb_count(raw->positions)){
+		if(p < (long long unsigned int)raw->npos){
 			//sb_push(ret.d, raw->positions[p]);
 			ret.d[piter++] = raw->positions[p];
 			ret.npoints++;
@@ -99,7 +104,7 @@ model tobj_tomodel(objraw* raw){
 			printf("p=%llu n=%llu t=%llu c=%llu i=%lld\n\n",p,n,t,c,i);
 		}
 		if(raw->normals){
-			if(n < (long long unsigned int)sb_count(raw->normals)){
+			if(n < (long long unsigned int)raw->nnorm){
 				//sb_push(ret.n, raw->normals[n]);
 				ret.n[niter++] = raw->normals[n];
 			} else {
@@ -107,14 +112,14 @@ model tobj_tomodel(objraw* raw){
 			}
 		}
 		if(raw->texcoords){
-			if(t < (long long unsigned int)sb_count(raw->texcoords)){
+			if(t < (long long unsigned int)raw->ntexcoords){
 				//sb_push(ret.t, raw->texcoords[t]);
 				ret.t[titer++] = raw->texcoords[t];
 			} else
 				puts("\n<BAD DATA>, TEXCOORDS\n");
 		}
 		if(raw->colors){
-			if(c < (long long unsigned int)sb_count(raw->colors)){
+			if(c < (long long unsigned int)raw->ncolors){
 				//sb_push(ret.c, raw->colors[c]);
 				ret.c[citer++] = raw->colors[c];
 			} else {
@@ -138,7 +143,7 @@ objraw tobj_load(const char* fn){
 		char line[2048];line[2047]=0;
 		//int read = 0;
 
-
+#define TOBJ_PUSH(type, vec, n, val){vec = realloc(vec, sizeof(type) * (n+1)); vec[n++] = val;}
 		while(fgets(line, 2047, f)){
 			vec3 val;
 			facedef frick0;
@@ -147,67 +152,75 @@ objraw tobj_load(const char* fn){
 			if(line[0] == 'v' && line[1] == ' ' && (strlen(line) > 4)){
 				//read = sscanf(line,"v %f %f %f",&val.d[0],&val.d[1],&val.d[2]);
 				//printf("\nv Read: %d",read);
-				sb_push(retval.positions, val);
+
+				//sb_push(retval.positions, val);
+				TOBJ_PUSH(vec3, retval.positions, retval.npos, val);
 				char* t = line+2;
-				sb_last(retval.positions).d[0] = atof(t);
+				//sb_last(retval.positions).d[0] = atof(t);
+				retval.positions[retval.npos-1].d[0] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				sb_last(retval.positions).d[1] = atof(t);
+				//sb_last(retval.positions).d[1] = atof(t);
+				retval.positions[retval.npos-1].d[1] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				sb_last(retval.positions).d[2] = atof(t);
+				//sb_last(retval.positions).d[2] = atof(t);
+				retval.positions[retval.npos-1].d[2] = atof(t);
 			}
 			if(line[0] == 'v' && line[1] == 't' && (strlen(line) > 4)){
 				//read = sscanf(line,"vt %f %f",&val.d[0],&val.d[1]);
-				sb_push(retval.texcoords, val);
+				//sb_push(retval.texcoords, val);
+				TOBJ_PUSH(vec3, retval.texcoords, retval.ntexcoords, val);
 				char* t = line+3;
-				sb_last(retval.texcoords).d[0] = atof(t);
+				//sb_last(retval.texcoords).d[0] = atof(t);
+				retval.texcoords[retval.ntexcoords-1].d[0] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				sb_last(retval.texcoords).d[1] = -atof(t);
+				//sb_last(retval.texcoords).d[1] = -atof(t);
+				retval.texcoords[retval.ntexcoords-1].d[1] = -atof(t);
 				
 			}
 			if(line[0] == 'v' && line[1] == 'c' && (strlen(line) > 4)){
 				//read=sscanf(line,"vc %f %f %f",&val.d[0],&val.d[1],&val.d[2]);
-				sb_push(retval.colors, val);
+				//sb_push(retval.colors, val);
+				TOBJ_PUSH(vec3, retval.colors, retval.ncolors, val);
 				char* t = line+3;
-				sb_last(retval.colors).d[0] = atof(t);
+				//sb_last(retval.colors).d[0] = atof(t);
+				retval.colors[retval.ncolors-1].d[0] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				sb_last(retval.colors).d[1] = atof(t);
+				//sb_last(retval.colors).d[1] = atof(t);
+				retval.colors[retval.ncolors-1].d[1] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				sb_last(retval.colors).d[2] = atof(t);
+				//sb_last(retval.colors).d[2] = atof(t);
+				retval.colors[retval.ncolors-1].d[2] = atof(t);
 				//printf("\nvc Read: %d",read);
 				
 			}
 			if(line[0] == 'v' && line[1] =='n' && (strlen(line) > 4)){
 				//read=sscanf(line,"vn %f %f %f",&val.d[0],&val.d[1],&val.d[2]);
 				//printf("\nn Read: %d",read);
-				sb_push(retval.normals, val);
+				//sb_push(retval.normals, val);
+				TOBJ_PUSH(vec3, retval.normals, retval.nnorm, val);
 				char* t = line+3;
-				sb_last(retval.normals).d[0] = atof(t);
+				//sb_last(retval.normals).d[0] = atof(t);
+				retval.normals[retval.nnorm-1].d[0] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				sb_last(retval.normals).d[1] = atof(t);
+				//sb_last(retval.normals).d[1] = atof(t);
+				retval.normals[retval.nnorm-1].d[1] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				sb_last(retval.normals).d[2] = atof(t);
-				
-				/*
-				printf("\nreading from stretchy buffer, %f %f %f",
-					retval.normals[sb_count(retval.normals)-1].d[0],
-					retval.normals[sb_count(retval.normals)-1].d[1],
-					retval.normals[sb_count(retval.normals)-1].d[2]
-				);
-				*/
+				//sb_last(retval.normals).d[2] = atof(t);
+				retval.normals[retval.nnorm-1].d[2] = atof(t);
 			}
 			if(line[0] == 'f' && (strlen(line) > 4)){
 				//The face lines are hard to parse.
@@ -325,9 +338,12 @@ objraw tobj_load(const char* fn){
 					frick2.vc = strtoull(t,NULL,10);
 					//printf("\nf[2].vc is %llu",frick2.vc);
 				}
-				sb_push(retval.faces,frick0);
-				sb_push(retval.faces,frick1);
-				sb_push(retval.faces,frick2);
+				//sb_push(retval.faces,frick0);
+				TOBJ_PUSH(facedef, retval.faces, retval.nfaces, frick0);
+				//sb_push(retval.faces,frick1);
+				TOBJ_PUSH(facedef, retval.faces, retval.nfaces, frick1);
+				//sb_push(retval.faces,frick2);
+				TOBJ_PUSH(facedef, retval.faces, retval.nfaces, frick2);
 				/*
 				printf("\nReading from sb, frick0.p=%llu frick0.n=%llu frick0.tc=%llu frick0.vc=%llu",
 					retval.faces[sb_count(retval.faces)-3].p,
