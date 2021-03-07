@@ -3,7 +3,9 @@
 A major overhaul of Fabrice Bellard's TinyGL (still compiling with -std=c99) to be
 more useful as a software rasterizer.
 
-## Tightly tweaked for performance
+## Tightly tweaked and tuned for performance
+
+The library has been tightly tuned using valgrind, perf stat, and other tools.
 
 On a single thread on an i7-6700 (Skylake, 2015),
 the standard "gears" demo runs at a higher framerate than glxgears on Mesa using a Ryzen 3900x (2019)
