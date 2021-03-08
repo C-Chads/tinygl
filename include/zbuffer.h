@@ -358,6 +358,5 @@ static inline void gl_free(void* p) { free(p); }
 static inline void* gl_malloc(GLint size) { return malloc(size); }
 static inline void* gl_zalloc(GLint size) { return calloc(1, size); }
 #endif
-void gl_memcpy(void* dest, void* src, GLuint size);
 
 #endif /* _tgl_zbuffer_h_ */
