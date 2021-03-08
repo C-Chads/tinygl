@@ -6,7 +6,7 @@
 
 static GLTexture* find_texture(GLContext* c, GLint h) {
 	GLTexture* t;
-	t = c->shared_state.texture_hash_table[h % TEXTURE_HASH_TABLE_SIZE];
+	t = c->shared_state.texture_hash_table[h & TEXTURE_HASH_TABLE_MASK];
 	while (t != NULL) {
 		if (t->handle == h)
 			return t;
@@ -65,12 +65,10 @@ void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize) {
 
 static void free_texture(GLContext* c, GLint h) {
 	GLTexture *t, **ht;
-	GLImage* im;
-	GLint i;
 
 	t = find_texture(c, h);
 	if (t->prev == NULL) {
-		ht = &c->shared_state.texture_hash_table[t->handle % TEXTURE_HASH_TABLE_SIZE];
+		ht = &c->shared_state.texture_hash_table[t->handle & TEXTURE_HASH_TABLE_MASK];
 		*ht = t->next;
 	} else {
 		t->prev->next = t->next;
@@ -78,11 +76,11 @@ static void free_texture(GLContext* c, GLint h) {
 	if (t->next != NULL)
 		t->next->prev = t->prev;
 
-	for (i = 0; i < MAX_TEXTURE_LEVELS; i++) {
-		im = &t->images[i];
-		if (im->pixmap != NULL)
-			gl_free(im->pixmap);
-	}
+//	for (i = 0; i < MAX_TEXTURE_LEVELS; i++) {
+//		im = &t->images[i];
+		//if (im->pixmap != NULL)
+		//	gl_free(im->pixmap);
+//	}
 
 	gl_free(t);
 }
@@ -101,7 +99,7 @@ GLTexture* alloc_texture(GLContext* c, GLint h) {
 		gl_fatal_error("GL_OUT_OF_MEMORY");
 #endif
 
-	ht = &c->shared_state.texture_hash_table[h % TEXTURE_HASH_TABLE_SIZE];
+	ht = &c->shared_state.texture_hash_table[h & TEXTURE_HASH_TABLE_MASK];
 
 	t->next = *ht;
 	t->prev = NULL;
@@ -146,6 +144,7 @@ void glDeleteTextures(GLint n, const GLuint* textures) {
 	GLTexture* t;
 #include "error_check.h"
 	for (i = 0; i < n; i++) {
+
 		t = find_texture(c, textures[i]);
 		if (t != NULL && t != 0) {
 			if (t == c->current_texture) {
@@ -241,15 +240,10 @@ void glopCopyTexImage2D(GLContext* c, GLParam* p){
 		return;
 #endif
 	}
-	PIXEL* data = gl_malloc(TGL_FEATURE_TEXTURE_DIM * TGL_FEATURE_TEXTURE_DIM * sizeof(PIXEL)); //GUARDED
-	if(!data){
-#if TGL_FEATURE_ERROR_CHECK == 1
-#define ERROR_FLAG GL_OUT_OF_MEMORY
-#include "error_check.h"
-#else
-		gl_fatal_error("GL_OUT_OF_MEMORY");
-#endif
-	}
+	GLImage* im = &c->current_texture->images[level];
+	PIXEL* data = c->current_texture->images[level].pixmap;
+	im->xsize = TGL_FEATURE_TEXTURE_DIM;
+	im->ysize = TGL_FEATURE_TEXTURE_DIM;
 	//sample the buffer.
 	//TODO implement the scaling and stuff that the GL spec says it should have.
 	for(GLint j = 0; j < h; j++)
@@ -265,13 +259,6 @@ void glopCopyTexImage2D(GLContext* c, GLParam* p){
 		data[i+j*w] = c->zb->pbuf[		((i+x)%(c->zb->xsize))
 									+	((j+y)%(c->zb->ysize))*(c->zb->xsize)];
 	}
-	//TODO: Load this into a texture.
-	GLImage* im = &c->current_texture->images[level];
-	im->xsize = TGL_FEATURE_TEXTURE_DIM;
-	im->ysize = TGL_FEATURE_TEXTURE_DIM;
-	if (im->pixmap != NULL) gl_free(im->pixmap);
-	im->pixmap = data;
-	//if(data)gl_free(data);
 }
 
 void glopTexImage1D(GLContext* c, GLParam* p){
@@ -324,42 +311,16 @@ void glopTexImage1D(GLContext* c, GLParam* p){
 	im = &c->current_texture->images[level];
 	im->xsize = width;
 	im->ysize = height;
-	if (im->pixmap != NULL) gl_free(im->pixmap);
+	//if (im->pixmap != NULL) gl_free(im->pixmap);
 #if TGL_FEATURE_RENDER_BITS == 32
-	im->pixmap = gl_malloc(width * height * 4); //GUARDED
-	if (im->pixmap) {
-		gl_convertRGB_to_8A8R8G8B(im->pixmap, pixels1, width, height);
-	}else { //failed malloc of im->pixmap, glopteximage1d
-#if TGL_FEATURE_ERROR_CHECK == 1
-#define ERROR_FLAG GL_OUT_OF_MEMORY
-#include "error_check.h"
-#else
-		gl_fatal_error("GL_OUT_OF_MEMORY");
-#endif
-	}
+	gl_convertRGB_to_8A8R8G8B(im->pixmap, pixels1, width, height);
 #elif TGL_FEATURE_RENDER_BITS == 16
-	im->pixmap = gl_malloc(width * height * 2);//GUARDED
-	if (im->pixmap) {
-		gl_convertRGB_to_5R6G5B(im->pixmap, pixels1, width, height);
-	}else {
-#if TGL_FEATURE_ERROR_CHECK == 1
-#define ERROR_FLAG GL_OUT_OF_MEMORY
-#include "error_check.h"
+	gl_convertRGB_to_5R6G5B(im->pixmap, pixels1, width, height);
 #else
-		gl_fatal_error("GL_OUT_OF_MEMORY");
-#endif
-	}
-
-#else
-#error TODO
+#error bad TGL_FEATURE_RENDER_BITS
 #endif
 	if (do_free)
 		gl_free(pixels1);
-
-
-
-
-
 }
 void glopTexImage2D(GLContext* c, GLParam* p) {
 	GLint target = p[1].i;
@@ -411,34 +372,12 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 	im = &c->current_texture->images[level];
 	im->xsize = width;
 	im->ysize = height;
-	if (im->pixmap != NULL) gl_free(im->pixmap);
 #if TGL_FEATURE_RENDER_BITS == 32
-	im->pixmap = gl_malloc(width * height * 4);//GUARDED
-	if (im->pixmap) {
 		gl_convertRGB_to_8A8R8G8B(im->pixmap, pixels1, width, height);
-	}else {
-#if TGL_FEATURE_ERROR_CHECK == 1
-#define ERROR_FLAG GL_OUT_OF_MEMORY
-#include "error_check.h"
-#else
-		gl_fatal_error("GL_OUT_OF_MEMORY");
-#endif
-	}
 #elif TGL_FEATURE_RENDER_BITS == 16
-	im->pixmap = gl_malloc(width * height * 2);//GUARDED
-	if (im->pixmap) {
 		gl_convertRGB_to_5R6G5B(im->pixmap, pixels1, width, height);
-	}else {
-#if TGL_FEATURE_ERROR_CHECK == 1
-#define ERROR_FLAG GL_OUT_OF_MEMORY
-#include "error_check.h"
 #else
-		gl_fatal_error("GL_OUT_OF_MEMORY");
-#endif
-	}
-
-#else
-#error TODO
+#error Bad TGL_FEATURE_RENDER_BITS
 #endif
 	if (do_free)
 		gl_free(pixels1);

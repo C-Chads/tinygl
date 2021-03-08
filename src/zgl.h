@@ -140,13 +140,14 @@ typedef struct GLVertex {
 } GLVertex;
 
 typedef struct GLImage {
-	void* pixmap;
+	PIXEL pixmap[TGL_FEATURE_TEXTURE_DIM * TGL_FEATURE_TEXTURE_DIM];
 	GLint xsize, ysize;
 } GLImage;
 
 /* textures */
 
 #define TEXTURE_HASH_TABLE_SIZE 256
+#define TEXTURE_HASH_TABLE_MASK 255
 typedef struct GLTexture {
 	GLImage images[MAX_TEXTURE_LEVELS];
 	GLint handle;

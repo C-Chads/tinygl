@@ -7,6 +7,7 @@
 //Disabling this has slight performance gains.
 #define TGL_FEATURE_ERROR_CHECK 0
 //Strict out-of-memory checking. All OpenGL function calls are invalidated (ALL OF THEM) if a GL_OUT_OF_MEMORY error occurs.
+//This means that TinyGL has to constantly check all gl_malloc() attempts for errors and the state of the error state variable.
 //The checks slow down the renderer so it is not recommended , but
 //it's in the GL spec that this should occur.
 #define TGL_FEATURE_STRICT_OOM_CHECKS 0
@@ -15,7 +16,8 @@
 //a replacement gl_malloc(), gl_zalloc(), and gl_free() in memory.c
 #define TGL_FEATURE_CUSTOM_MALLOC 0
 
-//Use Fast Inverse Square Root. Toggleable because it's actually slower on some systems, i've heard.
+//Use Fast Inverse Square Root. Toggleable because it's actually slower,
+//And because some systems may have float types which are incompatible with it.
 #define TGL_FEATURE_FISR 1
 //Clientside Arrays
 #define TGL_FEATURE_ARRAYS         1

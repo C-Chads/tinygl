@@ -40,12 +40,12 @@ void endSharedState(GLContext* c) {
 		t = s->texture_hash_table[i];
 		while (t) {
 			GLTexture** ht;
-			GLImage* im;
-			GLint inner_i;
+			//GLImage* im;
+			//GLint inner_i;
 
 			// t = find_texture(c, h);
 			if (t->prev == NULL) {
-				ht = &c->shared_state.texture_hash_table[t->handle % TEXTURE_HASH_TABLE_SIZE];
+				ht = &c->shared_state.texture_hash_table[t->handle & TEXTURE_HASH_TABLE_MASK];
 				*ht = t->next;
 			} else {
 				t->prev->next = t->next;
@@ -54,11 +54,11 @@ void endSharedState(GLContext* c) {
 			if (t->next != NULL)
 				t->next->prev = t->prev;
 
-			for (inner_i = 0; inner_i < MAX_TEXTURE_LEVELS; inner_i++) {
-				im = &t->images[inner_i];
-				if (im->pixmap != NULL)
-					gl_free(im->pixmap);
-			}
+			//for (inner_i = 0; inner_i < MAX_TEXTURE_LEVELS; inner_i++) {
+			//	im = &t->images[inner_i];
+			//	if (im->pixmap != NULL)
+			//		gl_free(im->pixmap);
+			//}
 			gl_free(t);
 			t = n;
 		}

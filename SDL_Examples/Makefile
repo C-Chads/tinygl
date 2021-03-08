@@ -12,7 +12,7 @@ SDL_LIBS= -lSDL
 #SDL_LIBS= -lmingw32 -lSDLmain -lSDL 
 
 
-#SDL_MIXERLIBS= -lSDL_mixer -lmad -logg -lmikmod -logg
+#SDL_MIXERLIBS= -lSDL_mixer -lmad -logg -lmikmod -logg -DPLAY_MUSIC
 SDL_MIXERLIBS= 
 all: $(ALL_T)
 clean:
