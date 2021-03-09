@@ -82,10 +82,10 @@ static inline unsigned int strprefix(const char *pre, const char *str)
 }
 
 //Someone once said sub-string search was an O(n^2) algorithm. What the hell?
-static inline int strfind(const char* text, const char* subtext){
-	int ti = 0;
-	int si = 0;
-	int st = strlen(subtext);
+static inline long long strfind(const char* text, const char* subtext){
+	long long ti = 0;
+	long long si = 0;
+	long long st = strlen(subtext);
 	for(;text[ti] != '\0';ti++){
 		if(text[ti] == subtext[si]) {
 			si++; 
@@ -101,8 +101,8 @@ static inline int strfind(const char* text, const char* subtext){
 
 //Read file until terminator character is found.
 //Returns the number of characters copied.
-static inline unsigned int read_until_terminator(FILE* f, char* buf, const unsigned int buflen, char terminator){
-	unsigned int i = 0;
+static inline unsigned long long read_until_terminator(FILE* f, char* buf, const unsigned long long buflen, char terminator){
+	unsigned long long i = 0;
 	char c;
 	for(i = 0; i < (buflen-1); i++)
 	{
@@ -116,12 +116,12 @@ static inline unsigned int read_until_terminator(FILE* f, char* buf, const unsig
 }
 
 //Same as above but allocates memory to guarantee it can hold the entire thing. Grows naturally.
-static inline char* read_until_terminator_alloced(FILE* f, unsigned int* lenout, char terminator, unsigned int initsize){
+static inline char* read_until_terminator_alloced(FILE* f, unsigned long long* lenout, char terminator, unsigned long long initsize){
 	char c;
 	char* buf = STRUTIL_ALLOC(initsize);
 	if(!buf) return NULL;
-	unsigned int bcap = initsize;
-	unsigned int blen = 0;
+	unsigned long long bcap = initsize;
+	unsigned long long blen = 0;
 	while(1){
 		if(feof(f)){break;}
 		c = fgetc(f);
@@ -141,7 +141,7 @@ static inline char* read_until_terminator_alloced(FILE* f, unsigned int* lenout,
 }
 
 
-static inline void* read_file_into_alloced_buffer(FILE* f, unsigned int* len){
+static inline void* read_file_into_alloced_buffer(FILE* f, unsigned long long* len){
 	void* buf = NULL;
 	if(!f) return NULL;
 	fseek(f, 0, SEEK_END);
