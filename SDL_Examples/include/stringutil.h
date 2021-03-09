@@ -33,12 +33,13 @@ static inline char* strcatalloc(const char* s1, const char* s2){
 }
 //Free the first argument.
 static inline char* strcatallocf1(char* s1, const char* s2){
-	char* d = NULL; d = STRUTIL_ALLOC(strlen(s1) + strlen(s2) + 1);
+	char* d = STRUTIL_REALLOC(s1, strlen(s1) + strlen(s2) + 1);
+	//char* d = NULL; d = STRUTIL_ALLOC(strlen(s1) + strlen(s2) + 1);
 	if(d){
-		strcpy(d, s1);
+		//strcpy(d, s1);
 		strcat(d, s2);
 	}
-	STRUTIL_FREE(s1);
+	//STRUTIL_FREE(s1);
 	return d;
 }
 //Free the second argument.
