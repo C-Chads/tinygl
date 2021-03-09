@@ -222,23 +222,23 @@ void glopVertex(GLContext* c, GLParam* p) {
 	c->vertex_cnt = cnt;
 
 	/* quick fix to avoid crashes on large polygons */
-#if TGL_FEATURE_GL_POLYGON == 1
-	if (n >= c->vertex_max) {
-		GLVertex* newarray;
-		c->vertex_max <<= 1; /* just double size */
-		newarray = gl_malloc(sizeof(GLVertex) * c->vertex_max);
-#if TGL_FEATURE_ERROR_CHECK == 1
-		if (!newarray)
-#define ERROR_FLAG GL_OUT_OF_MEMORY
-#include "error_check.h"
-#else
-		if (!newarray) exit(1);
-#endif
-		memcpy(newarray, c->vertex, n * sizeof(GLVertex));
-		gl_free(c->vertex);
-		c->vertex = newarray;
-	}
-#endif 
+//#if TGL_FEATURE_GL_POLYGON == 1
+//	if (n >= c->vertex_max) {
+//		GLVertex* newarray;
+//		c->vertex_max <<= 1; /* just double size */
+//		newarray = gl_malloc(sizeof(GLVertex) * c->vertex_max);
+//#if TGL_FEATURE_ERROR_CHECK == 1
+//		if (!newarray)
+//#define ERROR_FLAG GL_OUT_OF_MEMORY
+//#include "error_check.h"
+//#else
+//		if (!newarray) exit(1);
+//#endif
+//		memcpy(newarray, c->vertex, n * sizeof(GLVertex));
+//		gl_free(c->vertex);
+//		c->vertex = newarray;
+//	}
+//#endif 
 	/* new vertex entry */
 	v = &c->vertex[n];
 	n++;

@@ -269,8 +269,9 @@ typedef struct GLContext {
 	GLint in_begin;
 	GLint begin_type;
 	GLint vertex_n, vertex_cnt;
-	GLint vertex_max;
-	GLVertex* vertex;
+	//GLint vertex_max;
+	//GLVertex vertex*;
+	GLVertex vertex[POLYGON_MAX_VERTEX];
 
 	/* opengl 1.1 arrays  */
 	GLfloat* vertex_array;

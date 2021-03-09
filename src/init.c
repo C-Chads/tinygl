@@ -152,9 +152,9 @@ void glInit(void* zbuffer1) {
 	c->error_flag = GL_NO_ERROR;
 #endif
 	/* allocate GLVertex array */
-	c->vertex_max = POLYGON_MAX_VERTEX;
-	c->vertex = gl_malloc(POLYGON_MAX_VERTEX * sizeof(GLVertex));
-	if(!c->vertex) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
+	//c->vertex_max = POLYGON_MAX_VERTEX;
+	//c->vertex = gl_malloc(POLYGON_MAX_VERTEX * sizeof(GLVertex));
+	//if(!c->vertex) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	/* viewport */
 	v = &c->viewport;
 	v->xmin = 0;
@@ -342,7 +342,7 @@ void glInit(void* zbuffer1) {
 void glClose(void) {
 	GLContext* c = gl_get_context();
 	GLuint i;
-	gl_free(c->vertex);
+	//gl_free(c->vertex);
 	for (i = 0; i < 3; i++) {
 		// c->matrix_stack[i] = gl_zalloc(c->matrix_stack_depth_max[i] * sizeof(M4));
 		gl_free(c->matrix_stack[i]);
