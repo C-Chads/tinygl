@@ -67,7 +67,7 @@ GLuint postProcessingStep(GLint x, GLint y, GLuint pixel, GLushort z){
 	return pixel & 0x8F8F8F; //Half color mode.
 #else
 //16 bit mode
-	return 63<<5; //Solid green
+	return pixel & (63<<5); //Solid green
 #endif
 }
 

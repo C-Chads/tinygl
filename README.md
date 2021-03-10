@@ -292,9 +292,16 @@ These are the operations that are accelerated:
 
 * glDrawPixels
 
+Every scanline is drawn by a separate thread.
+
 * glPostProcess
 
-Compile the library with -fopenmp to see them in action!
+Every call of the function pointer is run by a separate thread.
+
+Compile the library with -fopenmp to see them in action. They are used in the texture demo, make sure to add the argument `-pp`
+
+when running the texture demo to get postprocessing (with 32 bit color, the postprocessing step simply halves the pixel color,
+on 16 bit, it isolates the green component.
 
 You do not need a multithreaded processor to use TinyGL!
 
@@ -351,6 +358,28 @@ Serverside buffers! Makes it a bit easier to do clientside array stuff at the mo
 may be the site of future hardware acceleration.
 
 Please look at the model.c demo to see how to use these functions. They function very similarly to their GL 2.0+ counterparts.
+
+### glPostProcess(GLuint (*postprocess)(GLint x, GLint y, GLuint pixel, GLushort z))
+
+Fast, Multithreaded Postprocessing for TinyGL. 
+
+You simply send in a function pointer (The function's name) and glPostProcess does the heavy lifting
+
+The return value is the pixel (ARGB or 5R6G5B depending on mode).
+
+x and y are the screen coordinataes.
+
+pixel is the current color value of the pixel, ARGB or 5R6G5B depending on mode.
+
+z is TinyGL's internal Z buffer representation. Larger values are considered to be "in front" of smaller ones.
+
+This function is multithreaded on supported platforms for maximum execution speed. It of course still works without multithreading, but
+
+it will not be as fast.
+
+Note that you may have to take special care to prevent race conditions when using multithreading with this function.
+
+
 
 ## TOGGLEABLE FEATURES
 
