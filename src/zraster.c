@@ -128,9 +128,13 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 	rastoffset.v[0] = rastpos.v[0];
 	rastoffset.v[1] = rastpos.v[1];
 	GLint zz = c->rasterpos_zz;
+#if TGL_FEATURE_BLEND_DRAW_PIXELS == 1
 	TGL_BLEND_VARS
+#endif
 #if TGL_FEATURE_BLEND == 1
+#if TGL_FEATURE_BLEND_DRAW_PIXELS == 1
 	GLuint zbeb = zb->enable_blend;
+#endif
 #endif
 	//Looping over the source pixels.
 	if(c->render_mode == GL_SELECT){

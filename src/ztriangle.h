@@ -25,7 +25,7 @@ Things to keep in mind:
 	PIXEL* pp1;
 	
 
-	GLint nb_lines, dx1, dy1, dx2, dy2;
+	GLint dx1, dy1, dx2, dy2;
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 	GLushort the_y;
 #endif
@@ -171,9 +171,9 @@ GLfloat d1, d2;
 	DRAW_INIT();
 //part used here and down.
 	for (GLint part = 0; part < 2; part++) {
-		
+		GLint nb_lines;
 		{ZBufferPoint *pr1, *pr2, *l1, *l2; //BEGINNING OF LIFETIME FOR ZBUFFERPOINT VARS!!!
-		GLint update_left, update_right; //update_left decl
+		register GLint update_left, update_right; //update_left decl
 			if (part == 0) {
 				if (fz > 0) { //Here! (VALUE_FZ_USED)
 					update_left = 1; //update_left first usage.
