@@ -117,16 +117,15 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 	PIXEL* d = p[3].p;
 	PIXEL* pbuf = zb->pbuf;
 	GLushort* zbuf = zb->zbuf;
-	GLushort* pz;
+	
 	GLubyte zbdw = zb->depth_write; 
 	GLubyte zbdt = zb->depth_test;
 	GLint tw = zb->xsize;
 	GLint th = zb->ysize;
 	GLfloat pzoomx = c->pzoomx;
 	GLfloat pzoomy = c->pzoomy;
-	V4 rastoffset;
-	rastoffset.v[0] = rastpos.v[0];
-	rastoffset.v[1] = rastpos.v[1];
+	
+
 	GLint zz = c->rasterpos_zz;
 #if TGL_FEATURE_BLEND_DRAW_PIXELS == 1
 	TGL_BLEND_VARS
@@ -150,10 +149,13 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 		);
 		return;
 	}
-	for(GLint sx = 0; sx < w; sx++)
+// Works.
+#pragma omp parallel for
 	for(GLint sy = 0; sy < h; sy++)
+	for(GLint sx = 0; sx < w; sx++)
 	{
 		PIXEL col = d[sy*w+sx];
+		V4 rastoffset;
 		rastoffset.v[0] = rastpos.v[0] +  (GLfloat)sx * pzoomx;
 		rastoffset.v[1] = rastpos.v[1] - ((GLfloat)(h-sy) * pzoomy);
 		rastoffset.v[2] = rastoffset.v[0] + pzoomx;
@@ -161,7 +163,7 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 		for(GLint tx = rastoffset.v[0]; (GLfloat)tx < rastoffset.v[2];tx++)
 		for(GLint ty = rastoffset.v[1]; (GLfloat)ty > rastoffset.v[3];ty--)
 			if(CLIPTEST(tx,ty,tw,th)){
-			pz = zbuf + (ty * tw + tx);
+			GLushort* pz = zbuf + (ty * tw + tx);
 
 				if(ZCMP(zz,*pz)){
 

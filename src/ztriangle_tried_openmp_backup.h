@@ -17,40 +17,39 @@ Things to keep in mind:
  5) Fixed point math is used for the depth "z" buffer
  6) We're not just using floats for everything because this is still supposed to be fast on platforms without SSE2
  7) Fewer variables is usually better
+ 8) All variables that are used inside the rasterizer loop must exist irrespective of feature level at the language level,
+ because OpenMP needs to be able to declare them "private". The compiler will of course optimize out the unused ones.
  */
 
+#define BEGIN_SEGMENT
+
 {
-	GLfloat fdx1, fdx2, fdy1, fdy2;
-	GLushort* pz1;
-	PIXEL* pp1;
+	//All these variables are safe to be shared.
+	
+	//GLint dx1, dy1, dx2, dy2;
+	//these VAR VAR_min, and VAR_max must be private.
+	
 	
 
-	GLint dx1, dy1, dx2, dy2;
-#if TGL_FEATURE_POLYGON_STIPPLE == 1
-	GLushort the_y;
-#endif
-	GLint error, derror;
-	GLint x1, dxdy_min, dxdy_max;
-	/* warning: x2 is multiplied by 2^16 */
-	GLint x2, dx2dy2;
-
-#ifdef INTERP_Z
-	GLint z1, dzdx, dzdy, dzdl_min, dzdl_max;
-#endif
-#ifdef INTERP_RGB
-	GLint r1, drdx, drdy, drdl_min, drdl_max;
-	GLint g1, dgdx, dgdy, dgdl_min, dgdl_max;
-	GLint b1, dbdx, dbdy, dbdl_min, dbdl_max;
-#endif
-#ifdef INTERP_ST
-	GLint s1, dsdx, dsdy, dsdl_min, dsdl_max;
-	GLint t1, dtdx, dtdy, dtdl_min, dtdl_max;
-#endif
-#ifdef INTERP_STZ
-	GLfloat sz1, dszdx, dszdy, dszdl_min, dszdl_max;
-	GLfloat tz1, dtzdx, dtzdy, dtzdl_min, dtzdl_max;
+//#ifdef INTERP_Z
+	
+	GLint dzdx, dzdy;
+//#ifdef INTERP_RGB
+	
+	GLint drdx, drdy;
+	
+	GLint dgdx, dgdy;
+	
+	GLint dbdx, dbdy;
+	
+	GLint dsdx, dsdy;
+	
+	GLint dtdx, dtdy;
+	
+	GLfloat dszdx, dszdy;
+	
+	GLfloat dtzdx, dtzdy; //Not the cause of our problem.
 	GLfloat fdzdx, fndzdx, ndszdx, ndtzdx;
-#endif
 
 	/* we sort the vertex with increasing y */
 	if (p1->y < p0->y) {
@@ -68,8 +67,8 @@ Things to keep in mind:
 		p1 = p2;
 		p2 = t;
 	}
-	
-
+GLfloat fz;
+{GLfloat fdx1, fdx2, fdy1, fdy2;
 	/* we compute dXdx and dXdy for all GLinterpolated values */
 	fdx1 = p1->x - p0->x;//fdx1 first usage (VALUE_FDX1_USED)
 	fdy1 = p1->y - p0->y;//fdy1 first usage (VALUE_FDY1_USED)
@@ -77,7 +76,7 @@ Things to keep in mind:
 	fdx2 = p2->x - p0->x;
 	fdy2 = p2->y - p0->y;
 	
-	GLfloat fz = fdx1 * fdy2 - fdx2 * fdy1;//fz first usage
+	fz = fdx1 * fdy2 - fdx2 * fdy1;//fz first usage
 	if (fz == 0)
 		return;
 	fz = 1.0 / fz; //value of fz is used (VALUE_FZ_USED)
@@ -87,134 +86,170 @@ Things to keep in mind:
 	fdx2 *= fz;
 	fdy2 *= fz;
 	//and then
-{
-GLfloat d1, d2;
-#ifdef INTERP_Z
-{
-	d1 = p1->z - p0->z; //d1 first usage
-	d2 = p2->z - p0->z;
-	dzdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	dzdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
-#endif
-
-#ifdef INTERP_RGB
-{
-	d1 = p1->r - p0->r;
-	d2 = p2->r - p0->r;
-	drdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	drdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
-{
-	d1 = p1->g - p0->g;
-	d2 = p2->g - p0->g;
-	dgdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	dgdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
-{
-	d1 = p1->b - p0->b;
-	d2 = p2->b - p0->b;
-	dbdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	dbdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
-#endif
-
-#ifdef INTERP_ST
-{
-	d1 = p1->s - p0->s;
-	d2 = p2->s - p0->s;
-	dsdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	dsdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
-{
-	d1 = p1->t - p0->t;
-	d2 = p2->t - p0->t;
-	dtdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	dtdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
-#endif
-
-#ifdef INTERP_STZ
 	{
-		GLfloat zedzed;
-		zedzed = (GLfloat)p0->z;
-		p0->sz = (GLfloat)p0->s * zedzed;
-		p0->tz = (GLfloat)p0->t * zedzed;
-		zedzed = (GLfloat)p1->z;
-		p1->sz = (GLfloat)p1->s * zedzed;
-		p1->tz = (GLfloat)p1->t * zedzed;
-		zedzed = (GLfloat)p2->z;
-		p2->sz = (GLfloat)p2->s * zedzed;
-		p2->tz = (GLfloat)p2->t * zedzed;
+	GLfloat d1, d2;
+	#ifdef INTERP_Z
+	{
+		d1 = p1->z - p0->z; //d1 first usage
+		d2 = p2->z - p0->z;
+		dzdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+		dzdy = (GLint)(fdx1 * d2 - fdx2 * d1);
+	}
+	#endif
+
+	#ifdef INTERP_RGB
+	{
+		d1 = p1->r - p0->r;
+		d2 = p2->r - p0->r;
+		drdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+		drdy = (GLint)(fdx1 * d2 - fdx2 * d1);
 	}
 	{
-		d1 = p1->sz - p0->sz;
-		d2 = p2->sz - p0->sz;
-		dszdx = (fdy2 * d1 - fdy1 * d2);
-		dszdy = (fdx1 * d2 - fdx2 * d1);
+		d1 = p1->g - p0->g;
+		d2 = p2->g - p0->g;
+		dgdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+		dgdy = (GLint)(fdx1 * d2 - fdx2 * d1);
 	}
 	{
-		d1 = p1->tz - p0->tz;
-		d2 = p2->tz - p0->tz;
-		dtzdx = (fdy2 * d1 - fdy1 * d2);
-		dtzdy = (fdx1 * d2 - fdx2 * d1);
+		d1 = p1->b - p0->b;
+		d2 = p2->b - p0->b;
+		dbdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+		dbdy = (GLint)(fdx1 * d2 - fdx2 * d1);
 	}
-#endif
-} //EOF d1, d2 lifetimes.
+	#endif
+
+	#ifdef INTERP_ST
+	{
+		d1 = p1->s - p0->s;
+		d2 = p2->s - p0->s;
+		dsdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+		dsdy = (GLint)(fdx1 * d2 - fdx2 * d1);
+	}
+	{
+		d1 = p1->t - p0->t;
+		d2 = p2->t - p0->t;
+		dtdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+		dtdy = (GLint)(fdx1 * d2 - fdx2 * d1);
+	}
+	#endif
+
+	#ifdef INTERP_STZ
+		{
+			GLfloat zedzed;
+			zedzed = (GLfloat)p0->z;
+			p0->sz = (GLfloat)p0->s * zedzed;
+			p0->tz = (GLfloat)p0->t * zedzed;
+			zedzed = (GLfloat)p1->z;
+			p1->sz = (GLfloat)p1->s * zedzed;
+			p1->tz = (GLfloat)p1->t * zedzed;
+			zedzed = (GLfloat)p2->z;
+			p2->sz = (GLfloat)p2->s * zedzed;
+			p2->tz = (GLfloat)p2->t * zedzed;
+		}
+		{
+			d1 = p1->sz - p0->sz;
+			d2 = p2->sz - p0->sz;
+			dszdx = (fdy2 * d1 - fdy1 * d2);
+			dszdy = (fdx1 * d2 - fdx2 * d1);
+		}
+		{
+			d1 = p1->tz - p0->tz;
+			d2 = p2->tz - p0->tz;
+			dtzdx = (fdy2 * d1 - fdy1 * d2);
+			dtzdy = (fdx1 * d2 - fdx2  * d1);
+		}
+	#endif
+	}//EOF d1, d2 lifetimes.
+
+}//eof fdx1 fdx2 fdy1 fdy2 lifetimes.
 	/* screen coordinates */
 
+/*
 	pp1 = (PIXEL*)(zb->pbuf) + zb->xsize * p0->y; //pp1 first usage
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 	the_y = p0->y;
 #endif
 	pz1 = zb->zbuf + p0->y * zb->xsize;
-
+*/
 	DRAW_INIT();
-//part used here and down.
-//TODO: #pragma omp parallel for private(a, b, c)
 //Required reading:
 //http://jakascorner.com/blog/2016/06/omp-data-sharing-attributes.html
 //I'd also like to figure out if the main while() loop over raster lines can be OMP parallelized, but I suspect it isn't worth it.
+#pragma omp parallel for num_threads(2)
 	for (GLint part = 0; part < 2; part++) {
-		GLint nb_lines;
+	//Variables specific to this part of the triangle.
+#define ZEROASSN =0
+//#define ZEROASSN /* a comment*/
+
+		GLint x1 ZEROASSN, dxdy_min ZEROASSN, dxdy_max ZEROASSN;
+		GLint z1 ZEROASSN, dzdl_min ZEROASSN, dzdl_max ZEROASSN;
+		GLint r1 ZEROASSN, drdl_min ZEROASSN, drdl_max ZEROASSN;
+		GLint g1 ZEROASSN,  dgdl_min ZEROASSN, dgdl_max ZEROASSN;
+		GLint b1 ZEROASSN, dbdl_min ZEROASSN, dbdl_max ZEROASSN;
+		GLint s1 ZEROASSN, dsdl_min ZEROASSN, dsdl_max ZEROASSN;
+		GLint t1 ZEROASSN, dtdl_min ZEROASSN, dtdl_max ZEROASSN;
+		GLfloat sz1 ZEROASSN, dszdl_min ZEROASSN, dszdl_max ZEROASSN;
+		GLfloat tz1 ZEROASSN, dtzdl_min ZEROASSN, dtzdl_max ZEROASSN;
+		GLint nb_lines ZEROASSN;
+		GLushort* pz1 ZEROASSN;
+		PIXEL* pp1 ZEROASSN;
+		GLint error ZEROASSN, derror ZEROASSN;
+		GLfloat fzl = fz;
+		GLint dx1 ZEROASSN, dy1 ZEROASSN, dx2 ZEROASSN, dy2 ZEROASSN;
+		/* warning: x2 is multiplied by 2^16 */
+		GLint x2 ZEROASSN, dx2dy2 ZEROASSN;
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
+		GLushort the_y ZEROASSN;
+#endif
 		{ZBufferPoint *pr1, *pr2, *l1, *l2; //BEGINNING OF LIFETIME FOR ZBUFFERPOINT VARS!!!
 		register GLint update_left, update_right; //update_left decl
 			if (part == 0) {
-				if (fz > 0) { //Here! (VALUE_FZ_USED)
-					update_left = 1; //update_left first usage.
-					update_right = 1;
+				update_left = 1; //update_left first usage.
+				update_right = 1;
+				
+				if (fzl > 0) { //Here! (VALUE_FZ_USED)
 					l1 = p0; //MARK l1 first usage
 					l2 = p2; //MARK l2 first usage
 					pr1 = p0; //MARK first usage of pr1
 					pr2 = p1; //MARK first usage pf pr2
 				} else {
-					update_left = 1; //update_left second usage.
-					update_right = 1;
 					l1 = p0;
 					l2 = p1;
 					pr1 = p0;
 					pr2 = p2;
 				}
+				pp1 = (PIXEL*)(zb->pbuf) + zb->xsize * p0->y; //pp1 first usage
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
+				the_y = p0->y;
+#endif
+				pz1 = zb->zbuf + p0->y * zb->xsize;
 				nb_lines = p1->y - p0->y;
 			} else { //SECOND PART~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				/* second part */
-				if (fz > 0) { //fz last usage (VALUE_FZ_USED)
-					update_left = 0; //update left third usage.
+				if (fzl > 0) { //fzl last usage (VALUE_FZ_USED)
+					update_left = 0;
 					update_right = 1;
 					pr1 = p1;
 					pr2 = p2;
 				} else {
-					update_left = 1; //4th
+					update_left = 1;
 					update_right = 0;
 					l1 = p1;
 					l2 = p2;
 				}
+				pp1 = (PIXEL*)(zb->pbuf) + zb->xsize * p0->y + (zb->xsize * (p1->y - p0->y)); //pp1 update to second part.
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
+				the_y = p1->y;
+#endif
+				pz1 = zb->zbuf + p0->y * zb->xsize + (zb->xsize * (p1->y - p0->y));
 				nb_lines = p2->y - p1->y + 1;
 			} //EOF SECOND PART
 
 			/* compute the values for the left edge */
 			//pr1 and pr2 are not used inside this area.
-			if (update_left) { //5th usage
+			if (update_left)
+			//if (1) 
+			{
 				{
 					register GLint tmp;
 					dy1 = l2->y - l1->y;
@@ -265,7 +300,9 @@ GLfloat d1, d2;
 			//Is l1 used after update_left?
 			/* compute values for the right edge */
 
-			if (update_right) { //Update right tested
+			if (update_right) 
+			//if (1) 
+			{ //Update right tested
 				dx2 = (pr2->x - pr1->x);
 				dy2 = (pr2->y - pr1->y); //LAST USAGE OF PR2
 				if (dy2 > 0)
@@ -277,8 +314,11 @@ GLfloat d1, d2;
 		} //End of lifetime for ZBufferpoints
 		/* we draw all the scan line of the part */
 
-		while (nb_lines > 0) {
-			nb_lines--;
+		//TODO: omp parallel for
+		//for(GLint q = 0; q < nb_lines; q++)
+		//for(; nb_lines > 0; nb_lines--) //Replaces the while.
+		while(nb_lines>0)
+		{ nb_lines--; //Effectively matching the while.
 #ifndef DRAW_LINE
 			/* generic draw line */
 			{

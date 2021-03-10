@@ -300,17 +300,17 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
 		register GLuint s, t, z;                                                                                                                   		           \
 		register GLint n;                                                                                                                          	               \
 		OR1OG1OB1DECL                                                                                                                                              \
-		GLfloat sz, tz, fz, zinv;                                                                                                                                  \
+		GLfloat sz, tz, fzl, zinv;                                                                                                                                  \
 		n = (x2 >> 16) - x1;                                                                                                                                       \
-		fz = (GLfloat)z1;                                                                                                                                          \
-		zinv = 1.0 / fz;                                                                                                                                           \
+		fzl = (GLfloat)z1;                                                                                                                                          \
+		zinv = 1.0 / fzl;                                                                                                                                           \
 		pp = (PIXEL*)((GLbyte*)pp1 + x1 * PSZB);                                                                                                                   \
 		pz = pz1 + x1;                                                                                                                                             \
 		z = z1;                                                                                                                                                    \
 		sz = sz1;                                                                                                                                                  \
 		tz = tz1;                                                                                                                                                  \
 		while (n >= (NB_INTERP - 1)) {                                                                                                                             \
-			register GLint  dsdx, dtdx;																															   \
+			register GLint dsdx, dtdx;																															   \
 			{                                                                                                                                                      \
 				GLfloat ss, tt;                                                                                                                                    \
 				ss = (sz * zinv);                                                                                                                                  \
@@ -320,8 +320,8 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
 				dsdx = (GLint)((dszdx - ss * fdzdx) * zinv);                                                                                                       \
 				dtdx = (GLint)((dtzdx - tt * fdzdx) * zinv);																								       \
 			}                                                                                                   										           \
-				fz += fndzdx;                                                                                                                                      \
-				zinv = 1.0 / fz;                                                                                                                                   \
+				fzl += fndzdx;                                                                                                                                      \
+				zinv = 1.0 / fzl;                                                                                                                                   \
 			PUT_PIXEL(0); /*the_x++;*/                                                                                                                             \
 			PUT_PIXEL(1); /*the_x++;*/                                                                                                                             \
 			PUT_PIXEL(2); /*the_x++;*/                                                                                                                             \

@@ -71,11 +71,7 @@
 //#define TGL_CLAMPI(imp) ( (imp>0) * (COLOR_MASK * (imp>COLOR_MASK) + imp * (!(imp>COLOR_MASK)) )      )
 #define TGL_CLAMPI(imp) ( (imp>0)?((imp>COLOR_MASK)?COLOR_MASK:imp):0   )
 
-//#if TGL_FEATURE_BETTER_COLOR_INTERP == 1
-//#define (imp) imp = TGL_CLAMPI2((imp));
-//#else
-//#define (imp) /*a comment*/
-//#endif
+
 
 
 #if TGL_FEATURE_RENDER_BITS == 32

@@ -7,8 +7,8 @@
 /* TODO: Implement blending for lines and points. */
 
 void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
-	GLushort* pz;
-	PIXEL* pp;
+	
+	
 	GLint zz;
 	GLubyte zbdw = zb->depth_write; 
 	GLubyte zbdt = zb->depth_test;
@@ -17,14 +17,20 @@ void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 	zz = p->z >> ZB_POINT_Z_FRAC_BITS;
 	//	PIXEL col;
 	if(zbps == 1){
+		GLushort* pz;
+		PIXEL* pp;
 		pz = zb->zbuf + (p->y * zb->xsize + p->x);
 		pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * p->y + p->x * PSZB);
 		
 		if (ZCMP(zz, *pz)) {
+#if TGL_FEATURE_BLEND == 1
 			if(!zb->enable_blend)
 				*pp = RGB_TO_PIXEL(p->r, p->g, p->b);
 			else
 				TGL_BLEND_FUNC_RGB(p->r, p->g, p->b, (*pp))
+#else
+			*pp = RGB_TO_PIXEL(p->r, p->g, p->b);
+#endif
 			if(zbdw)
 				*pz = zz;
 		}
@@ -40,14 +46,18 @@ void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 		for(GLint y = by; y < ey; y++)
 		for(GLint x = bx; x < ex; x++)
 		{
-			pz = zb->zbuf + (y * zb->xsize + x);
-			pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * y + x * PSZB);
+			GLushort* pz = zb->zbuf + (y * zb->xsize + x);
+			PIXEL* pp = (PIXEL*)((GLbyte*)zb->pbuf + zb->linesize * y + x * PSZB);
 			//zz = p->z >> ZB_POINT_Z_FRAC_BITS;
 			if (ZCMP(zz, *pz)) {
+#if TGL_FEATURE_BLEND == 1
 				if(!zb->enable_blend)
 					*pp = col;
 				else
 					TGL_BLEND_FUNC_RGB(p->r, p->g, p->b, (*pp))
+#else
+				*pp = col;
+#endif
 				if(zbdw)
 					*pz = zz;
 			}

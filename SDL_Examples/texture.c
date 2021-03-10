@@ -61,6 +61,7 @@ GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
 }
 
 void draw() {
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glBegin(GL_TRIANGLES);
@@ -256,7 +257,7 @@ int main(int argc, char** argv) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		draw();
 		glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x000000FF);
-		glPixelZoom(0.5,1);
+		glPixelZoom(2.0,0.7);
 		glRasterPos3f(-1,-1,fabs(sinf(frames_notreset/200.0)));
 		{
 			GLint xsize, ysize;
