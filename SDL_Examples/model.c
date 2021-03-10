@@ -114,9 +114,9 @@ void LoadModelArrays(
 	// f_ as float and not double!
 	// Remember that!
 	vec3* points, uint npoints, vec3* colors, vec3* normals, vec3* texcoords) {
-	if (!points)
-		return;
+	if (!points)return;
 	FreeModelArray();
+	ModelArrayLoaded = 1;
 	ModelArray.npoints = npoints;
 	ModelArray.points = malloc(sizeof(float) * npoints * 3);
 	if(normals)
