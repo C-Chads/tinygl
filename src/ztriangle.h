@@ -170,6 +170,10 @@ GLfloat d1, d2;
 
 	DRAW_INIT();
 //part used here and down.
+//TODO: #pragma omp parallel for private(a, b, c)
+//Required reading:
+//http://jakascorner.com/blog/2016/06/omp-data-sharing-attributes.html
+//I'd also like to figure out if the main while() loop over raster lines can be OMP parallelized, but I suspect it isn't worth it.
 	for (GLint part = 0; part < 2; part++) {
 		GLint nb_lines;
 		{ZBufferPoint *pr1, *pr2, *l1, *l2; //BEGINNING OF LIFETIME FOR ZBUFFERPOINT VARS!!!
