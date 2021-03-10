@@ -71,6 +71,8 @@ extern int omg_cursor_has_been_sucked;
 extern int omg_cursor_was_inside;  //Set 
 extern float omg_buttonjump[2]; //Defaults to zero
 // Setting for users using 
+extern int bstate_old;
+extern int udlr_old[4];
 
 // cursor button
 extern int omg_cb; //Set to zero every iteration.
@@ -81,7 +83,8 @@ int omg_cursor_has_been_sucked;
 int omg_cursor_was_inside;  //Set 
 float omg_buttonjump[2]; //Defaults to zero
 // Setting for users using 
-
+int bstate_old = 0;
+int udlr_old[4] = {0,0,0,0};
 // cursor button
 int omg_cb; //Set to zero every iteration.
 #endif
@@ -101,8 +104,7 @@ static inline float omg_wrapf(float x){
 }
 
 static inline void omg_update_keycursor(int _up, int _down, int _left, int _right, int bstate){
-	static int bstate_old = 0;
-	static int udlr_old[4] = {0,0,0,0};
+	
 	omg_cursor_was_inside = 0;
 	int up = _up && ! udlr_old[0];
 	int down = _down && ! udlr_old[1];
@@ -134,7 +136,6 @@ static inline void omg_update_keycursor(int _up, int _down, int _left, int _righ
 
 //for mouse cursors and touch input.
 static inline void omg_update_mcursor(float ncx, float ncy, int bstate){
-	static int bstate_old = 0;
 	omg_cursor_has_been_sucked = 0;
 	omg_cursor_was_inside = 0;
 	omg_cursorpos[0] = ncx;

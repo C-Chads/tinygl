@@ -100,7 +100,9 @@
 //Test the compatibility of the target platform at glInit() time.
 #define TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST 1
 
+#define TINYGL_VERSION 0.8
+
 #endif 
 /* _tgl_features_h_ */
 
-#define TINYGL_VERSION 0.8
+
