@@ -23,7 +23,7 @@ Things to keep in mind:
 	GLfloat fdx1, fdx2, fdy1, fdy2;
 	GLushort* pz1;
 	PIXEL* pp1;
-	GLint update_left, update_right;
+	
 
 	GLint nb_lines, dx1, dy1, dx2, dy2;
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
@@ -171,17 +171,19 @@ GLfloat d1, d2;
 	DRAW_INIT();
 //part used here and down.
 	for (GLint part = 0; part < 2; part++) {
+		
 		{ZBufferPoint *pr1, *pr2, *l1, *l2; //BEGINNING OF LIFETIME FOR ZBUFFERPOINT VARS!!!
+		GLint update_left, update_right; //update_left decl
 			if (part == 0) {
 				if (fz > 0) { //Here! (VALUE_FZ_USED)
-					update_left = 1;
+					update_left = 1; //update_left first usage.
 					update_right = 1;
 					l1 = p0; //MARK l1 first usage
 					l2 = p2; //MARK l2 first usage
 					pr1 = p0; //MARK first usage of pr1
 					pr2 = p1; //MARK first usage pf pr2
 				} else {
-					update_left = 1;
+					update_left = 1; //update_left second usage.
 					update_right = 1;
 					l1 = p0;
 					l2 = p1;
@@ -192,12 +194,12 @@ GLfloat d1, d2;
 			} else { //SECOND PART~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				/* second part */
 				if (fz > 0) { //fz last usage (VALUE_FZ_USED)
-					update_left = 0;
+					update_left = 0; //update left third usage.
 					update_right = 1;
 					pr1 = p1;
 					pr2 = p2;
 				} else {
-					update_left = 1;
+					update_left = 1; //4th
 					update_right = 0;
 					l1 = p1;
 					l2 = p2;
@@ -207,7 +209,7 @@ GLfloat d1, d2;
 
 			/* compute the values for the left edge */
 			//pr1 and pr2 are not used inside this area.
-			if (update_left) {
+			if (update_left) { //5th usage
 				{
 					register GLint tmp;
 					dy1 = l2->y - l1->y;
@@ -258,7 +260,7 @@ GLfloat d1, d2;
 			//Is l1 used after update_left?
 			/* compute values for the right edge */
 
-			if (update_right) {
+			if (update_right) { //Update right tested
 				dx2 = (pr2->x - pr1->x);
 				dy2 = (pr2->y - pr1->y); //LAST USAGE OF PR2
 				if (dy2 > 0)
