@@ -17,6 +17,8 @@ Things to keep in mind:
  5) Fixed point math is used for the depth "z" buffer
  6) We're not just using floats for everything because this is still supposed to be fast on platforms without SSE2
  7) Fewer variables is usually better
+ 8) All variables that are used inside the rasterizer loop must exist irrespective of feature level at the language level,
+ because OpenMP needs to be able to declare them "private". The compiler will of course optimize out the unused ones.
  */
 
 {
@@ -28,6 +30,8 @@ Things to keep in mind:
 	GLint dx1, dy1, dx2, dy2;
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 	GLushort the_y;
+#else
+	static const GLushort the_y; //Unused variable necessary 
 #endif
 	GLint error, derror;
 	GLint x1, dxdy_min, dxdy_max;
@@ -36,19 +40,31 @@ Things to keep in mind:
 
 #ifdef INTERP_Z
 	GLint z1, dzdx, dzdy, dzdl_min, dzdl_max;
+#else
+	static const GLint z1, dzdx, dzdy, dzdl_min, dzdl_max;
 #endif
 #ifdef INTERP_RGB
 	GLint r1, drdx, drdy, drdl_min, drdl_max;
 	GLint g1, dgdx, dgdy, dgdl_min, dgdl_max;
 	GLint b1, dbdx, dbdy, dbdl_min, dbdl_max;
+#else
+	static const GLint r1, drdx, drdy, drdl_min, drdl_max;
+	static const GLint g1, dgdx, dgdy, dgdl_min, dgdl_max;
+	static const GLint b1, dbdx, dbdy, dbdl_min, dbdl_max;
 #endif
 #ifdef INTERP_ST
 	GLint s1, dsdx, dsdy, dsdl_min, dsdl_max;
 	GLint t1, dtdx, dtdy, dtdl_min, dtdl_max;
+#else
+	static const GLint s1, dsdx, dsdy, dsdl_min, dsdl_max;
+	static const GLint t1, dtdx, dtdy, dtdl_min, dtdl_max;
 #endif
 #ifdef INTERP_STZ
 	GLfloat sz1, dszdx, dszdy, dszdl_min, dszdl_max;
 	GLfloat tz1, dtzdx, dtzdy, dtzdl_min, dtzdl_max;
+#else
+	static const GLfloat sz1, dszdx, dszdy, dszdl_min, dszdl_max;
+	static const GLfloat tz1, dtzdx, dtzdy, dtzdl_min, dtzdl_max;
 #endif
 
 	/* we sort the vertex with increasing y */
