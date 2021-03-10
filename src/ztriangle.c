@@ -107,8 +107,7 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 #define SAR_RND_TO_ZERO(v, n) (v / (1 << n))
 
 #if TGL_FEATURE_RENDER_BITS == 32
-#define DRAW_INIT()                                                                                                                                            \
-	{}
+#define DRAW_INIT() {}
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
 		{register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
@@ -165,8 +164,7 @@ void ZB_fillTriangleSmoothNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p
 #define SAR_RND_TO_ZERO(v, n) (v / (1 << n))
 
 #if TGL_FEATURE_RENDER_BITS == 32
-#define DRAW_INIT()                                                                                                                                            \
-	{}
+#define DRAW_INIT() {}
 
 #if TGL_FEATURE_NO_DRAW_COLOR != 1
 #define PUT_PIXEL(_a)                                                                                                                                          \
@@ -199,8 +197,7 @@ void ZB_fillTriangleSmoothNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p
 // END OF 32 bit mode
 #elif TGL_FEATURE_RENDER_BITS == 16
 
-#define DRAW_INIT()                                                                                                                                            \
-	{}
+#define DRAW_INIT() {}
 
 
 
@@ -362,7 +359,7 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
 void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
 	PIXEL* texture;
 
-	GLfloat fdzdx, fndzdx, ndszdx, ndtzdx;
+	
 	GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	TGL_BLEND_VARS
 	TGL_STIPPLEVARS
@@ -413,20 +410,6 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 		t += dtdx;                                                                                                                                             \
 		OR1G1B1INCR                                                                                                                                            \
 	}
-/*
-#define PUT_PIXEL(_a)                                                                                                                                          \
-	{                                                                                                                                                          \
-		register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
-		if (ZCMPSIMP(zz, pz[_a], _a, 0)) {                                                                                                                         \
-			TGL_BLEND_FUNC(RGB_MIX_FUNC(or1, og1, ob1, TEXTURE_SAMPLE(texture, s, t)), pp[_a]);      						   								\
-			if(zbdw) pz[_a] = zz;                                                                                                                   		\
-		}                                                                                                                                                      \
-		z += dzdx;                                                                                                                                             \
-		s += dsdx;                                                                                                                                             \
-		t += dtdx;                                                                                                                                             \
-		OR1G1B1INCR                                                                                                                                            \
-	}
-*/
 #else
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
@@ -456,7 +439,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 
 void ZB_fillTriangleMappingPerspectiveNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
 	PIXEL* texture;
-	GLfloat fdzdx, fndzdx, ndszdx, ndtzdx;
+	//GLfloat fdzdx, fndzdx, ndszdx, ndtzdx;
 	GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	TGL_STIPPLEVARS
 #define INTERP_Z

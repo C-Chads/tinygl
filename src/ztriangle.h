@@ -21,51 +21,49 @@ Things to keep in mind:
  because OpenMP needs to be able to declare them "private". The compiler will of course optimize out the unused ones.
  */
 
-{
-	GLfloat fdx1, fdx2, fdy1, fdy2;
-	GLushort* pz1;
-	PIXEL* pp1;
-	
+#define BEGIN_SEGMENT
 
+{
+	
+	GLfloat fdx1, fdx2, fdy1, fdy2, fz;
 	GLint dx1, dy1, dx2, dy2;
-#if TGL_FEATURE_POLYGON_STIPPLE == 1
-	GLushort the_y;
-#else
-	static const GLushort the_y; //Unused variable necessary 
-#endif
-	GLint error, derror;
 	GLint x1, dxdy_min, dxdy_max;
 	/* warning: x2 is multiplied by 2^16 */
 	GLint x2, dx2dy2;
 
-#ifdef INTERP_Z
+//#ifdef INTERP_Z
 	GLint z1, dzdx, dzdy, dzdl_min, dzdl_max;
-#else
-	static const GLint z1, dzdx, dzdy, dzdl_min, dzdl_max;
-#endif
-#ifdef INTERP_RGB
+//#else
+//	static const GLint z1, dzdx, dzdy, dzdl_min, dzdl_max;
+//#endif
+//#ifdef INTERP_RGB
 	GLint r1, drdx, drdy, drdl_min, drdl_max;
 	GLint g1, dgdx, dgdy, dgdl_min, dgdl_max;
 	GLint b1, dbdx, dbdy, dbdl_min, dbdl_max;
-#else
-	static const GLint r1, drdx, drdy, drdl_min, drdl_max;
-	static const GLint g1, dgdx, dgdy, dgdl_min, dgdl_max;
-	static const GLint b1, dbdx, dbdy, dbdl_min, dbdl_max;
-#endif
-#ifdef INTERP_ST
+	//r1, drdx, drdy, drdl_min, drdl_max, g1, dgdx, dgdy, dgdl_min, dgdl_max, b1, dbdx, dbdy, dbdl_min, dbdl_max
+//#else
+//	static const GLint r1, drdx, drdy, drdl_min, drdl_max;
+//	static const GLint g1, dgdx, dgdy, dgdl_min, dgdl_max;
+//	static const GLint b1, dbdx, dbdy, dbdl_min, dbdl_max;
+//#endif
+//#ifdef INTERP_ST
 	GLint s1, dsdx, dsdy, dsdl_min, dsdl_max;
 	GLint t1, dtdx, dtdy, dtdl_min, dtdl_max;
-#else
-	static const GLint s1, dsdx, dsdy, dsdl_min, dsdl_max;
-	static const GLint t1, dtdx, dtdy, dtdl_min, dtdl_max;
-#endif
-#ifdef INTERP_STZ
+	//s1, dsdx, dsdy, dsdl_min, dsdl_max, t1, dtdx, dtdy, dtdl_min, dtdl_max
+//#else
+//	static const GLint s1, dsdx, dsdy, dsdl_min, dsdl_max;
+//	static const GLint t1, dtdx, dtdy, dtdl_min, dtdl_max;
+//#endif
+//#ifdef INTERP_STZ
 	GLfloat sz1, dszdx, dszdy, dszdl_min, dszdl_max;
 	GLfloat tz1, dtzdx, dtzdy, dtzdl_min, dtzdl_max;
-#else
-	static const GLfloat sz1, dszdx, dszdy, dszdl_min, dszdl_max;
-	static const GLfloat tz1, dtzdx, dtzdy, dtzdl_min, dtzdl_max;
-#endif
+	GLfloat fdzdx, fndzdx, ndszdx, ndtzdx;
+	//sz1, dszdx, dszdy, dszdl_min, dszdl_max, tz1, dtzdx, dtzdy, dtzdl_min, dtzdl_max
+//#else
+//	static const GLfloat sz1, dszdx, dszdy, dszdl_min, dszdl_max;
+//	static const GLfloat tz1, dtzdx, dtzdy, dtzdl_min, dtzdl_max;
+//	static const GLfloat fdzdx, fndzdx, ndszdx, ndtzdx;
+//#endif
 
 	/* we sort the vertex with increasing y */
 	if (p1->y < p0->y) {
@@ -92,7 +90,7 @@ Things to keep in mind:
 	fdx2 = p2->x - p0->x;
 	fdy2 = p2->y - p0->y;
 	
-	GLfloat fz = fdx1 * fdy2 - fdx2 * fdy1;//fz first usage
+	fz = fdx1 * fdy2 - fdx2 * fdy1;//fz first usage
 	if (fz == 0)
 		return;
 	fz = 1.0 / fz; //value of fz is used (VALUE_FZ_USED)
@@ -178,42 +176,56 @@ GLfloat d1, d2;
 } //EOF d1, d2 lifetimes.
 	/* screen coordinates */
 
+/*
 	pp1 = (PIXEL*)(zb->pbuf) + zb->xsize * p0->y; //pp1 first usage
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 	the_y = p0->y;
 #endif
 	pz1 = zb->zbuf + p0->y * zb->xsize;
-
+*/
 	DRAW_INIT();
-//part used here and down.
-//TODO: #pragma omp parallel for private(a, b, c)
 //Required reading:
 //http://jakascorner.com/blog/2016/06/omp-data-sharing-attributes.html
 //I'd also like to figure out if the main while() loop over raster lines can be OMP parallelized, but I suspect it isn't worth it.
+#pragma omp parallel for private(x1, dxdy_min, dxdy_max, x2, dx2dy2, z1, dzdx, dzdy, dzdl_min, dzdl_max, r1, drdx, drdy, drdl_min, drdl_max, g1, dgdx, dgdy, dgdl_min, dgdl_max, b1, dbdx, dbdy, dbdl_min, dbdl_max, s1, dsdx, dsdy, dsdl_min, dsdl_max, t1, dtdx, dtdy, dtdl_min, dtdl_max, sz1, dszdx, dszdy, dszdl_min, dszdl_max, tz1, dtzdx, dtzdy, dtzdl_min, dtzdl_max, fdzdx, fndzdx, ndszdx, ndtzdx)
 	for (GLint part = 0; part < 2; part++) {
 		GLint nb_lines;
+		GLushort* pz1;
+		PIXEL* pp1;
+		GLint error, derror;
+		GLfloat fzl = fz;
+		GLint dx1, dy1, dx2, dy2;
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
+		GLushort the_y;
+#else
+		static const GLushort the_y; //Unused variable necessary 
+#endif
 		{ZBufferPoint *pr1, *pr2, *l1, *l2; //BEGINNING OF LIFETIME FOR ZBUFFERPOINT VARS!!!
 		register GLint update_left, update_right; //update_left decl
 			if (part == 0) {
-				if (fz > 0) { //Here! (VALUE_FZ_USED)
-					update_left = 1; //update_left first usage.
-					update_right = 1;
+				update_left = 1; //update_left first usage.
+				update_right = 1;
+				
+				if (fzl > 0) { //Here! (VALUE_FZ_USED)
 					l1 = p0; //MARK l1 first usage
 					l2 = p2; //MARK l2 first usage
 					pr1 = p0; //MARK first usage of pr1
 					pr2 = p1; //MARK first usage pf pr2
 				} else {
-					update_left = 1; //update_left second usage.
-					update_right = 1;
 					l1 = p0;
 					l2 = p1;
 					pr1 = p0;
 					pr2 = p2;
 				}
+				pp1 = (PIXEL*)(zb->pbuf) + zb->xsize * p0->y; //pp1 first usage
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
+				the_y = p0->y;
+#endif
+				pz1 = zb->zbuf + p0->y * zb->xsize;
 				nb_lines = p1->y - p0->y;
 			} else { //SECOND PART~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				/* second part */
-				if (fz > 0) { //fz last usage (VALUE_FZ_USED)
+				if (fzl > 0) { //fzl last usage (VALUE_FZ_USED)
 					update_left = 0; //update left third usage.
 					update_right = 1;
 					pr1 = p1;
@@ -224,6 +236,11 @@ GLfloat d1, d2;
 					l1 = p1;
 					l2 = p2;
 				}
+				pp1 = (PIXEL*)(zb->pbuf) + zb->xsize * p0->y + (zb->xsize * (p1->y - p0->y)); //pp1 update to second part.
+#if TGL_FEATURE_POLYGON_STIPPLE == 1
+				the_y = p1->y;
+#endif
+				pz1 = zb->zbuf + p0->y * zb->xsize + (zb->xsize * (p1->y - p0->y));
 				nb_lines = p2->y - p1->y + 1;
 			} //EOF SECOND PART
 
@@ -292,8 +309,11 @@ GLfloat d1, d2;
 		} //End of lifetime for ZBufferpoints
 		/* we draw all the scan line of the part */
 
-		while (nb_lines > 0) {
-			nb_lines--;
+		//TODO: omp parallel for
+		//for(GLint q = 0; q < nb_lines; q++)
+		//for(; nb_lines > 0; nb_lines--) //Replaces the while.
+		while(nb_lines>0)
+		{ nb_lines--; //Effectively matching the while.
 #ifndef DRAW_LINE
 			/* generic draw line */
 			{
