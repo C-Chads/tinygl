@@ -25,25 +25,16 @@
 #define TGL_FEATURE_DISPLAYLISTS   1
 //Lighting is expensive on texture-mapped polygons.
 #define TGL_FEATURE_LIT_TEXTURES   1
-//NOTE: Polygon Offset does nothing at the moment.
-#define TGL_FEATURE_POLYGON_OFFSET 1
 //Enable the patternized "discard"-ing of pixels.
 #define TGL_FEATURE_POLYGON_STIPPLE 0
-//Enable the rendering of arbitrarily large polygons (they are rendered as triangles)- it slows down glopVertex and glopBegin.
-//It also enables the rendering of line loops of arbitrary size- without it,
-//line loops beyond a certain size will cause a crash.
-//so don't enable it if you don't need it.
+//Enable the rendering of large polygons (in terms of vertex count).
+//the maximum number of vertices in a polygon is defined in zgl.h
 #define TGL_FEATURE_GL_POLYGON      0
 //Enable GL_BLEND functionality
 #define TGL_FEATURE_BLEND 			1
 //The width of textures as a power of 2. The default is 8, or 256x256 textures.
 #define TGL_FEATURE_TEXTURE_POW2	8
 #define TGL_FEATURE_TEXTURE_DIM		(1<<TGL_FEATURE_TEXTURE_POW2)
-//#define TGL_FEATURE_TEXTURE_POW2_HALF 	(TGL_FEATURE_TEXTURE_POW2>>1)
-
-//#if TGL_FEATURE_TEXTURE_POW2%2 != 0
-//#error "bad TGL_FEATURE_TEXTURE_POW2"
-//#endif
 
 //A stipple pattern is 128 bytes in size.
 #define TGL_POLYGON_STIPPLE_BYTES 128
