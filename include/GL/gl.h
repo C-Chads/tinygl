@@ -978,8 +978,13 @@ void glRasterPos3fv(GLfloat* v);
 void glRasterPos4fv(GLfloat* v);
 void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, void* data);
 void glPixelZoom(GLfloat x, GLfloat y);
+
+/* PostProcessing pass implementation */
+void glPostProcess(GLuint (*postprocess)(GLint x, GLint y, GLuint pixel, GLushort z));
 /* not implemented, just added to compile  */
   /*
+
+  
 inline void glLineWidth(GLfloat) {}
 inline void glDepthFunc(GLint) {}
 

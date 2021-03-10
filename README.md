@@ -1,7 +1,9 @@
 # TinyGL- New and Improved
 
 A major overhaul of Fabrice Bellard's TinyGL (still compiling with -std=c99) to be
-more useful as a software rasterizer.
+more useful as a software rasterizer.'
+
+Now with limited multithreading support
 
 ## Tightly tweaked and tuned for performance
 
@@ -51,6 +53,7 @@ if you get a TGL_BUILDT error, then you've failed the buildtime test.
 if you try to initialize the library and you get a crash with a print to standard out "TINYGL_FAILED_RUNTIME_COMPAT_TEST" then you've failed the runtime test.
 
 The SDL examples have been tested building on Debian 10 and Windows 10, while tinygl itself has been confirmed to compile on many more platforms.
+
 
 
 
@@ -150,6 +153,8 @@ The changelog is as such:
 * Added way more compile time options
 
 * Fixed all the memory leaks.
+
+* added Openmp multithreading and glPostProcess()
 
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
@@ -278,6 +283,22 @@ SDL is used as a reasonable means of displaying the output of TinyGL for testing
 * A memory allocator of some sort with some equivalents or replacements for malloc, calloc, and free.
 
 There is no FILE* usage, or I/O outside of 'msghandling.c' so if you want to remove all stdio dependency, just stub out the calls there.
+
+
+### Multithreading support
+
+OpenMP is used on supported platforms to multithread certain operations.
+These are the operations that are accelerated:
+
+* glDrawPixels
+
+* glPostProcess
+
+Compile the library with -fopenmp to see them in action!
+
+You do not need a multithreaded processor to use TinyGL!
+
+### Performance Recommendations
 
 ```
 it is recommended that for best performance you keep TinyGL on a separate thread from SDL, and to guard TinyGL's buffer with a mutex.

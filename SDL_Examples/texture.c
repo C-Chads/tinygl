@@ -25,6 +25,7 @@ typedef unsigned char uchar;
 #include "include/stb_image.h"
 #include <SDL/SDL.h>
 int noSDL = 0;
+int doPostProcess = 0;
 
 #include <math.h>
 #ifndef M_PI
@@ -60,6 +61,16 @@ GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
 	return t;
 }
 
+GLuint postProcessingStep(GLint x, GLint y, GLuint pixel, GLushort z){
+#if TGL_FEATURE_RENDER_BITS == 32
+//32 bit pixel
+	return pixel & 0x8F8F8F; //Half color mode.
+#else
+//16 bit mode
+	return 63<<5; //Solid green
+#endif
+}
+
 void draw() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glEnable(GL_TEXTURE_2D);
@@ -84,7 +95,10 @@ void draw() {
 	glTexCoord2f(1 * texture_mult, -1 * texture_mult);
 	glVertex3f(1, 1, 0.5);
 	glEnd();
+	if(doPostProcess) glPostProcess(postProcessingStep); //do a post processing step on the rendered geometry.
 }
+
+
 
 void initScene() {
 	static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0};
@@ -124,9 +138,11 @@ int main(int argc, char** argv) {
 	int winSizeY = 480;
 	unsigned int fps = 0;
 	char needsRGBAFix = 0;
-	if (argc > 2) {
+	if (argc > 1) {
 		char* larg = argv[1];
 		for (int i = 0; i < argc; i++) {
+			if (!strcmp(argv[i], "-pp"))
+				doPostProcess = 1;
 			if (!strcmp(larg, "-w"))
 				winSizeX = atoi(argv[i]);
 			if (!strcmp(larg, "-h"))
