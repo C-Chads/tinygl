@@ -1,6 +1,7 @@
 #include "zgl.h"
 #include "msghandling.h"
 GLContext gl_ctx;
+const GLContext empty_gl_ctx = {0};
 
 void initSharedState(GLContext* c) {
 	GLSharedState* s = &c->shared_state;
@@ -40,10 +41,6 @@ void endSharedState(GLContext* c) {
 		t = s->texture_hash_table[i];
 		while (t) {
 			GLTexture** ht;
-			//GLImage* im;
-			//GLint inner_i;
-
-			// t = find_texture(c, h);
 			if (t->prev == NULL) {
 				ht = &c->shared_state.texture_hash_table[t->handle & TEXTURE_HASH_TABLE_MASK];
 				*ht = t->next;
@@ -53,12 +50,6 @@ void endSharedState(GLContext* c) {
 			n = t->next;
 			if (t->next != NULL)
 				t->next->prev = t->prev;
-
-			//for (inner_i = 0; inner_i < MAX_TEXTURE_LEVELS; inner_i++) {
-			//	im = &t->images[inner_i];
-			//	if (im->pixmap != NULL)
-			//		gl_free(im->pixmap);
-			//}
 			gl_free(t);
 			t = n;
 		}
@@ -143,6 +134,7 @@ void glInit(void* zbuffer1) {
 	if(TinyGLRuntimeCompatibilityTest()) gl_fatal_error("TINYGL_FAILED_RUNTIME_COMPAT_TEST");
 #endif
 	//c = gl_zalloc(sizeof(GLContext));
+	gl_ctx = empty_gl_ctx;
 	c = &gl_ctx;
 	if(!c) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	//gl_ctx = c;
