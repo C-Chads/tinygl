@@ -261,6 +261,10 @@ int main(int argc, char** argv) {
 		{
 			GLint xsize, ysize;
 			void* data = glGetTexturePixmap(tex, 0, &xsize,  &ysize);
+			//for(int i = 0; i < winSizeX; i++)
+			//for(int j = 0; j < winSizeY; j++){
+				//glPlotPixel(i,j,rand() & 0xFFFFFF);
+			//}
 			if(data)
 				glDrawPixels(xsize,ysize, GL_RGB, 
 				(TGL_FEATURE_RENDER_BITS==32)?GL_UNSIGNED_INT:GL_UNSIGNED_SHORT, data
