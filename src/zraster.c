@@ -160,7 +160,9 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 			pz = zbuf + (ty * tw + tx);
 
 				if(ZCMP(zz,*pz)){
+
 #if TGL_FEATURE_BLEND == 1
+#if TGL_FEATURE_BLEND_DRAW_PIXELS == 1
 					if(!zbeb)
 						pbuf[tx+ty*tw] = col;
 					else
@@ -168,15 +170,13 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 #else
 					pbuf[tx+ty*tw] = col;
 #endif
+#else
+					pbuf[tx+ty*tw] = col;
+#endif
 					if(zbdw) *pz = zz;
 				}
 			}
 	}
-	/*GLint mult = textsize;
-		for (GLint i = 0; i < mult; i++)
-		for (GLint j = 0; j < mult; j++)
-		glPlotPixel(y * mult + i + _x, x * mult + j + _y, p);
-	*/
 }
 
 

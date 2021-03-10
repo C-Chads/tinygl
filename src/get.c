@@ -104,7 +104,9 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 #if TGL_FEATURE_BLEND == 1
 "TGL_FEATURE_BLEND "
 #endif
-
+#if TGL_FEATURE_BLEND_DRAW_PIXELS == 1
+"TGL_FEATURE_BLEND_DRAW_PIXELS "
+#endif
 #if TGL_FEATURE_NO_DRAW_COLOR == 1
 "TGL_FEATURE_NO_DRAW_COLOR "
 #endif

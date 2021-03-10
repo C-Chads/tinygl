@@ -209,7 +209,8 @@ The codebase uses very simple compiler flags to compile- in fact it will compile
 in the src/ directory.
 
 You can compile the code yourself without makefiles using these directives:
-```
+
+```sh
 # inside the src directory
 gcc -Wno-uninitialized -O3 -c *.c 
 ar rcs libTinyGL.a *.o
@@ -221,6 +222,8 @@ cd SDL_Examples/
 gcc -O3 menu.c -o menu -lSDL ../lib/libTinyGL.a -lm
 # gears
 gcc -O3 gears.c -o gears -lSDL ../lib/libTinyGL.a -lm
+```
+
 ```c
 //First you have to include
 //(Note that you must either link against libTinyGL.a or compile it in the same compilation unit as your program)

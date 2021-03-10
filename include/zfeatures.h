@@ -32,6 +32,8 @@
 #define TGL_FEATURE_GL_POLYGON      0
 //Enable GL_BLEND functionality
 #define TGL_FEATURE_BLEND 			1
+//Enable blending in glDrawPixels, which slows it down a lot and makes it unsuitable for a lot of things.
+#define TGL_FEATURE_BLEND_DRAW_PIXELS 0
 //The width of textures as a power of 2. The default is 8, or 256x256 textures.
 #define TGL_FEATURE_TEXTURE_POW2	8
 #define TGL_FEATURE_TEXTURE_DIM		(1<<TGL_FEATURE_TEXTURE_POW2)
