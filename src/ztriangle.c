@@ -68,7 +68,6 @@ GLubyte zbdt = zb->depth_test;GLubyte zbdw = zb->depth_write;
 }
 
 void ZB_fillTriangleFlatNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
-
 	PIXEL color = RGB_TO_PIXEL(p2->r, p2->g, p2->b); GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	TGL_STIPPLEVARS
 #undef INTERP_Z
@@ -98,9 +97,6 @@ void ZB_fillTriangleFlatNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1,
  */
 
 void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
-#if TGL_FEATURE_NO_DRAW_COLOR == 1
-	PIXEL c;
-#endif
 	GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	TGL_BLEND_VARS
 	TGL_STIPPLEVARS
@@ -113,8 +109,6 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 #if TGL_FEATURE_RENDER_BITS == 32
 #define DRAW_INIT()                                                                                                                                            \
 	{}
-
-#if TGL_FEATURE_NO_DRAW_COLOR != 1
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
 		{register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
@@ -128,31 +122,12 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 		or1 += drdx;                                                                                                                      \
 		ob1 += dbdx;                                                                                                                  \
 	}
-#else
-#define PUT_PIXEL(_a)                                                                                                                                          \
-	{   {                                                                                                                                                       \
-		register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
-		/*c = RGB_TO_PIXEL(or1, og1, ob1);*/                                                                                                                   \
-		if (ZCMPSIMP(zz, pz[_a], _a, 0)) {                                                                                                                     \
-			/*pp[_a] = c;*/                                                                                                                                    \
-			TGL_BLEND_FUNC_RGB(or1, og1, ob1, (pp[_a]));                                                                                                       \
-			if(zbdw)pz[_a] = zz;                                                                                                                                       \
-		}}                                                                                                                                                      \
-		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                      \
-		or1 += drdx;                                                                                                                      \
-		ob1 += dbdx;                                                                                                                  \
-	}
-#endif
+
 // END OF 32 bit mode
 #elif TGL_FEATURE_RENDER_BITS == 16
 
-#define DRAW_INIT()                                                                                                                                            \
-	{}
+#define DRAW_INIT() {}
 
-
-
-#if TGL_FEATURE_NO_DRAW_COLOR != 1
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
 		{register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
@@ -167,22 +142,8 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 		or1 += drdx;                                                                                                                      \
 		ob1 += dbdx;                                                                                                                  \
 	}
-#else
-#define PUT_PIXEL(_a)                                                                                                                                          \
-	{                                                                                                                                                          \
-		{register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
-		/*c = RGB_TO_PIXEL(or1, og1, ob1);*/                                                                                                                   \
-		if (ZCMPSIMP(zz, pz[_a], _a, 0)) {                                                                                                                     \
-			/*pp[_a] = c;*/                                                                                                                                    \
-			TGL_BLEND_FUNC_RGB(or1, og1, ob1, (pp[_a]));                                                                                                       \
-			if(zbdw) pz[_a] = zz;                                                                                                                   \
-		}}                                                                                                                                                      \
-		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                      \
-		or1 += drdx;                                                                                                                      \
-		ob1 += dbdx;                                                                                                                  \
-	}
-#endif
+
+
 
 #endif
 //^ End of 16 bit mode stuff
@@ -194,9 +155,7 @@ void ZB_fillTriangleSmooth(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBuf
 
 
 void ZB_fillTriangleSmoothNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
-#if TGL_FEATURE_NO_DRAW_COLOR == 1
-	PIXEL c;
-#endif
+
 	GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	TGL_STIPPLEVARS
 // GLuint color;
@@ -244,7 +203,7 @@ void ZB_fillTriangleSmoothNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p
 	{}
 
 
-#if TGL_FEATURE_NO_DRAW_COLOR != 1
+
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
 		{register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
@@ -258,22 +217,8 @@ void ZB_fillTriangleSmoothNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p
 		or1 += drdx;                                                                                                                      \
 		ob1 += dbdx;                                                                                                                  \
 	}
-#else
-#define PUT_PIXEL(_a)                                                                                                                                          \
-	{                                                                                                                                                          \
-		{register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
-		/*c = RGB_TO_PIXEL(or1, og1, ob1);*/                                                                                                                   \
-		if (ZCMPSIMP(zz, pz[_a], _a, 0)) {                                                                                                                     \
-			/*pp[_a] = c;*/                                                                                                                                    \
-			pp[_a] = RGB_TO_PIXEL(or1, og1, ob1);                                                                                                       \
-			if(zbdw) pz[_a] = zz;                                                                                                                   \
-		}}                                                                                                                                                      \
-		z += dzdx;                                                                                                                                             \
-		og1 += dgdx;                                                                                                                      \
-		or1 += drdx;                                                                                                                      \
-		ob1 += dbdx;                                                                                                                  \
-	}
-#endif
+
+
 
 #endif
 //^ End of 16 bit mode stuff
@@ -416,13 +361,11 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
 
 void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBufferPoint* p2) {
 	PIXEL* texture;
+
 	GLfloat fdzdx, fndzdx, ndszdx, ndtzdx;
 	GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	TGL_BLEND_VARS
 	TGL_STIPPLEVARS
-#if TGL_FEATURE_NO_DRAW_COLOR == 1
-	PIXEL c;
-#endif
 #define INTERP_Z
 #define INTERP_STZ
 #define INTERP_RGB
@@ -488,7 +431,7 @@ void ZB_fillTriangleMappingPerspective(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoi
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
 		{register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                         \
-		c = TEXTURE_SAMPLE(texture, s, t);                                                        					     										\
+		PIXEL c = TEXTURE_SAMPLE(texture, s, t);                                                        					     										\
 		if (ZCMP(zz, pz[_a], _a, c)) {                                                                                                                         \
 			TGL_BLEND_FUNC(RGB_MIX_FUNC(or1, og1, ob1, c), (pp[_a]));                                                                                          \
 			if(zbdw) pz[_a] = zz;                                                                                                                   			\
@@ -516,9 +459,6 @@ void ZB_fillTriangleMappingPerspectiveNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBu
 	GLfloat fdzdx, fndzdx, ndszdx, ndtzdx;
 	GLubyte zbdw = zb->depth_write; GLubyte zbdt = zb->depth_test;
 	TGL_STIPPLEVARS
-#if TGL_FEATURE_NO_DRAW_COLOR == 1
-	PIXEL c;
-#endif
 #define INTERP_Z
 #define INTERP_STZ
 #define INTERP_RGB
@@ -567,7 +507,7 @@ void ZB_fillTriangleMappingPerspectiveNOBLEND(ZBuffer* zb, ZBufferPoint* p0, ZBu
 #define PUT_PIXEL(_a)                                                                                                                                          \
 	{                                                                                                                                                          \
 		{register GLuint zz =z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
-		c = TEXTURE_SAMPLE(texture, s, t);                                                             															\
+		PIXEL c = TEXTURE_SAMPLE(texture, s, t);                                                             															\
 		if (ZCMP(zz, pz[_a], _a, c)) {                                                                                                                         \
 			pp[_a] = RGB_MIX_FUNC(or1, og1, ob1, c);                                                                                                       		\
 			/*TGL_BLEND_FUNC(RGB_MIX_FUNC(or1, og1, ob1, c), (pp[_a]));*/                                                                                          \
