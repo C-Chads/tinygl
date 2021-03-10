@@ -300,9 +300,6 @@ Every call of the function pointer is run by a separate thread.
 
 Compile the library with -fopenmp to see them in action. They are used in the texture demo, make sure to add the argument `-pp`
 
-when running the texture demo to get postprocessing (with 32 bit color, the postprocessing step simply halves the pixel color,
-on 16 bit, it isolates the green component.
-
 You do not need a multithreaded processor to use TinyGL!
 
 ### Performance Recommendations
