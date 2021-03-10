@@ -186,10 +186,6 @@ void glopBindTexture(GLContext* c, GLParam* p) {
 
 
 
-//TODO: Write this, then
-//Write something to test this. This function is useful for doing render targets in TinyGL
-//- not that you couldn't do that
-//already by manually copying pixels around. But, this is a nifty utility, eh?
 void glCopyTexImage2D(	
 	GLenum target, //1
  	GLint level,//2
