@@ -1,11 +1,11 @@
 #include "msghandling.h"
 #include "zgl.h"
-#define TINYGL_VERSION 0.8
+
 
 #define xstr(s) str(s)
 #define str(s) #s
 
-/*
+//Including this 
 const GLubyte* license_string = (const GLubyte*)""
 "Copyright notice:\n"
 "\n"
@@ -29,7 +29,6 @@ const GLubyte* license_string = (const GLubyte*)""
 "\n"
 "If you redistribute modified sources, I would appreciate that you\n"
 "include in the files history information documenting your changes.";
-*/
 
 const GLubyte* vendor_string = (const GLubyte*)"Fabrice Bellard, Gek, and the C-Chads";
 const GLubyte* renderer_string = (const GLubyte*)"TinyGL";
@@ -47,7 +46,7 @@ __VERSION__
 xstr(__TINYC__)
 #endif
 #ifdef _MSVC_VER
-"Compiled using the worst compiler on earth, M$VC. Fuck you!"
+"Compiled using the worst compiler on earth, M$VC. "
 #endif
 #ifdef __clang__
 "Compiled Using Clang "
@@ -128,6 +127,24 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 #if TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST == 1
 "TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST "
 #endif
+#if defined(_OPENMP)
+"TGL_FEATURE_MULTI_THREADED "
+
+#if TGL_FEATURE_MULTITHREADED_DRAWPIXELS == 1
+"TGL_FEATURE_MULTITHREADED_DRAWPIXELS "
+#endif
+
+#if TGL_FEATURE_MULTITHREADED_COPY_TEXIMAGE_2D == 1
+"TGL_FEATURE_MULTITHREADED_COPY_TEXIMAGE_2D "
+#endif
+
+#if TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER == 1
+"TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER "
+#endif
+
+#else
+"TGL_FEATURE_SINGLE_THREADED "
+#endif
 "TGL_BUFFER_EXT "
 "TGL_FEEDBACK "
 "TGL_SELECT "
@@ -138,7 +155,7 @@ const GLubyte* glGetString(GLenum name){
 		case GL_RENDERER: return renderer_string;
 		case GL_VERSION: return version_string;
 		case GL_EXTENSIONS: return extensions_string;
-		/*case GL_LICENSE: return license_string;*/
+		case GL_LICENSE: return license_string;
 	}
 	return NULL;
 }
@@ -241,6 +258,7 @@ void glGetIntegerv(GLint pname, GLint* params) {
 		params[0] = 0;
 		break;
 	case GL_TEXTURE_2D:
+	case GL_TEXTURE_1D:
 		params[0] = c->texture_2d_enabled;
 		break;
 	case GL_POLYGON_STIPPLE:
@@ -273,13 +291,13 @@ void glGetIntegerv(GLint pname, GLint* params) {
 		break;
 	case GL_LINE_STIPPLE_REPEAT:
 		*params = 1;
-	break;
+		break;
 	case GL_LINE_STIPPLE:
 		*params = 0;
-	break;
+		break;
 	case GL_LINE_STIPPLE_PATTERN:
 		*params = (GLushort)(~0);
-	break;
+		break;
 	case GL_NORMALIZE:
 		params[0] = c->normalize_enabled;
 		break;
@@ -311,7 +329,7 @@ void glGetIntegerv(GLint pname, GLint* params) {
 	case GL_RED_BIAS:
 	case GL_GREEN_BIAS:
 	case GL_ALPHA_BIAS:
-	case GL_CLIP_PLANE0: //TODO
+	case GL_CLIP_PLANE0:
 	case GL_CLIP_PLANE1:
 	case GL_CLIP_PLANE2:
 	case GL_CLIP_PLANE3:
@@ -327,7 +345,7 @@ void glGetIntegerv(GLint pname, GLint* params) {
 	case GL_TEXTURE_GEN_S:
 	case GL_TEXTURE_GEN_R:
 	case GL_TEXTURE_GEN_Q:
-	case GL_TEXTURE_1D: //TODO
+	
 	case GL_STEREO:
 	case GL_PACK_SWAP_BYTES:
 	case GL_PACK_SKIP_ROWS:

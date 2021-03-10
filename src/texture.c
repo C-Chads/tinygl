@@ -242,19 +242,20 @@ void glopCopyTexImage2D(GLContext* c, GLParam* p){
 	im->ysize = TGL_FEATURE_TEXTURE_DIM;
 	//sample the buffer.
 	//TODO implement the scaling and stuff that the GL spec says it should have.
+#if TGL_FEATURE_MULTITHREADED_COPY_TEXIMAGE_2D == 1
 	for(GLint j = 0; j < h; j++)
 	for(GLint i = 0; i < w; i++){
-		/*
-		GLfloat dx = (GLfloat)i/(GLfloat)w;
-		GLfloat dy = (GLfloat)j/(GLfloat)h;
-		dx *= TGL_FEATURE_TEXTURE_DIM;
-		dy *= TGL_FEATURE_TEXTURE_DIM;
-		GLuint xdest = (dx<0)?0:((dx>TGL_FEATURE_TEXTURE_DIM-1)?TGL_FEATURE_TEXTURE_DIM-1:dx);
-		GLuint ydest = (dy<0)?0:((dy>TGL_FEATURE_TEXTURE_DIM-1)?TGL_FEATURE_TEXTURE_DIM-1:dy);
-		*/
 		data[i+j*w] = c->zb->pbuf[		((i+x)%(c->zb->xsize))
 									+	((j+y)%(c->zb->ysize))*(c->zb->xsize)];
 	}
+#else
+#pragma omp parallel for
+	for(GLint j = 0; j < h; j++)
+	for(GLint i = 0; i < w; i++){
+		data[i+j*w] = c->zb->pbuf[		((i+x)%(c->zb->xsize))
+									+	((j+y)%(c->zb->ysize))*(c->zb->xsize)];
+	}
+#endif
 }
 
 void glopTexImage1D(GLContext* c, GLParam* p){

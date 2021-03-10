@@ -62,6 +62,14 @@
 #define TGL_COLOR_MASK 0x00ffffff
 //^ mask to check for while drawing/copying.
 
+//MULTITHREADING OPTIONS, only applicable if compiled with -fopenmp
+
+//Enable DrawPixels to offload the rendering of individual scanlines to separate threads.
+#define TGL_FEATURE_MULTITHREADED_DRAWPIXELS	1
+//Enable multithreading glCopyTexImage2D
+#define TGL_FEATURE_MULTITHREADED_COPY_TEXIMAGE_2D 1
+//Enable multithreading the ZB_CopyBuffer operation.
+#define TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER 1
 
 //DO NOT TURN THESE ON, I don't maintain them and I actively #error them out.
 #define TGL_FEATURE_8_BITS         0
@@ -94,3 +102,5 @@
 
 #endif 
 /* _tgl_features_h_ */
+
+#define TINYGL_VERSION 0.8

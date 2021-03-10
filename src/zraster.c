@@ -149,7 +149,10 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 		);
 		return;
 	}
+
 // Works.
+#if TGL_FEATURE_MULTITHREADED_DRAWPIXELS == 1
+
 #pragma omp parallel for
 	for(GLint sy = 0; sy < h; sy++)
 	for(GLint sx = 0; sx < w; sx++)
@@ -160,8 +163,9 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 		rastoffset.v[1] = rastpos.v[1] - ((GLfloat)(h-sy) * pzoomy);
 		rastoffset.v[2] = rastoffset.v[0] + pzoomx;
 		rastoffset.v[3] = rastoffset.v[1] - pzoomy;
-		for(GLint tx = rastoffset.v[0]; (GLfloat)tx < rastoffset.v[2];tx++)
+		
 		for(GLint ty = rastoffset.v[1]; (GLfloat)ty > rastoffset.v[3];ty--)
+		for(GLint tx = rastoffset.v[0]; (GLfloat)tx < rastoffset.v[2];tx++)
 			if(CLIPTEST(tx,ty,tw,th)){
 			GLushort* pz = zbuf + (ty * tw + tx);
 
@@ -183,6 +187,41 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 				}
 			}
 	}
+#else
+	for(GLint sy = 0; sy < h; sy++)
+	for(GLint sx = 0; sx < w; sx++)
+	{
+		PIXEL col = d[sy*w+sx];
+		V4 rastoffset;
+		rastoffset.v[0] = rastpos.v[0] +  (GLfloat)sx * pzoomx;
+		rastoffset.v[1] = rastpos.v[1] - ((GLfloat)(h-sy) * pzoomy);
+		rastoffset.v[2] = rastoffset.v[0] + pzoomx;
+		rastoffset.v[3] = rastoffset.v[1] - pzoomy;
+		
+		for(GLint ty = rastoffset.v[1]; (GLfloat)ty > rastoffset.v[3];ty--)
+		for(GLint tx = rastoffset.v[0]; (GLfloat)tx < rastoffset.v[2];tx++)
+			if(CLIPTEST(tx,ty,tw,th)){
+			GLushort* pz = zbuf + (ty * tw + tx);
+
+				if(ZCMP(zz,*pz)){
+
+#if TGL_FEATURE_BLEND == 1
+#if TGL_FEATURE_BLEND_DRAW_PIXELS == 1
+					if(!zbeb)
+						pbuf[tx+ty*tw] = col;
+					else
+						TGL_BLEND_FUNC(col, pbuf[tx+ty*tw])
+#else
+					pbuf[tx+ty*tw] = col;
+#endif
+#else
+					pbuf[tx+ty*tw] = col;
+#endif
+					if(zbdw) *pz = zz;
+				}
+			}
+	}
+#endif
 }
 
 

@@ -119,13 +119,11 @@ inline PIXEL pxReverse32(PIXEL x) {
 #endif
 
 static void ZB_copyBuffer(ZBuffer* zb, void* buf, GLint linesize) {
-	GLubyte* p1;
-	PIXEL* q;
-	GLint y;
-
-	q = zb->pbuf;
-	p1 = buf;
-	for (y = 0; y < zb->ysize; y++) {
+#if TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER == 1
+#pragma omp parallel for
+	for (GLint y = 0; y < zb->ysize; y++) {
+		PIXEL* q = zb->pbuf + y * zb->xsize;
+		GLubyte* p1 = buf + y * linesize;
 #if TGL_FEATURE_NO_COPY_COLOR == 1
 		for (GLint i = 0; i < zb->xsize; i++) {
 			if ((*(q + i) & TGL_COLOR_MASK) != TGL_NO_COPY_COLOR)
@@ -134,9 +132,25 @@ static void ZB_copyBuffer(ZBuffer* zb, void* buf, GLint linesize) {
 #else
 		memcpy(p1, q, linesize);
 #endif
-		p1 += linesize;
-		q = (PIXEL*)((GLbyte*)q + zb->linesize);
+		//p1 += linesize;
+		//q = (PIXEL*)((GLbyte*)q + zb->linesize);
 	}
+#else
+	for (GLint y = 0; y < zb->ysize; y++) {
+		PIXEL* q = zb->pbuf + y * zb->xsize;
+		GLubyte* p1 = buf + y * linesize;
+#if TGL_FEATURE_NO_COPY_COLOR == 1
+		for (GLint i = 0; i < zb->xsize; i++) {
+			if ((*(q + i) & TGL_COLOR_MASK) != TGL_NO_COPY_COLOR)
+				*(((PIXEL*)p1) + i) = *(q + i);
+		}
+#else
+		memcpy(p1, q, linesize);
+#endif
+		//p1 += linesize;
+		//q = (PIXEL*)((GLbyte*)q + zb->linesize);
+	}
+#endif
 }
 
 #if TGL_FEATURE_RENDER_BITS == 16

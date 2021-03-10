@@ -56,6 +56,7 @@ The SDL examples have been tested building on Debian 10 and Windows 10, while ti
 
 
 
+NOTE: There are graphical artifacts visible in these gifs which have been corrected in this version of the library.
 
 Without Polygon Stipple:
 
@@ -298,7 +299,15 @@ Every scanline is drawn by a separate thread.
 
 Every call of the function pointer is run by a separate thread.
 
-Compile the library with -fopenmp to see them in action. They are used in the texture demo, make sure to add the argument `-pp`
+* glCopyTexImage2D
+
+Every scan line is copied by a separate thread.
+
+* ZBCopyBuffer
+
+Every scan line is copied by a separate thread.
+
+Compile the library with -fopenmp to see them in action (default). They are used in the texture demo, make sure to add the argument `-pp`
 
 You do not need a multithreaded processor to use TinyGL!
 
