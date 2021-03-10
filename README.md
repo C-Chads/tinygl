@@ -15,6 +15,16 @@ I think I can safely say, this is the fastest single-threaded FOSS software GL i
 
 It's probably also the most portable
 
+## Safety features
+
+TinyGL contains the following safety features:
+
+1. compiletime options for glGetError() functionality which obviously slows down speed but increases debugging capability.
+
+2. OpenGL 2.0 buffers, for easy memory management (Anything you put in a buffer using glBufferData will be free'd upon glClose())
+
+3. Fully leak checked using Valgrind- The only leaks you'll see are from your system's SDL. the Raw demos have zero leaks.
+
 ## Incredibly portable
 
 TinyGL is written in pure C99, and requires very few functions from the C standard library, it doesn't even require malloc and free
@@ -115,7 +125,7 @@ The changelog is as such:
 
 * Added glRasterPos2f,3f,4f,2fv,3fv,4fv
 
-* Added glGetString() for GL_VENDOR, GL_RENDERER, GL_VERSION, and GL_LICENSE
+* Added glGetString() for GL_VENDOR, GL_RENDERER, GL_VERSION, and optionally GL_LICENSE
 
 * Added comprehensive, usable glGetError() functionality for debugging.
 
@@ -138,6 +148,8 @@ The changelog is as such:
 * Fixed specular rendering
 
 * Added way more compile time options
+
+* Fixed all the memory leaks.
 
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
