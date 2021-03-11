@@ -29,7 +29,7 @@ void renderchar(GLbyte* bitmap, GLint _x, GLint _y, GLuint p) {
 	GLint mult = c->textsize;
 	for (x = 0; x < 8; x++) {
 		for (y = 0; y < 8; y++) {
-			set = bitmap[x] & 1 << y;
+			set = bitmap[x] & (1 << y);
 			if (set)
 				for (GLint i = 0; i < mult; i++)
 					for (GLint j = 0; j < mult; j++)
