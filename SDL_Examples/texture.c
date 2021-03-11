@@ -274,7 +274,7 @@ int main(int argc, char** argv) {
 		draw();
 		glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x000000FF);
 		glPixelZoom(2.0,0.7);
-		glRasterPos3f(-1,-1,fabs(sinf(frames_notreset/200.0)));
+		glRasterPos3f(0,-1,fabs(sinf(frames_notreset/200.0)));
 		{
 			GLint xsize, ysize;
 			void* data = glGetTexturePixmap(tex, 0, &xsize,  &ysize);

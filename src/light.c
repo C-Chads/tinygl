@@ -220,10 +220,15 @@ void gl_enable_disable_light(GLint light, GLint v) {
 }
 
 // FEATURES
-
-void glSetEnableSpecular(GLint s) { 
+void glSetEnableSpecular(GLint s){
+	GLParam p[2];
+	p[1].i = s;
+	p[0].op = OP_SetEnableSpecular;
+	gl_add_op(p);
+}
+void glopSetEnableSpecular(GLParam* p) {
 #include "error_check_no_context.h"
-	gl_get_context()->zEnableSpecular = s; 
+	gl_get_context()->zEnableSpecular = p[0].i; 
 }
 /* non optimized lightening model */
 void gl_shade_vertex(GLVertex* v) {

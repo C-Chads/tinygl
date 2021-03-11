@@ -327,13 +327,15 @@ The framerate doubles.
 
 These are functions not in the GL 1.1 spec that i've added to make this library more useful.
 
-These functions cannot be added as opcodes to display lists.
+These functions cannot be added as opcodes to display lists unless specifically listed.
 
 ### glDeleteList
 
 An easier to use version of glDeleteLists. glDeleteLists is also implemented.
 
 ### glSetEnableSpecular(int shouldenablespecular);
+
+This function can be added to display lists.
 
 Allows you to configure specular rendering. Turn it off
 if you want to use GL_LIGHTING but don't plan on using
@@ -345,7 +347,7 @@ Allows the user to retrieve the raw pixel data of a texture, for their own modif
 
 ### glDrawText(const unsigned char* text, int x, int y, unsigned int pixel)
 
-This function can be added to display lists.
+This function can be added to display lists as glPlotPixel calls, the text is not saved in a display list.
 
 Draws a pre-made 8x8 font to the screen. You can change its displayed size with...
 

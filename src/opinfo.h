@@ -87,6 +87,7 @@ ADD_OP(DrawPixels, 3, "%d %d %p")
 /* Gek's Added Functions */
 ADD_OP(PlotPixel, 2, "%d %d")
 ADD_OP(TextSize, 1, "%d")
+ADD_OP(SetEnableSpecular, 1, "%d")
 
 
 #undef ADD_OP
