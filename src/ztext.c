@@ -66,7 +66,7 @@ void glPlotPixel(GLint x, GLint y, GLuint pix) {
 	GLint h = c->zb->ysize;
 	p[0].op = OP_PlotPixel;
 
-	if (x > 0 && x < w && y > 0 && y < h) {
+	if (x > -1 && x < w && y > -1 && y < h) {
 #if TGL_FEATURE_RENDER_BITS == 16
 		pix = RGB_TO_PIXEL((pix & COLOR_MULT_MASK), ((pix & 0xFF00)<<(COLOR_SHIFT - 8)), ((pix & 255) << COLOR_SHIFT) );
 #endif
