@@ -69,6 +69,7 @@ void ZB_plot(ZBuffer* zb, ZBufferPoint* p) {
 static void ZB_line_flat_z(ZBuffer* zb, ZBufferPoint* p1, ZBufferPoint* p2, GLint color) {
 	//GLubyte zbdw = zb->depth_write; 
 	GLubyte zbdt = zb->depth_test;
+	GLubyte zbdw = zb->depth_write; 
 #include "zline.h"
 }
 
@@ -78,6 +79,7 @@ static void ZB_line_flat_z(ZBuffer* zb, ZBufferPoint* p1, ZBufferPoint* p2, GLin
 static void ZB_line_interp_z(ZBuffer* zb, ZBufferPoint* p1, ZBufferPoint* p2) {
 	//GLubyte zbdw = zb->depth_write;
 	GLubyte zbdt = zb->depth_test;
+	GLubyte zbdw = zb->depth_write; 
 #include "zline.h"
 }
 

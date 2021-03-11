@@ -160,6 +160,8 @@ The changelog is as such:
 
 * added Openmp multithreading and glPostProcess()
 
+* Line rendering now obeys glDepthMask and glDepthTest.
+
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
 
@@ -169,7 +171,7 @@ C99. TinyGL has very few external dependencies.
 
 Notable limitations:
 
-* The only supported texture size and format is RGB 256x256
+* The only supported texture size and format is decided at compile time. you can set it in zfeatures.h
 
 * A lot of prototypes are missing.
 
@@ -233,6 +235,8 @@ gcc -O3 menu.c -o menu -lSDL ../lib/libTinyGL.a -lm
 gcc -O3 gears.c -o gears -lSDL ../lib/libTinyGL.a -lm
 ```
 
+This is how you use TinyGL in a program:
+
 ```c
 //First you have to include
 //(Note that you must either link against libTinyGL.a or compile it in the same compilation unit as your program)
@@ -269,7 +273,8 @@ Note that while you... *can* invoke ZB_Resize to resize the framebuffer, you rea
 
 ### WHAT ARE THE MINIMUM REQUIREMENTS OF THIS LIBRARY?
 
-SDL 1.2 is required to run the demos I've written.
+SDL 1.2 is required to run most of the demos I've written, but if you don't have SDL you can still check out the library
+by compiling one of the "Raw Demos" which write their output to a file (At the time of writing this, only gears has been added.)
 
 SDL is by no means required to compile or use this library.
 SDL is used as a reasonable means of displaying the output of TinyGL for testing.
