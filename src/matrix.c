@@ -78,8 +78,11 @@ void glopPushMatrix(GLContext* c, GLParam* p) {
 	GLint n = c->matrix_mode;
 	M4* m;
 
-	//TODO add error check.
-	//assert((c->matrix_stack_ptr[n] - c->matrix_stack[n] + 1) < c->matrix_stack_depth_max[n]);
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(!((c->matrix_stack_ptr[n] - c->matrix_stack[n] + 1) < c->matrix_stack_depth_max[n]))
+	#define ERROR_FLAG GL_INVALID_OPERATION
+	#include "error_check.h"
+#endif
 
 	m = ++c->matrix_stack_ptr[n];
 
@@ -92,6 +95,12 @@ void glopPopMatrix(GLContext* c, GLParam* p) {
 	GLint n = c->matrix_mode;
 
 	//assert(c->matrix_stack_ptr[n] > c->matrix_stack[n]);
+
+#if TGL_FEATURE_ERROR_CHECK == 1
+	if(!(c->matrix_stack_ptr[n] > c->matrix_stack[n]))
+	#define ERROR_FLAG GL_INVALID_OPERATION
+	#include "error_check.h"
+#endif
 	c->matrix_stack_ptr[n]--;
 	gl_matrix_update(c);
 }

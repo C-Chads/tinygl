@@ -334,11 +334,8 @@ void glInit(void* zbuffer1) {
 void glClose(void) {
 	GLContext* c = gl_get_context();
 	GLuint i;
-	//gl_free(c->vertex);
 	for (i = 0; i < 3; i++) {
-		// c->matrix_stack[i] = gl_zalloc(c->matrix_stack_depth_max[i] * sizeof(M4));
 		gl_free(c->matrix_stack[i]);
-		// c->matrix_stack_ptr[i] = c->matrix_stack[i];
 	}
 	i = 0;
 #if TGL_FEATURE_SPECULAR_BUFFERS == 1
@@ -350,5 +347,4 @@ void glClose(void) {
 	}
 #endif
 	endSharedState(c);
-	//gl_free(c);
 }

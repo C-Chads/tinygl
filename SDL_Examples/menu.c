@@ -163,6 +163,8 @@ void draw() {
 		puts("Entry 2");
 	if(omg_textbox(0.01, 0.4,   "\nEntry 3\n", 24, 1,   0.4, 0.2, 0xFFFFFF, 0) && omg_cb == 2)
 		puts("Entry 3");
+	if(omg_textbox(0.01, 0.6,   "\nQuit\n", 24, 1,   0.4, 0.2, 0xFFFFFF, 0) && omg_cb == 2)
+		{puts("Quitting...");isRunning = 0;}
 	
 	if(
 	omg_textbox(tbcoords.d[0], tbcoords.d[1], "\nClick me and I toggle color!\n", 16, 1, 0.4, 0.3, 0xFFFFFF, haveclicked?0xFF0000:0x00) && omg_cb == 1)
