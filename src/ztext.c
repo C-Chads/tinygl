@@ -79,12 +79,11 @@ void glDrawText(const GLubyte* text, GLint x, GLint y, GLuint p) {
 GLContext* c = gl_get_context();
 
 #include "error_check.h"
-	if (!text)
+	
 #if TGL_FEATURE_ERROR_CHECK == 1
+	if (!text)
 #define ERROR_FLAG GL_INVALID_VALUE
 #include "error_check.h"
-#else
-		return;
 #endif
 	// PIXEL* pbuf = gl_get_context()->zb->pbuf;
 	GLint w = c->zb->xsize;
