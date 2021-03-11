@@ -3,7 +3,8 @@
 
 
 
-void glopMaterial(GLContext* c, GLParam* p) {
+void glopMaterial(GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint mode = p[1].i;
 	GLint type = p[2].i;
 	GLfloat v[4];
@@ -16,7 +17,7 @@ void glopMaterial(GLContext* c, GLParam* p) {
 
 	if (mode == GL_FRONT_AND_BACK) {
 		p[1].i = GL_FRONT;
-		glopMaterial(c, p);
+		glopMaterial(p);
 		mode = GL_BACK;
 	}
 	if (mode == GL_FRONT)
@@ -65,7 +66,8 @@ void glopMaterial(GLContext* c, GLParam* p) {
 	}
 }
 
-void glopColorMaterial(GLContext* c, GLParam* p) {
+void glopColorMaterial(GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint mode = p[1].i;
 	GLint type = p[2].i;
 
@@ -73,7 +75,8 @@ void glopColorMaterial(GLContext* c, GLParam* p) {
 	c->current_color_material_type = type;
 }
 
-void glopLight(GLContext* c, GLParam* p) {
+void glopLight(GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint light = p[1].i;
 	GLint type = p[2].i;
 	V4 v;
@@ -167,7 +170,8 @@ void glopLight(GLContext* c, GLParam* p) {
 	}
 }
 
-void glopLightModel(GLContext* c, GLParam* p) {
+void glopLightModel( GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint pname = p[1].i;
 	GLint* v = &p[2].i;
 	GLint i;
@@ -196,7 +200,8 @@ void glopLightModel(GLContext* c, GLParam* p) {
 
 
 
-void gl_enable_disable_light(GLContext* c, GLint light, GLint v) {
+void gl_enable_disable_light(GLint light, GLint v) {
+	GLContext* c = gl_get_context();
 	GLLight* l = &c->lights[light];
 	if (v && !l->enabled) {
 		l->enabled = 1;
@@ -221,7 +226,8 @@ void glSetEnableSpecular(GLint s) {
 	gl_get_context()->zEnableSpecular = s; 
 }
 /* non optimized lightening model */
-void gl_shade_vertex(GLContext* c, GLVertex* v) {
+void gl_shade_vertex(GLVertex* v) {
+	GLContext* c = gl_get_context();
 	GLfloat R, G, B, A;
 	GLMaterial* m;
 	GLLight* l;

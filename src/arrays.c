@@ -291,7 +291,8 @@ void glBufferData(	GLenum target,
 
 
 
-void glopArrayElement(GLContext* c, GLParam* param) {
+void glopArrayElement(GLParam* param) {
+	GLContext* c = gl_get_context();
 	GLint i;
 	GLint states = c->client_states;
 	GLint idx = param[1].i;
@@ -304,7 +305,7 @@ void glopArrayElement(GLContext* c, GLParam* param) {
 		p[2].f = c->color_array[i + 1];
 		p[3].f = c->color_array[i + 2];
 		p[4].f = (size > 3) ? c->color_array[i + 3] : 1.0f;
-		glopColor(c, p);
+		glopColor(p);
 	}
 	if (states & NORMAL_ARRAY) {
 		i = idx * (3 + c->normal_array_stride);
@@ -329,7 +330,7 @@ void glopArrayElement(GLContext* c, GLParam* param) {
 		p[2].f = c->vertex_array[i + 1];
 		p[3].f = (size > 2) ? c->vertex_array[i + 2] : 0.0f;
 		p[4].f = (size > 3) ? c->vertex_array[i + 3] : 1.0f;
-		glopVertex(c, p);
+		glopVertex(p);
 	}
 }
 
@@ -353,7 +354,7 @@ void glDrawArrays(	GLenum mode,
 	glEnd();
 }
 
-void glopEnableClientState(GLContext* c, GLParam* p) { c->client_states |= p[1].i; }
+void glopEnableClientState(GLParam* p) { gl_get_context()->client_states |= p[1].i; }
 
 void glEnableClientState(GLenum array) {
 	GLParam p[2];
@@ -379,7 +380,7 @@ void glEnableClientState(GLenum array) {
 	gl_add_op(p);
 }
 
-void glopDisableClientState(GLContext* c, GLParam* p) { c->client_states &= p[1].i; }
+void glopDisableClientState( GLParam* p) {GLContext* c = gl_get_context(); c->client_states &= p[1].i; }
 
 void glDisableClientState(GLenum array) {
 	GLParam p[2];
@@ -405,7 +406,8 @@ void glDisableClientState(GLenum array) {
 	gl_add_op(p);
 }
 
-void glopVertexPointer(GLContext* c, GLParam* p) {
+void glopVertexPointer(GLParam* p) {
+	GLContext* c = gl_get_context();
 	c->vertex_array_size = p[1].i;
 	c->vertex_array_stride = p[2].i;
 	c->vertex_array = p[3].p;
@@ -429,7 +431,8 @@ void glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* poin
 	gl_add_op(p);
 }
 
-void glopColorPointer(GLContext* c, GLParam* p) {
+void glopColorPointer(GLParam* p) {
+	GLContext* c = gl_get_context();
 	c->color_array_size = p[1].i;
 	c->color_array_stride = p[2].i;
 	c->color_array = p[3].p;
@@ -453,7 +456,8 @@ void glColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* point
 	gl_add_op(p);
 }
 
-void glopNormalPointer(GLContext* c, GLParam* p) {
+void glopNormalPointer(GLParam* p) {
+	GLContext* c = gl_get_context();
 	c->normal_array_stride = p[1].i;
 	c->normal_array = p[2].p;
 }
@@ -475,7 +479,8 @@ void glNormalPointer(GLenum type, GLsizei stride, const GLvoid* pointer) {
 	gl_add_op(p);
 }
 
-void glopTexCoordPointer(GLContext* c, GLParam* p) {
+void glopTexCoordPointer(GLParam* p) {
+	GLContext* c = gl_get_context();
 	c->texcoord_array_size = p[1].i;
 	c->texcoord_array_stride = p[2].i;
 	c->texcoord_array = p[3].p;

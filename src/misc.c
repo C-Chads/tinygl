@@ -14,7 +14,8 @@ void glPolygonStipple(void* a) {
 #endif
 }
 
-void glopViewport(GLContext* c, GLParam* p) {
+void glopViewport( GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint xsize, ysize, 
 			xmin, ymin, 
 			xsize_req, ysize_req;
@@ -31,7 +32,7 @@ void glopViewport(GLContext* c, GLParam* p) {
 		xsize_req = xmin + xsize;
 		ysize_req = ymin + ysize;
 
-		if (c->gl_resize_viewport && c->gl_resize_viewport(c, &xsize_req, &ysize_req) != 0) {
+		if (c->gl_resize_viewport && c->gl_resize_viewport(&xsize_req, &ysize_req) != 0) {
 			gl_fatal_error("glViewport: error while resizing display");
 		}
 		if (xsize <= 0 || ysize <= 0) {
@@ -56,7 +57,8 @@ void glBlendFunc(GLenum sfactor, GLenum dfactor) {
 	gl_add_op(p);
 	return;
 }
-void glopBlendFunc(GLContext* c, GLParam* p) {
+void glopBlendFunc( GLParam* p) {
+	GLContext* c = gl_get_context();
 	c->zb->sfactor = p[1].i;
 	c->zb->dfactor = p[2].i;
 }
@@ -69,9 +71,10 @@ void glBlendEquation(GLenum mode) {
 	p[1].i = mode;
 	gl_add_op(p);
 }
-void glopBlendEquation(GLContext* c, GLParam* p) { c->zb->blendeq = p[1].i; }
+void glopBlendEquation(GLParam* p) {GLContext* c = gl_get_context(); c->zb->blendeq = p[1].i; }
 
-void glopPointSize(GLContext* c, GLParam* p){
+void glopPointSize(GLParam* p){
+	GLContext* c = gl_get_context();
 	c->zb->pointsize = p[1].f;
 }
 void glPointSize(GLfloat f){
@@ -81,7 +84,8 @@ void glPointSize(GLfloat f){
 	gl_add_op(p);
 }
 
-void glopEnableDisable(GLContext* c, GLParam* p) {
+void glopEnableDisable(GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint code = p[1].i;
 	GLint v = p[2].i;
 
@@ -132,7 +136,7 @@ void glopEnableDisable(GLContext* c, GLParam* p) {
 		break;
 	default:
 		if (code >= GL_LIGHT0 && code < GL_LIGHT0 + MAX_LIGHTS) {
-			gl_enable_disable_light(c, code - GL_LIGHT0, v);
+			gl_enable_disable_light(code - GL_LIGHT0, v);
 		} else {
 			tgl_warning("glEnableDisable: 0x%X not supported.\n",code);
 		}
@@ -140,22 +144,26 @@ void glopEnableDisable(GLContext* c, GLParam* p) {
 	}
 }
 
-void glopShadeModel(GLContext* c, GLParam* p) {
+void glopShadeModel(GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint code = p[1].i;
 	c->current_shade_model = code;
 }
 
-void glopCullFace(GLContext* c, GLParam* p) {
+void glopCullFace(GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint code = p[1].i;
 	c->current_cull_face = code;
 }
 
-void glopFrontFace(GLContext* c, GLParam* p) {
+void glopFrontFace(GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint code = p[1].i;
 	c->current_front_face = code;
 }
 
-void glopPolygonMode(GLContext* c, GLParam* p) {
+void glopPolygonMode(GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint face = p[1].i;
 	GLint mode = p[2].i;
 
@@ -175,7 +183,8 @@ void glopPolygonMode(GLContext* c, GLParam* p) {
 }
 
 
-void glopPolygonOffset(GLContext* c, GLParam* p) {
+void glopPolygonOffset( GLParam* p) {
+	GLContext* c = gl_get_context();
 	c->offset_factor = p[1].f;
 	c->offset_units = p[2].f;
 }
@@ -224,7 +233,7 @@ void glReadBuffer(GLenum mode){
 	c->readbuffer = mode;
 }
 
-//Only ever reads pixels from the depth buffer
+//TODO
 void glReadPixels(	GLint x,
  	GLint y,
  	GLsizei width,
@@ -252,7 +261,7 @@ void glReadPixels(	GLint x,
 		return;
 #endif
 	}
-	
+	//TODO: implement read pixels.
 }
 
 void glFinish(){

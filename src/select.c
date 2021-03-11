@@ -118,12 +118,12 @@ void glFeedbackBuffer(GLint size, GLenum type, GLfloat* buf){
 	c->feedback_type = type;
 }
 
-void gl_add_feedback(GLContext* c, GLfloat token,
+void gl_add_feedback(GLfloat token,
 										GLVertex* v1,
 										GLVertex* v2,
 										GLVertex* v3,
 										GLfloat passthrough_token_value
-){
+){GLContext* c = gl_get_context();
 	if(c->feedback_overflow) return;
 	GLuint feedback_hits_needed = 2;
 	GLuint vertex_feedback_hits_needed = 0;
@@ -237,18 +237,20 @@ void gl_add_feedback(GLContext* c, GLfloat token,
 	return;
 }
 void glPassThrough(GLfloat token){
-GLContext* c = gl_get_context();
-#include "error_check.h"
-	gl_add_feedback(c,GL_PASS_THROUGH_TOKEN,NULL,NULL,NULL,token);
+//GLContext* c = gl_get_context(); //needed for error check.
+#include "error_check_no_context.h"
+	gl_add_feedback(GL_PASS_THROUGH_TOKEN,NULL,NULL,NULL,token);
 }
-void glopInitNames(GLContext* c, GLParam* p) {
+void glopInitNames(GLParam* p) {
+	GLContext* c = gl_get_context();
 	if (c->render_mode == GL_SELECT) {
 		c->name_stack_size = 0;
 		c->select_hit = NULL;
 	}
 }
 
-void glopPushName(GLContext* c, GLParam* p) {
+void glopPushName(GLParam* p) {
+	GLContext* c = gl_get_context();
 	if (c->render_mode == GL_SELECT) {
 		//assert(c->name_stack_size < MAX_NAME_STACK_DEPTH);
 		c->name_stack[c->name_stack_size++] = p[1].i;
@@ -261,7 +263,8 @@ void glopPushName(GLContext* c, GLParam* p) {
 
 
 
-void glopPopName(GLContext* c, GLParam* p) {
+void glopPopName(GLParam* p) {
+	GLContext* c = gl_get_context();
 	if (c->render_mode == GL_SELECT) {
 		//assert(c->name_stack_size > 0);
 		c->name_stack_size--;
@@ -269,7 +272,8 @@ void glopPopName(GLContext* c, GLParam* p) {
 	}
 }
 
-void glopLoadName(GLContext* c, GLParam* p) {
+void glopLoadName(GLParam* p) {
+	GLContext* c = gl_get_context();
 	if (c->render_mode == GL_SELECT) {
 		//assert(c->name_stack_size > 0);
 		c->name_stack[c->name_stack_size - 1] = p[1].i;
@@ -277,7 +281,8 @@ void glopLoadName(GLContext* c, GLParam* p) {
 	}
 }
 
-void gl_add_select(GLContext* c, GLuint zmin, GLuint zmax) {
+void gl_add_select(GLuint zmin, GLuint zmax) {
+	GLContext* c = gl_get_context();
 	GLuint* ptr;
 	GLint n, i;
 

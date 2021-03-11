@@ -4,7 +4,8 @@
 
 #include "zgl.h"
 
-static GLTexture* find_texture(GLContext* c, GLint h) {
+static GLTexture* find_texture(GLint h) {
+	GLContext* c = gl_get_context();
 	GLTexture* t;
 	t = c->shared_state.texture_hash_table[h & TEXTURE_HASH_TABLE_MASK];
 	while (t != NULL) {
@@ -18,12 +19,12 @@ static GLTexture* find_texture(GLContext* c, GLint h) {
 GLboolean glAreTexturesResident(	GLsizei n,
 								 	const GLuint * textures,
 								 	GLboolean * residences){
-GLContext* c = gl_get_context();
+//GLContext* c = gl_get_context();
 #define RETVAL GL_FALSE
 #include "error_check.h"
 GLboolean retval = GL_TRUE;
 	for(GLint i = 0; i < n; i++)
-		if(find_texture(c, textures[i]))
+		if(find_texture(textures[i]))
 			{residences[i] = GL_TRUE;}
 		else
 			{residences[i] = GL_FALSE;retval = GL_FALSE;}
@@ -33,7 +34,7 @@ GLboolean glIsTexture(	GLuint texture){
 	GLContext* c = gl_get_context();
 #define RETVAL GL_FALSE
 #include "error_check.h"
-	if(find_texture(c, texture))
+	if(find_texture(texture))
 		return GL_TRUE;
 	return GL_FALSE;
 }
@@ -49,7 +50,7 @@ void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize) {
 #else
 	//assert(text >= 0 && level < MAX_TEXTURE_LEVELS);
 #endif
-	tex = find_texture(c, text);
+	tex = find_texture(text);
 	if (!tex)
 #if TGL_FEATURE_ERROR_CHECK == 1
 #define ERROR_FLAG GL_INVALID_ENUM
@@ -66,7 +67,7 @@ void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize) {
 static void free_texture(GLContext* c, GLint h) {
 	GLTexture *t, **ht;
 
-	t = find_texture(c, h);
+	t = find_texture(h);
 	if (t->prev == NULL) {
 		ht = &c->shared_state.texture_hash_table[t->handle & TEXTURE_HASH_TABLE_MASK];
 		*ht = t->next;
@@ -85,7 +86,8 @@ static void free_texture(GLContext* c, GLint h) {
 	gl_free(t);
 }
 
-GLTexture* alloc_texture(GLContext* c, GLint h) {
+GLTexture* alloc_texture(GLint h) {
+	GLContext* c = gl_get_context();
 	GLTexture *t, **ht;
 #define RETVAL NULL
 #include "error_check.h"
@@ -112,11 +114,11 @@ GLTexture* alloc_texture(GLContext* c, GLint h) {
 	return t;
 }
 
-void glInitTextures(GLContext* c) {
+void glInitTextures() {
 	/* textures */
-
+	GLContext* c = gl_get_context();
 	c->texture_2d_enabled = 0;
-	c->current_texture = find_texture(c, 0);
+	c->current_texture = find_texture(0);
 }
 
 void glGenTextures(GLint n, GLuint* textures) {
@@ -145,7 +147,7 @@ void glDeleteTextures(GLint n, const GLuint* textures) {
 #include "error_check.h"
 	for (i = 0; i < n; i++) {
 
-		t = find_texture(c, textures[i]);
+		t = find_texture(textures[i]);
 		if (t != NULL && t != 0) {
 			if (t == c->current_texture) {
 				glBindTexture(GL_TEXTURE_2D, 0);
@@ -156,7 +158,8 @@ void glDeleteTextures(GLint n, const GLuint* textures) {
 	}
 }
 
-void glopBindTexture(GLContext* c, GLParam* p) {
+void glopBindTexture(GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint target = p[1].i;
 	GLint texture = p[2].i;
 	GLTexture* t;
@@ -167,9 +170,9 @@ void glopBindTexture(GLContext* c, GLParam* p) {
 #else
 	//assert(target == GL_TEXTURE_2D && target > 0);
 #endif
-	t = find_texture(c, texture);
+	t = find_texture(texture);
 	if (t == NULL) {
-		t = alloc_texture(c, texture);
+		t = alloc_texture(texture);
 #include "error_check.h"
 	}
 	if(t == NULL) { //Failed malloc.
@@ -196,8 +199,8 @@ void glCopyTexImage2D(
  	GLsizei height,
  	GLint border)
 {
-	GLContext* c = gl_get_context();
-#include "error_check.h"
+	//GLContext* c = gl_get_context();
+#include "error_check_no_context.h"
 	GLParam p[9];
 	p[0].op = OP_CopyTexImage2D;
 	p[1].i = target;
@@ -210,7 +213,8 @@ void glCopyTexImage2D(
 	p[8].i = border;
 	gl_add_op(p);
 }
-void glopCopyTexImage2D(GLContext* c, GLParam* p){
+void glopCopyTexImage2D(GLParam* p){
+	GLContext* c = gl_get_context();
 	GLint target = p[1].i;
 	GLint level = p[2].i;
 	//GLenum internalformat = p[3].i;
@@ -258,7 +262,7 @@ void glopCopyTexImage2D(GLContext* c, GLParam* p){
 #endif
 }
 
-void glopTexImage1D(GLContext* c, GLParam* p){
+void glopTexImage1D( GLParam* p){
 	GLint target = p[1].i;
 	GLint level = p[2].i;
 	GLint components = p[3].i;
@@ -272,16 +276,16 @@ void glopTexImage1D(GLContext* c, GLParam* p){
 	GLImage* im;
 	GLubyte* pixels1;
 	GLint do_free;
-
+	GLContext* c = gl_get_context();
 	{
 #if TGL_FEATURE_ERROR_CHECK == 1
-	if (!(c->current_texture != NULL && target == GL_TEXTURE_1D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
+		if (!(c->current_texture != NULL && target == GL_TEXTURE_1D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 
 #else
-	if (!(c->current_texture != NULL && target == GL_TEXTURE_1D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
-		gl_fatal_error("glTexImage2D: combination of parameters not handled!!");
+		if (!(c->current_texture != NULL && target == GL_TEXTURE_1D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))
+			gl_fatal_error("glTexImage2D: combination of parameters not handled!!");
 #endif
 	}
 	if (width != TGL_FEATURE_TEXTURE_DIM || height != TGL_FEATURE_TEXTURE_DIM) {
@@ -319,7 +323,7 @@ void glopTexImage1D(GLContext* c, GLParam* p){
 	if (do_free)
 		gl_free(pixels1);
 }
-void glopTexImage2D(GLContext* c, GLParam* p) {
+void glopTexImage2D(GLParam* p) {
 	GLint target = p[1].i;
 	GLint level = p[2].i;
 	GLint components = p[3].i;
@@ -332,7 +336,7 @@ void glopTexImage2D(GLContext* c, GLParam* p) {
 	GLImage* im;
 	GLubyte* pixels1;
 	GLint do_free;
-
+	GLContext* c = gl_get_context();
 	 {
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if (!(c->current_texture != NULL && target == GL_TEXTURE_2D && level == 0 && components == 3 && border == 0 && format == GL_RGB && type == GL_UNSIGNED_BYTE))

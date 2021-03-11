@@ -169,7 +169,7 @@ typedef struct GLSharedState {
 
 struct GLContext;
 
-typedef void (*gl_draw_triangle_func)(struct GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2);
+typedef void (*gl_draw_triangle_func)(GLVertex* p0, GLVertex* p1, GLVertex* p2);
 
 /* display context */
 
@@ -305,7 +305,7 @@ typedef struct GLContext {
 	/* opaque structure for user's use */
 	void* opaque;
 	/* resize viewport function */
-	GLint (*gl_resize_viewport)(struct GLContext* c, GLint* xsize, GLint* ysize);
+	GLint (*gl_resize_viewport)(GLint* xsize, GLint* ysize);
 
 	/* depth test */
 	//Moved to Zbuffer.
@@ -330,9 +330,9 @@ typedef struct GLContext {
 extern GLContext gl_ctx;
 static inline GLContext* gl_get_context(void) { return &gl_ctx; }
 //void gl_add_op(GLParam* p);
-extern void (*op_table_func[])(GLContext*, GLParam*);
+extern void (*op_table_func[])(GLParam*);
 extern GLint op_table_size[];
-extern void gl_compile_op(GLContext* c, GLParam* p);
+extern void gl_compile_op(GLParam* p);
 static inline void gl_add_op(GLParam* p) {
 	GLContext* c = gl_get_context();
 #if TGL_FEATURE_ERROR_CHECK == 1
@@ -341,13 +341,13 @@ static inline void gl_add_op(GLParam* p) {
 	GLint op;
 	op = p[0].op;
 	if (c->exec_flag) {
-		op_table_func[op](c, p);
+		op_table_func[op](p);
 #if TGL_FEATURE_ERROR_CHECK == 1
 #include "error_check.h"
 #endif
 	}
 	if (c->compile_flag) {
-		gl_compile_op(c, p);
+		gl_compile_op( p);
 #if TGL_FEATURE_ERROR_CHECK == 1
 #include "error_check.h"
 #endif
@@ -358,8 +358,8 @@ static inline void gl_add_op(GLParam* p) {
 }
 
 /* select.c */
-void gl_add_select(GLContext* c, GLuint zmin, GLuint zmax);
-void gl_add_feedback(GLContext* c, GLfloat token,
+void gl_add_select( GLuint zmin, GLuint zmax);
+void gl_add_feedback( GLfloat token,
 										GLVertex* v1,
 										GLVertex* v2,
 										GLVertex* v3,
@@ -394,8 +394,8 @@ static inline GLfloat clampf(GLfloat a, GLfloat min, GLfloat max) {
 }
 
 
-//void gl_transform_to_viewport(GLContext* c, GLVertex* v);
-//inline void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2);
+//void gl_transform_to_viewport( GLVertex* v);
+//inline void gl_draw_triangle( GLVertex* p0, GLVertex* p1, GLVertex* p2);
 
 /* triangle */
 
@@ -410,33 +410,33 @@ static inline GLfloat clampf(GLfloat a, GLfloat min, GLfloat max) {
 
 
 
-//inline void gl_draw_triangle_clip(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2, GLint clip_bit);
+//inline void gl_draw_triangle_clip( GLVertex* p0, GLVertex* p1, GLVertex* p2, GLint clip_bit);
 
-void gl_draw_triangle(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2);
-void gl_draw_line(GLContext* c, GLVertex* p0, GLVertex* p1);
-void gl_draw_point(GLContext* c, GLVertex* p0);
+void gl_draw_triangle( GLVertex* p0, GLVertex* p1, GLVertex* p2);
+void gl_draw_line( GLVertex* p0, GLVertex* p1);
+void gl_draw_point( GLVertex* p0);
 
 
-void gl_draw_triangle_point(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
-void gl_draw_triangle_line(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
-void gl_draw_triangle_fill(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
-void gl_draw_triangle_select(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
-void gl_draw_triangle_feedback(GLContext* c, GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
+void gl_draw_triangle_point( GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
+void gl_draw_triangle_line( GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
+void gl_draw_triangle_fill( GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
+void gl_draw_triangle_select( GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
+void gl_draw_triangle_feedback( GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
 /* matrix.c */
 void gl_print_matrix(const GLfloat* m);
 /*
-void glopLoadIdentity(GLContext *c,GLParam *p);
-void glopTranslate(GLContext *c,GLParam *p);*/
+void glopLoadIdentity(GLParam *p);
+void glopTranslate(GLParam *p);*/
 
 
 
 /* light.c */
-void gl_enable_disable_light(GLContext* c, GLint light, GLint v);
-void gl_shade_vertex(GLContext* c, GLVertex* v);
+void gl_enable_disable_light( GLint light, GLint v);
+void gl_shade_vertex(GLVertex* v);
 
-void glInitTextures(GLContext* c);
-void glEndTextures(GLContext* c);
-GLTexture* alloc_texture(GLContext* c, GLint h);
+void glInitTextures();
+void glEndTextures();
+GLTexture* alloc_texture( GLint h);
 
 /* image_util.c */
 void gl_convertRGB_to_5R6G5B(GLushort* pixmap, GLubyte* rgb, GLint xsize, GLint ysize);
@@ -449,7 +449,7 @@ void gl_resizeImageNoInterpolate(GLubyte* dest, GLint xsize_dest, GLint ysize_de
 void gl_fatal_error(char* format, ...);
 
 /* specular buffer "api" */
-GLSpecBuf* specbuf_get_buffer(GLContext* c, const GLint shininess_i, const GLfloat shininess);
+GLSpecBuf* specbuf_get_buffer( const GLint shininess_i, const GLfloat shininess);
 
 #ifdef __BEOS__
 void dprintf(const char*, ...);
@@ -469,7 +469,7 @@ void dprintf(const char*, ...);
 
 /* glopXXX functions */
 
-#define ADD_OP(a, b, c) void glop##a(GLContext*, GLParam*);
+#define ADD_OP(a, b, c) void glop##a(GLParam*);
 #include "opinfo.h"
 
 /* this clip epsilon is needed to avoid some rounding errors after

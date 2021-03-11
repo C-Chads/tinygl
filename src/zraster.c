@@ -3,7 +3,8 @@
 #include "zgl.h"
 #include "msghandling.h"
 
-static inline void gl_vertex_transform_raster(GLContext* c, GLVertex* v) {
+static inline void gl_vertex_transform_raster(GLVertex* v) {
+	GLContext* c = gl_get_context();
 	
 	{
 		/* no eye coordinates needed, no normal */
@@ -40,13 +41,14 @@ void glRasterPos4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w){
 	p[4].f = w;
 	gl_add_op(p);
 }
-void glopRasterPos(GLContext* c, GLParam* p){
+void glopRasterPos(GLParam* p){
+	GLContext* c = gl_get_context();
 	GLVertex v;
 	v.coord.X = p[1].f;
 	v.coord.Y = p[2].f;
 	v.coord.Z = p[3].f;
 	v.coord.W = p[4].f;
-	gl_vertex_transform_raster(c, &v);
+	gl_vertex_transform_raster(&v);
 	if (v.clip_code == 0)
 		{
 			{
@@ -107,7 +109,8 @@ void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, voi
 }
 #define ZCMP(z, zpix) (!(zbdt) || z >= (zpix))
 #define CLIPTEST(_x,_y,_w,_h)((0<=_x) && (_w>_x) && (0<=_y) && (_h>_y))
-void glopDrawPixels(GLContext* c, GLParam* p){
+void glopDrawPixels(GLParam* p){
+	GLContext* c = gl_get_context();
 	// p[3]
 	if(!c->rasterposvalid) return;
 	GLint w = p[1].i;
@@ -137,11 +140,11 @@ void glopDrawPixels(GLContext* c, GLParam* p){
 #endif
 	//Looping over the source pixels.
 	if(c->render_mode == GL_SELECT){
-		gl_add_select(c, zz, zz);
+		gl_add_select( zz, zz);
 		return;
 	} else if(c->render_mode == GL_FEEDBACK){
 		gl_add_feedback(
-			c,	GL_DRAW_PIXEL_TOKEN,
+			GL_DRAW_PIXEL_TOKEN,
 			&(c->rastervertex),
 			NULL,
 			NULL,
@@ -235,7 +238,8 @@ void glPixelZoom(GLfloat x, GLfloat y){
 	gl_add_op(p);
 }
 
-void glopPixelZoom(GLContext* c, GLParam* p){
+void glopPixelZoom(GLParam* p){
+	GLContext* c = gl_get_context();
 	c->pzoomx = p[1].f;
 	c->pzoomy = p[2].f;
 }

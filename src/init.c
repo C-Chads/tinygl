@@ -14,7 +14,7 @@ void initSharedState(GLContext* c) {
 	s->buffers = gl_zalloc(sizeof(GLBuffer*) * MAX_BUFFERS);
 	if(!s->buffers)
 		gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
-	alloc_texture(c, 0);
+	alloc_texture(0);
 #include "error_check.h"
 }
 

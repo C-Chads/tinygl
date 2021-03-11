@@ -8,7 +8,8 @@ static char* op_table_str[] = {
 #include "opinfo.h"
 };
 */
-void (*op_table_func[])(GLContext*, GLParam*) = {
+//void (*op_table_func[])(GLContext*, GLParam*) 
+void (*op_table_func[])(GLParam*) = {
 #define ADD_OP(a, b, c) glop##a,
 
 #include "opinfo.h"
@@ -22,13 +23,14 @@ GLint op_table_size[] = {
 
 
 
-static inline GLList* find_list(GLContext* c, GLuint list) { return c->shared_state.lists[list]; }
+static inline GLList* find_list(GLuint list) { return gl_get_context()->shared_state.lists[list]; }
 
-static void delete_list(GLContext* c, GLint list) {
+static void delete_list( GLint list) {
+	GLContext* c = gl_get_context();
 	GLParamBuffer *pb, *pb1;
 	GLList* l;
 
-	l = find_list(c, list);
+	l = find_list(list);
 	if (l == NULL) { //MARK <COST>
 		return;
 	}
@@ -52,10 +54,11 @@ void glDeleteLists(GLuint list, GLuint range) {
 }
 void glDeleteList(GLuint list) { 
 #include "error_check_no_context.h"
-delete_list(gl_get_context(), list); 
+delete_list( list); 
 }
 
-static GLList* alloc_list(GLContext* c, GLint list) {
+static GLList* alloc_list( GLint list) {
+	GLContext* c = gl_get_context();
 	GLList* l;
 	GLParamBuffer* ob;
 #define RETVAL NULL
@@ -131,7 +134,8 @@ void glCallLists(	GLsizei n,
 	for(GLint i = 0; i < n; i++)
 		glCallList(c->listbase + lists[i]);
 }
-void gl_compile_op(GLContext* c, GLParam* p) {
+void gl_compile_op(GLParam* p) {
+	GLContext* c = gl_get_context();
 	GLint op, op_size;
 	GLParamBuffer *ob, *ob1;
 	GLint index, i;
@@ -172,17 +176,18 @@ if(!ob1)
 	c->current_op_buffer_index = index;
 }
 /* this opcode is never called directly */
-void glopEndList(GLContext* c, GLParam* p) { exit(1); }
+void glopEndList(GLParam* p) { exit(1); }
 
 /* this opcode is never called directly */
-void glopNextBuffer(GLContext* c, GLParam* p) { exit(1); }
+void glopNextBuffer(GLParam* p) { exit(1); }
 
-void glopCallList(GLContext* c, GLParam* p) {
+void glopCallList(GLParam* p) {
+	//GLContext* c = gl_get_context();
 	GLList* l;
 	GLint list;
 #include "error_check.h"
 	list = p[1].ui;
-	l = find_list(c, list);
+	l = find_list(list);
 
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if (l == NULL) {gl_fatal_error("Bad list op, not defined");}
@@ -199,7 +204,7 @@ void glopCallList(GLContext* c, GLParam* p) {
 		if (op == OP_NextBuffer) {
 			p = (GLParam*)p[1].p;
 		} else {
-			op_table_func[op](c, p);
+			op_table_func[op](p);
 			p += op_table_size[op];
 		}
 	}
@@ -224,9 +229,9 @@ void glNewList(GLuint list, GLint mode) {
 	//assert(mode == GL_COMPILE || mode == GL_COMPILE_AND_EXECUTE); //MARK <COST>
 	//assert(c->compile_flag == 0); //MARK <COST>
 #endif
-	l = find_list(c, list);
-	if (l != NULL) delete_list(c, list);
-	l = alloc_list(c, list);
+	l = find_list(list);
+	if (l != NULL) delete_list(list);
+	l = alloc_list(list);
 #include "error_check.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(l==NULL)
@@ -257,16 +262,16 @@ void glEndList(void) {
 #endif
 	/* end of list */
 	p[0].op = OP_EndList;
-	gl_compile_op(c, p);
+	gl_compile_op(p);
 
 	c->compile_flag = 0;
 	c->exec_flag = 1;
 }
 
 GLint glIsList(GLuint list) {
-	GLContext* c = gl_get_context();
+	//GLContext* c = gl_get_context();
 	GLList* l;
-	l = find_list(c, list);
+	l = find_list(list);
 	return (l != NULL);
 }
 
@@ -284,7 +289,7 @@ GLuint glGenLists(GLint range) {
 			if (count == range) {
 				list = i - range + 1;
 				for (i = 0; i < range; i++) {
-					alloc_list(c, list + i);
+					alloc_list(list + i);
 				}
 				return list;
 			}
