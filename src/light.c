@@ -228,7 +228,7 @@ void glSetEnableSpecular(GLint s){
 	gl_add_op(p);
 }
 void glopSetEnableSpecular(GLParam* p){
-	tgl_warning("\nBeing Called!\n");
+	//tgl_warning("\nBeing Called!\n");
 	gl_get_context()->zEnableSpecular = p[1].i; 
 }
 /* non optimized lightening model */
