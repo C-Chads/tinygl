@@ -66,11 +66,11 @@
 //MULTITHREADING OPTIONS, only applicable if compiled with -fopenmp
 
 //Enable DrawPixels to offload the rendering of individual scanlines to separate threads.
-#define TGL_FEATURE_MULTITHREADED_DRAWPIXELS	1
+#define TGL_FEATURE_MULTITHREADED_DRAWPIXELS	0
 //Enable multithreading glCopyTexImage2D
 #define TGL_FEATURE_MULTITHREADED_COPY_TEXIMAGE_2D 1
 //Enable multithreading the ZB_CopyBuffer operation.
-#define TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER 1
+#define TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER 0
 //Enable stdalign
 #define TGL_FEATURE_ALIGNAS 1
 
