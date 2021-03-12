@@ -18,9 +18,9 @@
 #include "../include/zbuffer.h"
 #define CHAD_API_IMPL
 #define CHAD_MATH_IMPL
-#include "include/3dMath.h"
+#include "../include-demo/3dMath.h"
 #ifdef PLAY_MUSIC
-#include "include/api_audio.h"
+#include "../include-demo/api_audio.h"
 #else
 typedef unsigned char uchar;
 #endif

@@ -3,7 +3,7 @@
 #include <string.h>
 #include "../include/GL/gl.h"
 #include "../src/font8x8_basic.h"
-#include "stringutil.h"
+#include "../include-demo/stringutil.h"
 
 char fillchar = '#';
 void render(char *bitmap, int x) {

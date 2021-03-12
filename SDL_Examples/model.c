@@ -13,14 +13,14 @@
 
 #include "../include/GL/gl.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "include/stb_image.h"
+#include "../include-demo/stb_image.h"
 #define CHAD_MATH_IMPL
-#include "include/3dMath.h"
-#include "include/tobjparse.h"
+#include "../include-demo/3dMath.h"
+#include "../include-demo/tobjparse.h"
 #define CHAD_API_IMPL
 #include "../include/zbuffer.h"
 #ifdef PLAY_MUSIC
-#include "include/api_audio.h"
+#include "../include-demo/api_audio.h"
 #else
 typedef unsigned char uchar;
 #endif

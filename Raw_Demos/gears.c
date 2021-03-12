@@ -24,7 +24,7 @@
 #define CHAD_MATH_IMPL
 
 //Drags in Math and String (which are already dragged in above.)
-#include "include/3dMath.h"
+#include "../include-demo/3dMath.h"
 
 //Requires 
 /*
@@ -39,7 +39,7 @@ if I didn't define STBIW_ASSERT
 */
 #define STBIW_ASSERT(x) /* a comment */
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "include/stb_image_write.h"
+#include "../include-demo/stb_image_write.h"
 
 typedef unsigned char uchar;
 
