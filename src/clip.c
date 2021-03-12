@@ -204,10 +204,22 @@ void gl_draw_line(GLVertex* p1, GLVertex* p2) {GLContext* c = gl_get_context();
 			gl_transform_to_viewport_clip_c(&q1);
 			gl_transform_to_viewport_clip_c(&q2);
 
-			if (c->zb->depth_test)
-				ZB_line_z(c->zb, &q1.zp, &q2.zp);
-			else
-				ZB_line(c->zb, &q1.zp, &q2.zp);
+			if (c->render_mode == GL_SELECT) {
+				gl_add_select1(q1.zp.z, q2.zp.z, q2.zp.z);
+			}else if (c->render_mode == GL_FEEDBACK){
+				gl_add_feedback(
+					GL_LINE_TOKEN,
+					&q1,
+					&q2,
+					NULL,
+					0
+				);
+			} else {
+				if (c->zb->depth_test)
+					ZB_line_z(c->zb, &q1.zp, &q2.zp);
+				else
+					ZB_line(c->zb, &q1.zp, &q2.zp);
+			}
 		}
 	}
 }
@@ -403,7 +415,6 @@ void gl_draw_triangle_select(GLVertex* p0, GLVertex* p1, GLVertex* p2) {
 	gl_add_select1(p0->zp.z, p1->zp.z, p2->zp.z); 
 }
 void gl_draw_triangle_feedback(GLVertex* p0, GLVertex* p1, GLVertex* p2){
-	//GLContext* c = gl_get_context();
 	gl_add_feedback(
 					GL_POLYGON_TOKEN,
 					p0,

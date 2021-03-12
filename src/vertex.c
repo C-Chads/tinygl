@@ -225,24 +225,6 @@ void glopVertex(GLParam* p) {
 	cnt++;
 	c->vertex_cnt = cnt;
 
-	/* quick fix to avoid crashes on large polygons */
-//#if TGL_FEATURE_GL_POLYGON == 1
-//	if (n >= c->vertex_max) {
-//		GLVertex* newarray;
-//		c->vertex_max <<= 1; /* just double size */
-//		newarray = gl_malloc(sizeof(GLVertex) * c->vertex_max);
-//#if TGL_FEATURE_ERROR_CHECK == 1
-//		if (!newarray)
-//#define ERROR_FLAG GL_OUT_OF_MEMORY
-//#include "error_check.h"
-//#else
-//		if (!newarray) exit(1);
-//#endif
-//		memcpy(newarray, c->vertex, n * sizeof(GLVertex));
-//		gl_free(c->vertex);
-//		c->vertex = newarray;
-//	}
-//#endif 
 	/* new vertex entry */
 	v = &c->vertex[n];
 	n++;
@@ -267,8 +249,9 @@ void glopVertex(GLParam* p) {
 
 	if (c->texture_2d_enabled) {
 #if TGL_FEATURE_LIT_TEXTURES == 1
-		if (!(c->lighting_enabled))
-			v->color = gl_V4_New(1, 1, 1, 0); // Fix by GEK for unlit textured models.
+//Bad!
+//		if (!(c->lighting_enabled))
+//			v->color = gl_V4_New(1, 1, 1, 0); // Fix by GEK for unlit textured models.
 #endif
 		if (c->apply_texture_matrix) {
 			gl_M4_MulV4(&v->tex_coord, c->matrix_stack_ptr[2], &c->current_tex_coord);
@@ -296,7 +279,9 @@ void glopVertex(GLParam* p) {
 			}
 			break;
 		case GL_LINE_STRIP:
+#if TGL_FEATURE_GL_POLYGON == 1
 		case GL_LINE_LOOP:
+#endif
 			switch(n){
 				case 1: 
 					{
@@ -390,13 +375,14 @@ void glopEnd(GLParam* param) {
 	//Assume it went alright.
 #endif
 //#if TGL_FEATURE_GL_POLYGON == 1
-	if (c->begin_type == GL_LINE_LOOP) {
+
+//#endif
+#if TGL_FEATURE_GL_POLYGON == 1
+		if (c->begin_type == GL_LINE_LOOP) {
 		if (c->vertex_cnt >= 3) {
 			gl_draw_line(&c->vertex[0], &c->vertex[2]);
 		}
 	}
-//#endif
-#if TGL_FEATURE_GL_POLYGON == 1
 	else if (c->begin_type == GL_POLYGON) {
 		GLint i = c->vertex_cnt;
 		while (i >= 3) {

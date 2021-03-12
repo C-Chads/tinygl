@@ -130,7 +130,9 @@ void gl_add_feedback(GLfloat token,
 	GLuint vertex_pos_hits_needed = 2;
 	GLuint vertex_color_hits_needed = 4;
 	GLuint vertex_texture_hits_needed = 4;
+#if TGL_FEATURE_ERROR_CHECK == 1
 	GLuint done = 0;
+#endif
 	switch(c->feedback_type){
 		case GL_2D: vertex_feedback_hits_needed = 2;
 			vertex_pos_hits_needed = 2;

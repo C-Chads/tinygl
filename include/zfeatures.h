@@ -27,7 +27,8 @@
 #define TGL_FEATURE_LIT_TEXTURES   1
 //Enable the patternized "discard"-ing of pixels.
 #define TGL_FEATURE_POLYGON_STIPPLE 0
-//Enable the rendering of large polygons (in terms of vertex count).
+//Enable the rendering of large polygons (in terms of vertex count)
+//Also enabled the rendering of line loops.
 //the maximum number of vertices in a polygon is defined in zgl.h
 #define TGL_FEATURE_GL_POLYGON      0
 //Enable GL_BLEND functionality
