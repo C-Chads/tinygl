@@ -145,6 +145,10 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 #else
 "TGL_FEATURE_SINGLE_THREADED "
 #endif
+
+#if TGL_FEATURE_ALIGNAS
+"TGL_FEATURE_ALIGNAS "
+#endif
 "TGL_BUFFER_EXT "
 "TGL_FEEDBACK "
 "TGL_SELECT "

@@ -10,6 +10,7 @@
 
 void gl_M4_Id(M4* a) {
 	GLint i, j;
+#pragma omp simd collapse(2)
 	for (i = 0; i < 4; i++)
 		for (j = 0; j < 4; j++)
 			if (i == j)
@@ -34,6 +35,7 @@ int gl_M4_IsId(M4* a) {
 void gl_M4_Mul(M4* c, M4* a, M4* b) {
 	GLint i, j, k;
 	GLfloat s;
+#pragma omp simd
 	for (i = 0; i < 4; i++)
 		for (j = 0; j < 4; j++) {
 			s = 0.0;
@@ -52,7 +54,7 @@ void gl_M4_MulLeft(M4* c, M4* b) {
 	/*memcpy(&a, c, 16*sizeof(GLfloat));
 	 */
 	a = *c;
-
+#pragma omp simd
 	for (i = 0; i < 4; i++)
 		for (j = 0; j < 4; j++) {
 			s = 0.0;
@@ -79,14 +81,17 @@ void gl_MulM3V3(V3* a, M4* b, V3* c) {
 }
 
 void gl_M4_MulV4(V4* a, M4* b, V4* c) {
-	a->X = b->m[0][0] * c->X + b->m[0][1] * c->Y + b->m[0][2] * c->Z + b->m[0][3] * c->W;
-	a->Y = b->m[1][0] * c->X + b->m[1][1] * c->Y + b->m[1][2] * c->Z + b->m[1][3] * c->W;
-	a->Z = b->m[2][0] * c->X + b->m[2][1] * c->Y + b->m[2][2] * c->Z + b->m[2][3] * c->W;
-	a->W = b->m[3][0] * c->X + b->m[3][1] * c->Y + b->m[3][2] * c->Z + b->m[3][3] * c->W;
+	{
+		a->X = b->m[0][0] * c->X + b->m[0][1] * c->Y + b->m[0][2] * c->Z + b->m[0][3] * c->W;
+		a->Y = b->m[1][0] * c->X + b->m[1][1] * c->Y + b->m[1][2] * c->Z + b->m[1][3] * c->W;
+		a->Z = b->m[2][0] * c->X + b->m[2][1] * c->Y + b->m[2][2] * c->Z + b->m[2][3] * c->W;
+		a->W = b->m[3][0] * c->X + b->m[3][1] * c->Y + b->m[3][2] * c->Z + b->m[3][3] * c->W;
+	}
 }
 
 /* transposition of a 4x4 matrix */
 void gl_M4_Transpose(M4* a, M4* b) {
+{
 	a->m[0][0] = b->m[0][0];
 	a->m[0][1] = b->m[1][0];
 	a->m[0][2] = b->m[2][0];
@@ -107,11 +112,13 @@ void gl_M4_Transpose(M4* a, M4* b) {
 	a->m[3][2] = b->m[2][3];
 	a->m[3][3] = b->m[3][3];
 }
+}
 
 /* inversion of an orthogonal matrix of type Y=M.X+P */
 void gl_M4_InvOrtho(M4* a, M4 b) {
 	GLint i, j;
 	GLfloat s;
+#pragma omp simd
 	for (i = 0; i < 3; i++)
 		for (j = 0; j < 3; j++)
 			a->m[i][j] = b.m[j][i];
@@ -119,8 +126,10 @@ void gl_M4_InvOrtho(M4* a, M4 b) {
 	a->m[3][1] = 0.0;
 	a->m[3][2] = 0.0;
 	a->m[3][3] = 1.0;
+
 	for (i = 0; i < 3; i++) {
 		s = 0;
+#pragma omp simd
 		for (j = 0; j < 3; j++)
 			s -= b.m[j][i] * b.m[j][3];
 		a->m[i][3] = s;
@@ -134,12 +143,12 @@ int Matrix_Inv(GLfloat* r, GLfloat* m, GLint n) {
 	GLint i, j, k, l;
 	GLfloat max, tmp, t;
 
-	/* identit�e dans r */
+	/*  */
+#pragma omp simd
 	for (i = 0; i < n * n; i++)
 		r[i] = 0;
 	for (i = 0; i < n; i++)
 		r[i * n + i] = 1;
-
 	for (j = 0; j < n; j++) {
 
 		/* recherche du nombre de plus grand module sur la colonne j */
@@ -157,6 +166,7 @@ int Matrix_Inv(GLfloat* r, GLfloat* m, GLint n) {
 
 		/* permutation des lignes j et k */
 		if (k != j) {
+#pragma omp simd
 			for (i = 0; i < n; i++) {
 				tmp = m[j * n + i];
 				m[j * n + i] = m[k * n + i];
@@ -170,11 +180,11 @@ int Matrix_Inv(GLfloat* r, GLfloat* m, GLint n) {
 
 		/* multiplication de la ligne j par 1/max */
 		max = 1 / max;
+#pragma omp simd
 		for (i = 0; i < n; i++) {
 			m[j * n + i] *= max;
 			r[j * n + i] *= max;
 		}
-
 		for (l = 0; l < n; l++)
 			if (l != j) {
 				t = m[l * n + j];
@@ -219,7 +229,6 @@ void gl_M3_Inv(M3* a, M3* m) {
 
 	det = m->m[0][0] * m->m[1][1] * m->m[2][2] - m->m[0][0] * m->m[1][2] * m->m[2][1] - m->m[1][0] * m->m[0][1] * m->m[2][2] +
 		  m->m[1][0] * m->m[0][2] * m->m[2][1] + m->m[2][0] * m->m[0][1] * m->m[1][2] - m->m[2][0] * m->m[0][2] * m->m[1][1];
-
 	a->m[0][0] = (m->m[1][1] * m->m[2][2] - m->m[1][2] * m->m[2][1]) / det;
 	a->m[0][1] = -(m->m[0][1] * m->m[2][2] - m->m[0][2] * m->m[2][1]) / det;
 	a->m[0][2] = -(-m->m[0][1] * m->m[1][2] + m->m[0][2] * m->m[1][1]) / det;
@@ -231,6 +240,7 @@ void gl_M3_Inv(M3* a, M3* m) {
 	a->m[2][0] = (m->m[1][0] * m->m[2][1] - m->m[1][1] * m->m[2][0]) / det;
 	a->m[2][1] = -(m->m[0][0] * m->m[2][1] - m->m[0][1] * m->m[2][0]) / det;
 	a->m[2][2] = (m->m[0][0] * m->m[1][1] - m->m[0][1] * m->m[1][0]) / det;
+
 }
 
 /* vector arithmetic */

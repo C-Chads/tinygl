@@ -1,21 +1,22 @@
 #ifndef __ZMATH__
 #define __ZMATH__
 #include "../include/GL/gl.h"
+#include "../include/zfeatures.h"
 #include <stdlib.h>
 #include <string.h> //For memcpy
 #include <math.h>
 /* Matrix & Vertex */
 
 typedef struct {
-	GLfloat m[4][4];
+	TGL_ALIGN GLfloat m[4][4];
 } M4;
 
 typedef struct {
-	GLfloat m[3][3];
+	TGL_ALIGN GLfloat m[3][3];
 } M3;
 
 typedef struct {
-	GLfloat m[3][4];
+	TGL_ALIGN GLfloat m[3][4];
 } M34;
 
 #define X v[0]
@@ -24,11 +25,11 @@ typedef struct {
 #define W v[3]
 
 typedef struct {
-	GLfloat v[3];
+	TGL_ALIGN GLfloat v[3];
 } V3;
 
 typedef struct {
-	GLfloat v[4];
+	TGL_ALIGN GLfloat v[4];
 } V4;
 
 void gl_M4_Id(M4* a);

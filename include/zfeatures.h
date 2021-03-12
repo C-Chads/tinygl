@@ -70,6 +70,15 @@
 #define TGL_FEATURE_MULTITHREADED_COPY_TEXIMAGE_2D 1
 //Enable multithreading the ZB_CopyBuffer operation.
 #define TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER 1
+//Enable stdalign
+#define TGL_FEATURE_ALIGNAS 1
+
+#if TGL_FEATURE_ALIGNAS == 1
+#include <stdalign.h>
+#define TGL_ALIGN alignas(16)
+#else
+#define TGL_ALIGN /*a comment*/
+#endif
 
 //DO NOT TURN THESE ON, I don't maintain them and I actively #error them out.
 #define TGL_FEATURE_8_BITS         0

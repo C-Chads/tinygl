@@ -48,6 +48,8 @@ These are the C standard library includes used in the RAW DEMOS.
 #include <string.h>
 #include <stdarg.h>
 ```
+If your system supports it, the library can also take advantage of `alignas` to get SIMD support,
+which can be disabled in zfeatures. This adds a dependency to `stdalign.h` but greatly increases vertex processing speed.
 
 If you are unsure if your target platform can support TinyGL, compile it with the buildtime and runtime tests enabled (They are, by default)
 
