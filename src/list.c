@@ -185,7 +185,7 @@ void glopCallList(GLParam* p) {
 	//GLContext* c = gl_get_context();
 	GLList* l;
 	GLint list;
-#include "error_check.h"
+#include "error_check_no_context.h"
 	list = p[1].ui;
 	l = find_list(list);
 

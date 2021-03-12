@@ -21,7 +21,7 @@ GLboolean glAreTexturesResident(	GLsizei n,
 								 	GLboolean * residences){
 //GLContext* c = gl_get_context();
 #define RETVAL GL_FALSE
-#include "error_check.h"
+#include "error_check_no_context.h"
 GLboolean retval = GL_TRUE;
 	for(GLint i = 0; i < n; i++)
 		if(find_texture(textures[i]))
