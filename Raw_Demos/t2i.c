@@ -50,7 +50,7 @@ unsigned int color = 0xFF0000;
 #define M_PI 3.14159265
 #endif
 
-PIXEL hugefb[1<<28]; //256 million pixels
+//PIXEL hugefb[1<<28]; //256 million pixels
 
 int main(int argc, char** argv) {
 	// initialize SDL video:
@@ -77,9 +77,9 @@ int main(int argc, char** argv) {
 	imbuf = calloc(1,sizeof(PIXEL) * winSizeX * winSizeY);
 	ZBuffer* frameBuffer = NULL;
 	if(TGL_FEATURE_RENDER_BITS == 32)
-	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, hugefb);
+	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
 	else
-	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, hugefb);
+	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B,0);
 	if(!frameBuffer){printf("\nZB_open failed!");exit(1);}
 	glInit(frameBuffer);
 
