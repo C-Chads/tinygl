@@ -66,12 +66,23 @@ static inline GLfloat fastInvSqrt(float x){
 }
 */
 #if TGL_FEATURE_FISR == 1
+/*
 inline GLfloat fastInvSqrt(float x){
 	union{GLfloat f; GLint i;} conv;
 	conv.f = x;
 	conv.i = 0x5F1FFFF9 - (conv.i>>1);
 	conv.f *= 0.703952253f * (2.38924456f - x * conv.f * conv.f);
 	return conv.f;
+}*/
+//Defined behavior fastinvsqrt
+inline GLfloat fastInvSqrt(GLfloat x){
+	GLint i; 
+	GLfloat x2;
+	memcpy(&i, &x, 4);
+	i = 0x5F1FFFF9 - (i>>1);
+	memcpy(&x2, &i, 4);
+	x2 *= 0.703952253f * (2.38924456f - x * x2 * x2);
+	return x2;
 }
 #endif
 
