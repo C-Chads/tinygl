@@ -164,6 +164,8 @@ The changelog is as such:
 
 * Line rendering now obeys glDepthMask and glDepthTest.
 
+* Implemented glRectf
+
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
 

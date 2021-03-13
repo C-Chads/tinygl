@@ -35,6 +35,16 @@ void glNormal3f(GLfloat x, GLfloat y, GLfloat z) {
 	gl_add_op(p);
 }
 
+
+void glRectf(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2){
+	glBegin(GL_QUADS);
+	glVertex2f( x1, y1 );
+	glVertex2f( x2, y1 );
+	glVertex2f( x2, y2 );
+	glVertex2f( x1, y2 );
+	glEnd();
+}
+
 void glNormal3fv(GLfloat* v) { glNormal3f(v[0], v[1], v[2]); }
 
 /* glColor */

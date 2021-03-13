@@ -777,6 +777,7 @@ void glPolygonMode(GLint face,GLint mode);
 
 void glBegin(GLint type);
 void glEnd(void);
+void glRectf(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
 void glDrawBuffer(GLenum mode);
 void glReadBuffer(GLenum mode);
 void glReadPixels(	GLint x,

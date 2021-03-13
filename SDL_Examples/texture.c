@@ -35,6 +35,7 @@ int doPostProcess = 0;
 GLuint tex = 0;
 GLuint do1D = 0;
 GLint Row1D = 30;
+GLint dorect = 0;
 GLfloat texture_mult = 1.0;
 GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
 	GLuint t = 0;
@@ -73,8 +74,12 @@ GLuint postProcessingStep(GLint x, GLint y, GLuint pixel, GLushort z){
 
 void draw() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, tex);
+	
+	if(dorect)
+		glColor3f(1.0,1.0,1.0);
 	glBegin(GL_TRIANGLES);
 	// TRIANGLE 1,
 	glTexCoord2f(0, 0);
@@ -95,20 +100,23 @@ void draw() {
 	glTexCoord2f(1 * texture_mult, -1 * texture_mult);
 	glVertex3f(1, 1, 0.5);
 	glEnd();
+	if(dorect)
+		{
+			//glDisable(GL_DEPTH_TEST);glDepthMask(GL_FALSE);
+			glDisable(GL_TEXTURE_2D);
+			glColor3f(1.0,0,0); 
+			glRectf(0, 0, 1, 1); 
+			//glEnable(GL_DEPTH_TEST);glDepthMask(GL_TRUE);
+		}
 	if(doPostProcess) glPostProcess(postProcessingStep); //do a post processing step on the rendered geometry.
 }
 
 
 
 void initScene() {
-	static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0};
 
-	static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};
 
-	glLightfv(GL_LIGHT0, GL_POSITION, pos);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-	// glLightfv( GL_LIGHT0, GL_AMBIENT, white);
-	// glLightfv( GL_LIGHT0, GL_SPECULAR, white);
+
 	glEnable(GL_CULL_FACE);
 	// glDisable( GL_CULL_FACE );
 	glDisable(GL_BLEND);
@@ -143,6 +151,8 @@ int main(int argc, char** argv) {
 		for (int i = 0; i < argc; i++) {
 			if (!strcmp(argv[i], "-pp"))
 				doPostProcess = 1;
+			if (!strcmp(argv[i], "-rect"))
+				dorect = 1;
 			if (!strcmp(larg, "-w"))
 				winSizeX = atoi(argv[i]);
 			if (!strcmp(larg, "-h"))
@@ -202,17 +212,15 @@ int main(int argc, char** argv) {
 
 	// initialize TinyGL:
 
-	int mode;
+
 	switch (screen->format->BitsPerPixel) {
 	case 16:
 
 		// fprintf(stderr,"\nUnsupported by maintainer!!!");
-		mode = ZB_MODE_5R6G5B;
+
 		// return 1;
 		break;
 	case 32:
-
-		mode = ZB_MODE_RGBA;
 		break;
 	default:
 		return 1;
@@ -270,7 +278,7 @@ int main(int argc, char** argv) {
 			}
 
 		// draw scene:
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 		draw();
 		glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x000000FF);
 		glPixelZoom(2.0,0.7);
