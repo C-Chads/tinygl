@@ -81,6 +81,10 @@ static inline unsigned int strprefix(const char *pre, const char *str)
     return lenstr < lenpre ? 0 : memcmp(pre, str, lenpre) == 0;
 }
 
+static inline unsigned int streq(const char *pre, const char *str)
+{
+    return strcmp(pre, str) == 0;
+}
 //Someone once said sub-string search was an O(n^2) algorithm. What the hell?
 static inline long long strfind(const char* text, const char* subtext){
 	long long ti = 0;
