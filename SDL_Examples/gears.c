@@ -489,7 +489,7 @@ if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 
 			glDrawText((unsigned char*)"GREEN text", 0, 24, 0x00FF00);
 
-			glDrawText((unsigned char*)"BLUE text", 0, 48, 0xFF);
+			glDrawText((unsigned char*)"\xa2" "BLUE text" "\xa1", 0, 48, 0xFF);
 		}
 		// swap buffers:
 		if(!noSDL)

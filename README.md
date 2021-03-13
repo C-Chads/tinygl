@@ -358,6 +358,10 @@ Allows the user to retrieve the raw pixel data of a texture, for their own modif
 
 This function can be added to display lists as glPlotPixel calls, the text is not saved in a display list.
 
+Is capable of rendering the entire 8 bit latin extended character set (7 bit ascii plus characters 0xa0 and onward...)
+
+You can check how to embed non-standard characters in your strings in the gears demo.
+
 Draws a pre-made 8x8 font to the screen. You can change its displayed size with...
 
 ### glTextSize(GLTEXTSIZE mode)
