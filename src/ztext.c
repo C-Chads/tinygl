@@ -77,7 +77,7 @@ void glPlotPixel(GLint x, GLint y, GLuint pix) {
 }
 void glDrawText(const GLubyte* text, GLint x, GLint y, GLuint p) {
 GLContext* c = gl_get_context();
-
+GLint i = 0;
 #include "error_check.h"
 	
 #if TGL_FEATURE_ERROR_CHECK == 1
@@ -91,8 +91,8 @@ GLContext* c = gl_get_context();
 	GLint xoff = 0;
 	GLint yoff = 0;
 	GLint mult = c->textsize;
-	for (GLint i = 0; text[i] != '\0' && y + 7 < h; i++) {
-		if (text[i] != '\n' && text[i] < 127 && xoff + x < w) {
+	for (;text[i] != '\0' && y + 7 < h; i++) {
+		if (text[i] != '\n' && xoff + x < w) {
 			renderchar(font8x8_basic[text[i]], x + xoff, y + yoff, p);
 			xoff += 8 * mult;
 		} else if (text[i] == '\n') {

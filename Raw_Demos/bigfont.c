@@ -6,7 +6,7 @@
 #include "../include-demo/stringutil.h"
 
 char fillchar = '#';
-void render(char *bitmap, int x) {
+void render(unsigned char *bitmap, int x) {
     int y;
     int set;
     for (y=0; y < 8; y++) {
@@ -20,19 +20,19 @@ int main(int argc, char **argv) {
 	
 	{
 		unsigned long long l;
-		char* b = read_until_terminator_alloced(stdin, &l, '\n', 30);
+		unsigned char* b = (unsigned char*)read_until_terminator_alloced(stdin, &l, '\n', 30);
 		if(b)
 		do {
 			for(unsigned int x = 0; x < 8; x++){ //Despite the name, this is actually the row
 				fputc('\n', stdout);
 			    for(unsigned int i = 0; b[i] != '\n' && b[i] != '\0'; i++){
-			    	char *bitmap = font8x8_basic[b[i] & 127];
+			    	unsigned char *bitmap = (unsigned char*)font8x8_basic[ b[i] ];
 			    	render(bitmap, x);	
 			   	}
 		   	}
 		//Walk b until the next \n or null terminator.
 			free(b);
-			b = read_until_terminator_alloced(stdin, &l, '\n', 30);
+			b = (unsigned char*)read_until_terminator_alloced(stdin, &l, '\n', 30);
 	   	} while(!feof(stdin) && b);
 	   	if(b) free(b);
    	}
