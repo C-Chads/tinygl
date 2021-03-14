@@ -408,7 +408,20 @@ it will not be as fast.
 
 Note that you may have to take special care to prevent race conditions when using multithreading with this function.
 
+### NEW glGet calls!!!
 
+You can query glGetIntegerV with these new definitions
+```c
+	GL_POLYGON_MAX_VERTEX = 0xf001,
+	GL_MAX_BUFFERS = 0xf002,
+	GL_TEXTURE_HASH_TABLE_SIZE = 0xf003,
+	GL_MAX_TEXTURE_LEVELS = 0xf004,
+	GL_MAX_SPECULAR_BUFFERS = 0xf005,
+	GL_MAX_DISPLAY_LISTS = 0xf006,
+	GL_ERROR_CHECK_LEVEL = 0xf007,
+	GL_IS_SPECULAR_ENABLED = 0xf008,
+```
+to query the configuration of TinyGL.
 
 ## TOGGLEABLE FEATURES
 
