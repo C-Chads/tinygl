@@ -301,7 +301,12 @@ There is no FILE* usage, or I/O outside of 'msghandling.c' so if you want to rem
 ### Multithreading support
 
 OpenMP is used on supported platforms to multithread certain operations.
-These are the operations that are accelerated:
+
+(OpenMP is also used in the math library (zmath.h and zmath.c) to explicitly force certain operations
+to be SIMD accelerated, so it is recommended that you compile the library with OpenMP support!)
+
+
+These are the operations that are accelerated by multithreading:
 
 * glDrawPixels
 
