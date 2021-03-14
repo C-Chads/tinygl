@@ -170,6 +170,13 @@ void glGetIntegerv(GLint pname, GLint* params) {
 	GLContext* c = gl_get_context();
 	GLint i = 0;
 	switch (pname) {
+	case GL_MAX_BUFFERS:
+		*params = MAX_BUFFERS;
+		break;
+	case GL_TEXTURE_HASH_TABLE_SIZE:
+		*params = TEXTURE_HASH_TABLE_SIZE;
+		break;
+	
 	case GL_LIGHT15:
 		i++;
 	case GL_LIGHT14:
@@ -253,12 +260,17 @@ void glGetIntegerv(GLint pname, GLint* params) {
 		params[1] = c->polygon_mode_back;
 		break;
 	case GL_LIST_MODE:
-		params[0] = c->compile_flag;
+		if(c->compile_flag && !c->exec_flag)
+			params[0] = GL_COMPILE;
+		else if(c->exec_flag && c->compile_flag)
+			params[0] = GL_COMPILE_AND_EXECUTE;
+		else
+			params[0] = 0;
 		break;
 	case GL_LIST_BASE:
 		*params = c->listbase;
 	break;
-	case GL_LIST_INDEX:
+	case GL_LIST_INDEX: //TODO
 		params[0] = 0;
 		break;
 	case GL_TEXTURE_2D:
@@ -362,6 +374,9 @@ void glGetIntegerv(GLint pname, GLint* params) {
 	case GL_MAX_CLIENT_ATTRIB_STACK_DEPTH:
 		params[0] = 0;
 		break;
+	case GL_POLYGON_MAX_VERTEX:
+		params[0] = POLYGON_MAX_VERTEX;
+		break;
 	case GL_MAX_VIEWPORT_DIMS:
 		params[0] = 4096;
 		params[1] = 4096;
@@ -443,6 +458,29 @@ void glGetIntegerv(GLint pname, GLint* params) {
 		params[2] = c->viewport.xsize;
 		params[3] = c->viewport.ysize;
 		break;
+	case GL_MAX_SPECULAR_BUFFERS:
+#if TGL_FEATURE_SPECULAR_BUFFERS == 1
+		*params = MAX_SPECULAR_BUFFERS;
+#else
+		*params = 0;
+#endif
+		break;
+	case GL_MAX_DISPLAY_LISTS:
+		*params = MAX_DISPLAY_LISTS;
+		break;
+	case GL_ERROR_CHECK_LEVEL:
+#if TGL_FEATURE_STRICT_OOM_CHECKS == 1
+		*params = 2;
+#elif TGL_FEATURE_ERROR_CHECK == 1
+		*params = 1;
+#else
+		*params = 0;
+#endif
+		break;
+	//->zEnableSpecular
+	case GL_IS_SPECULAR_ENABLED:
+		*params = c->zEnableSpecular;
+	break;
 	case GL_MAX_MODELVIEW_STACK_DEPTH:
 		*params = MAX_MODELVIEW_STACK_DEPTH;
 		break;
@@ -454,6 +492,9 @@ void glGetIntegerv(GLint pname, GLint* params) {
 		break;
 	case GL_MAX_TEXTURE_STACK_DEPTH:
 		*params = MAX_TEXTURE_STACK_DEPTH;
+		break;
+	case GL_MAX_TEXTURE_LEVELS:
+		*params = MAX_TEXTURE_LEVELS;
 		break;
 	case GL_GREEN_BITS:
 #if TGL_FEATURE_RENDER_BITS == 16

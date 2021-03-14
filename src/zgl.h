@@ -1,5 +1,8 @@
 #ifndef _tgl_zgl_h_
 #define _tgl_zgl_h_
+#ifndef NDEBUG
+#define NDEBUG 
+#endif
 #include "../include/GL/gl.h"
 #include "../include/zfeatures.h"
 #include "../include/zbuffer.h"
@@ -12,9 +15,7 @@
 #define M_PI 3.1415926535897932384626433832795
 #endif
 //#define DEBUG
-#ifndef NDEBUG
-#define NDEBUG 
-#endif
+
 enum {
 
 #define ADD_OP(a, b, c) OP_##a,
@@ -23,7 +24,6 @@ enum {
 
 };
 
-/* initially # of allocated GLVertexes (will grow when necessary) */
 //
 #if TGL_FEATURE_GL_POLYGON == 1
 //Large enough for your nice juicy GL_POLYGONs
@@ -43,7 +43,7 @@ enum {
 #define MAX_MODELVIEW_STACK_DEPTH 32
 #define MAX_PROJECTION_STACK_DEPTH 8
 #define MAX_TEXTURE_STACK_DEPTH 8
-#define MAX_NAME_STACK_DEPTH 64
+#define MAX_NAME_STACK_DEPTH 16
 #define MAX_TEXTURE_LEVELS 1
 #define MAX_LIGHTS 16
 
