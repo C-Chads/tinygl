@@ -174,7 +174,7 @@ void draw() {
 		{puts("Detected click! EVENT FIRED!\n");haveclicked = !haveclicked; }
 	//A slider element
 	if(
-		omg_textbox(slidcoords.d[0], slidcoords.d[1], "Slider", 16, 1, 0.4, 0.3, 0xFFFFFF, haveclicked?0xFF0000:0x00) 
+		omg_textbox(slidcoords.d[0], slidcoords.d[1], "\n Slider \n", 16, 1, 0.4, 0.3, 0xFFFFFF, haveclicked?0xFF0000:0x00) 
 		&& omg_cb ==1
 	){
 			slidersliding = 1;
