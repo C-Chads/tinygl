@@ -71,9 +71,9 @@ extern int omg_cursor_has_been_sucked;
 extern int omg_cursor_was_inside;  //Set 
 extern float omg_buttonjump[2]; //Defaults to zero
 // Setting for users using 
-extern int bstate_old;
-extern int udlr_old[4];
-
+extern int omg_bstate_old;
+extern int omg_udlr_old[4];
+extern int omg_udlr[4];
 // cursor button
 extern int omg_cb; //Set to zero every iteration.
 #else
@@ -83,8 +83,9 @@ int omg_cursor_has_been_sucked;
 int omg_cursor_was_inside;  //Set 
 float omg_buttonjump[2]; //Defaults to zero
 // Setting for users using 
-int bstate_old = 0;
-int udlr_old[4] = {0,0,0,0};
+int omg_bstate_old = 0;
+int omg_udlr_old[4] = {0,0,0,0};
+int omg_udlr[4];
 // cursor button
 int omg_cb; //Set to zero every iteration.
 #endif
@@ -106,14 +107,18 @@ static inline float omg_wrapf(float x){
 static inline void omg_update_keycursor(int _up, int _down, int _left, int _right, int bstate){
 	
 	omg_cursor_was_inside = 0;
-	int up = _up && ! udlr_old[0];
-	int down = _down && ! udlr_old[1];
-	int left = _left && ! udlr_old[2];
-	int right = _right && ! udlr_old[3];
-	udlr_old[0] = _up;
-	udlr_old[1] = _down;
-	udlr_old[2] = _left;
-	udlr_old[3] = _right;
+	int up = _up && ! omg_udlr_old[0];
+	int down = _down && ! omg_udlr_old[1];
+	int left = _left && ! omg_udlr_old[2];
+	int right = _right && ! omg_udlr_old[3];
+	omg_udlr[0] = up;
+	omg_udlr[1] = down;
+	omg_udlr[2] = left;
+	omg_udlr[3] = right;
+	omg_udlr_old[0] = _up;
+	omg_udlr_old[1] = _down;
+	omg_udlr_old[2] = _left;
+	omg_udlr_old[3] = _right;
 	omg_cursor_has_been_sucked = 0;
 	omg_cursorpos_presuck[0] = omg_cursorpos[0];
 	omg_cursorpos_presuck[1] = omg_cursorpos[1];
@@ -129,9 +134,9 @@ static inline void omg_update_keycursor(int _up, int _down, int _left, int _righ
 	omg_cursorpos_presuck[1] = omg_cursorpos[1];
 	//printf("BEGIN! Cx = %f, Cy = %f\n", omg_cursorpos[0], omg_cursorpos[1]);
 	omg_cb = 0; 
-	if(bstate && !bstate_old) omg_cb = 1;
-	else if (!bstate && bstate_old) omg_cb = 2;
-	bstate_old = bstate;
+	if(bstate && !omg_bstate_old) omg_cb = 1;
+	else if (!bstate && omg_bstate_old) omg_cb = 2;
+	omg_bstate_old = bstate;
 }
 
 //for mouse cursors and touch input.
@@ -147,9 +152,9 @@ static inline void omg_update_mcursor(float ncx, float ncy, int bstate){
 	omg_cursorpos_presuck[1] = -1;
 
 	omg_cb = 0; 
-	if(bstate && !bstate_old) omg_cb = 1;
-	else if (!bstate && bstate_old) omg_cb = 2;
-	bstate_old = bstate;
+	if(bstate && !omg_bstate_old) omg_cb = 1;
+	else if (!bstate && omg_bstate_old) omg_cb = 2;
+	omg_bstate_old = bstate;
 }
 static inline int omg_boxtest(float x, float y, float xdim, float ydim, float cx, float cy){
 	if((x <= cx) &&

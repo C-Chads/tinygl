@@ -148,8 +148,11 @@ int omg_textbox(float x, float y, const char* text, int textsize, int sucks, flo
 	return omg_box_retval(x, y, xdim, ydim);
 }
 
-int haveclicked = 0;
+int haveclicked = 0; //For our toggleable movable button.
 vec3 tbcoords = (vec3){{0.4,0.4,0}};
+vec3 slidcoords = (vec3){{0.1,0.8,0}};
+float slidmoffset = 0;
+int slidersliding = 0; //Is the slider being slid?
 void draw() {
 	if(mb2){
 		tbcoords.d[0] = omg_cursorpos[0];
@@ -169,6 +172,33 @@ void draw() {
 	if(
 	omg_textbox(tbcoords.d[0], tbcoords.d[1], "\nClick me and I toggle color!\n", 16, 1, 0.4, 0.3, 0xFFFFFF, haveclicked?0xFF0000:0x00) && omg_cb == 1)
 		{puts("Detected click! EVENT FIRED!\n");haveclicked = !haveclicked; }
+	//A slider element
+	if(
+		omg_textbox(slidcoords.d[0], slidcoords.d[1], "Slider", 16, 1, 0.4, 0.3, 0xFFFFFF, haveclicked?0xFF0000:0x00) 
+		&& omg_cb ==1
+	){
+			slidersliding = 1;
+			slidmoffset = omg_cursorpos[0] - slidcoords.d[0];
+	}
+	if(omg_cb == 2)
+				slidersliding = 0;
+	//Handle the slider sliding behavior.
+	if(slidersliding){
+		if(using_cursorkeys){
+			if(omg_udlr[3]){
+				slidcoords.d[0] = clampf(slidcoords.d[0] + 0.05,0.1,0.7);
+			}
+			if(omg_udlr[2]){
+				slidcoords.d[0] = clampf(slidcoords.d[0] - 0.05,0.1,0.7);
+			}
+			omg_cursorpos[0] = slidcoords.d[0] + slidmoffset;
+			omg_cursorpos[1] = slidcoords.d[1];
+		} else {
+			//Move the element to the cursorposition's x.
+			slidcoords.d[0] = clampf(omg_cursorpos[0]- slidmoffset,0.1,0.7);
+		}
+		printf("Slider's value is %f\n", slidcoords.d[0]);
+	}
 	drawMouse();
 }
 
