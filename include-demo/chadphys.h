@@ -72,7 +72,9 @@ void resolveBodies(phys_body* a, phys_body* b){
 		penvec.d[1] *= -1;
 		penvec.d[2] *= -1;
 	} else {
+#ifdef CHADPHYS_DEBUG
 		puts("\nInvalid configuration. Error.\n");
+#endif
 	}
 	if(penvec.d[3] <= 0) return; //No penetration detected, or invalid configuration.
 	//We now have the penetration vector. There is a penetration.
