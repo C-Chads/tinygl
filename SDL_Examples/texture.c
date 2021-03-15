@@ -33,6 +33,7 @@ int doPostProcess = 0;
 #endif
 
 GLuint tex = 0;
+GLuint tex2 = 0;
 GLuint do1D = 0;
 GLint Row1D = 30;
 GLint dorect = 0;
@@ -132,6 +133,16 @@ void initScene() {
 		uchar* source_data = stbi_load("texture.png", &sw, &sh, &sc, 3);
 		if (source_data) {
 			tex = loadRGBTexture(source_data, sw, sh);
+			free(source_data);
+		} else {
+			printf("\nCan't load texture!\n");
+		}
+	}
+	{
+		int sw = 0, sh = 0, sc = 0; // sc goes unused.
+		uchar* source_data = stbi_load("tex.jpg", &sw, &sh, &sc, 3);
+		if (source_data) {
+			tex2 = loadRGBTexture(source_data, sw, sh);
 			free(source_data);
 		} else {
 			printf("\nCan't load texture!\n");
@@ -285,7 +296,7 @@ int main(int argc, char** argv) {
 		glRasterPos3f(0,-1,fabs(sinf(frames_notreset/200.0)));
 		{
 			GLint xsize, ysize;
-			void* data = glGetTexturePixmap(tex, 0, &xsize,  &ysize);
+			void* data = glGetTexturePixmap(tex2, 0, &xsize,  &ysize);
 			//for(int i = 0; i < winSizeX; i++)
 			//for(int j = 0; j < winSizeY; j++){
 				//glPlotPixel(i,j,rand() & 0xFFFFFF);

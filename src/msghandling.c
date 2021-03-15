@@ -1,13 +1,17 @@
 #include "../include/GL/gl.h"
 #include "zgl.h"
 #include <stdarg.h>
-#include <stdio.h>
+
 //#define NDEBUG
 
-#ifdef NDEBUG
-//#define NO_DEBUG_OUTPUT
+//TinyC doesnt like my stdio.
+#ifdef __TINYC__
+#define NO_DEBUG_OUTPUT
 #endif
 
+#ifndef NO_DEBUG_OUTPUT
+#include <stdio.h>
+#endif
 /* Use this function to output messages when something unexpected
    happens (which might be an indication of an error). *Don't* use it
    when there's GLinternal errors in the code - these should be handled

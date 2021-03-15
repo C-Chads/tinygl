@@ -748,7 +748,7 @@ extern char TGL_BUILDT_GLbyte[ 1-2*(sizeof(GLbyte) != 1)];
 #error C99 Compiler Using Non-Compliant Float Type! Compatibility not guaranteed.
 #endif
 #else
-#warning "Cannot test __STDC_IEC_559__, it is not defined."
+//#warning "Cannot test __STDC_IEC_559__, it is not defined."
 #endif
 //extern char __BUILDT_error[ 1-2*(sizeof(GLbyte) != 4)];
 extern char TGL_BUILDT_GLshort[ 1-2*(sizeof(GLshort) != 2)];
