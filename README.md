@@ -63,6 +63,8 @@ The SDL examples have been tested building on Debian 10 and Windows 10, while ti
 
 NOTE: There are graphical artifacts visible in these gifs which have been corrected in this version of the library.
 
+
+
 Without Polygon Stipple:
 
 ![GIF Video of demo](capture.gif)
@@ -102,6 +104,10 @@ Blending:
 Specular:
 
 ![GIF Video of demo](specular.gif)
+
+OpenIMGUI standard demo:
+
+![OpenIMGUI](menu.gif)
 
 TinyGL 0.8 (c) 1997-2021 Fabrice Bellard, C-Chads, Gek (see License, it's free software)
 
