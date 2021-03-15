@@ -96,10 +96,10 @@ void drawMouse(){
 		glColor3f(0.7,0.7,0.7);
 	else
 		glColor3f(1.0,0.1,0.1);
-	if(!using_cursorkeys)
+	//if(!using_cursorkeys)
 		drawBox(omg_cursorpos[0],omg_cursorpos[1], 0.03, 0.03);
-	else
-		drawBox(omg_cursorpos_presuck[0],omg_cursorpos_presuck[1], 0.03, 0.03);
+	//else
+	//	drawBox(omg_cursorpos_presuck[0],omg_cursorpos_presuck[1], 0.03, 0.03);
 }
 
 void drawTB(const char* text, GLuint textcolor, GLfloat x, GLfloat y, GLint size, float* tw, float* th){
@@ -154,7 +154,7 @@ vec3 slidcoords = (vec3){{0.1,0.8,0}};
 float slidmoffset = 0;
 int slidersliding = 0; //Is the slider being slid?
 void draw() {
-	if(mb2){
+	if(mb2){ //Use an additional input to move gui elements for testing- right click moves the button.
 		tbcoords.d[0] = omg_cursorpos[0];
 		tbcoords.d[1] =  omg_cursorpos[1];
 		haveclicked = 0;
