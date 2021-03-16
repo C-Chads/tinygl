@@ -43,7 +43,7 @@ void glopColor(GLParam* p) {
 	}
 }
 
-void gl_eval_viewport() {
+static inline void gl_eval_viewport() {
 	GLContext* c = gl_get_context();
 	GLViewport* v;
 	GLfloat zsize = (1 << (ZB_Z_BITS + ZB_POINT_Z_FRAC_BITS));
