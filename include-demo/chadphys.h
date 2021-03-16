@@ -25,13 +25,8 @@ typedef struct{
 	vec3 g; //gravity
 	f_ ms; //max speed
 } phys_world;
-void stepPhysWorld(phys_world* world);
-void resolveBodies(phys_body* a, phys_body* b);
-void initPhysWorld(phys_world* world); //inits to NULL
-void initPhysBody(phys_body* body); //inits to defaults specified above.
-#ifdef CHAD_PHYS_IMPL
 //TODO: implement functions
-void initPhysBody(phys_body* body){
+static inline void initPhysBody(phys_body* body){
 	body->shape = (aabb){
 		.c=(vec4){.d[0] = 0,.d[1] = 0,.d[2] = 0,.d[3] = 0},
 		.e=(vec3){.d[0] = 0,.d[1] = 0,.d[2] = 0}
@@ -46,15 +41,16 @@ void initPhysBody(phys_body* body){
 }
 
 //Check for and, if necessary, resolve colliding bodies.
-void resolveBodies(phys_body* a, phys_body* b){
+static inline void resolveBodies(phys_body* a, phys_body* b){
 	if(a->mass <= 0 && b->mass <= 0) return; //Perform a preliminary check. Do we even have to do anything?
-	//Check if the two bodies are colliding.
+	
 	vec4 penvec = (vec4){
 		.d[0]=0,
 		.d[1]=0,
 		.d[2]=0,
 		.d[3]=0
 	};
+	//Check if the two bodies are colliding.
 	if(a->shape.c.d[3] > 0 && b->shape.c.d[3] > 0) //Both Spheres!
 	{
 		penvec = spherevsphere(a->shape.c, b->shape.c);
@@ -64,8 +60,6 @@ void resolveBodies(phys_body* a, phys_body* b){
 	} else if (a->shape.c.d[3] > 0 && b->shape.c.d[3] <= 0) //a is a sphere, b is a box
 	{
 		penvec = spherevaabb(a->shape.c,b->shape);
-		
-		
 	} else if (a->shape.c.d[3] <= 0 && b->shape.c.d[3] > 0){ //a is a box, b is a sphere
 		penvec = spherevaabb(b->shape.c,a->shape);
 		penvec.d[0] *= -1;
@@ -81,28 +75,31 @@ void resolveBodies(phys_body* a, phys_body* b){
 	//determine how much each should be displaced by.
 	//The penvec points INTO A and is of length penvec.d[3]
 	float bdisplacefactor = a->mass / (a->mass + b->mass), adisplacefactor = b->mass / (a->mass + b->mass);
-	if(!(a->mass > 0)) {adisplacefactor = 0; bdisplacefactor = 1;}
-	if(!(b->mass > 0)) {bdisplacefactor = 0; adisplacefactor = 1;}
-	vec3 avel = a->v;
-	vec3 bvel = b->v;
-	vec3 arelvel = subv3(a->v, b->v);
-	vec3 brelvel = subv3(b->v, a->v);
+	vec3 comvel;
+	if(!(a->mass > 0)) {
+		adisplacefactor = 0; bdisplacefactor = 1;comvel = (vec3){{0,0,0}};
+	}else if(!(b->mass > 0)) {
+		bdisplacefactor = 0; adisplacefactor = 1;comvel = (vec3){{0,0,0}};
+	}else{
+		comvel = addv3( scalev3(bdisplacefactor, a->v), scalev3(adisplacefactor, b->v));
+	}
 	if(a->mass > 0){
-		vec4 displacea = scalev4(-adisplacefactor, penvec); //Note: SSE will accelerate a 4-lane multiply better than 3.
+		vec4 displacea = scalev4(-adisplacefactor, penvec);
 		a->shape.c.d[0] += displacea.d[0];
 		a->shape.c.d[1] += displacea.d[1];
 		a->shape.c.d[2] += displacea.d[2];
-		a->v = addv3(scalev3(1.0-a->friction, arelvel),bvel); //Apply friction!
+		//a->v = addv3(scalev3(1.0-a->friction, arelvel),bvel); //Apply friction!
+		a->v = addv3( scalev3(a->friction, comvel), scalev3(1.0-a->friction, a->v)  );
 		a->v = addv3(a->v, scalev3( a->bounciness, downv4(displacea) ) );
 	}
 	if(b->mass > 0){
-		vec4 displaceb = scalev4(bdisplacefactor, penvec); //The vector returned by collision functions points INTO B!
+		vec4 displaceb = scalev4(bdisplacefactor, penvec);
 		b->shape.c.d[0] += displaceb.d[0];
 		b->shape.c.d[1] += displaceb.d[1];
 		b->shape.c.d[2] += displaceb.d[2];
-		b->v = addv3(scalev3(1.0 - b->friction, brelvel),avel);
+		//b->v = addv3(scalev3(1.0 - b->friction, brelvel),avel);
+		b->v = addv3( scalev3(b->friction, comvel), scalev3(1.0-b->friction, b->v)  );
 		b->v = addv3(b->v, scalev3( b->bounciness, downv4(displaceb) ) );
 	}
 }
-#endif
 #endif
