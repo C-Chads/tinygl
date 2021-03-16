@@ -74,6 +74,14 @@
 //Enable stdalign
 #define TGL_FEATURE_ALIGNAS 1
 
+
+//Disable it for TinyC
+#ifdef __TINYC__
+#undef TGL_FEATURE_ALIGNAS
+#define TGL_FEATURE_ALIGNAS 0
+#endif
+
+
 #if TGL_FEATURE_ALIGNAS == 1
 #include <stdalign.h>
 #define TGL_ALIGN alignas(16)
