@@ -451,8 +451,8 @@ static inline vec4 spherevsphere( vec4 s1,  vec4 s2){ //x,y,z,radius
 				downv4(s2),
 				downv4(s1)
 			);
-	float lv3 = lengthv3(diff);
-	float l = (s1.d[3] + s2.d[3]-lv3);
+	f_ lv3 = lengthv3(diff);
+	f_ l = (s1.d[3] + s2.d[3]-lv3);
 	
 	if(l < 0 || lv3 == 0) {
 		ret.d[3] = 0;return ret;
@@ -464,6 +464,21 @@ static inline vec4 spherevsphere( vec4 s1,  vec4 s2){ //x,y,z,radius
 		,l
 	);
 	return ret;
+}
+static inline int boxvboxbool (aabb b1, aabb b2){
+		vec3 sumextents = addv3(b1.e,b2.e);
+		vec3 b1c = downv4(b1.c);
+		vec3 b2c = downv4(b2.c);	
+		if(
+			!(
+				(fabs(b1c.d[0] - b2c.d[0]) <= sumextents.d[0]) &&
+				(fabs(b1c.d[1] - b2c.d[1]) <= sumextents.d[1]) &&
+				(fabs(b1c.d[2] - b2c.d[2]) <= sumextents.d[2])
+			)
+		){
+			return 0;
+		}
+		return 1;
 }
 static inline vec4 boxvbox( aabb b1,  aabb b2){ //Just points along the minimum separating axis, Nothing fancy.
 	vec4 ret = (vec4){
