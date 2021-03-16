@@ -62,7 +62,10 @@ if you try to initialize the library and you get a crash with a print to standar
 
 The SDL examples have been tested building on Debian 10 and Windows 10, while tinygl itself has been confirmed to compile on many more platforms.
 
+## Includes a small SIMD-accelerated public domain replacement for GLU
+the "Chad Math Library" has been included (CC0, public domain) for your programming needs.
 
+it is simd accelerated on supported platforms.
 
 NOTE: There are graphical artifacts visible in these gifs which have been corrected in this version of the library.
 
