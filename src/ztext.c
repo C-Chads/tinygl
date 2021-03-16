@@ -22,7 +22,7 @@ void glTextSize(GLTEXTSIZE mode) {
 	gl_add_op(p);
 }
 void glopTextSize(GLParam* p) { GLContext* c = gl_get_context(); c->textsize = p[1].ui; } // Set text size
-void renderchar(GLbyte* bitmap, GLint _x, GLint _y, GLuint p) {
+static void renderchar(GLbyte* bitmap, GLint _x, GLint _y, GLuint p) {
 	GLint x, y;
 	GLint set;
 	GLContext* c = gl_get_context();

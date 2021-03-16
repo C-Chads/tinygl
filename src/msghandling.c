@@ -1,5 +1,6 @@
 #include "../include/GL/gl.h"
 #include "zgl.h"
+#include "msghandling.h"
 #include <stdarg.h>
 
 //#define NDEBUG

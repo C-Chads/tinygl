@@ -1,7 +1,7 @@
 #include "zgl.h"
 #include "msghandling.h"
 GLContext gl_ctx;
-const GLContext empty_gl_ctx = {0};
+static const GLContext empty_gl_ctx = {0};
 
 void initSharedState(GLContext* c) {
 	GLSharedState* s = &c->shared_state;
@@ -347,4 +347,5 @@ void glClose(void) {
 	}
 #endif
 	endSharedState(c);
+	gl_ctx = empty_gl_ctx;
 }

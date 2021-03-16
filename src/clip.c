@@ -53,7 +53,7 @@ extern GLfloat (*clip_proc[6])(V4*, V4*, V4*);// = {clip_xmin, clip_xmax, clip_y
 */
 
 #define clip_funcdef(name, sign, dir, dir1, dir2)                                                                                                                 \
-	GLfloat name(V4* c, V4* a, V4* b) {                                                                                                                 \
+	static GLfloat name(V4* c, V4* a, V4* b) {                                                                                                                 \
 		GLfloat t, dX, dY, dZ, dW, den;                                                                                                                        \
 		dX = (b->X - a->X);                                                                                                                                    \
 		dY = (b->Y - a->Y);                                                                                                                                    \
@@ -83,7 +83,7 @@ clip_funcdef(clip_xmin, -, X, Y, Z)
 
 					clip_funcdef(clip_zmax, +, Z, X, Y)
 
-GLfloat (*clip_proc[6])(V4*, V4*, V4*) = {clip_xmin, clip_xmax, clip_ymin, clip_ymax, clip_zmin, clip_zmax};
+static GLfloat (*clip_proc[6])(V4*, V4*, V4*) = {clip_xmin, clip_xmax, clip_ymin, clip_ymax, clip_zmin, clip_zmax};
 /* point */
 static void gl_add_select1(GLint z1, GLint z2, GLint z3) {
 	GLint min, max;

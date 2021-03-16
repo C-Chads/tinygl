@@ -6,7 +6,7 @@
 //Code for buffers is here too!
 
 
-GLint free_buffer(GLint handle){
+static GLint free_buffer(GLint handle){
 	GLContext* c = gl_get_context();
 	GLSharedState* s = &(c->shared_state);
 	if(handle == 0 || handle > MAX_BUFFERS) return 1; //error flag
@@ -31,7 +31,7 @@ GLint free_buffer(GLint handle){
 		return 0;
 	}
 }
-GLint check_buffer(GLint handle){ //1 means used, 0 means free, 2 means invalid
+static GLint check_buffer(GLint handle){ //1 means used, 0 means free, 2 means invalid
 	GLContext* c = gl_get_context();
 	GLSharedState* s = &(c->shared_state);
 	if(handle == 0 || handle > MAX_BUFFERS) return 2; //error flag
@@ -52,7 +52,7 @@ static inline GLBuffer* get_buffer(GLint handle){
 	handle--;
 	return s->buffers[handle];
 }
-GLint create_buffer(GLint handle){
+static inline GLint create_buffer(GLint handle){
 	GLContext* c = gl_get_context();
 	GLSharedState* s = &(c->shared_state);
 	if(handle == 0 || handle > MAX_BUFFERS) return 1; //error flag
@@ -83,7 +83,7 @@ void glGenBuffers(	GLsizei n,
 
 	{	
 		GLint n_left = n;
-		GLuint names[n];
+		GLuint names[MAX_BUFFERS];
 		for(int i = 1; i <= MAX_BUFFERS && n_left > 0; i++)
 			if(!check_buffer(i)) names[(n_left--)-1] = i;
 

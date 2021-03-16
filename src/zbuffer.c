@@ -434,7 +434,7 @@ break;
  * adr must be aligned on an 'int'
  */
 // Used in 16 bit mode
-void memset_s(void* adr, GLint val, GLint count) {
+static void memset_s(void* adr, GLint val, GLint count) {
 	GLint i, n, v;
 	GLuint* p;
 	GLushort* q;
@@ -458,7 +458,7 @@ void memset_s(void* adr, GLint val, GLint count) {
 }
 
 // Used in 32 bit mode
-void memset_l(void* adr, GLint val, GLint count) {
+static void memset_l(void* adr, GLint val, GLint count) {
 	GLint i, n, v;
 	GLuint* p;
 
@@ -480,7 +480,7 @@ void memset_l(void* adr, GLint val, GLint count) {
 
 /* count must be a multiple of 4 and >= 4 */
 // Gek's note: Should never be used.
-void memset_RGB24(void* adr, GLint r, GLint v, GLint b, long count) {
+static void memset_RGB24(void* adr, GLint r, GLint v, GLint b, long count) {
 	long i, n;
 	register long v1, v2, v3, *pt = (long*)(adr);
 	GLubyte *p, R = (GLubyte)r, V = (GLubyte)v, B = (GLubyte)b;
