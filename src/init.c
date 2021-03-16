@@ -3,7 +3,7 @@
 GLContext gl_ctx;
 static const GLContext empty_gl_ctx = {0};
 
-void initSharedState(GLContext* c) {
+static void initSharedState(GLContext* c) {
 	GLSharedState* s = &c->shared_state;
 	s->lists = gl_zalloc(sizeof(GLList*) * MAX_DISPLAY_LISTS);
 	if(!s->lists)
@@ -18,7 +18,7 @@ void initSharedState(GLContext* c) {
 #include "error_check.h"
 }
 
-void endSharedState(GLContext* c) {
+static void endSharedState(GLContext* c) {
 	GLSharedState* s = &c->shared_state;
 	GLint i;
 	GLList* l;
@@ -71,7 +71,7 @@ void endSharedState(GLContext* c) {
 
 #define TGL_RUNT_UNION_CAST(i) ((union{GLuint l; GLint ii; GLfloat f;}){i})
 #define TGL_FLOAT_ERR(a,b) ((a-b)/b)
-int TinyGLRuntimeCompatibilityTest(){
+static int TinyGLRuntimeCompatibilityTest(){
 	GLfloat t = -0, tf2;
 	GLint t2 = 1<<31;
 	if(TGL_RUNT_UNION_CAST(t2).f != t)
