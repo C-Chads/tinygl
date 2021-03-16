@@ -36,37 +36,7 @@ typedef aabb colshape; //c.d[3] determines if it's a sphere or box. 0 or less = 
 
 
 
-static inline vec4 getrow( mat4 a,  uint index){
-	return (vec4){
-		.d[0]=a.d[0*4+index],
-		.d[1]=a.d[1*4+index],
-		.d[2]=a.d[2*4+index],
-		.d[3]=a.d[3*4+index]
-	};
-}
-static inline mat4 swapRowColumnMajor( mat4 in){
-	mat4 result;
-	vec4 t;
-	int i = 0;
-	t = getrow(in,i);
-	memcpy(result.d+i*4, t.d, 4*4);i++;
-	t = getrow(in,i);
-	memcpy(result.d+i*4, t.d, 4*4);i++;
-	t = getrow(in,i);
-	memcpy(result.d+i*4, t.d, 4*4);i++;
-	t = getrow(in,i);
-	memcpy(result.d+i*4, t.d, 4*4);
-	return result;
-}
 
-static inline vec4 getcol( mat4 a,  uint index){
-	return (vec4){
-		.d[0]=a.d[index*4+0],
-		.d[1]=a.d[index*4+1],
-		.d[2]=a.d[index*4+2],
-		.d[3]=a.d[index*4+3]
-	};
-}
 static inline mat4 scalemat4( vec4 s){
 	mat4 ret;
 	for(int i = 1; i < 16; i++)
@@ -305,38 +275,69 @@ static inline f_ dotv3( vec3 a,  vec3 b){
 static inline f_ dotv4( vec4 a,  vec4 b){
 	return a.d[0] * b.d[0] + a.d[1] * b.d[1] + a.d[2] * b.d[2] + a.d[3] * b.d[3]; 
 }
+static inline vec4 getrow( mat4 a,  uint index){
+	return (vec4){
+		.d[0]=a.d[index],
+		.d[1]=a.d[4+index],
+		.d[2]=a.d[8+index],
+		.d[3]=a.d[12+index]
+	};
+}
+static inline mat4 swapRowColumnMajor( mat4 in){
+	mat4 result;
+	vec4 t;
+	int i = 0;
+	t = getrow(in,i);
+	memcpy(result.d+i*4, t.d, 4*4);i++;
+	t = getrow(in,i);
+	memcpy(result.d+i*4, t.d, 4*4);i++;
+	t = getrow(in,i);
+	memcpy(result.d+i*4, t.d, 4*4);i++;
+	t = getrow(in,i);
+	memcpy(result.d+i*4, t.d, 4*4);
+	return result;
+}
+
+static inline vec4 getcol( mat4 a,  uint index){
+	return (vec4){
+		.d[0]=a.d[index*4],
+		.d[1]=a.d[index*4+1],
+		.d[2]=a.d[index*4+2],
+		.d[3]=a.d[index*4+3]
+	};
+}
 static inline mat4 multm4( mat4 a,  mat4 b){
 	mat4 ret;
+#pragma omp simd
 	for(int i = 0; i < 4; i++)
 	for(int j = 0; j < 4; j++)
-		ret.d[i*4 + j] = dotv4(
-			getrow(a, j),
-			getcol(b, i)
+		ret.d[i*4 + j] = dotv4( //j is the ROW of the target, i is the COLUMN.
+			getrow(a, j), //we retrieve the same ROW as our ROW INDEX.
+			getcol(b, i) //we retrieve the same COLUMN as our COLUMN INDEX.
 		);
 	return ret;
 }
 static inline vec4 mat4xvec4( mat4 t,  vec4 v){
-	uint i = 0;
 	vec4 vr;
-	vr.d[0] = 	t.d[0*4+i] * v.d[0] + 
-				t.d[1*4+i] * v.d[1] +
-				t.d[2*4+i] * v.d[2] +
-				t.d[3*4+i] * v.d[3];
-	i++;
-	vr.d[1] = 	t.d[0*4+i] * v.d[0] +
-				t.d[1*4+i] * v.d[1] + 
-				t.d[2*4+i] * v.d[2] + 
-				t.d[3*4+i] * v.d[3];
-	i++;
-	vr.d[2] = 	t.d[0*4+i] * v.d[0] + 
-				t.d[1*4+i] * v.d[1] + 
-				t.d[2*4+i] * v.d[2] + 
-				t.d[3*4+i] * v.d[3];
-	i++;
-	vr.d[3] = 	t.d[0*4+i] * v.d[0] + 
-				t.d[1*4+i] * v.d[1] + 
-				t.d[2*4+i] * v.d[2] + 
-				t.d[3*4+i] * v.d[3];
+	//Getting a ROW of the matrix and dotting it with the COLUMN VECTOR to get
+	// ONE ROW of the output COLUMN VECTOR- one float.
+	vr.d[0] = 	t.d[0*4] * v.d[0] + 
+				t.d[1*4] * v.d[1] +
+				t.d[2*4] * v.d[2] +
+				t.d[3*4] * v.d[3];
+	//The next one.
+	vr.d[1] = 	t.d[0*4+1] * v.d[0] +
+				t.d[1*4+1] * v.d[1] + 
+				t.d[2*4+1] * v.d[2] + 
+				t.d[3*4+1] * v.d[3];
+	vr.d[2] = 	t.d[0*4+2] * v.d[0] + 
+				t.d[1*4+2] * v.d[1] + 
+				t.d[2*4+2] * v.d[2] + 
+				t.d[3*4+2] * v.d[3];
+	vr.d[3] = 	t.d[0*4+3] * v.d[0] + 
+				t.d[1*4+3] * v.d[1] + 
+				t.d[2*4+3] * v.d[2] + 
+				t.d[3*4+3] * v.d[3];
 	return vr;
 }
 static inline vec3 crossv3( vec3 a,  vec3 b){

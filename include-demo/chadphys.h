@@ -1,9 +1,6 @@
 #ifndef CHAD_PHYS_H
 #define CHAD_PHYS_H
 
-#ifdef CHAD_PHYS_IMPL
-#define CHAD_MATH_IMPL
-#endif
 #include "3dMath.h"
 typedef struct {
 	aabb shape; //c.d[3] is sphere radius. 
@@ -12,7 +9,7 @@ typedef struct {
 	f_ bounciness; //default 0, put portion of displacement into velocity.
 	f_ airfriction; //default 1, multiplied by velocity every time timestep.
 	f_ friction; //default 0.1
-	vec3 r; //Rotation, Used for rendering only
+	mat4 localt; //Local Transform.
 	vec3 v; //velocity
 	vec3 a; //Body specific acceleration, combined with gravity
 	void* d; //User defined pointer.
@@ -36,8 +33,14 @@ static inline void initPhysBody(phys_body* body){
 	body->friction = 0.1;
 	body->airfriction = 1.0;
 	body->a = (vec3){.d[0] = 0,.d[1] = 0,.d[2] = 0};
-	body->r = (vec3){.d[0] = 0,.d[1] = 0,.d[2] = 0};
+	body->localt = identitymat4();
 	body->d = NULL;
+}
+static inline mat4 getPhysBodyRenderTransform(phys_body* body){
+	return multm4(
+		translate(downv4(body->shape.c)),
+		body->localt
+	);
 }
 
 //Check for and, if necessary, resolve colliding bodies.

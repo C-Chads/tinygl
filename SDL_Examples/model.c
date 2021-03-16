@@ -621,7 +621,12 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 				// glDisable(GL_COLOR_MATERIAL);
 				for (unsigned int i = 0; i < count; i++) {
 					glPushMatrix();
-					glTranslatef((float)(i % 10) * 8.0, (float)(i / 10) * 8.0, -10);
+					mat4 horiz_translation = translate((vec3){{8.0 * (i%10),0.0,0.0}});
+					mat4 vert_translation = translate((vec3){{0.0,8.0 * (i/10),0.0}});
+					const mat4 ztranslation = translate((vec3){{0,0,-10}});
+					mat4 total_translation = multm4(multm4(horiz_translation, vert_translation),ztranslation);
+					glMultMatrixf(total_translation.d);
+					//glTranslatef((float)(i % 10) * 8.0, (float)(i / 10) * 8.0, -10);
 					glBegin(GL_TRIANGLES);
 					for(uint j = 0; j < ModelArray.npoints; j++)
 						glArrayElement(j);
@@ -639,7 +644,12 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 			// glDisable(GL_COLOR_MATERIAL);
 			for (unsigned int i = 0; i < count; i++) {
 				glPushMatrix();
-				glTranslatef((float)(i % 10) * 8.0, (float)(i / 10) * 8.0, -10);
+				mat4 horiz_translation = translate((vec3){{8.0 * (i%10),0.0,0.0}});
+				mat4 vert_translation = translate((vec3){{0.0,8.0 * (i/10),0.0}});
+				const mat4 ztranslation = translate((vec3){{0,0,-10}});
+				mat4 total_translation = multm4(multm4(horiz_translation, vert_translation),ztranslation);
+				glMultMatrixf(total_translation.d);
+				//glTranslatef((float)(i % 10) * 8.0, (float)(i / 10) * 8.0, -10);
 				glCallList(modelDisplayList);
 				// drawModel(
 				// m.d, m.npoints,
