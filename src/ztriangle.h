@@ -175,9 +175,10 @@ GLfloat d1, d2;
 //Required reading:
 //http://jakascorner.com/blog/2016/06/omp-data-sharing-attributes.html
 //I'd also like to figure out if the main while() loop over raster lines can be OMP parallelized, but I suspect it isn't worth it.
+	ZBufferPoint *pr1, *pr2, *l1, *l2; //BEGINNING OF LIFETIME FOR ZBUFFERPOINT VARS!!!
 	for (GLint part = 0; part < 2; part++) {
 		GLint nb_lines;
-		{ZBufferPoint *pr1, *pr2, *l1, *l2; //BEGINNING OF LIFETIME FOR ZBUFFERPOINT VARS!!!
+		{
 		register GLint update_left, update_right; //update_left decl
 			if (part == 0) {
 				if (fz > 0) { //Here! (VALUE_FZ_USED)
