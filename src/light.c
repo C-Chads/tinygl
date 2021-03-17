@@ -204,11 +204,13 @@ void gl_enable_disable_light(GLint light, GLint v) {
 	GLContext* c = gl_get_context();
 	GLLight* l = &c->lights[light];
 	if (v && !l->enabled) {
+		//Push this light onto the front of the linked list.
 		l->enabled = 1;
 		l->next = c->first_light;
 		c->first_light = l;
 		l->prev = NULL;
 	} else if (!v && l->enabled) {
+		//Pop this light out of the linked list.
 		l->enabled = 0;
 		if (l->prev == NULL)
 			c->first_light = l->next;
