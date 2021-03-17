@@ -75,6 +75,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 	}
 	if(penvec.d[3] <= 0) return; //No penetration detected, or invalid configuration.
 	vec3 penvecnormalized = scalev3(1.0/penvec.d[3], downv4(penvec)); //the penetration vector points into B...
+	float friction = a->friction * b->friction;
 	//We now have the penetration vector. There is a penetration.
 	//determine how much each should be displaced by.
 	//The penvec points INTO A and is of length penvec.d[3]
@@ -99,7 +100,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		a->shape.c.d[0] += displacea.d[0];
 		a->shape.c.d[1] += displacea.d[1];
 		a->shape.c.d[2] += displacea.d[2];
-		a->v = addv3( comvel, scalev3(a->friction, a_planarvel) ); //The center of mass velocity, plus a portion of coplanar velocity.
+		a->v = addv3( comvel, scalev3(1-friction, a_planarvel) ); //The center of mass velocity, plus a portion of coplanar velocity.
 		a->v = addv3(a->v, scalev3( a->bounciness, downv4(displacea) ) );
 	}
 	if(b->mass > 0){
@@ -114,7 +115,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		b->shape.c.d[0] += displaceb.d[0];
 		b->shape.c.d[1] += displaceb.d[1];
 		b->shape.c.d[2] += displaceb.d[2];
-		b->v = addv3(comvel, scalev3(b->friction, b_planarvel) ); //The center of mass velocity, plus a portion of coplanar velocity.
+		b->v = addv3(comvel, scalev3(1-friction, b_planarvel) ); //The center of mass velocity, plus a portion of coplanar velocity.
 		b->v = addv3(b->v, scalev3( b->bounciness, downv4(displaceb) ) );
 	}
 }
