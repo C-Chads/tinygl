@@ -21,7 +21,7 @@ ZBuffer* ZB_open(GLint xsize, GLint ysize, GLint mode,
 
 	zb->xsize = xsize & ~3; //The xsize will ALWAYS be a multiple of four!
 	zb->ysize = ysize;
-	zb->mode = mode;
+	//zb->mode = mode;
 	//zb->linesize = (xsize * PSZB + 3) & ~3;
 	zb->linesize = (xsize * PSZB);
 
@@ -65,10 +65,10 @@ error:
 }
 
 void ZB_close(ZBuffer* zb) {
-#if TGL_FEATURE_8_BITS == 1
-	if (zb->mode == ZB_MODE_INDEX)
-		ZB_closeDither(zb);
-#endif
+//#if TGL_FEATURE_8_BITS == 1
+//	if (zb->mode == ZB_MODE_INDEX)
+//		ZB_closeDither(zb);
+//#endif
 
 	if (zb->frame_buffer_allocated)
 		gl_free(zb->pbuf);

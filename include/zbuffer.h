@@ -246,7 +246,7 @@ typedef GLushort PIXEL;
 typedef struct {
     GLint xsize,ysize;
     GLint linesize; /* line size, in bytes */
-    GLint mode;
+    //GLint mode;
     
     GLushort *zbuf;
     PIXEL *pbuf;
