@@ -78,9 +78,12 @@ Things to keep in mind:
 	fdy2 = p2->y - p0->y;
 	
 	GLfloat fz = fdx1 * fdy2 - fdx2 * fdy1;//fz first usage
+	/*
 	if (fz == 0)
 		return;
 	fz = 1.0 / fz; //value of fz is used (VALUE_FZ_USED)
+	*/
+	if(fz != 0.0) fz = 1.0/fz;
 	//for these (VALUE_FZ_USED)
 	fdx1 *= fz;
 	fdy1 *= fz;
