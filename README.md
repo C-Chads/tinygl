@@ -4,7 +4,7 @@
 
 
 A major overhaul of Fabrice Bellard's TinyGL (still compiling with -std=c99) to be
-more useful as a software rasterizer.'
+more useful as a software rasterizer.
 
 Now with limited multithreading support
 
