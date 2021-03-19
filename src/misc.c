@@ -14,6 +14,8 @@ void glPolygonStipple(void* a) {
 #endif
 }
 
+
+
 void glopViewport( GLParam* p) {
 	GLContext* c = gl_get_context();
 	GLint xsize, ysize, 
@@ -45,7 +47,9 @@ void glopViewport( GLParam* p) {
 		c->viewport.xsize = xsize;
 		c->viewport.ysize = ysize;
 
-		c->viewport.updated = 1;
+		//c->viewport.updated = 1;
+		gl_eval_viewport(c);
+		//c->viewport.updated = 0;
 	}
 }
 void glBlendFunc(GLenum sfactor, GLenum dfactor) {

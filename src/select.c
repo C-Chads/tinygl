@@ -263,20 +263,24 @@ void glPassThrough(GLfloat token){
 	gl_add_feedback(GL_PASS_THROUGH_TOKEN,NULL,NULL,NULL,token);
 }
 void glopInitNames(GLParam* p) {
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLContext* c = gl_get_context();
 	if (c->render_mode == GL_SELECT) {
 		c->name_stack_size = 0;
 		c->select_hit = NULL;
 	}
+#endif
 }
 
 void glopPushName(GLParam* p) {
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLContext* c = gl_get_context();
 	if (c->render_mode == GL_SELECT) {
 		//assert(c->name_stack_size < MAX_NAME_STACK_DEPTH);
 		c->name_stack[c->name_stack_size++] = p[1].i;
 		c->select_hit = NULL;
 	}
+#endif
 }
 
 
@@ -285,21 +289,25 @@ void glopPushName(GLParam* p) {
 
 
 void glopPopName(GLParam* p) {
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLContext* c = gl_get_context();
 	if (c->render_mode == GL_SELECT) {
 		//assert(c->name_stack_size > 0);
 		c->name_stack_size--;
 		c->select_hit = NULL;
 	}
+#endif
 }
 
 void glopLoadName(GLParam* p) {
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLContext* c = gl_get_context();
 	if (c->render_mode == GL_SELECT) {
 		//assert(c->name_stack_size > 0);
 		c->name_stack[c->name_stack_size - 1] = p[1].i;
 		c->select_hit = NULL;
 	}
+#endif
 }
 
 void gl_add_select(GLuint zmin, GLuint zmax) {

@@ -43,21 +43,6 @@ void glopColor(GLParam* p) {
 	}
 }
 
-static inline void gl_eval_viewport() {
-	GLContext* c = gl_get_context();
-	GLViewport* v;
-	GLfloat zsize = (1 << (ZB_Z_BITS + ZB_POINT_Z_FRAC_BITS));
-
-	v = &c->viewport;
-
-	v->trans.X = ((v->xsize - 0.5) / 2.0) + v->xmin;
-	v->trans.Y = ((v->ysize - 0.5) / 2.0) + v->ymin;
-	v->trans.Z = ((zsize - 0.5) / 2.0) + ((1 << ZB_POINT_Z_FRAC_BITS)) / 2;
-
-	v->scale.X = (v->xsize - 0.5) / 2.0;
-	v->scale.Y = -(v->ysize - 0.5) / 2.0;
-	v->scale.Z = -((zsize - 0.5) / 2.0);
-}
 
 void glopBegin(GLParam* p) {
 	GLContext* c = gl_get_context();
@@ -97,11 +82,11 @@ void glopBegin(GLParam* p) {
 
 		c->matrix_model_projection_updated = 0;
 	}
-	/*  viewport */
-	if (c->viewport.updated) {
-		gl_eval_viewport(c);
-		c->viewport.updated = 0;
-	}
+	/*  viewport- this is now updated on a glViewport call. */
+	//if (c->viewport.updated) {
+	//	gl_eval_viewport(c);
+	//	c->viewport.updated = 0;
+	//}
 	/* triangle drawing functions */
 #if TGL_FEATURE_ALT_RENDERMODES == 1
 	if (c->render_mode == GL_SELECT) {

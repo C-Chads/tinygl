@@ -153,7 +153,8 @@ void glInit(void* zbuffer1) {
 	v->ymin = 0;
 	v->xsize = zbuffer->xsize;
 	v->ysize = zbuffer->ysize;
-	v->updated = 1;
+	//v->updated = 1;
+	gl_eval_viewport(c);
 	/* buffer stuff GL 1.1 */
 	c->drawbuffer = GL_FRONT;
 	c->readbuffer = GL_FRONT;
@@ -263,6 +264,7 @@ void glInit(void* zbuffer1) {
 	c->clear_depth = 0;
 
 	/* selection */
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	c->render_mode = GL_RENDER;
 	c->select_buffer = NULL;
 	c->name_stack_size = 0;
@@ -273,6 +275,7 @@ void glInit(void* zbuffer1) {
 	c->feedback_size = 0;
 	c->feedback_hits = 0;
 	c->feedback_overflow = 0;
+#endif
 	/* matrix */
 	c->matrix_mode = 0;
 

@@ -103,7 +103,7 @@ typedef struct GLViewport {
 	GLint xmin, ymin, xsize, ysize;
 	V3 scale;
 	V3 trans;
-	GLint updated;
+//	GLint updated;
 } GLViewport;
 
 typedef union {
@@ -233,17 +233,20 @@ typedef struct GLContext {
 	gl_draw_triangle_func draw_triangle_front, draw_triangle_back;
 
 	/* selection */
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLint render_mode;
 	GLuint* select_buffer;
 	GLint select_size;
 	GLuint *select_ptr, *select_hit;
 	GLint select_overflow;
 	GLint select_hits;
+#endif
 	/* glDrawBuffer, glRenderBuffer */
 	GLenum drawbuffer;
 	GLenum readbuffer;
 	/* feedback */
 	//render_mode as seen above
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLfloat* feedback_buffer;
 	GLfloat* feedback_ptr;
 	GLuint feedback_size;
@@ -253,6 +256,9 @@ typedef struct GLContext {
 	/* names */
 	GLuint name_stack[MAX_NAME_STACK_DEPTH];
 	GLint name_stack_size;
+#endif
+	
+
 
 	/* clear */
 	GLfloat clear_depth;
@@ -477,7 +483,21 @@ void dprintf(const char*, ...);
 
 
 
+static inline void gl_eval_viewport() {
+	GLContext* c = gl_get_context();
+	GLViewport* v;
+	GLfloat zsize = (1 << (ZB_Z_BITS + ZB_POINT_Z_FRAC_BITS));
 
+	v = &c->viewport;
+
+	v->trans.X = ((v->xsize - 0.5) / 2.0) + v->xmin;
+	v->trans.Y = ((v->ysize - 0.5) / 2.0) + v->ymin;
+	v->trans.Z = ((zsize - 0.5) / 2.0) + ((1 << ZB_POINT_Z_FRAC_BITS)) / 2;
+
+	v->scale.X = (v->xsize - 0.5) / 2.0;
+	v->scale.Y = -(v->ysize - 0.5) / 2.0;
+	v->scale.Z = -((zsize - 0.5) / 2.0);
+}
 
 
 #endif /* _tgl_zgl_h_ */

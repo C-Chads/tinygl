@@ -423,7 +423,11 @@ void glGetIntegerv(GLint pname, GLint* params) {
 		*params = GL_FLOAT;
 		break;
 	case GL_RENDER_MODE:
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 		*params = c->render_mode;
+#else
+		*params = GL_RENDER;
+#endif
 		break;
 	case GL_BLEND_EQUATION:
 		*params = c->zb->blendeq;
