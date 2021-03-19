@@ -203,6 +203,8 @@ void glopLightModel( GLParam* p) {
 void gl_enable_disable_light(GLint light, GLint v) {
 	GLContext* c = gl_get_context();
 	GLLight* l = &c->lights[light];
+	//l->enabled = v; //If you don't want the linked list.
+	
 	if (v && !l->enabled) {
 		//Push this light onto the front of the linked list.
 		l->enabled = 1;
@@ -253,8 +255,11 @@ void gl_shade_vertex(GLVertex* v) {
 	G = m->emission.v[1] + m->ambient.v[1] * c->ambient_light_model.v[1];
 	B = m->emission.v[2] + m->ambient.v[2] * c->ambient_light_model.v[2];
 	A =  m->diffuse.v[3];
-
+//LINKED LIST LOOP
 	for (l = c->first_light; l != NULL; l = l->next) {
+//VECTOR LINEAR SEARCH LOOP
+//for(GLuint i = 0; i < MAX_LIGHTS; i++)
+//	if(c->lights[i].enabled){ l = c->lights+i;
 		GLfloat lR, lB, lG;
 
 		/* ambient */

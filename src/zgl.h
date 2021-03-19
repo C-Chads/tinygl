@@ -75,16 +75,18 @@ typedef struct GLLight {
 	V4 specular;
 	V4 position;
 	V3 spot_direction;
+	V3 norm_spot_direction;
+	V3 norm_position;
 	GLfloat spot_exponent;
 	GLfloat spot_cutoff;
 	GLfloat attenuation[3];
 	/* precomputed values */
 	GLfloat cos_spot_cutoff;
-	V3 norm_spot_direction;
-	V3 norm_position;
+
 	/* we use a linked list to know which are the enabled lights */
-	GLint enabled;
+	//Old system based on pointers
 	struct GLLight *next, *prev;
+	GLubyte enabled;
 } GLLight;
 
 typedef struct GLMaterial {
@@ -100,9 +102,9 @@ typedef struct GLMaterial {
 } GLMaterial;
 
 typedef struct GLViewport {
-	GLint xmin, ymin, xsize, ysize;
 	V3 scale;
 	V3 trans;
+	GLint xmin, ymin, xsize, ysize;
 //	GLint updated;
 } GLViewport;
 
@@ -125,7 +127,7 @@ typedef struct GLList {
 } GLList;
 
 typedef struct GLVertex {
-	GLint edge_flag;
+	
 	V3 normal;
 	V4 coord;
 	V4 tex_coord;
@@ -134,8 +136,9 @@ typedef struct GLVertex {
 	/* computed values */
 	V4 ec;			 /* eye coordinates */
 	V4 pc;			 /* coordinates in the normalized volume */
-	GLint clip_code; /* clip code */
 	ZBufferPoint zp; /* GLinteger coordinates for the rasterization */
+	GLint clip_code; /* clip code */
+	GLint edge_flag;
 } GLVertex;
 
 typedef struct GLImage {
@@ -149,8 +152,8 @@ typedef struct GLImage {
 #define TEXTURE_HASH_TABLE_MASK 255
 typedef struct GLTexture {
 	GLImage images[MAX_TEXTURE_LEVELS];
-	GLint handle;
 	struct GLTexture *next, *prev;
+	GLint handle;
 } GLTexture;
 
 /* buffers */
@@ -174,52 +177,80 @@ typedef void (*gl_draw_triangle_func)(GLVertex* p0, GLVertex* p1, GLVertex* p2);
 /* display context */
 
 typedef struct GLContext {
-	/* Z buffer */
-	ZBuffer* zb;
-#if TGL_FEATURE_ERROR_CHECK == 1
-	GLenum error_flag;
-#endif
 	/* lights */
 	GLLight lights[MAX_LIGHTS];
-	GLLight* first_light;
+	/* viewport */
+	GLViewport viewport;
+	GLMaterial materials[2];
+	GLVertex vertex[POLYGON_MAX_VERTEX];
+	
+	M4 matrix_model_view_inv;
+	M4 matrix_model_projection;
 	V4 ambient_light_model;
+	V4 clear_color;
+	V4 current_color;
+	V4 current_normal;
+	V4 current_tex_coord;
+	V4 rasterpos;
+
+	/*Pointers.*/
+	/* shared state */
+	GLSharedState shared_state;
+	ZBuffer* zb;
+	GLLight* first_light;
+	GLTexture* current_texture;
+	GLParamBuffer* current_op_buffer;
+	M4* matrix_stack[3];
+	M4* matrix_stack_ptr[3];
+	gl_draw_triangle_func draw_triangle_front, draw_triangle_back;
+	/* resize viewport function */
+	GLint (*gl_resize_viewport)(GLint* xsize, GLint* ysize);
+	GLfloat* texcoord_array;
+	GLfloat* vertex_array;
+	GLfloat* normal_array;
+	GLfloat* color_array;
+
+#if TGL_FEATURE_ALT_RENDERMODES == 1
+	GLfloat* feedback_buffer;
+	GLuint* select_buffer;
+	GLuint *select_ptr, *select_hit;
+	GLfloat* feedback_ptr;
+#endif
+
+	
+	
 	GLint local_light_model;
 	GLint lighting_enabled;
 	GLint light_model_two_side;
 
 	/* materials */
-	GLMaterial materials[2];
 	GLint color_material_enabled;
 	GLint current_color_material_mode;
 	GLint current_color_material_type;
 
 	/* textures */
-	GLTexture* current_texture;
+	
 	GLint texture_2d_enabled;
 
-	/* shared state */
-	GLSharedState shared_state;
+
 
 	/* current list */
-	GLParamBuffer* current_op_buffer;
+	
 	GLint current_op_buffer_index;
 	GLint exec_flag, compile_flag, print_flag;
 	GLuint listbase;
 	/* matrix */
 
 	GLint matrix_mode;
-	M4* matrix_stack[3];
-	M4* matrix_stack_ptr[3];
+
 	GLint matrix_stack_depth_max[3];
 
-	M4 matrix_model_view_inv;
-	M4 matrix_model_projection;
+
 	GLint matrix_model_projection_updated;
 	GLint matrix_model_projection_no_w_transform;
 	GLint apply_texture_matrix;
 
-	/* viewport */
-	GLViewport viewport;
+	
 
 	/* current state */
 	GLint polygon_mode_back;
@@ -230,14 +261,14 @@ typedef struct GLContext {
 	GLint current_cull_face;
 	GLint cull_face_enabled;
 	GLint normalize_enabled;
-	gl_draw_triangle_func draw_triangle_front, draw_triangle_back;
+	
 
 	/* selection */
 #if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLint render_mode;
-	GLuint* select_buffer;
+	
 	GLint select_size;
-	GLuint *select_ptr, *select_hit;
+	
 	GLint select_overflow;
 	GLint select_hits;
 #endif
@@ -247,8 +278,7 @@ typedef struct GLContext {
 	/* feedback */
 	//render_mode as seen above
 #if TGL_FEATURE_ALT_RENDERMODES == 1
-	GLfloat* feedback_buffer;
-	GLfloat* feedback_ptr;
+	
 	GLuint feedback_size;
 	GLint feedback_hits;
 	GLubyte feedback_overflow;
@@ -262,32 +292,23 @@ typedef struct GLContext {
 
 	/* clear */
 	GLfloat clear_depth;
-	V4 clear_color;
 
-	/* current vertex state */
-	V4 current_color;
-	V4 current_normal;
-	V4 current_tex_coord;
 	GLint current_edge_flag;
 
 	/* glBegin / glEnd */
 	GLint in_begin;
 	GLint begin_type;
 	GLint vertex_n, vertex_cnt;
-	//GLint vertex_max;
-	//GLVertex vertex*;
-	GLVertex vertex[POLYGON_MAX_VERTEX];
+	
 
 	/* opengl 1.1 arrays  */
-	GLfloat* vertex_array;
+	
 	GLint vertex_array_size;
 	GLint vertex_array_stride;
-	GLfloat* normal_array;
 	GLint normal_array_stride;
-	GLfloat* color_array;
 	GLint color_array_size;
 	GLint color_array_stride;
-	GLfloat* texcoord_array;
+	
 	GLint texcoord_array_size;
 	GLint texcoord_array_stride;
 	GLint client_states;
@@ -308,29 +329,24 @@ typedef struct GLContext {
 	GLint specbuf_num_buffers;
 #endif 
 	GLint zEnableSpecular; // Enable specular lighting
-	/* opaque structure for user's use */
-	void* opaque;
-	/* resize viewport function */
-	GLint (*gl_resize_viewport)(GLint* xsize, GLint* ysize);
 
-	/* depth test */
-	//Moved to Zbuffer.
 
 	/* raster position */
-	V4 rasterpos;
 	GLint rasterpos_zz;
-	GLubyte rasterposvalid;
 	GLfloat pzoomx, pzoomy;
 	GLVertex rastervertex;
 	/* text */
 	GLTEXTSIZE textsize;
-
 	/* buffers */
-	GLint boundarraybuffer; //0 if no buffer is bound.
+	GLint boundarraybuffer; 
 	GLint boundvertexbuffer;
 	GLint boundnormalbuffer;
 	GLint boundcolorbuffer;
 	GLint boundtexcoordbuffer;
+	GLubyte rasterposvalid;
+#if TGL_FEATURE_ERROR_CHECK == 1
+	GLenum error_flag;
+#endif
 } GLContext;
 
 extern GLContext gl_ctx;
