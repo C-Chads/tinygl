@@ -244,23 +244,21 @@ typedef GLushort PIXEL;
 
 
 typedef struct {
-    GLint xsize,ysize;
-    GLint linesize; /* line size, in bytes */
+
     //GLint mode;
     
     GLushort *zbuf;
     PIXEL *pbuf;
-    GLint frame_buffer_allocated;
-    /* depth */
-    GLint depth_test;
-    GLint depth_write;
+    PIXEL *current_texture;
+    
+
 	/* point size*/
     GLfloat pointsize;
 
 //    GLint nb_colors;
 //    unsigned char *dctable;
 //    GLint *ctable;
-    PIXEL *current_texture;
+
     /* opengl polygon stipple*/
 
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
@@ -269,6 +267,12 @@ typedef struct {
 #endif
 	GLenum blendeq, sfactor, dfactor;
     GLint enable_blend;
+    GLint xsize,ysize;
+    GLint linesize; /* line size, in bytes */
+    /* depth */
+    GLint depth_test;
+    GLint depth_write;
+    GLubyte frame_buffer_allocated;
 } ZBuffer;
 
 typedef struct {
