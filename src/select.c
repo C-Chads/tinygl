@@ -3,7 +3,7 @@
 GLint glRenderMode(GLint mode) {
 	GLContext* c = gl_get_context();
 	GLint result = 0;
-
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	switch (c->render_mode) {
 	case GL_RENDER:break;
 	case GL_SELECT:
@@ -73,9 +73,16 @@ GLint glRenderMode(GLint mode) {
 #endif
 	}
 	return result;
+#else
+//GL_SELECT and GL_FEEDBACK are disabled.
+	return 0;
+#endif
+	
 }
 
 void glSelectBuffer(GLint size, GLuint* buf) {
+	
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLContext* c = gl_get_context();
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(c->render_mode == GL_SELECT)
@@ -84,11 +91,16 @@ void glSelectBuffer(GLint size, GLuint* buf) {
 #else
 	if(c->render_mode == GL_SELECT) return;
 #endif
+
 	c->select_buffer = buf;
 	c->select_size = size;
+#else
+	return;
+#endif
 }
 
 void glFeedbackBuffer(GLint size, GLenum type, GLfloat* buf){
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLContext* c = gl_get_context();
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(c->render_mode == GL_FEEDBACK ||
@@ -116,6 +128,9 @@ void glFeedbackBuffer(GLint size, GLenum type, GLfloat* buf){
 	c->feedback_buffer = buf;
 	c->feedback_size = size;
 	c->feedback_type = type;
+#else
+return;
+#endif
 }
 
 void gl_add_feedback(GLfloat token,
@@ -123,7 +138,9 @@ void gl_add_feedback(GLfloat token,
 										GLVertex* v2,
 										GLVertex* v3,
 										GLfloat passthrough_token_value
-){GLContext* c = gl_get_context();
+){
+#if TGL_FEATURE_ALT_RENDERMODES == 1
+GLContext* c = gl_get_context();
 	if(c->feedback_overflow) return;
 	GLuint feedback_hits_needed = 2;
 	GLuint vertex_feedback_hits_needed = 0;
@@ -236,6 +253,8 @@ void gl_add_feedback(GLfloat token,
 	if(done != feedback_hits_needed)
 		gl_fatal_error("Failed to write enough information to the buffer.");
 #endif
+//End of gl_add_feedback
+#endif
 	return;
 }
 void glPassThrough(GLfloat token){
@@ -284,10 +303,11 @@ void glopLoadName(GLParam* p) {
 }
 
 void gl_add_select(GLuint zmin, GLuint zmax) {
+
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLContext* c = gl_get_context();
 	GLuint* ptr;
 	GLint n, i;
-
 	if (!c->select_overflow) {
 		if (c->select_hit == NULL) {
 			n = c->name_stack_size;
@@ -311,4 +331,7 @@ void gl_add_select(GLuint zmin, GLuint zmax) {
 				c->select_hit[2] = zmax;
 		}
 	}
+#else
+return;
+#endif
 }

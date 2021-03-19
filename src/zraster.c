@@ -139,6 +139,7 @@ void glopDrawPixels(GLParam* p){
 #endif
 #endif
 	//Looping over the source pixels.
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	if(c->render_mode == GL_SELECT){
 		gl_add_select( zz, zz);
 		return;
@@ -152,7 +153,7 @@ void glopDrawPixels(GLParam* p){
 		);
 		return;
 	}
-
+#endif
 // Works.
 #if TGL_FEATURE_MULTITHREADED_DRAWPIXELS == 1
 

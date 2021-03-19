@@ -85,6 +85,7 @@ clip_funcdef(clip_xmin, -, X, Y, Z)
 
 static GLfloat (*clip_proc[6])(V4*, V4*, V4*) = {clip_xmin, clip_xmax, clip_ymin, clip_ymax, clip_zmin, clip_zmax};
 /* point */
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 static void gl_add_select1(GLint z1, GLint z2, GLint z3) {
 	GLint min, max;
 	min = max = z1;
@@ -99,14 +100,21 @@ static void gl_add_select1(GLint z1, GLint z2, GLint z3) {
 
 	gl_add_select(0xffffffff - min, 0xffffffff - max);
 }
+#else
+#define gl_add_select1(a, b, c) /*a comment*/
+#endif
 void gl_draw_point(GLVertex* p0) {
 	GLContext* c = gl_get_context();
 	if (p0->clip_code == 0) {
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 		if (c->render_mode == GL_SELECT) {
 			gl_add_select(p0->zp.z, p0->zp.z);
+
 		}else if (c->render_mode == GL_FEEDBACK){
 			gl_add_feedback(GL_POINT_TOKEN,p0,NULL,NULL,0);
-		} else {
+		} else 
+#endif
+		{
 			ZB_plot(c->zb, &p0->zp);
 		}
 	}
@@ -166,6 +174,7 @@ void gl_draw_line(GLVertex* p1, GLVertex* p2) {GLContext* c = gl_get_context();
 	cc2 = p2->clip_code;
 
 	if ((cc1 | cc2) == 0) {
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 		if (c->render_mode == GL_SELECT) {
 			gl_add_select1(p1->zp.z, p2->zp.z, p2->zp.z);
 		}else if (c->render_mode == GL_FEEDBACK){
@@ -176,7 +185,9 @@ void gl_draw_line(GLVertex* p1, GLVertex* p2) {GLContext* c = gl_get_context();
 				NULL,
 				0
 			);
-		} else {
+		} else 
+#endif
+		{
 			if (c->zb->depth_test)
 				ZB_line_z(c->zb, &p1->zp, &p2->zp);
 			else
@@ -203,7 +214,7 @@ void gl_draw_line(GLVertex* p1, GLVertex* p2) {GLContext* c = gl_get_context();
 			GLinterpolate(&q2, p1, p2, tmax);
 			gl_transform_to_viewport_clip_c(&q1);
 			gl_transform_to_viewport_clip_c(&q2);
-
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 			if (c->render_mode == GL_SELECT) {
 				gl_add_select1(q1.zp.z, q2.zp.z, q2.zp.z);
 			}else if (c->render_mode == GL_FEEDBACK){
@@ -214,7 +225,9 @@ void gl_draw_line(GLVertex* p1, GLVertex* p2) {GLContext* c = gl_get_context();
 					NULL,
 					0
 				);
-			} else {
+			} else 
+#endif
+			{
 				if (c->zb->depth_test)
 					ZB_line_z(c->zb, &q1.zp, &q2.zp);
 				else
