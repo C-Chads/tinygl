@@ -178,6 +178,8 @@ The changelog is as such:
 
 * Implemented glRectf
 
+* Implemented compiletime toggles for GL_SELECT and GL_FEEDBACK which significantly
+boosts performance. Also, implemented GL_FEEDBACK.
 
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
 
