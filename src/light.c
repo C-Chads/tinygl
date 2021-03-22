@@ -280,9 +280,8 @@ void gl_shade_vertex(GLVertex* v) {
 			d.Y = l->position.v[1] - v->ec.v[1];
 			d.Z = l->position.v[2] - v->ec.v[2];
 #if TGL_FEATURE_FISR == 1
-			tmp = fastInvSqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z); //FISR IMPL, MATCHED!
-			dist = 1.0f/tmp;
-			if (dist > 1E-3) {
+			tmp = clampf(fastInvSqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z),0,1); //FISR IMPL, MATCHED!
+			{
 				d.X *= tmp;
 				d.Y *= tmp;
 				d.Z *= tmp;
@@ -343,8 +342,6 @@ void gl_shade_vertex(GLVertex* v) {
 					s.X = d.X; //+0.0
 					s.Y = d.Y; //+0.0
 					s.Z = d.Z - 1.0; 
-					//s.Z = d.Z + 1.0; //Verified that this is... "supposed" to be the right thing...
-					//s.Z = d.Z;
 				}
 				//dot_spec is dot(surfaceNormal, H)
 				dot_spec = n.X * s.X + n.Y * s.Y + n.Z * s.Z;
@@ -357,10 +354,12 @@ void gl_shade_vertex(GLVertex* v) {
 #endif
 					dot_spec = clampf(dot_spec, 0, 1);
 #if TGL_FEATURE_FISR == 1
-					tmp = fastInvSqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z); //FISR IMPL, MATCHED!
-					if (tmp < 1E+3) {
+					tmp = clampf(fastInvSqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z),0,1); //FISR IMPL, MATCHED!
+					//if (tmp < 1E+3) 
+					{
 						dot_spec = dot_spec * tmp;
-					} else dot_spec = 0;
+					}
+					// else dot_spec = 0;
 #else
 				//reference implementation.
 					tmp= sqrt(s.X*s.X+s.Y*s.Y+s.Z*s.Z);
