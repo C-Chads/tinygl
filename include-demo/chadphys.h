@@ -1,28 +1,127 @@
 #ifndef CHAD_PHYS_H
 #define CHAD_PHYS_H
-
 #include "3dMath.h"
 typedef struct {
 	aabb shape; //c.d[3] is sphere radius. 
-		//if it's zero or less, it's not a sphere, it's a box
-	f_ mass; //0 means kinematic, or static. Defaults to zero.
-	f_ bounciness; //default 0, put portion of displacement into velocity.
-	f_ airfriction; //default 1, multiplied by velocity every time timestep.
-	f_ friction; //default 0.1
+				//if it's zero or less, it's not a sphere, it's a box
 	mat4 localt; //Local Transform.
 	vec3 v; //velocity
 	vec3 a; //Body specific acceleration, combined with gravity
 	void* d; //User defined pointer.
+	f_ mass; //0 means kinematic, or static. Defaults to zero.
+	f_ bounciness; //default 0, put portion of displacement into velocity.
+	f_ airfriction; //default 1, multiplied by velocity every time timestep.
+	f_ friction; //default 0.1
 } phys_body;
 typedef struct{
-	phys_body* abodies; //mass non-zero
-	phys_body* sbodies; //mass zero
-	uint nabodies; //number of abodies
-	uint nsbodies; //number of sbodies
 	vec3 g; //gravity
+	phys_body* bodies;
 	f_ ms; //max speed
+	uint nbodies; //number of bodies
 } phys_world;
-//TODO: implement functions
+typedef struct{
+	phys_body** data;
+	uint capacity;
+} phys_cell;
+typedef struct{
+	phys_cell* data;
+	f_ celldim;
+	uint xcells;
+	uint ycells;
+	uint zcells;
+	vec3 offset;
+} phys_spatialhash;
+static inline phys_spatialhash spatialhash_init(uint x, uint y, uint z, f_ celldim, vec3 offset){
+	phys_spatialhash ret = {0};
+	ret.xcells = x;
+	ret.ycells = y;
+	ret.zcells = z;
+	ret.celldim = celldim;
+	ret.offset = offset;
+	ret.data = calloc(1,sizeof(phys_cell) * x * y * z);
+	return ret;
+}
+static inline void destroy_spatialhash(phys_spatialhash* p){
+	if(p->data) free(p->data);
+	p->data = NULL;
+}
+static inline uint phys_cell_insert(phys_cell* c, phys_body* b){ //1 = error.
+	uint inserted = 0;
+	while(!inserted){
+		for(uint b_ = 0; b_ < c->capacity; b_++)
+			if(c->data[b_]==NULL)
+			{
+				c->data[b_] = b;
+				inserted = 1;
+				return 0;
+			}
+		phys_body** old = c->data;
+		
+		
+		c->data = calloc(1,((c->capacity)<<1) * sizeof(phys_body*));
+		if(c->data == NULL) { //The malloc failed! Wowza!
+			if(old)//In case we had something there...
+				free(old);
+			return 1;
+		}
+		memcpy(c->data, old, c->capacity);
+		c->capacity <<= 1;
+		free(old);
+	}
+	return 1; //Unreachable.
+}
+//update the placement of this body b in the spatial hash.
+static inline void spatialhash_clear(phys_spatialhash* h){
+#pragma omp parallel for collapse(4)
+	for(uint i = 0; i < h->xcells; i++)
+	for(uint j = 0; j < h->ycells; j++)
+	for(uint k = 0; k < h->zcells; k++)
+	for(uint b_cell = 0; b_cell < h->data[i+ j*h->xcells + k*h->xcells*h->ycells].capacity; b_cell++)
+			h->data[i+ j*h->xcells + k*h->xcells*h->ycells].data[b_cell] = NULL;
+}
+
+
+static inline uint spatialhash_update(phys_spatialhash* h, phys_body* b){
+	//Assumes that the spatial hash was cleared this frame- no duplicates.
+	vec3 b1c = downv4(b->shape.c);
+	f_ rad = 0;
+	if(b->shape.c.d[3] == 0){
+		vec3 b1max = addv3(b1c,b->shape.e);
+		rad = MAX(MAX(b1max.d[0],b1max.d[1]),b1max.d[2]);
+	} else {
+		rad = b->shape.c.d[3];
+	}
+	rad /= h->celldim;
+	b1c = addv3(h->offset, b1c);
+	b1c = scalev3(1.0/h->celldim, b1c);
+	ivec3 beg, end;
+#pragma omp simd
+	for(int i = 0; i < 3; i++){
+		beg.d[i] = b1c.d[i] - rad;
+		end.d[i] = b1c.d[i] + rad;
+	}
+//error checking.
+	for(int i = 0; i < 3; i++)
+		if(beg.d[i] < 0 || end.d[i] < 0) return 1;
+	if(	end.d[0] > h->xcells ||
+		end.d[1] > h->ycells ||
+		end.d[2] > h->zcells)
+			return 1;
+	if(	beg.d[0] > h->xcells ||
+		beg.d[1] > h->ycells ||
+		beg.d[2] > h->zcells)
+				return 1;
+#pragma omp parallel for collapse(3)
+	for(uint i = beg.d[0]; i < h->xcells && i<=end.d[0]; i++)
+	for(uint j = beg.d[1]; j < h->ycells && j<=end.d[1]; j++)
+	for(uint k = beg.d[2]; k < h->zcells && k<=end.d[2]; k++){
+		phys_cell_insert(h->data+i+ j*h->xcells + k*h->xcells*h->ycells, b);
+	}
+	return 0;
+}
+
+
+
 static inline void initPhysBody(phys_body* body){
 	body->shape = (aabb){
 		.c=(vec4){.d[0] = 0,.d[1] = 0,.d[2] = 0,.d[3] = 0},
