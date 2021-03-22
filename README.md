@@ -209,6 +209,10 @@ The "implementation specific multiplier" is 0.
 * Lit triangles will use the current material properties, even if they are textured. If the diffuse color is black, then your
 textured triangles will appear black.
 
+* Textured triangles are affected by their vertex colors- the per-vertex color is used as a "mask" for the texture
+on triangles. It is recommended you call glColor3f(1,1,1); before rendering a textured object to get the expected result-
+you only need to make this call once, and it can be before glBegin.
+
 * the X dimension of the rendering window with must be a multiple of 4.
 
 * Line rendering is not blended
