@@ -33,7 +33,7 @@ typedef struct {
 } V4;
 
 void gl_M4_Id(M4* a);
-int gl_M4_IsId(M4* a);
+GLint gl_M4_IsId(M4* a);
 void gl_M4_Move(M4* a, M4* b);
 void gl_MoveV3(V3* a, V3* b);
 void gl_MulM4V3(V3* a, M4* b, V3* c);
@@ -54,7 +54,7 @@ void gl_M4_Rotate(M4* c, GLfloat t, GLint u);
 V3 gl_V3_New(GLfloat x, GLfloat y, GLfloat z);
 V4 gl_V4_New(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
 
-int gl_Matrix_Inv(GLfloat* r, GLfloat* m, GLint n);
+GLint gl_Matrix_Inv(GLfloat* r, GLfloat* m, GLint n);
 
 /*
 static inline GLfloat fastInvSqrt(float x){
@@ -88,7 +88,7 @@ static inline GLfloat fastInvSqrt(GLfloat x){
 #endif
 
 
-static inline int gl_V3_Norm_Fast(V3* a) {
+static inline GLint gl_V3_Norm_Fast(V3* a) {
 	GLfloat n;
 #if TGL_FEATURE_FISR == 1
 	n = fastInvSqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z); //FISR

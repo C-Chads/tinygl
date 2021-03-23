@@ -19,8 +19,16 @@ void gl_M4_Id(M4* a) {
 				a->m[i][j] = 0.0;
 }
 
-int gl_M4_IsId(M4* a) {
-	GLint i, j;
+GLint gl_M4_IsId(M4* a) {
+	//GLint i, j;
+	const M4 c = (M4){{
+	{1,0,0,0},
+	{0,1,0,0},
+	{0,0,1,0},
+	{0,0,0,1},}
+	};
+	return (memcmp(a->m,c.m, 16 * sizeof(GLfloat)) == 0);
+/*
 	for (i = 0; i < 4; i++)
 		for (j = 0; j < 4; j++) {
 			if (i == j) {
@@ -30,6 +38,7 @@ int gl_M4_IsId(M4* a) {
 				return 0;
 		}
 	return 1;
+*/
 }
 
 void gl_M4_Mul(M4* c, M4* a, M4* b) {
@@ -139,7 +148,7 @@ void gl_M4_InvOrtho(M4* a, M4 b) {
 /* Inversion of a general nxn matrix.
    Note : m is destroyed */
 
-int Matrix_Inv(GLfloat* r, GLfloat* m, GLint n) {
+GLint Matrix_Inv(GLfloat* r, GLfloat* m, GLint n) {
 	GLint i, j, k, l;
 	GLfloat max, tmp, t;
 
