@@ -137,14 +137,14 @@ static inline void gl_transform_to_viewport_vertex_c(GLVertex* v) {
 		v->zp.z = (GLint)(v->pc.Z * winv * c->viewport.scale.Z + c->viewport.trans.Z);
 	}
 	
-	v->zp.r = (GLuint)(v->color.v[0] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
-	v->zp.g = (GLuint)(v->color.v[1] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
-	v->zp.b = (GLuint)(v->color.v[2] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.r = (GLint)(v->color.v[0] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.g = (GLint)(v->color.v[1] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.b = (GLint)(v->color.v[2] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
 
 	
-//#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 1
+#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 1
 	if (c->texture_2d_enabled) 
-//#endif
+#endif
 	{
 		v->zp.s = (GLint)(v->tex_coord.X * (ZB_POINT_S_MAX - ZB_POINT_S_MIN) + ZB_POINT_S_MIN); //MARKED
 		v->zp.t = (GLint)(v->tex_coord.Y * (ZB_POINT_T_MAX - ZB_POINT_T_MIN) + ZB_POINT_T_MIN); //MARKED
@@ -155,9 +155,9 @@ static inline void gl_vertex_transform(GLVertex* v) {
 	GLfloat* m;
 	GLContext* c = gl_get_context();
 
-//#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 2
+
 	if (c->lighting_enabled) 
-//#endif
+
 	{
 		/* eye coordinates needed for lighting */
 		V4* n;
@@ -185,7 +185,7 @@ static inline void gl_vertex_transform(GLVertex* v) {
 			gl_V3_Norm_Fast(&v->normal);
 		}
 	} 
-//#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 2
+
 	else {
 		/* no eye coordinates needed, no normal */
 		/* NOTE: W = 1 is assumed */
@@ -200,7 +200,7 @@ static inline void gl_vertex_transform(GLVertex* v) {
 			v->pc.W = (v->coord.X * m[12] + v->coord.Y * m[13] + v->coord.Z * m[14] + m[15]);
 		}
 	}
-//#endif
+
 	v->clip_code = gl_clipcode(v->pc.X, v->pc.Y, v->pc.Z, v->pc.W);
 }
 
@@ -242,13 +242,10 @@ void glopVertex(GLParam* p) {
 		v->color = c->current_color;
 	}
 	/* tex coords */
-
-	if (c->texture_2d_enabled) {
-#if TGL_FEATURE_LIT_TEXTURES == 1
-//Bad!
-//		if (!(c->lighting_enabled))
-//			v->color = gl_V4_New(1, 1, 1, 0); // Fix by GEK for unlit textured models.
+#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 1
+	if (c->texture_2d_enabled) 
 #endif
+	{
 		if (c->apply_texture_matrix) {
 			gl_M4_MulV4(&v->tex_coord, c->matrix_stack_ptr[2], &c->current_tex_coord);
 		} else {
@@ -256,8 +253,10 @@ void glopVertex(GLParam* p) {
 		}
 	}
 	/* precompute the mapping to the viewport */
+#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 2
 	if (v->clip_code == 0)
-		gl_transform_to_viewport_vertex_c(v);
+#endif
+	{	gl_transform_to_viewport_vertex_c(v);}
 
 	/* edge flag */
 	v->edge_flag = c->current_edge_flag;

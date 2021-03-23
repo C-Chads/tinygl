@@ -96,9 +96,7 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 #if TGL_FEATURE_GL_POLYGON == 1
 "TGL_FEATURE_GL_POLYGON "
 #endif
-#if TGL_FEATURE_NO_COPY_COLOR == 1
-"TGL_FEATURE_NO_COPY_COLOR "
-#endif
+
 
 
 #if TGL_FEATURE_BLEND == 1
@@ -109,6 +107,10 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 #endif
 #if TGL_FEATURE_NO_DRAW_COLOR == 1
 "TGL_FEATURE_NO_DRAW_COLOR "
+#endif
+
+#if TGL_FEATURE_NO_COPY_COLOR == 1
+"TGL_FEATURE_NO_COPY_COLOR "
 #endif
 
 #if TGL_FEATURE_FORCE_CLEAR_NO_COPY_COLOR == 1
@@ -130,6 +132,7 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 #endif
 #if defined(_OPENMP)
 "TGL_FEATURE_MULTI_THREADED "
+"TGL_FEATURE_MULTI_THREADED_POST_PROCESS "
 
 #if TGL_FEATURE_MULTITHREADED_DRAWPIXELS == 1
 "TGL_FEATURE_MULTITHREADED_DRAWPIXELS "
@@ -151,8 +154,10 @@ const GLubyte* extensions_string = (const GLubyte*)"TGL_TEXTURE "
 "TGL_FEATURE_ALIGNAS "
 #endif
 "TGL_BUFFER_EXT "
+#if TGL_FEATURE_ALT_RENDERMODES
 "TGL_FEEDBACK "
 "TGL_SELECT "
+#endif
 "TGL_SOFTWARE_ACCELERATED";
 const GLubyte* glGetString(GLenum name){
 	switch(name){
