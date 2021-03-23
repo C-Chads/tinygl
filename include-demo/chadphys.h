@@ -42,6 +42,8 @@ static inline phys_spatialhash spatialhash_init(uint x, uint y, uint z, f_ celld
 	return ret;
 }
 static inline void destroy_spatialhash(phys_spatialhash* p){
+	for(size_t i = 0; i < p->xcells * p->ycells * p->zcells; i++)
+		if(p->data[i].data) free(p->data[i].data);
 	if(p->data) free(p->data);
 	p->data = NULL;
 }
