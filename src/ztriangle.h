@@ -27,7 +27,7 @@ Things to keep in mind:
 
 	GLint dx1, dy1, dx2, dy2;
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
-	GLushort the_y;
+	GLint the_y;
 #endif
 	GLint error, derror;
 	GLint x1, dxdy_min, dxdy_max;
