@@ -26,9 +26,7 @@ static inline void gl_transform_to_viewport_clip_c(GLVertex* v) { //MARK: NOT_IN
 
 	/* texture */
 
-#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 1
 	if (c->texture_2d_enabled) 
-#endif
 	{
 		v->zp.s = (GLint)(v->tex_coord.X * (ZB_POINT_S_MAX - ZB_POINT_S_MIN) + ZB_POINT_S_MIN); //MARKED
 		v->zp.t = (GLint)(v->tex_coord.Y * (ZB_POINT_T_MAX - ZB_POINT_T_MIN) + ZB_POINT_T_MIN); //MARKED
