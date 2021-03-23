@@ -280,7 +280,7 @@ void gl_shade_vertex(GLVertex* v) {
 			d.Y = l->position.v[1] - v->ec.v[1];
 			d.Z = l->position.v[2] - v->ec.v[2];
 #if TGL_FEATURE_FISR == 1
-			tmp = clampf(fastInvSqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z),0,1); //FISR IMPL, MATCHED!
+			tmp = fastInvSqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z); //FISR IMPL, MATCHED!
 			{
 				d.X *= tmp;
 				d.Y *= tmp;
@@ -354,7 +354,7 @@ void gl_shade_vertex(GLVertex* v) {
 #endif
 					dot_spec = clampf(dot_spec, 0, 1);
 #if TGL_FEATURE_FISR == 1
-					tmp = clampf(fastInvSqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z),0,1); //FISR IMPL, MATCHED!
+					tmp = fastInvSqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z); //FISR IMPL, MATCHED!
 					//if (tmp < 1E+3) 
 					{
 						dot_spec = dot_spec * tmp;

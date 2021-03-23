@@ -68,15 +68,15 @@ void glopBegin(GLParam* p) {
 			gl_M4_Inv(&tmp, c->matrix_stack_ptr[0]);
 			gl_M4_Transpose(&c->matrix_model_view_inv, &tmp);
 		} else {
-			//GLfloat* m = &c->matrix_model_projection.m[0][0];
+			GLfloat* m = &c->matrix_model_projection.m[0][0];
 			/* precompute projection matrix */
 			gl_M4_Mul(&c->matrix_model_projection, c->matrix_stack_ptr[1], c->matrix_stack_ptr[0]);
 			/* test to accelerate computation */
 			c->matrix_model_projection_no_w_transform = 0;
-			//if (m[12] == 0.0 && m[13] == 0.0 && m[14] == 0.0)
-			if(c->matrix_model_projection.m[3][0] == 0.0 &&
-				c->matrix_model_projection.m[3][1] == 0.0 &&
-				c->matrix_model_projection.m[3][2] == 0.0)
+			if (m[12] == 0.0 && m[13] == 0.0 && m[14] == 0.0)
+			//if(c->matrix_model_projection.m[3][0] == 0.0 &&
+			//	c->matrix_model_projection.m[3][1] == 0.0 &&
+			//	c->matrix_model_projection.m[3][2] == 0.0)
 				c->matrix_model_projection_no_w_transform = 1;
 		}
 
@@ -137,13 +137,15 @@ static inline void gl_transform_to_viewport_vertex_c(GLVertex* v) {
 		v->zp.z = (GLint)(v->pc.Z * winv * c->viewport.scale.Z + c->viewport.trans.Z);
 	}
 	
-	v->zp.r = (GLint)(v->color.v[0] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
-	v->zp.g = (GLint)(v->color.v[1] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
-	v->zp.b = (GLint)(v->color.v[2] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.r = (GLuint)(v->color.v[0] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.g = (GLuint)(v->color.v[1] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.b = (GLuint)(v->color.v[2] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
 
 	
-
-	if (c->texture_2d_enabled) {
+//#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 1
+	if (c->texture_2d_enabled) 
+//#endif
+	{
 		v->zp.s = (GLint)(v->tex_coord.X * (ZB_POINT_S_MAX - ZB_POINT_S_MIN) + ZB_POINT_S_MIN); //MARKED
 		v->zp.t = (GLint)(v->tex_coord.Y * (ZB_POINT_T_MAX - ZB_POINT_T_MIN) + ZB_POINT_T_MIN); //MARKED
 	}
@@ -153,7 +155,10 @@ static inline void gl_vertex_transform(GLVertex* v) {
 	GLfloat* m;
 	GLContext* c = gl_get_context();
 
-	if (c->lighting_enabled) {
+//#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 2
+	if (c->lighting_enabled) 
+//#endif
+	{
 		/* eye coordinates needed for lighting */
 		V4* n;
 		m = &c->matrix_stack_ptr[0]->m[0][0];
@@ -179,7 +184,9 @@ static inline void gl_vertex_transform(GLVertex* v) {
 		if (c->normalize_enabled) {
 			gl_V3_Norm_Fast(&v->normal);
 		}
-	} else {
+	} 
+//#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 2
+	else {
 		/* no eye coordinates needed, no normal */
 		/* NOTE: W = 1 is assumed */
 		m = &c->matrix_model_projection.m[0][0];
@@ -193,7 +200,7 @@ static inline void gl_vertex_transform(GLVertex* v) {
 			v->pc.W = (v->coord.X * m[12] + v->coord.Y * m[13] + v->coord.Z * m[14] + m[15]);
 		}
 	}
-
+//#endif
 	v->clip_code = gl_clipcode(v->pc.X, v->pc.Y, v->pc.Z, v->pc.W);
 }
 

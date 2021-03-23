@@ -75,7 +75,11 @@
 #define TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER 0
 //Enable stdalign
 #define TGL_FEATURE_ALIGNAS 1
-
+//Optimization hint- cost of branching.
+//0- branching has zero cost, avoid extraneous code.
+//1- Branching has some cost, allow some extraneous code
+//2- Branching has extreme cost, allow a lot of extraneous code. Modern processors work best on this setting.
+#define TGL_OPTIMIZATION_HINT_BRANCH_COST 2
 
 //Disable it for TinyC
 #ifdef __TINYC__

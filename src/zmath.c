@@ -9,6 +9,7 @@
 /* ******* Gestion des matrices 4x4 ****** */
 
 void gl_M4_Id(M4* a) {
+/*
 	GLint i, j;
 #pragma omp simd collapse(2)
 	for (i = 0; i < 4; i++)
@@ -17,6 +18,14 @@ void gl_M4_Id(M4* a) {
 				a->m[i][j] = 1.0;
 			else
 				a->m[i][j] = 0.0;
+*/
+const M4 c = (M4){{
+	{1,0,0,0},
+	{0,1,0,0},
+	{0,0,1,0},
+	{0,0,0,1},}
+	};
+*a = c;
 }
 
 GLint gl_M4_IsId(M4* a) {
@@ -211,7 +220,7 @@ GLint Matrix_Inv(GLfloat* r, GLfloat* m, GLint n) {
 
 void gl_M4_Inv(M4* a, M4* b) {
 	M4 tmp;
-	memcpy(&tmp, b, 16 * sizeof(GLfloat));
+	memcpy(&tmp, b, sizeof(M4));
 	/*tmp=*b;*/
 	Matrix_Inv(&a->m[0][0], &tmp.m[0][0], 4);
 }

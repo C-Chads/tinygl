@@ -20,13 +20,16 @@ static inline void gl_transform_to_viewport_clip_c(GLVertex* v) { //MARK: NOT_IN
 		v->zp.z = (GLint)(v->pc.Z * winv * c->viewport.scale.Z + c->viewport.trans.Z);
 	}
 	/* color */
-	v->zp.r = (GLint)(v->color.v[0] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
-	v->zp.g = (GLint)(v->color.v[1] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
-	v->zp.b = (GLint)(v->color.v[2] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.r = (GLuint)(v->color.v[0] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.g = (GLuint)(v->color.v[1] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
+	v->zp.b = (GLuint)(v->color.v[2] * COLOR_CORRECTED_MULT_MASK + COLOR_MIN_MULT) & COLOR_MASK;
 
 	/* texture */
 
-	if (c->texture_2d_enabled) {
+#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 1
+	if (c->texture_2d_enabled) 
+#endif
+	{
 		v->zp.s = (GLint)(v->tex_coord.X * (ZB_POINT_S_MAX - ZB_POINT_S_MIN) + ZB_POINT_S_MIN); //MARKED
 		v->zp.t = (GLint)(v->tex_coord.Y * (ZB_POINT_T_MAX - ZB_POINT_T_MIN) + ZB_POINT_T_MIN); //MARKED
 	}
@@ -138,7 +141,7 @@ static inline void GLinterpolate(GLVertex* q, GLVertex* p0, GLVertex* p1, GLfloa
 	q->pc.Y = p0->pc.Y + (p1->pc.Y - p0->pc.Y) * t;
 	q->pc.Z = p0->pc.Z + (p1->pc.Z - p0->pc.Z) * t;
 	q->pc.W = p0->pc.W + (p1->pc.W - p0->pc.W) * t;
-
+#pragma omp simd
 	for(int i = 0; i < 3; i++)
 		q->color.v[i] = p0->color.v[i] + (p1->color.v[i] - p0->color.v[i]) * t;
 }

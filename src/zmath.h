@@ -88,7 +88,7 @@ static inline GLfloat fastInvSqrt(GLfloat x){
 #endif
 
 
-static inline GLint gl_V3_Norm_Fast(V3* a) {
+static inline int gl_V3_Norm_Fast(V3* a) {
 	GLfloat n;
 #if TGL_FEATURE_FISR == 1
 	n = fastInvSqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z); //FISR
