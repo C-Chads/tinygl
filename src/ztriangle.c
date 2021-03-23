@@ -5,6 +5,13 @@
 //#include <stdio.h>
 //#warning STDIO INCLUDE!!!
 
+//TODO: Switch from scanline rasterizer to easily parallelized cross product rasterizer.
+static inline GLfloat edgeFunction(GLfloat ax, GLfloat ay, GLfloat bx, GLfloat by, GLfloat cx, GLfloat cy) 
+{
+    return (cx - ax) * (by - ay) - (cy - ay) * (bx - ax); 
+} 
+
+
 #if TGL_FEATURE_RENDER_BITS == 32
 #elif TGL_FEATURE_RENDER_BITS == 16
 #else
@@ -282,11 +289,6 @@ void ZB_fillTriangleMapping(ZBuffer* zb, ZBufferPoint* p0, ZBufferPoint* p1, ZBu
 //#include "ztriangle.h"
 }
 */
-/*
- * Texture mapping with perspective correction.
- * We use the gradient method to make less divisions.
- * TODO: pipeline the division
- */
 
 #if 1 // IF 1
 
