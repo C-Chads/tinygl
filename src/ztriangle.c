@@ -21,7 +21,7 @@ static inline GLfloat edgeFunction(GLfloat ax, GLfloat ay, GLfloat bx, GLfloat b
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 
 #define TGL_STIPPLEVARS GLubyte* zbstipplepattern = zb->stipplepattern; GLubyte zbdostipple = zb->dostipple;
-#define THE_X (((GLushort)(pp - pp1)))
+#define THE_X ((GLint)(pp - pp1))
 #define XSTIP(_a) ((THE_X + _a) & TGL_POLYGON_STIPPLE_MASK_X)
 #define YSTIP (the_y & TGL_POLYGON_STIPPLE_MASK_Y)
 // NOTES                                                           Divide by 8 to get the byte        Get the actual bit
