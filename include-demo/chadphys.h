@@ -135,7 +135,9 @@ static inline void stepPhysWorld(phys_world* world, const int collisioniter){
 	//Resolve collisions (if any)
 	for(int iter = 0; iter < collisioniter; iter++)
 	for(int i = 0; i < (int)(world->nbodies-1); i++)
+	if(world->bodies[i])
 	for(int j = i+1; j < (int)world->nbodies; j++)
+	if(world->bodies[j])
 		resolveBodies(world->bodies[i], world->bodies[j]);
 }
 #endif
