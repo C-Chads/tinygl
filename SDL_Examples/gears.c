@@ -66,12 +66,13 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 	glNormal3f(0.0, 0.0, 1.0);
 
 	/* draw front face */
-if(override_drawmodes == 1)
-	glBegin(GL_LINES);
-else if (override_drawmodes == 2)
-	glBegin(GL_POINTS);
-else
-	{glBegin(GL_QUAD_STRIP);}
+	if (override_drawmodes == 1)
+		glBegin(GL_LINES);
+	else if (override_drawmodes == 2)
+		glBegin(GL_POINTS);
+	else {
+		glBegin(GL_QUAD_STRIP);
+	}
 	for (i = 0; i <= teeth; i++) {
 		angle = i * 2.0 * M_PI / teeth;
 		glVertex3f(r0 * cos(angle), r0 * sin(angle), width * 0.5);
@@ -82,7 +83,7 @@ else
 	glEnd();
 
 	/* draw front sides of teeth */
-	if(override_drawmodes == 1)
+	if (override_drawmodes == 1)
 		glBegin(GL_LINES);
 	else if (override_drawmodes == 2)
 		glBegin(GL_POINTS);
@@ -102,7 +103,7 @@ else
 	glNormal3f(0.0, 0.0, -1.0);
 
 	/* draw back face */
-	if(override_drawmodes == 1)
+	if (override_drawmodes == 1)
 		glBegin(GL_LINES);
 	else if (override_drawmodes == 2)
 		glBegin(GL_POINTS);
@@ -118,7 +119,7 @@ else
 	glEnd();
 
 	/* draw back sides of teeth */
-	if(override_drawmodes == 1)
+	if (override_drawmodes == 1)
 		glBegin(GL_LINES);
 	else if (override_drawmodes == 2)
 		glBegin(GL_POINTS);
@@ -136,7 +137,7 @@ else
 	glEnd();
 
 	/* draw outward faces of teeth */
-	if(override_drawmodes == 1)
+	if (override_drawmodes == 1)
 		glBegin(GL_LINES);
 	else if (override_drawmodes == 2)
 		glBegin(GL_POINTS);
@@ -171,9 +172,8 @@ else
 
 	glEnd();
 
-
 	/* draw inside radius cylinder */
-	if(override_drawmodes == 1)
+	if (override_drawmodes == 1)
 		glBegin(GL_LINES);
 	else if (override_drawmodes == 2)
 		glBegin(GL_POINTS);
@@ -197,7 +197,7 @@ void draw() {
 	glPushMatrix();
 	glRotatef(view_rotx, 1.0, 0.0, 0.0);
 	glRotatef(view_roty, 0.0, 1.0, 0.0);
-	//glRotatef( view_rotz, 0.0, 0.0, 1.0 );
+	// glRotatef( view_rotz, 0.0, 0.0, 1.0 );
 
 	glPushMatrix();
 	glTranslatef(-3.0, -2.0, 0.0);
@@ -223,7 +223,7 @@ void draw() {
 void initScene() {
 	// static GLfloat pos[4] = {0.408248290463863, 0.408248290463863, 0.816496580927726, 0.0 }; //Light at infinity.
 	static GLfloat pos[4] = {5, 5, 10, 0.0}; // Light at infinity.
-	//static GLfloat pos[4] = {5, 5, -10, 0.0}; // Light at infinity.
+	// static GLfloat pos[4] = {5, 5, -10, 0.0}; // Light at infinity.
 
 	static GLfloat red[4] = {1.0, 0.0, 0.0, 0.0};
 	static GLfloat green[4] = {0.0, 1.0, 0.0, 0.0};
@@ -233,15 +233,14 @@ void initScene() {
 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
 	// glLightfv( GL_LIGHT0, GL_AMBIENT, white);
-	glLightfv( GL_LIGHT0, GL_SPECULAR, white);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
 	glEnable(GL_CULL_FACE);
-	
+
 	glEnable(GL_LIGHT0);
-	//glEnable(GL_DEPTH_TEST);
-	
+	// glEnable(GL_DEPTH_TEST);
 
 	glEnable(GL_POLYGON_STIPPLE);
-//	glDisable(GL_POLYGON_STIPPLE);
+	//	glDisable(GL_POLYGON_STIPPLE);
 	glPolygonStipple(stipplepattern);
 	glPointSize(10.0f);
 	glTextSize(GL_TEXT_SIZE24x24);
@@ -292,26 +291,26 @@ int main(int argc, char** argv) {
 				winSizeY = atoi(argv[i]);
 			if (!strcmp(larg, "-fps"))
 				fps = strtoull(argv[i], 0, 10);
-			if (!strcmp(argv[i],"-flat"))
+			if (!strcmp(argv[i], "-flat"))
 				flat = 1;
-			if (!strcmp(argv[i],"-smooth"))
+			if (!strcmp(argv[i], "-smooth"))
 				flat = 0;
-			if (!strcmp(argv[i],"-blend"))
+			if (!strcmp(argv[i], "-blend"))
 				blending = 1;
-			if (!strcmp(argv[i],"-nospecular"))
+			if (!strcmp(argv[i], "-nospecular"))
 				setenspec = 0;
-			if (!strcmp(argv[i],"-lines"))
+			if (!strcmp(argv[i], "-lines"))
 				override_drawmodes = 1;
-			if (!strcmp(argv[i],"-points"))
+			if (!strcmp(argv[i], "-points"))
 				override_drawmodes = 2;
-			if (!strcmp(argv[i],"-nosdl"))
+			if (!strcmp(argv[i], "-nosdl"))
 				noSDL = 1;
-			if (!strcmp(argv[i],"-notext"))
+			if (!strcmp(argv[i], "-notext"))
 				dotext = 0;
 			larg = argv[i];
 		}
 	}
-	if(!noSDL){
+	if (!noSDL) {
 #ifdef PLAY_MUSIC
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 #else
@@ -320,31 +319,33 @@ int main(int argc, char** argv) {
 			fprintf(stderr, "ERROR: cannot initialize SDL video.\n");
 			return 1;
 		}
-	} else if(SDL_Init(0) < 0) fprintf(stderr, "ERROR: cannot initialize SDL without video.\n");
+	} else if (SDL_Init(0) < 0)
+		fprintf(stderr, "ERROR: cannot initialize SDL without video.\n");
 #ifdef PLAY_MUSIC
-	if(!noSDL) ainit(0);
+	if (!noSDL)
+		ainit(0);
 #endif
 	SDL_Surface* screen = NULL;
-	if(!noSDL)
-	if ((screen = SDL_SetVideoMode(winSizeX, winSizeY, TGL_FEATURE_RENDER_BITS, SDL_SWSURFACE)) == 0) {
-		fprintf(stderr, "ERROR: Video mode set failed.\n");
-		return 1;
-	}
-	if(!noSDL){
+	if (!noSDL)
+		if ((screen = SDL_SetVideoMode(winSizeX, winSizeY, TGL_FEATURE_RENDER_BITS, SDL_SWSURFACE)) == 0) {
+			fprintf(stderr, "ERROR: Video mode set failed.\n");
+			return 1;
+		}
+	if (!noSDL) {
 		printf("\nRMASK IS %u", screen->format->Rmask);
 		printf("\nGMASK IS %u", screen->format->Gmask);
 		printf("\nBMASK IS %u", screen->format->Bmask);
 		printf("\nAMASK IS %u", screen->format->Amask);
 	}
 #if TGL_FEATURE_RENDER_BITS == 32
-	if(!noSDL)
-	if (screen->format->Rmask != 0x00FF0000 || screen->format->Gmask != 0x0000FF00 || screen->format->Bmask != 0x000000FF) {
-		needsRGBAFix = 1;
-		printf("\nYour screen is using an RGBA output different than this library expects.");
-		printf("\nYou should consider using the 16 bit version for optimal performance");
-	}
+	if (!noSDL)
+		if (screen->format->Rmask != 0x00FF0000 || screen->format->Gmask != 0x0000FF00 || screen->format->Bmask != 0x000000FF) {
+			needsRGBAFix = 1;
+			printf("\nYour screen is using an RGBA output different than this library expects.");
+			printf("\nYou should consider using the 16 bit version for optimal performance");
+		}
 #endif
-	if(!noSDL){
+	if (!noSDL) {
 		printf("\nRSHIFT IS %u", screen->format->Rshift);
 		printf("\nGSHIFT IS %u", screen->format->Gshift);
 		printf("\nBSHIFT IS %u", screen->format->Bshift);
@@ -352,76 +353,85 @@ int main(int argc, char** argv) {
 	}
 	fflush(stdout);
 #ifdef PLAY_MUSIC
-	
+
 	track* myTrack = NULL;
-	if(!noSDL) myTrack = lmus("WWGW.mp3");
-	if(!noSDL) mplay(myTrack, -1, 1000);
+	if (!noSDL)
+		myTrack = lmus("WWGW.mp3");
+	if (!noSDL)
+		mplay(myTrack, -1, 1000);
 #endif
-	if(!noSDL) SDL_ShowCursor(SDL_DISABLE);
-	if(!noSDL) SDL_WM_SetCaption(argv[0], 0);
+	if (!noSDL)
+		SDL_ShowCursor(SDL_DISABLE);
+	if (!noSDL)
+		SDL_WM_SetCaption(argv[0], 0);
 
 	// initialize TinyGL:
 	// unsigned int pitch;
-	//int mode;
-	if(!noSDL)
-	switch (screen->format->BitsPerPixel) {
-	case 8:
-		fprintf(stderr, "ERROR: Palettes are currently not supported.\n");
-		fprintf(stderr, "\nUnsupported by maintainer!!!");
-		return 1;
-	case 16:
-		// pitch = screen->pitch;
-		// fprintf(stderr,"\nUnsupported by maintainer!!!");
-		//mode = ZB_MODE_5R6G5B;
-		// return 1;
-		break;
-	case 24:
-		// pitch = ( screen->pitch * 2 ) / 3;
-		fprintf(stderr, "\nUnsupported by maintainer!!!");
-		//mode = ZB_MODE_RGB24;
-		return 1;
-		break;
-	case 32:
-		// pitch = screen->pitch / 2;
-		//mode = ZB_MODE_RGBA;
-		break;
-	default:
-		return 1;
-		break;
-	}
+	// int mode;
+	if (!noSDL)
+		switch (screen->format->BitsPerPixel) {
+		case 8:
+			fprintf(stderr, "ERROR: Palettes are currently not supported.\n");
+			fprintf(stderr, "\nUnsupported by maintainer!!!");
+			return 1;
+		case 16:
+			// pitch = screen->pitch;
+			// fprintf(stderr,"\nUnsupported by maintainer!!!");
+			// mode = ZB_MODE_5R6G5B;
+			// return 1;
+			break;
+		case 24:
+			// pitch = ( screen->pitch * 2 ) / 3;
+			fprintf(stderr, "\nUnsupported by maintainer!!!");
+			// mode = ZB_MODE_RGB24;
+			return 1;
+			break;
+		case 32:
+			// pitch = screen->pitch / 2;
+			// mode = ZB_MODE_RGBA;
+			break;
+		default:
+			return 1;
+			break;
+		}
 	ZBuffer* frameBuffer = NULL;
-	if(TGL_FEATURE_RENDER_BITS == 32)
-	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
+	if (TGL_FEATURE_RENDER_BITS == 32)
+		frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
 	else
-	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, 0);
-	if(!frameBuffer){printf("\nZB_open failed!");exit(1);}
+		frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, 0);
+	if (!frameBuffer) {
+		printf("\nZB_open failed!");
+		exit(1);
+	}
 	glInit(frameBuffer);
 
-	//Print version info
-	printf("\nVersion string:\n%s",glGetString(GL_VERSION));
-	printf("\nVendor string:\n%s",glGetString(GL_VENDOR));
-	printf("\nRenderer string:\n%s",glGetString(GL_RENDERER));
-	printf("\nExtensions string:\n%s",glGetString(GL_EXTENSIONS));
-	printf("\nLicense string:\n%s",glGetString(GL_LICENSE));
+	// Print version info
+	printf("\nVersion string:\n%s", glGetString(GL_VERSION));
+	printf("\nVendor string:\n%s", glGetString(GL_VENDOR));
+	printf("\nRenderer string:\n%s", glGetString(GL_RENDERER));
+	printf("\nExtensions string:\n%s", glGetString(GL_EXTENSIONS));
+	printf("\nLicense string:\n%s", glGetString(GL_LICENSE));
 	// initialize GL:
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glViewport(0, 0, winSizeX, winSizeY);
-if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
-//TESTING BLENDING...
-	//glDisable(GL_DEPTH_TEST);
+	if (flat)
+		glShadeModel(GL_FLAT);
+	else
+		glShadeModel(GL_SMOOTH);
+	// TESTING BLENDING...
+	// glDisable(GL_DEPTH_TEST);
 
-
-	//glDisable( GL_LIGHTING );
+	// glDisable( GL_LIGHTING );
 	glEnable(GL_LIGHTING);
-	//glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
+	// glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
 	glBlendEquation(GL_FUNC_ADD);
-	if(blending){
+	if (blending) {
 		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glDepthMask(GL_FALSE);
 		glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
 		glBlendEquation(GL_FUNC_ADD);
-	}else{
+	} else {
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
 		glDepthMask(GL_TRUE);
@@ -435,7 +445,10 @@ if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 	glTranslatef(0.0, 0.0, -45.0);
 
 	initScene();
-	if(setenspec) glSetEnableSpecular(GL_TRUE); else glSetEnableSpecular(GL_FALSE);
+	if (setenspec)
+		glSetEnableSpecular(GL_TRUE);
+	else
+		glSetEnableSpecular(GL_FALSE);
 	// variables for timing:
 	unsigned int frames = 0;
 	unsigned int tNow = SDL_GetTicks();
@@ -443,61 +456,64 @@ if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 
 	// main loop:
 	int isRunning = 1;
-	//float test = 0;
+	// float test = 0;
 	while (isRunning) {
 		++frames;
-		//Depending on SDL to give us ticks even without a window open...
+		// Depending on SDL to give us ticks even without a window open...
 		tNow = SDL_GetTicks();
-	//	test = TEST_fastInvSqrt(tNow);
-	//	printf("\n%f",test);
+		//	test = TEST_fastInvSqrt(tNow);
+		//	printf("\n%f",test);
 		// do event handling:
-		if(!noSDL){
-		SDL_Event evt;
-		while (SDL_PollEvent(&evt))
-			switch (evt.type) {
-			case SDL_KEYDOWN:
-				switch (evt.key.keysym.sym) {
-				case SDLK_UP:
-					view_rotx += 5.0;
+		if (!noSDL) {
+			SDL_Event evt;
+			while (SDL_PollEvent(&evt))
+				switch (evt.type) {
+				case SDL_KEYDOWN:
+					switch (evt.key.keysym.sym) {
+					case SDLK_UP:
+						view_rotx += 5.0;
+						break;
+					case SDLK_DOWN:
+						view_rotx -= 5.0;
+						break;
+					case SDLK_LEFT:
+						view_roty += 5.0;
+						break;
+					case SDLK_RIGHT:
+						view_roty -= 5.0;
+						break;
+					case SDLK_ESCAPE:
+					case SDLK_q:
+						isRunning = 0;
+					default:
+						break;
+					}
 					break;
-				case SDLK_DOWN:
-					view_rotx -= 5.0;
-					break;
-				case SDLK_LEFT:
-					view_roty += 5.0;
-					break;
-				case SDLK_RIGHT:
-					view_roty -= 5.0;
-					break;
-				case SDLK_ESCAPE:
-				case SDLK_q:
+				case SDL_QUIT:
 					isRunning = 0;
-				default:
 					break;
 				}
-				break;
-			case SDL_QUIT:
-				isRunning = 0;
-				break;
-			}
 		}
 		// draw scene:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		draw();
-		if(dotext){
+		if (dotext) {
 			glDrawText((unsigned char*)"RED text", 0, 0, 0xFF0000);
 
 			glDrawText((unsigned char*)"GREEN text", 0, 24, 0x00FF00);
 
-			glDrawText((unsigned char*)"\xa2" "BLUE text" "\xa1", 0, 48, 0xFF);
+			glDrawText((unsigned char*)"\xa2"
+									   "BLUE text"
+									   "\xa1",
+					   0, 48, 0xFF);
 		}
 		// swap buffers:
-		if(!noSDL)
-		if (SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen) < 0)) {
-			fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
-			return 1;
-		}
-		// Quickly convert all pixels to the correct format
+		if (!noSDL)
+			if (SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen) < 0)) {
+				fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
+				return 1;
+			}
+			// Quickly convert all pixels to the correct format
 #if TGL_FEATURE_RENDER_BITS == 32
 		// for testing!
 		if (needsRGBAFix)
@@ -507,24 +523,26 @@ if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 						 ((DATONE & 0x000000FF) >> 16) << screen->format->Bshift;
 			}
 #endif
-	
-		if(!noSDL) ZB_copyFrameBuffer(frameBuffer, screen->pixels, screen->pitch);
-		if(!noSDL)
+
+		if (!noSDL)
+			ZB_copyFrameBuffer(frameBuffer, screen->pixels, screen->pitch);
+		if (!noSDL)
 			if (SDL_MUSTLOCK(screen))
 				SDL_UnlockSurface(screen);
-		if(!noSDL)SDL_Flip(screen);
-		if(!noSDL)
+		if (!noSDL)
+			SDL_Flip(screen);
+		if (!noSDL)
 			if (fps > 0)
 				if ((1000 / fps) > (SDL_GetTicks() - tNow)) {
 					SDL_Delay((1000 / fps) - (SDL_GetTicks() - tNow)); // Yay stable framerate!
 				}
 		// check for error conditions:
-		if(!noSDL){
-		char* sdl_error = SDL_GetError();
-		if (sdl_error[0] != '\0') {
-			fprintf(stderr, "SDL ERROR: \"%s\"\n", sdl_error);
-			SDL_ClearError();
-		}
+		if (!noSDL) {
+			char* sdl_error = SDL_GetError();
+			if (sdl_error[0] != '\0') {
+				fprintf(stderr, "SDL ERROR: \"%s\"\n", sdl_error);
+				SDL_ClearError();
+			}
 		}
 		// update fps:
 		if (tNow >= tLastFps + 5000) {
@@ -536,18 +554,21 @@ if(flat)	glShadeModel(GL_FLAT); else glShadeModel(GL_SMOOTH);
 	}
 	printf("%i frames in %f secs, %f frames per second.\n", frames, (float)(tNow - tLastFps) * 0.001f, (float)frames * 1000.0f / (float)(tNow - tLastFps));
 	// cleanup:
-	//glDeleteList(gear1);
-	//glDeleteList(gear2);
-	//glDeleteList(gear3);
+	// glDeleteList(gear1);
+	// glDeleteList(gear2);
+	// glDeleteList(gear3);
 	ZB_close(frameBuffer);
 	glClose();
-	if(!noSDL)
-	if (SDL_WasInit(SDL_INIT_VIDEO))
-		SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	if (!noSDL)
+		if (SDL_WasInit(SDL_INIT_VIDEO))
+			SDL_QuitSubSystem(SDL_INIT_VIDEO);
 #ifdef PLAY_MUSIC
-	if(!noSDL)mhalt();
-	if(!noSDL)Mix_FreeMusic(myTrack);
-	if(!noSDL)acleanup();
+	if (!noSDL)
+		mhalt();
+	if (!noSDL)
+		Mix_FreeMusic(myTrack);
+	if (!noSDL)
+		acleanup();
 #endif
 	SDL_Quit();
 	return 0;

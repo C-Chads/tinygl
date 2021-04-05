@@ -22,6 +22,14 @@
 #define strcataf2 strcatallocf2
 #define strcatafb strcatallocfb
 #endif
+
+#ifndef LOOP
+
+//Loop without errors!
+#define LOOP(v, e)\
+for(unsigned long long v = 0, __internal_##v = 0; __internal_##v < e; __internal_##v++, v = __internal_##v)
+
+#endif
 //Strcat but with malloc.
 static inline char* strcatalloc(const char* s1, const char* s2){
 	char* d = NULL; d = STRUTIL_ALLOC(strlen(s1) + strlen(s2) + 1);

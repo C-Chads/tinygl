@@ -37,7 +37,7 @@ int winSizeX = 640;
 int winSizeY = 480;
 
 void draw() {
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// glEnable(GL_TEXTURE_2D);
 	// glBindTexture(GL_TEXTURE_2D,tex);
 	// time_passed += 0.0166666;
@@ -61,7 +61,7 @@ void draw() {
 }
 
 void draw2() {
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	int x = 0;
 	// Select and setup the projection matrix
 	glMatrixMode(GL_PROJECTION);
@@ -130,14 +130,14 @@ int main(int argc, char** argv) {
 				winSizeY = atoi(argv[i]);
 			if (!strcmp(larg, "-fps"))
 				fps = strtoull(argv[i], 0, 10);
-			if (!strcmp(argv[i],"-nosdl"))
+			if (!strcmp(argv[i], "-nosdl"))
 				noSDL = 1;
-			if (!strcmp(argv[i],"-2"))
+			if (!strcmp(argv[i], "-2"))
 				do2 = 1;
 			larg = argv[i];
 		}
 	}
-	if(!noSDL){
+	if (!noSDL) {
 #ifdef PLAY_MUSIC
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 #else
@@ -146,31 +146,33 @@ int main(int argc, char** argv) {
 			fprintf(stderr, "ERROR: cannot initialize SDL video.\n");
 			return 1;
 		}
-	} else if(SDL_Init(0) < 0) fprintf(stderr, "ERROR: cannot initialize SDL without video.\n");
+	} else if (SDL_Init(0) < 0)
+		fprintf(stderr, "ERROR: cannot initialize SDL without video.\n");
 #ifdef PLAY_MUSIC
-	if(!noSDL)ainit(0);
+	if (!noSDL)
+		ainit(0);
 #endif
 	SDL_Surface* screen = NULL;
-	if(!noSDL)
-	if ((screen = SDL_SetVideoMode(winSizeX, winSizeY, TGL_FEATURE_RENDER_BITS, SDL_SWSURFACE)) == 0) {
-		fprintf(stderr, "ERROR: Video mode set failed.\n");
-		return 1;
-	}
-	if(!noSDL){
+	if (!noSDL)
+		if ((screen = SDL_SetVideoMode(winSizeX, winSizeY, TGL_FEATURE_RENDER_BITS, SDL_SWSURFACE)) == 0) {
+			fprintf(stderr, "ERROR: Video mode set failed.\n");
+			return 1;
+		}
+	if (!noSDL) {
 		printf("\nRMASK IS %u", screen->format->Rmask);
 		printf("\nGMASK IS %u", screen->format->Gmask);
 		printf("\nBMASK IS %u", screen->format->Bmask);
 		printf("\nAMASK IS %u", screen->format->Amask);
 	}
 #if TGL_FEATURE_RENDER_BITS == 32
-	if(!noSDL)
-	if (screen->format->Rmask != 0x00FF0000 || screen->format->Gmask != 0x0000FF00 || screen->format->Bmask != 0x000000FF) {
-		needsRGBAFix = 1;
-		printf("\nYour screen is using an RGBA output different than this library expects.");
-		printf("\nYou should consider using the 16 bit version for optimal performance");
-	}
+	if (!noSDL)
+		if (screen->format->Rmask != 0x00FF0000 || screen->format->Gmask != 0x0000FF00 || screen->format->Bmask != 0x000000FF) {
+			needsRGBAFix = 1;
+			printf("\nYour screen is using an RGBA output different than this library expects.");
+			printf("\nYou should consider using the 16 bit version for optimal performance");
+		}
 #endif
-	if(!noSDL){
+	if (!noSDL) {
 		printf("\nRSHIFT IS %u", screen->format->Rshift);
 		printf("\nGSHIFT IS %u", screen->format->Gshift);
 		printf("\nBSHIFT IS %u", screen->format->Bshift);
@@ -179,46 +181,50 @@ int main(int argc, char** argv) {
 	fflush(stdout);
 #ifdef PLAY_MUSIC
 	track* myTrack = NULL;
-	if(!noSDL) myTrack = lmus("WWGW.mp3");
-	if(!noSDL) mplay(myTrack, -1, 1000);
+	if (!noSDL)
+		myTrack = lmus("WWGW.mp3");
+	if (!noSDL)
+		mplay(myTrack, -1, 1000);
 #endif
-	if(!noSDL)SDL_ShowCursor(SDL_DISABLE);
-	if(!noSDL)SDL_WM_SetCaption(argv[0], 0);
+	if (!noSDL)
+		SDL_ShowCursor(SDL_DISABLE);
+	if (!noSDL)
+		SDL_WM_SetCaption(argv[0], 0);
 
 	// initialize TinyGL:
 	// unsigned int pitch;
 	int mode;
-	if(!noSDL)
-	switch (screen->format->BitsPerPixel) {
-	case 8:
-		fprintf(stderr, "ERROR: Palettes are currently not supported.\n");
-		fprintf(stderr, "\nUnsupported by maintainer!!!");
-		return 1;
-	case 16:
+	if (!noSDL)
+		switch (screen->format->BitsPerPixel) {
+		case 8:
+			fprintf(stderr, "ERROR: Palettes are currently not supported.\n");
+			fprintf(stderr, "\nUnsupported by maintainer!!!");
+			return 1;
+		case 16:
 
-		// fprintf(stderr,"\nUnsupported by maintainer!!!");
-		mode = ZB_MODE_5R6G5B;
-		// return 1;
-		break;
-	case 24:
+			// fprintf(stderr,"\nUnsupported by maintainer!!!");
+			mode = ZB_MODE_5R6G5B;
+			// return 1;
+			break;
+		case 24:
 
-		fprintf(stderr, "\nUnsupported by maintainer!!!");
-		mode = ZB_MODE_RGB24;
-		return 1;
-		break;
-	case 32:
+			fprintf(stderr, "\nUnsupported by maintainer!!!");
+			mode = ZB_MODE_RGB24;
+			return 1;
+			break;
+		case 32:
 
-		mode = ZB_MODE_RGBA;
-		break;
-	default:
-		return 1;
-		break;
-	}
+			mode = ZB_MODE_RGBA;
+			break;
+		default:
+			return 1;
+			break;
+		}
 	ZBuffer* frameBuffer = NULL;
-	if(TGL_FEATURE_RENDER_BITS == 32)
-	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
+	if (TGL_FEATURE_RENDER_BITS == 32)
+		frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
 	else
-	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, 0);
+		frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, 0);
 	glInit(frameBuffer);
 
 	// initialize GL:
@@ -266,24 +272,24 @@ int main(int argc, char** argv) {
 
 		// draw scene:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		if(do2)
+		if (do2)
 			draw2();
 		else
 			draw();
 		glDrawText((unsigned char*)"Hello World!\nFrom TinyGL", 0, 0, 0x00FFFFFF);
 		// swap buffers:
-		if(!noSDL)
-		if (SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen) < 0)) {
-			fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
-			return 1;
-		}
-		/*
-		printf("\nRMASK IS %u",screen->format->Rmask);
-		printf("\nGMASK IS %u",screen->format->Gmask);
-		printf("\nBMASK IS %u",screen->format->Bmask);
-		printf("\nAMASK IS %u",screen->format->Amask);
-		*/
-		// Quickly convert all pixels to the correct format
+		if (!noSDL)
+			if (SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen) < 0)) {
+				fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
+				return 1;
+			}
+			/*
+			printf("\nRMASK IS %u",screen->format->Rmask);
+			printf("\nGMASK IS %u",screen->format->Gmask);
+			printf("\nBMASK IS %u",screen->format->Bmask);
+			printf("\nAMASK IS %u",screen->format->Amask);
+			*/
+			// Quickly convert all pixels to the correct format
 #if TGL_FEATURE_RENDER_BITS == 32
 		if (needsRGBAFix)
 			for (int i = 0; i < frameBuffer->xsize * frameBuffer->ysize; i++) {
@@ -292,20 +298,25 @@ int main(int argc, char** argv) {
 						 ((DATONE & 0x00FF0000) >> 16) << screen->format->Bshift;
 			}
 #endif
-		if(!noSDL) ZB_copyFrameBuffer(frameBuffer, screen->pixels, screen->pitch);
-		if(!noSDL) if (SDL_MUSTLOCK(screen)) SDL_UnlockSurface(screen);
-		if(!noSDL) SDL_Flip(screen);
-		if(!noSDL) if (fps > 0)
-			if ((1000 / fps) > (SDL_GetTicks() - tNow)) {
-				SDL_Delay((1000 / fps) - (SDL_GetTicks() - tNow)); // Yay stable framerate!
-			}
+		if (!noSDL)
+			ZB_copyFrameBuffer(frameBuffer, screen->pixels, screen->pitch);
+		if (!noSDL)
+			if (SDL_MUSTLOCK(screen))
+				SDL_UnlockSurface(screen);
+		if (!noSDL)
+			SDL_Flip(screen);
+		if (!noSDL)
+			if (fps > 0)
+				if ((1000 / fps) > (SDL_GetTicks() - tNow)) {
+					SDL_Delay((1000 / fps) - (SDL_GetTicks() - tNow)); // Yay stable framerate!
+				}
 		// check for error conditions:
 		{
-		char* sdl_error = SDL_GetError();
-		if (sdl_error[0] != '\0') {
-			fprintf(stderr, "SDL ERROR: \"%s\"\n", sdl_error);
-			SDL_ClearError();
-		}
+			char* sdl_error = SDL_GetError();
+			if (sdl_error[0] != '\0') {
+				fprintf(stderr, "SDL ERROR: \"%s\"\n", sdl_error);
+				SDL_ClearError();
+			}
 		}
 		// update fps:
 		if (tNow >= tLastFps + 5000) {
@@ -319,13 +330,16 @@ int main(int argc, char** argv) {
 	// cleanup:
 	ZB_close(frameBuffer);
 	glClose();
-	if(!noSDL)
-	if (SDL_WasInit(SDL_INIT_VIDEO))
-		SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	if (!noSDL)
+		if (SDL_WasInit(SDL_INIT_VIDEO))
+			SDL_QuitSubSystem(SDL_INIT_VIDEO);
 #ifdef PLAY_MUSIC
-	if(!noSDL)mhalt();
-	if(!noSDL)Mix_FreeMusic(myTrack);
-	if(!noSDL)acleanup();
+	if (!noSDL)
+		mhalt();
+	if (!noSDL)
+		Mix_FreeMusic(myTrack);
+	if (!noSDL)
+		acleanup();
 #endif
 	SDL_Quit();
 	return 0;

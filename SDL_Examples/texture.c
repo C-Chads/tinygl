@@ -1,7 +1,7 @@
 /* texture.c */
 /*
  * Texture test written by Gek
- * 
+ *
  */
 //#define PLAY_MUSIC
 
@@ -56,20 +56,20 @@ GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned int h) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	if(!do1D)
+	if (!do1D)
 		glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, buf);
 	else
 		glTexImage1D(GL_TEXTURE_1D, 0, 3, w, 0, GL_RGB, GL_UNSIGNED_BYTE, buf + Row1D * w * 3);
 	return t;
 }
 
-GLuint postProcessingStep(GLint x, GLint y, GLuint pixel, GLushort z){
+GLuint postProcessingStep(GLint x, GLint y, GLuint pixel, GLushort z) {
 #if TGL_FEATURE_RENDER_BITS == 32
-//32 bit pixel
-	return pixel & 0x8F8F8F; //Half color mode.
+	// 32 bit pixel
+	return pixel & 0x8F8F8F; // Half color mode.
 #else
-//16 bit mode
-	return pixel & (63<<5); //Solid green
+	// 16 bit mode
+	return pixel & (63 << 5); // Solid green
 #endif
 }
 
@@ -78,9 +78,9 @@ void draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	
-	if(dorect)
-		glColor3f(1.0,1.0,1.0);
+
+	if (dorect)
+		glColor3f(1.0, 1.0, 1.0);
 	glBegin(GL_TRIANGLES);
 	// TRIANGLE 1,
 	glTexCoord2f(0, 0);
@@ -89,7 +89,7 @@ void draw() {
 	glTexCoord2f(1 * texture_mult, -1 * texture_mult);
 	glVertex3f(1, 1, 0.5);
 
-	glTexCoord2f(0, -1* texture_mult);
+	glTexCoord2f(0, -1 * texture_mult);
 	glVertex3f(-1, 1, 0.5);
 	// TRIANGLE 2
 	glTexCoord2f(0, 0);
@@ -101,27 +101,23 @@ void draw() {
 	glTexCoord2f(1 * texture_mult, -1 * texture_mult);
 	glVertex3f(1, 1, 0.5);
 	glEnd();
-	if(dorect)
-		{
-			//glDisable(GL_DEPTH_TEST);glDepthMask(GL_FALSE);
-			glDisable(GL_TEXTURE_2D);
-			glColor3f(1.0,0,0); 
-			glRectf(0, 0, 1, 1); 
-			//glEnable(GL_DEPTH_TEST);glDepthMask(GL_TRUE);
-		}
-	if(doPostProcess) glPostProcess(postProcessingStep); //do a post processing step on the rendered geometry.
+	if (dorect) {
+		// glDisable(GL_DEPTH_TEST);glDepthMask(GL_FALSE);
+		glDisable(GL_TEXTURE_2D);
+		glColor3f(1.0, 0, 0);
+		glRectf(0, 0, 1, 1);
+		// glEnable(GL_DEPTH_TEST);glDepthMask(GL_TRUE);
+	}
+	if (doPostProcess)
+		glPostProcess(postProcessingStep); // do a post processing step on the rendered geometry.
 }
 
-
-
 void initScene() {
-
-
 
 	glEnable(GL_CULL_FACE);
 	// glDisable( GL_CULL_FACE );
 	glDisable(GL_BLEND);
-	//glEnable(GL_LIGHTING);
+	// glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 	// glEnable( GL_LIGHT0 );
@@ -172,7 +168,7 @@ int main(int argc, char** argv) {
 				fps = strtoull(argv[i], 0, 10);
 			if (!strcmp(larg, "-texscale"))
 				texture_mult = atof(argv[i]);
-			if (!strcmp(larg, "-1D")){
+			if (!strcmp(larg, "-1D")) {
 				do1D = 1;
 				Row1D = atoi(argv[i]);
 			}
@@ -212,7 +208,7 @@ int main(int argc, char** argv) {
 	printf("\nBSHIFT IS %u", screen->format->Bshift);
 	printf("\nASHIFT IS %u\n", screen->format->Ashift);
 	fflush(stdout);
-	
+
 #ifdef PLAY_MUSIC
 	track* myTrack = NULL;
 	myTrack = lmus("WWGW.mp3");
@@ -222,7 +218,6 @@ int main(int argc, char** argv) {
 	SDL_WM_SetCaption(argv[0], 0);
 
 	// initialize TinyGL:
-
 
 	switch (screen->format->BitsPerPixel) {
 	case 16:
@@ -238,10 +233,10 @@ int main(int argc, char** argv) {
 		break;
 	}
 	ZBuffer* frameBuffer = NULL;
-	if(TGL_FEATURE_RENDER_BITS == 32)
-	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
+	if (TGL_FEATURE_RENDER_BITS == 32)
+		frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
 	else
-	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, 0);
+		frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, 0);
 	glInit(frameBuffer);
 
 	// initialize GL:
@@ -289,22 +284,20 @@ int main(int argc, char** argv) {
 			}
 
 		// draw scene:
-		
+
 		draw();
 		glDrawText((unsigned char*)"\nBlitting text\nto the screen!", 0, 0, 0x000000FF);
-		glPixelZoom(2.0,0.7);
-		glRasterPos3f(0,-1,fabs(sinf(frames_notreset/200.0)));
+		glPixelZoom(2.0, 0.7);
+		glRasterPos3f(0, -1, fabs(sinf(frames_notreset / 200.0)));
 		{
 			GLint xsize, ysize;
-			void* data = glGetTexturePixmap(tex2, 0, &xsize,  &ysize);
-			//for(int i = 0; i < winSizeX; i++)
-			//for(int j = 0; j < winSizeY; j++){
-				//glPlotPixel(i,j,rand() & 0xFFFFFF);
+			void* data = glGetTexturePixmap(tex2, 0, &xsize, &ysize);
+			// for(int i = 0; i < winSizeX; i++)
+			// for(int j = 0; j < winSizeY; j++){
+			// glPlotPixel(i,j,rand() & 0xFFFFFF);
 			//}
-			if(data)
-				glDrawPixels(xsize,ysize, GL_RGB, 
-				(TGL_FEATURE_RENDER_BITS==32)?GL_UNSIGNED_INT:GL_UNSIGNED_SHORT, data
-				);
+			if (data)
+				glDrawPixels(xsize, ysize, GL_RGB, (TGL_FEATURE_RENDER_BITS == 32) ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, data);
 		}
 		// swap buffers:
 		if (SDL_MUSTLOCK(screen) && (SDL_LockSurface(screen) < 0)) {

@@ -51,8 +51,8 @@ struct {
 	float* texcoords;
 } ModelArray;
 
-void FreeModelArray(){
-	if(!ModelArrayLoaded){
+void FreeModelArray() {
+	if (!ModelArrayLoaded) {
 		ModelArray.points = NULL;
 		ModelArray.normals = NULL;
 		ModelArray.npoints = 0;
@@ -61,10 +61,14 @@ void FreeModelArray(){
 		return;
 	}
 	ModelArrayLoaded = 0;
-	if(ModelArray.points)		free(ModelArray.points);
-	if(ModelArray.normals)		free(ModelArray.normals);
-	if(ModelArray.texcoords)	free(ModelArray.texcoords);
-	if(ModelArray.colors)		free(ModelArray.colors);
+	if (ModelArray.points)
+		free(ModelArray.points);
+	if (ModelArray.normals)
+		free(ModelArray.normals);
+	if (ModelArray.texcoords)
+		free(ModelArray.texcoords);
+	if (ModelArray.colors)
+		free(ModelArray.colors);
 	ModelArray.npoints = 0;
 	return;
 }
@@ -73,27 +77,24 @@ void rotateCamera() {
 	vec3 a;
 	a.d[1] = (float)mousex * mouseratiox;
 	a.d[2] = (float)mousey * mouseratioy;
-	
-	
 
 	vec3 right = normalizev3(crossv3(camforw, camup));
 	right.d[1] = 0;
-	//vec3 forward = glm::vec3(glm::normalize(glm::rotate(angle, right) * glm::vec4(forward, 0.0)));
-	
+	// vec3 forward = glm::vec3(glm::normalize(glm::rotate(angle, right) * glm::vec4(forward, 0.0)));
+
 	camforw = normalizev3(rotatev3(camforw, right, -a.d[2]));
-	//up = glm::normalize(glm::cross(forward, right));
+	// up = glm::normalize(glm::cross(forward, right));
 	camup = normalizev3(crossv3(right, camforw));
 
-
-	//Perform the rotation about the Y axis last.
-	static const vec3 UP = (vec3){{0,1,0}};
-	static const vec3 DOWN = (vec3){{0,-1,0}};
-	if(dotv3(UP, camup)<0){
+	// Perform the rotation about the Y axis last.
+	static const vec3 UP = (vec3){{0, 1, 0}};
+	static const vec3 DOWN = (vec3){{0, -1, 0}};
+	if (dotv3(UP, camup) < 0) {
 		camforw = normalizev3(rotatev3(camforw, DOWN, -a.d[1]));
 		camup = normalizev3(rotatev3(camup, DOWN, -a.d[1]));
 	} else {
 		camforw = normalizev3(rotatev3(camforw, UP, -a.d[1]));
-		camup = normalizev3(rotatev3(camup,UP, -a.d[1]));
+		camup = normalizev3(rotatev3(camup, UP, -a.d[1]));
 	}
 }
 
@@ -114,40 +115,40 @@ void LoadModelArrays(
 	// f_ as float and not double!
 	// Remember that!
 	vec3* points, uint npoints, vec3* colors, vec3* normals, vec3* texcoords) {
-	if (!points)return;
+	if (!points)
+		return;
 	FreeModelArray();
 	ModelArrayLoaded = 1;
 	ModelArray.npoints = npoints;
 	ModelArray.points = malloc(sizeof(float) * npoints * 3);
-	if(normals)
+	if (normals)
 		ModelArray.normals = malloc(sizeof(float) * npoints * 3);
-	if(texcoords)
+	if (texcoords)
 		ModelArray.texcoords = malloc(sizeof(float) * npoints * 2);
-	if(colors)
+	if (colors)
 		ModelArray.colors = malloc(sizeof(float) * npoints * 3);
 	for (uint i = 0; i < npoints; i++) {
 		if (colors) { // Fix for TinyGL color interpolation.
-			ModelArray.colors[i*3+0] = colors[i].d[0];
-			ModelArray.colors[i*3+1] = colors[i].d[1];
-			ModelArray.colors[i*3+2] = colors[i].d[2];
+			ModelArray.colors[i * 3 + 0] = colors[i].d[0];
+			ModelArray.colors[i * 3 + 1] = colors[i].d[1];
+			ModelArray.colors[i * 3 + 2] = colors[i].d[2];
 		}
-		if (texcoords){
-			ModelArray.texcoords[i*2+0] = texcoords[i].d[0];
-			ModelArray.texcoords[i*2+1] = texcoords[i].d[1];
+		if (texcoords) {
+			ModelArray.texcoords[i * 2 + 0] = texcoords[i].d[0];
+			ModelArray.texcoords[i * 2 + 1] = texcoords[i].d[1];
 		}
-		if (normals){
-			ModelArray.normals[i*3+0] = normals[i].d[0];
-			ModelArray.normals[i*3+1] = normals[i].d[1];
-			ModelArray.normals[i*3+2] = normals[i].d[2];
+		if (normals) {
+			ModelArray.normals[i * 3 + 0] = normals[i].d[0];
+			ModelArray.normals[i * 3 + 1] = normals[i].d[1];
+			ModelArray.normals[i * 3 + 2] = normals[i].d[2];
 		}
-		ModelArray.points[i*3+0] = points[i].d[0];
-		ModelArray.points[i*3+1] = points[i].d[1];
-		ModelArray.points[i*3+2] = points[i].d[2];
+		ModelArray.points[i * 3 + 0] = points[i].d[0];
+		ModelArray.points[i * 3 + 1] = points[i].d[1];
+		ModelArray.points[i * 3 + 2] = points[i].d[2];
 	}
 }
 
-
-//Without display list
+// Without display list
 void drawModelArrays(
 	// HUGE important note! these depend on the math library using
 	// f_ as float and not double!
@@ -195,9 +196,6 @@ GLuint createModelDisplayList(
 	glEndList();
 	return ret;
 }
-
-
-
 
 GLubyte stipplepattern[128] = {0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55,
 							   0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55,
@@ -304,7 +302,7 @@ int main(int argc, char** argv) {
 	char needsRGBAFix = 0;
 	unsigned int count = 40;
 	GLuint modelDisplayList = 0;
-	GLuint buffers[4]; //pos,color,normal,texcoord
+	GLuint buffers[4]; // pos,color,normal,texcoord
 	int dlExists = 0;
 	int doTextures = 1;
 	char* modelName = "extrude.obj";
@@ -327,11 +325,11 @@ int main(int argc, char** argv) {
 				modelName = argv[i];
 			if (!strcmp(argv[i], "-notexture") || !strcmp(larg, "-notexture"))
 				doTextures = 0;
-			if(!strcmp(argv[i],"-arrays"))
+			if (!strcmp(argv[i], "-arrays"))
 				testingModelArrays = 1;
-			if(!strcmp(argv[i],"-copy"))
+			if (!strcmp(argv[i], "-copy"))
 				testingCopyImage2D = 1;
-			if(!strcmp(argv[i],"-blend"))
+			if (!strcmp(argv[i], "-blend"))
 				doblend = 1;
 			larg = argv[i];
 		}
@@ -403,10 +401,10 @@ int main(int argc, char** argv) {
 	}
 
 	ZBuffer* frameBuffer = NULL;
-	if(TGL_FEATURE_RENDER_BITS == 32)
-	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
+	if (TGL_FEATURE_RENDER_BITS == 32)
+		frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_RGBA, 0);
 	else
-	 frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, 0);
+		frameBuffer = ZB_open(winSizeX, winSizeY, ZB_MODE_5R6G5B, 0);
 	glInit(frameBuffer);
 
 	srand(time(NULL));
@@ -415,15 +413,16 @@ int main(int argc, char** argv) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	glSetEnableSpecular(0);
-static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10, 0.0}; // Light at infinity.
-	
+	static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};
+	static GLfloat pos[4] = {5, 5, 10, 0.0}; // Light at infinity.
+
 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
 	// glLightfv( GL_LIGHT0, GL_AMBIENT, white);
 	// glLightfv( GL_LIGHT0, GL_SPECULAR, white);
 	glEnable(GL_CULL_FACE);
-	
-	//glDisable( GL_LIGHTING );
+
+	// glDisable( GL_LIGHTING );
 	glEnable(GL_LIGHT0);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -437,7 +436,7 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 	glDisable(GL_TEXTURE_2D);
 
 	glEnable(GL_DEPTH_TEST);
-	//glDisable(GL_LIGHTING);
+	// glDisable(GL_LIGHTING);
 	glShadeModel(GL_SMOOTH);
 	// glDisable(GL_DEPTH_TEST);
 	double t = 0;
@@ -455,9 +454,9 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 		} else {
 			m = tobj_tomodel(&omodel);
 			printf("\nHas %d points.\n", m.npoints);
-			if(!testingModelArrays){
-			modelDisplayList = createModelDisplayList(m.d, m.npoints, m.c, m.n, m.t);
-			dlExists = 1;
+			if (!testingModelArrays) {
+				modelDisplayList = createModelDisplayList(m.d, m.npoints, m.c, m.n, m.t);
+				dlExists = 1;
 			} else {
 				LoadModelArrays(m.d, m.npoints, m.c, m.n, m.t);
 				/*
@@ -472,44 +471,32 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 				if(ModelArray.texcoords)glTexCoordPointer(2,GL_FLOAT,0,ModelArray.texcoords);
 				*/
 				glGenBuffers(4, buffers);
-				for(int i = 0; i < 4; i++){
-				printf("\nBuffer %d is %d", i , buffers[i]);
-					if(buffers[i] == 0){
+				for (int i = 0; i < 4; i++) {
+					printf("\nBuffer %d is %d", i, buffers[i]);
+					if (buffers[i] == 0) {
 						printf("\nBuffer allocation failed for buffer %d!\n", i);
 						return 1;
 					}
 				}
 				glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-				glBufferData(GL_ARRAY_BUFFER, 
-							sizeof(GLfloat) * 3 * ModelArray.npoints,
-							ModelArray.points,
-							GL_STATIC_DRAW);
-				if(glMapBuffer(GL_ARRAY_BUFFER,0) == NULL) 
+				glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * ModelArray.npoints, ModelArray.points, GL_STATIC_DRAW);
+				if (glMapBuffer(GL_ARRAY_BUFFER, 0) == NULL)
 					printf("\nglBufferData failed for buffer %d!\n", 0);
-				glBindBufferAsArray(GL_VERTEX_BUFFER, buffers[0],GL_FLOAT,3,0);
-				if(ModelArray.colors){
+				glBindBufferAsArray(GL_VERTEX_BUFFER, buffers[0], GL_FLOAT, 3, 0);
+				if (ModelArray.colors) {
 					glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
-					glBufferData(GL_ARRAY_BUFFER, 
-								sizeof(GLfloat) * 3 * ModelArray.npoints,
-								ModelArray.colors,
-								GL_STATIC_DRAW);
-					glBindBufferAsArray(GL_COLOR_BUFFER, buffers[1],GL_FLOAT,3,0);
+					glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * ModelArray.npoints, ModelArray.colors, GL_STATIC_DRAW);
+					glBindBufferAsArray(GL_COLOR_BUFFER, buffers[1], GL_FLOAT, 3, 0);
 				}
-				if(ModelArray.normals){
+				if (ModelArray.normals) {
 					glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
-					glBufferData(GL_ARRAY_BUFFER, 
-								sizeof(GLfloat) * 3 * ModelArray.npoints,
-								ModelArray.normals,
-								GL_STATIC_DRAW);
-					glBindBufferAsArray(GL_NORMAL_BUFFER, buffers[2],GL_FLOAT,3,0);
+					glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * ModelArray.npoints, ModelArray.normals, GL_STATIC_DRAW);
+					glBindBufferAsArray(GL_NORMAL_BUFFER, buffers[2], GL_FLOAT, 3, 0);
 				}
-				if(ModelArray.texcoords){
+				if (ModelArray.texcoords) {
 					glBindBuffer(GL_ARRAY_BUFFER, buffers[3]);
-					glBufferData(GL_ARRAY_BUFFER, 
-								sizeof(GLfloat) * 2 * ModelArray.npoints,
-								ModelArray.texcoords,
-								GL_STATIC_DRAW);
-					glBindBufferAsArray(GL_TEXTURE_COORD_BUFFER,buffers[3],GL_FLOAT,2,0);
+					glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 2 * ModelArray.npoints, ModelArray.texcoords, GL_STATIC_DRAW);
+					glBindBufferAsArray(GL_TEXTURE_COORD_BUFFER, buffers[3], GL_FLOAT, 2, 0);
 				}
 			}
 			freemodel(&m);
@@ -522,16 +509,16 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 		int sw = 0, sh = 0, sc = 0; // sc goes unused.
 #if TGL_FEATURE_NO_DRAW_COLOR == 1
 		uchar* source_data = stbi_load("tex_hole.png", &sw, &sh, &sc, 3);
-#else 
+#else
 		uchar* source_data = stbi_load("tex.jpg", &sw, &sh, &sc, 3);
-#endif		
+#endif
 		if (source_data) {
 			tex = loadRGBTexture(source_data, sw, sh);
 			free(source_data);
 		}
 		// tex =
 	}
-	//glDisable(GL_LIGHTING);
+	// glDisable(GL_LIGHTING);
 	// glEnable( GL_NORMALIZE );
 	// variables for timing:
 	unsigned int frames = 0;
@@ -569,7 +556,7 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 		glPushMatrix(); // Pushing on the LookAt Matrix.
 
 		vec3 right = normalizev3(crossv3(camforw, camup));
-		//right.d[1] = 0;
+		// right.d[1] = 0;
 		matrix = (lookAt(campos, addv3(campos, camforw), camup)); // Using right vector to correct for screen rotation.
 		glLoadMatrixf(matrix.d);
 		if (wasdstate[0])
@@ -586,18 +573,20 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 			glBindTexture(GL_TEXTURE_2D, tex);
 		// glDisable(GL_BLEND);
 		// Testing blending for textured triangles.
-		//glDisable(GL_DEPTH_TEST);
-		if(doblend){
+		// glDisable(GL_DEPTH_TEST);
+		if (doblend) {
 			glEnable(GL_BLEND);
 			glDepthMask(GL_FALSE);
 			glDisable(GL_DEPTH_TEST);
-		}else  {glDisable(GL_BLEND);}
+		} else {
+			glDisable(GL_BLEND);
+		}
 		glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR);
 		glBlendEquation(GL_FUNC_ADD);
 		// glDisable(GL_TEXTURE_2D);
 		// printf("\nNew triangle!\n");
 		if (!dlExists) {
-			if(!testingModelArrays){
+			if (!testingModelArrays) {
 				glDisable(GL_TEXTURE_2D);
 				glBegin(GL_TRIANGLES);
 				// glColor3f(0,0,1);
@@ -617,18 +606,18 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 					glEnable(GL_TEXTURE_2D);
 				// glDisable(GL_TEXTURE_2D);
 				glEnable(GL_POLYGON_STIPPLE);
-				//puts("\nUSING ARRAYS!");
+				// puts("\nUSING ARRAYS!");
 				// glDisable(GL_COLOR_MATERIAL);
 				for (unsigned int i = 0; i < count; i++) {
 					glPushMatrix();
-					mat4 horiz_translation = translate((vec3){{8.0 * (i%10),0.0,0.0}});
-					mat4 vert_translation = translate((vec3){{0.0,8.0 * (i/10),0.0}});
-					const mat4 ztranslation = translate((vec3){{0,0,-10}});
-					mat4 total_translation = multm4(multm4(horiz_translation, vert_translation),ztranslation);
+					mat4 horiz_translation = translate((vec3){{8.0 * (i % 10), 0.0, 0.0}});
+					mat4 vert_translation = translate((vec3){{0.0, 8.0 * (i / 10), 0.0}});
+					const mat4 ztranslation = translate((vec3){{0, 0, -10}});
+					mat4 total_translation = multm4(multm4(horiz_translation, vert_translation), ztranslation);
 					glMultMatrixf(total_translation.d);
-					//glTranslatef((float)(i % 10) * 8.0, (float)(i / 10) * 8.0, -10);
+					// glTranslatef((float)(i % 10) * 8.0, (float)(i / 10) * 8.0, -10);
 					glBegin(GL_TRIANGLES);
-					for(uint j = 0; j < ModelArray.npoints; j++)
+					for (uint j = 0; j < ModelArray.npoints; j++)
 						glArrayElement(j);
 					glEnd();
 					glPopMatrix();
@@ -644,12 +633,12 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 			// glDisable(GL_COLOR_MATERIAL);
 			for (unsigned int i = 0; i < count; i++) {
 				glPushMatrix();
-				mat4 horiz_translation = translate((vec3){{8.0 * (i%10),0.0,0.0}});
-				mat4 vert_translation = translate((vec3){{0.0,8.0 * (i/10),0.0}});
-				const mat4 ztranslation = translate((vec3){{0,0,-10}});
-				mat4 total_translation = multm4(multm4(horiz_translation, vert_translation),ztranslation);
+				mat4 horiz_translation = translate((vec3){{8.0 * (i % 10), 0.0, 0.0}});
+				mat4 vert_translation = translate((vec3){{0.0, 8.0 * (i / 10), 0.0}});
+				const mat4 ztranslation = translate((vec3){{0, 0, -10}});
+				mat4 total_translation = multm4(multm4(horiz_translation, vert_translation), ztranslation);
 				glMultMatrixf(total_translation.d);
-				//glTranslatef((float)(i % 10) * 8.0, (float)(i / 10) * 8.0, -10);
+				// glTranslatef((float)(i % 10) * 8.0, (float)(i / 10) * 8.0, -10);
 				glCallList(modelDisplayList);
 				// drawModel(
 				// m.d, m.npoints,
@@ -675,18 +664,16 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 			fprintf(stderr, "SDL ERROR: Can't lock screen: %s\n", SDL_GetError());
 			return 1;
 		}
-		if(testingCopyImage2D && doTextures){
+		if (testingCopyImage2D && doTextures) {
 			glBindTexture(GL_TEXTURE_2D, tex);
 			glReadBuffer(GL_FRONT);
-			glCopyTexImage2D(	
-				GL_TEXTURE_2D, //1
-			 	0,//2
-			 	GL_RGBA, //3
-			 	0,//4
-			 	256,//5
-			 	256,//6
-			 	256,
-			 	0);
+			glCopyTexImage2D(GL_TEXTURE_2D, // 1
+							 0,				// 2
+							 GL_RGBA,		// 3
+							 0,				// 4
+							 256,			// 5
+							 256,			// 6
+							 256, 0);
 		}
 		/*
 		printf("\nRMASK IS %u",screen->format->Rmask);
@@ -729,7 +716,8 @@ static GLfloat white[4] = {1.0, 1.0, 1.0, 0.0};static GLfloat pos[4] = {5, 5, 10
 	// cleanup:
 	glDeleteTextures(1, &tex);
 	// glDeleteList(modelDisplayList);
-	if(dlExists) glDeleteLists(modelDisplayList, 1);
+	if (dlExists)
+		glDeleteLists(modelDisplayList, 1);
 	FreeModelArray();
 	ZB_close(frameBuffer);
 	glClose();
