@@ -1,3 +1,6 @@
+#ifndef STRUTIL_H
+#define STRUTIL_H
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -342,3 +345,5 @@ static inline char* strdecodealloc(char* inbuf){
 	//if(toklens)STRUTIL_FREE(toklens);
 	return out;
 }
+//STRUTIL_H 
+#endif
