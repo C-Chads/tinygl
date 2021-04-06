@@ -23,11 +23,13 @@
 #define strcatafb strcatallocfb
 #endif
 
-#ifndef LOOP
-
+#ifndef loop
 //Loop without errors!
-#define LOOP(v, e)\
+#define loop(v, e)\
 for(unsigned long long v = 0, __internal_##v = 0; __internal_##v < e; __internal_##v++, v = __internal_##v)
+
+#define loople(v, e)\
+for(unsigned long long v = 0, __internal_##v = 0; __internal_##v <= e; __internal_##v++, v = __internal_##v)
 
 #endif
 //Strcat but with malloc.
