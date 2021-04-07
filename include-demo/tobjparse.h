@@ -146,14 +146,10 @@ objraw tobj_load(const char* fn){
 #define TOBJ_PUSH(type, vec, n, val){vec = realloc(vec, sizeof(type) * (n+1)); vec[n++] = val;}
 		while(fgets(line, 2047, f)){
 			vec3 val;
-			facedef frick0;
-			facedef frick1;
-			facedef frick2;
+			facedef frick0 = {0};
+			facedef frick1 = {0};
+			facedef frick2 = {0};
 			if(line[0] == 'v' && line[1] == ' ' && (strlen(line) > 4)){
-				//read = sscanf(line,"v %f %f %f",&val.d[0],&val.d[1],&val.d[2]);
-				//printf("\nv Read: %d",read);
-
-				//sb_push(retval.positions, val);
 				TOBJ_PUSH(vec3, retval.positions, retval.npos, val);
 				char* t = line+2;
 				//sb_last(retval.positions).d[0] = atof(t);
@@ -338,19 +334,9 @@ objraw tobj_load(const char* fn){
 					frick2.vc = strtoull(t,NULL,10);
 					//printf("\nf[2].vc is %llu",frick2.vc);
 				}
-				//sb_push(retval.faces,frick0);
 				TOBJ_PUSH(facedef, retval.faces, retval.nfaces, frick0);
-				//sb_push(retval.faces,frick1);
 				TOBJ_PUSH(facedef, retval.faces, retval.nfaces, frick1);
-				//sb_push(retval.faces,frick2);
 				TOBJ_PUSH(facedef, retval.faces, retval.nfaces, frick2);
-				/*
-				printf("\nReading from sb, frick0.p=%llu frick0.n=%llu frick0.tc=%llu frick0.vc=%llu",
-					retval.faces[sb_count(retval.faces)-3].p,
-					retval.faces[sb_count(retval.faces)-3].n,
-					retval.faces[sb_count(retval.faces)-3].tc,
-					retval.faces[sb_count(retval.faces)-3].vc
-				);*/
 			}
 		}
 	fclose(f);
