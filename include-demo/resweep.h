@@ -27,18 +27,9 @@ For more information, please refer to <http://unlicense.org>
 */
 
 
-#pragma once
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/******************************************************************************/
-
-/******************************************************************************/
-
-#ifdef __cplusplus
-}
-#endif
+//#pragma once
+#ifndef RESWEEP_H
+#define RESWEEP_H
 
 #ifdef RESWEEP_IMPLEMENTATION
 
@@ -303,5 +294,7 @@ void sinc_resample(short *wavOut, int sizeOut, int outFreq, const short *wavIn, 
 		sinc_resample_internal(wavOut, sizeOut, outFreq, wavIn, sizeIn, inFreq, cutoffFreq2, numChannels, windowSize, beta);
 
 }
-
-#endif // RESWEEP_IMPLEMENTATION
+// RESWEEP_IMPLEMENTATION
+#endif 
+//RESWEEP_H
+#endif 
