@@ -2,6 +2,7 @@
 # C compiler
 
 CC= gcc
+#CC= tcc
 #CFLAGS= -Wall -w -O3 -g -std=c99 -mtune=native -DNDEBUG
 #CFLAGS= -Wall -w -O3 -g -std=c99 -march=native -DNDEBUG
 
