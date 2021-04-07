@@ -44,8 +44,10 @@ static inline mat4 getPhysBodyRenderTransform(phys_body* body){
 
 //Check for and, if necessary, resolve colliding bodies.
 static inline void resolveBodies(phys_body* a, phys_body* b){
-	if(a->mass <= 0 && b->mass <= 0) return; //Perform a preliminary check. Do we even have to do anything?
-	
+	if(a->mass > 0 || b->mass > 0){ //Perform a preliminary check. Do we even have to do anything?
+		/*We must do shit*/
+	} else {return;}
+	//Optimized for branch prediction.
 	vec4 penvec = (vec4){
 		.d[0]=0,
 		.d[1]=0,
@@ -123,7 +125,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 
 static inline void stepPhysWorld(phys_world* world, const int collisioniter){
 	for(int i = 0; i < world->nbodies; i++)
-		if(world->bodies[i]){
+		if(world->bodies[i] && world->bodies[i]->mass > 0){
 			phys_body* body = world->bodies[i];
 			vec3 bodypos = addv3(downv4(body->shape.c),body->v);
 			body->shape.c.d[0] = bodypos.d[0];
