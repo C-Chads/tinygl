@@ -1,3 +1,20 @@
+#ifndef OPENIMGUI_IMPL
+extern float omg_cursorpos[2]; //Defaults to zero
+extern float omg_cursorpos_presuck[2]; //Defaults to zero
+extern int omg_cursor_has_been_sucked;
+extern int omg_cursor_was_inside;  //Set 
+extern float omg_buttonjump[2]; //Defaults to zero
+// Setting for users using 
+extern int omg_bstate_old;
+extern int omg_udlr_old[4];
+extern int omg_udlr[4];
+// cursor button
+extern int omg_cb; //Set to zero every iteration.
+#endif
+
+#ifndef OPENIMGUI_H
+#define OPENIMGUI_H
+
 #include <math.h>
 //PROTOTYPE FOR THE OPENIMGUISTANDARD PROPOSAL
 
@@ -64,19 +81,7 @@
 // the graphical object.
 
 // Normalized cursor position
-#ifndef OPENIMGUI_IMPL
-extern float omg_cursorpos[2]; //Defaults to zero
-extern float omg_cursorpos_presuck[2]; //Defaults to zero
-extern int omg_cursor_has_been_sucked;
-extern int omg_cursor_was_inside;  //Set 
-extern float omg_buttonjump[2]; //Defaults to zero
-// Setting for users using 
-extern int omg_bstate_old;
-extern int omg_udlr_old[4];
-extern int omg_udlr[4];
-// cursor button
-extern int omg_cb; //Set to zero every iteration.
-#else
+#ifdef OPENIMGUI_IMPL
 float omg_cursorpos[2]; //Defaults to zero
 float omg_cursorpos_presuck[2]; //Defaults to zero
 int omg_cursor_has_been_sucked;
@@ -250,3 +255,6 @@ int omg_box(float x, float y, float xdim, float ydim, int sucks, float buttonjum
 // and the longest line of text will determine the x dimension of the box.
 // Otherwise, it is functionally identical to omg_box.
 int omg_textbox(float x, float y, const char* text, int textsize, int sucks, float buttonjumpx, float buttonjumpy, int hints, int hintstext);
+
+
+#endif
