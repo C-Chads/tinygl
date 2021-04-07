@@ -245,7 +245,7 @@ You can compile the code yourself without makefiles using these directives:
 
 ```sh
 # inside the src directory
-gcc -Wno-uninitialized -O3 -c *.c 
+gcc -O3 -c *.c 
 ar rcs libTinyGL.a *.o
 # the library is now compiled
 cp libTinyGL.a ../lib
