@@ -1,10 +1,3 @@
-
-/* sdlGears.c */
-/*
- * 3-D gear wheels by Brian Paul. This program is in the public domain.
- *
- * ported to libSDL/TinyGL by Gerald Franz (gfz@o2online.de)
- */
 //#define PLAY_MUSIC
 
 #include "../include/GL/gl.h"
