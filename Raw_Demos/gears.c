@@ -21,10 +21,10 @@
 
 //Doesn't drag in anything.
 #include "../include/zbuffer.h"
-#define CHAD_MATH_IMPL
+//#define CHAD_MATH_IMPL
 
 //Drags in Math and String (which are already dragged in above.)
-#include "../include-demo/3dMath.h"
+//#include "../include-demo/3dMath.h"
 
 //Requires 
 /*
