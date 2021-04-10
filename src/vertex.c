@@ -45,9 +45,9 @@ void glopColor(GLParam* p) {
 
 
 void glopBegin(GLParam* p) {
-	GLContext* c = gl_get_context();
 	GLint type;
 	M4 tmp;
+	GLContext* c = gl_get_context();
 #if TGL_FEATURE_ERROR_CHECK == 1
 	if(c->in_begin != 0)
 #define ERROR_FLAG GL_INVALID_OPERATION
@@ -150,8 +150,7 @@ static inline void gl_transform_to_viewport_vertex_c(GLVertex* v) {
 }
 
 static inline void gl_vertex_transform(GLVertex* v) {
-	GLfloat* m;
-	GLContext* c = gl_get_context();
+	GLfloat* m;GLContext* c = gl_get_context();
 
 
 	if (c->lighting_enabled) 

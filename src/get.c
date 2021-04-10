@@ -173,8 +173,8 @@ const GLubyte* glGetString(GLenum name){
 //NOTE: You should never be prevented from retrieving values from the GL state, even in GL_OUT_OF_MEMORY
 
 void glGetIntegerv(GLint pname, GLint* params) {
-	GLContext* c = gl_get_context();
-	GLint i = 0;
+	GLint i;GLContext* c = gl_get_context();
+	i = 0;
 	switch (pname) {
 	case GL_MAX_BUFFERS:
 		*params = MAX_BUFFERS;
@@ -581,9 +581,9 @@ void glGetIntegerv(GLint pname, GLint* params) {
 
 
 void glGetFloatv(GLint pname, GLfloat* v) {
-	GLint i;
-	GLint mnr = 0; /* just a trick to return the correct matrix */
-	GLContext* c = gl_get_context();
+	GLint i, mnr; GLContext* c;
+	mnr = 0; /* just a trick to return the correct matrix */
+	c = gl_get_context();
 	switch (pname) {
 		case GL_BLUE_SCALE:
 		case GL_RED_SCALE:

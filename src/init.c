@@ -104,56 +104,53 @@ static int TinyGLRuntimeCompatibilityTest(){
 	tf2 = 1.0/sqrt(10000);
 	if(TGL_FLOAT_ERR(t,tf2) > 0.05) return 1;
 #endif
-	{	//MEMCPY COMPATIBILITY TEST
-		GLuint buf1[10];
-		GLuint buf2[10];
-		for(int i = 0; i < 10; i++) buf1[i] = (1023<<i) + i + i%-1;
-		for(int i = 0; i < 10; i++) buf2[i] = (14<<i) + i + i%-4;
+	{GLint i;
+		GLuint buf1[10];GLuint buf2[10];
+		for(i = 0; i < 10; i++) buf1[i] = (1023<<i) + i + i%-1;
+		for(i = 0; i < 10; i++) buf2[i] = (14<<i) + i + i%-4;
 		memcpy(buf1,buf2,10*4);
-		for(int i = 0; i < 10; i++) if(buf2[i] != buf1[i]) return 1;
+		for(i = 0; i < 10; i++) if(buf2[i] != buf1[i]) return 1;
 	}
 	if(sizeof(void*) < 4) return 1;
 	//ZALLOC TEST
-	for(int i = 0; i < 10; i++){
+	{GLint i, j;
+	for(i = 0; i < 10; i++){
 		GLubyte* data = gl_zalloc(1024); //A kilobyte.
 		if(!data) return 1;
-		for(int i = 0; i <1024; i++) if(data[i] != 0) return 1;
+		for(j = 0; j <1024; j++) if(data[j] != 0) return 1;
 		gl_free(data);
-	}
+	}}
 	return 0;
 }
 #endif
 
 
 void glInit(void* zbuffer1) {
-	ZBuffer* zbuffer = (ZBuffer*)zbuffer1;
 	GLContext* c;
 	GLViewport* v;
 	GLint i;
+	ZBuffer* zbuffer = (ZBuffer*)zbuffer1;
 #if TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST == 1
 	if(TinyGLRuntimeCompatibilityTest()) gl_fatal_error("TINYGL_FAILED_RUNTIME_COMPAT_TEST");
 #endif
-	//c = gl_zalloc(sizeof(GLContext));
 	gl_ctx = empty_gl_ctx;
 	c = &gl_ctx;
 	if(!c) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
-	//gl_ctx = c;
 	
 	c->zb = zbuffer;
 #if TGL_FEATURE_ERROR_CHECK == 1
 	c->error_flag = GL_NO_ERROR;
 #endif
 	/* allocate GLVertex array */
-	//c->vertex_max = POLYGON_MAX_VERTEX;
-	//c->vertex = gl_malloc(POLYGON_MAX_VERTEX * sizeof(GLVertex));
-	//if(!c->vertex) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
+	/*c->vertex_max = POLYGON_MAX_VERTEX;*/
+	/*c->vertex = gl_malloc(POLYGON_MAX_VERTEX * sizeof(GLVertex));*/
+	/*if(!c->vertex) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");*/
 	/* viewport */
 	v = &c->viewport;
 	v->xmin = 0;
 	v->ymin = 0;
 	v->xsize = zbuffer->xsize;
 	v->ysize = zbuffer->ysize;
-	//v->updated = 1;
 	gl_eval_viewport(c);
 	/* buffer stuff GL 1.1 */
 	c->drawbuffer = GL_FRONT;
@@ -163,11 +160,11 @@ void glInit(void* zbuffer1) {
 	/* ztext */
 	c->textsize = 1;
 	/* buffer */
-	c->boundarraybuffer = 0; //no bound buffer
-	c->boundvertexbuffer = 0; //no bound buffer
-	c->boundcolorbuffer = 0; //no bound buffer
-	c->boundnormalbuffer = 0; //no bound buffer
-	c->boundtexcoordbuffer = 0; //no bound buffer
+	c->boundarraybuffer = 0; 
+	c->boundvertexbuffer = 0;
+	c->boundcolorbuffer = 0; 
+	c->boundnormalbuffer = 0; 
+	c->boundtexcoordbuffer = 0; 
 	/* lists */
 
 	c->exec_flag = 1;
@@ -226,10 +223,6 @@ void glInit(void* zbuffer1) {
 	c->current_color.Y = 1.0;
 	c->current_color.Z = 1.0;
 	c->current_color.W = 0.0;
-	// Shouldn't ever be used.
-	// c->longcurrent_color[0] = 65280;
-	// c->longcurrent_color[1] = 65280;
-	// c->longcurrent_color[2] = 65280;
 
 	c->current_normal.X = 1.0;
 	c->current_normal.Y = 0.0;
@@ -335,18 +328,20 @@ void glInit(void* zbuffer1) {
 }
 
 void glClose(void) {
+	
+	GLuint i; 
 	GLContext* c = gl_get_context();
-	GLuint i;
 	for (i = 0; i < 3; i++) {
 		gl_free(c->matrix_stack[i]);
 	}
 	i = 0;
 #if TGL_FEATURE_SPECULAR_BUFFERS == 1
-	GLSpecBuf* n = NULL;
-	for (GLSpecBuf* b = c->specbuf_first; b != NULL; b = n) {
+	{GLSpecBuf*b,*n = NULL;
+	for(b = c->specbuf_first; b != NULL; b = n) {
 		n = b->next;
 		gl_free(b);
 		i++;
+	}
 	}
 #endif
 	endSharedState(c);

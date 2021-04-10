@@ -145,7 +145,7 @@ objraw tobj_load(const char* fn){
 
 #define TOBJ_PUSH(type, vec, n, val){vec = realloc(vec, sizeof(type) * (n+1)); vec[n++] = val;}
 		while(fgets(line, 2047, f)){
-			vec3 val;
+			vec3 val = {0};
 			facedef frick0 = {0};
 			facedef frick1 = {0};
 			facedef frick2 = {0};

@@ -48,8 +48,9 @@ static void delete_list( GLint list) {
 	c->shared_state.lists[list] = NULL;
 }
 void glDeleteLists(GLuint list, GLuint range) {
+	GLuint i;
 #include "error_check_no_context.h"
-	for (GLuint i = 0; i < list + range; i++)
+	for (i = 0; i < list + range; i++)
 		glDeleteList(list + i);
 }
 void glDeleteList(GLuint list) { 
@@ -58,9 +59,8 @@ delete_list( list);
 }
 
 static GLList* alloc_list( GLint list) {
+	GLList* l;GLParamBuffer* ob;
 	GLContext* c = gl_get_context();
-	GLList* l;
-	GLParamBuffer* ob;
 #define RETVAL NULL
 #include "error_check.h"
 	l = gl_zalloc(sizeof(GLList));
@@ -120,6 +120,7 @@ void glListBase(GLint n){
 void glCallLists(	GLsizei n,
 				 	GLenum type,
 				 	const GLuint* lists){
+	GLint i;
 	GLContext* c = gl_get_context();
 //A ridiculously expensive error check.
 /*
@@ -131,7 +132,7 @@ void glCallLists(	GLsizei n,
 #include "error_check.h"
 #endif
 */
-	for(GLint i = 0; i < n; i++)
+	for(i = 0; i < n; i++)
 		glCallList(c->listbase + lists[i]);
 }
 void gl_compile_op(GLParam* p) {
@@ -183,8 +184,7 @@ void glopNextBuffer(GLParam* p) { exit(1); }
 
 void glopCallList(GLParam* p) {
 	//GLContext* c = gl_get_context();
-	GLList* l;
-	GLint list;
+	GLList* l;GLint list;
 #include "error_check_no_context.h"
 	list = p[1].ui;
 	l = find_list(list);
@@ -196,9 +196,9 @@ void glopCallList(GLParam* p) {
 #endif
 	p = l->first_op_buffer->ops;
 
-	while (1) {
+	while (1) {GLint op;
 #include "error_check.h"
-		GLint op = p[0].op;
+		op = p[0].op;
 		if (op == OP_EndList)
 			break;
 		if (op == OP_NextBuffer) {
@@ -276,9 +276,9 @@ GLint glIsList(GLuint list) {
 }
 
 GLuint glGenLists(GLint range) {
-	GLContext* c = gl_get_context();
 	GLint count, i, list;
 	GLList** lists;
+	GLContext* c = gl_get_context();
 #define RETVAL 0
 #include "error_check.h"
 	lists = c->shared_state.lists;
