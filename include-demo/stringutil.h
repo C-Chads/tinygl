@@ -26,15 +26,6 @@
 #define strcatafb strcatallocfb
 #endif
 
-#ifndef loop
-//Loop without errors!
-#define loop(v, e)\
-for(unsigned long long v = 0, __internal_##v = 0; __internal_##v < e; __internal_##v++, v = __internal_##v)
-
-#define loople(v, e)\
-for(unsigned long long v = 0, __internal_##v = 0; __internal_##v <= e; __internal_##v++, v = __internal_##v)
-
-#endif
 //Strcat but with malloc.
 static inline char* strcatalloc(const char* s1, const char* s2){
 	char* d = NULL; d = STRUTIL_ALLOC(strlen(s1) + strlen(s2) + 1);
@@ -109,9 +100,9 @@ static inline long long strfind(const char* text, const char* subtext){
 			if(subtext[si] == '\0') return (ti - st)+1;
 		}else {
 			si = 0;
+			if(text[ti] == subtext[si])si++; //Minor case.
 			if(subtext[si] == '\0') return (ti - st);
 		}
-		
 	}
 	return -1;
 }
