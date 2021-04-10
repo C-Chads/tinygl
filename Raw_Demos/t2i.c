@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
 			larg = argv[i];
 		}
 	}
-	unsigned long long lout;
+	unsigned long lout;
 	char* text = read_until_terminator_alloced(stdin, &lout, '\0', 2);
 	imbuf = calloc(1,sizeof(PIXEL) * winSizeX * winSizeY);
 	ZBuffer* frameBuffer = NULL;

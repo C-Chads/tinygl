@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 	if(argc > 1) fillchar = argv[1][0];
 	
 	{
-		unsigned long long l;
+		unsigned long l;
 		unsigned char* b = (unsigned char*)read_until_terminator_alloced(stdin, &l, '\n', 30);
 		if(b)
 		do {

@@ -187,7 +187,7 @@ static char* strencodealloc(const char* inbuf, const char** tokens, unsigned lon
 	for(j = 0; j < ntokens; j++){
 		out = strcataf1(out, tokens[2*j]);
 		
-		snprintf(c_str, 512, "%llu", (unsigned long)strlen(tokens[2*j+1]));
+		sprintf(c_str, "%lu", (unsigned long)strlen(tokens[2*j+1]));
 		out = strcataf1(out, c_str);
 		c_str[0] = tokmark;
 		c_str[1] = 0;
@@ -215,7 +215,8 @@ static char* strencodealloc(const char* inbuf, const char** tokens, unsigned lon
 				c_str[1] = 0;
 				out = strcataf1(out, c_str);
 				if(howmany > 1){
-					snprintf(c_str, 512, "%llu", (unsigned long)howmany);
+					/*snprintf(c_str, 512, "%lu", (unsigned long)howmany);*/
+					sprintf(c_str, "%lu", (unsigned long)howmany);
 					out = strcataf1(out, c_str);
 				}
 				out = strcataf1(out, tokens[t*2]);
