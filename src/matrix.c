@@ -46,7 +46,7 @@ void glopLoadMatrix(GLParam* p) {
 		q += 4;
 	}
 
-	gl_matrix_update(c);
+	gl_matrix_update();
 }
 
 void glopLoadIdentity(GLParam* p) {
@@ -54,7 +54,7 @@ void glopLoadIdentity(GLParam* p) {
 
 	gl_M4_Id(c->matrix_stack_ptr[c->matrix_mode]);
 
-	gl_matrix_update(c);
+	gl_matrix_update();
 }
 
 void glopMultMatrix(GLParam* p) {
@@ -75,7 +75,7 @@ void glopMultMatrix(GLParam* p) {
 
 	gl_M4_MulLeft(c->matrix_stack_ptr[c->matrix_mode], &m);
 
-	gl_matrix_update(c);
+	gl_matrix_update();
 }
 
 void glopPushMatrix( GLParam* p) {
@@ -93,7 +93,7 @@ void glopPushMatrix( GLParam* p) {
 
 	gl_M4_Move(&m[0], &m[-1]);
 
-	gl_matrix_update(c);
+	gl_matrix_update();
 }
 
 void glopPopMatrix( GLParam* p) {
@@ -108,7 +108,7 @@ void glopPopMatrix( GLParam* p) {
 	#include "error_check.h"
 #endif
 	c->matrix_stack_ptr[n]--;
-	gl_matrix_update(c);
+	gl_matrix_update();
 }
 
 
@@ -189,7 +189,7 @@ void glopRotate(GLParam* p) {
 
 	gl_M4_MulLeft(c->matrix_stack_ptr[c->matrix_mode], &m);
 
-	gl_matrix_update(c);
+	gl_matrix_update();
 }
 
 void glopScale(GLParam* p) {
@@ -211,7 +211,7 @@ void glopScale(GLParam* p) {
 	m[12] *= x;
 	m[13] *= y;
 	m[14] *= z;
-	gl_matrix_update(c);
+	gl_matrix_update();
 }
 
 void glopTranslate(GLParam* p) {
@@ -226,7 +226,7 @@ void glopTranslate(GLParam* p) {
 	m[11] = m[8] * x + m[9] * y + m[10] * z + m[11];
 	m[15] = m[12] * x + m[13] * y + m[14] * z + m[15];
 
-	gl_matrix_update(c);
+	gl_matrix_update();
 }
 
 void glopFrustum(GLParam* p) {
@@ -268,5 +268,5 @@ void glopFrustum(GLParam* p) {
 
 	gl_M4_MulLeft(c->matrix_stack_ptr[c->matrix_mode], &m);
 
-	gl_matrix_update(c);
+	gl_matrix_update();
 }
