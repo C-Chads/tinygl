@@ -474,6 +474,11 @@ int main(int argc, char** argv) {
 					}
 				}
 				glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+				/*Done multiple times to test and make sure that data isn't leaked*/
+				puts("\nTesting glBufferData data integrity\n");
+				glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * ModelArray.npoints, ModelArray.points, GL_STATIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * ModelArray.npoints, ModelArray.points, GL_STATIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * ModelArray.npoints, ModelArray.points, GL_STATIC_DRAW);
 				glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * ModelArray.npoints, ModelArray.points, GL_STATIC_DRAW);
 				if (glMapBuffer(GL_ARRAY_BUFFER, 0) == NULL)
 					printf("\nglBufferData failed for buffer %d!\n", 0);
