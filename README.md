@@ -35,8 +35,11 @@ TinyGL contains the following safety features:
 TinyGL is written in pure C99, and requires very few functions from the C standard library, it doesn't even require malloc and free
 (The calls are aliased to gl_malloc() and gl_free(), which you can replace with your own memory management model if you desire)
 
-Important: TinyGL still compiles under bellard's Tiny C Compiler. The demos cannot be compiled with TCC
-due to issues with getting SDL to work with tcc, but gcc can link to TinyGL built with tiny C. Try it!
+## How portable?
+
+* TinyGL still compiles under bellard's Tiny C Compiler. (Note: SDL examples cannot be compiled with tcc, but the raw demos can.)
+
+* TinyGL has been compiled for the Nintendo 3DS (proof of concept in another repository)
 
 You can test compiling TinyGL and running it on platforms without SDL by running the RAW DEMOS, which do not require ANYTHING
 Except the C standard library and stdio. You may have to change the destination written to by the raw demos on platforms
@@ -65,7 +68,8 @@ The SDL examples have been tested building on Debian 10 and Windows 10, while ti
 ## Includes a small SIMD-accelerated public domain replacement for GLU
 the "Chad Math Library" has been included (CC0, public domain) for your programming needs.
 
-it is simd accelerated on supported platforms.
+it is simd accelerated on supported platforms, but it contains ZERO platform-specific code- it relies on an optimizing
+compiler to get vectorized ops.
 
 NOTE: There are graphical artifacts visible in these gifs which have been corrected in this version of the library.
 
