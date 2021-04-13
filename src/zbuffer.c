@@ -3,15 +3,15 @@
  * Z buffer: 16 bits Z / 16 bits color
  *
  */
-//#include <stdio.h>
+
 #include <stdlib.h>
 #include <string.h>
-//#include "../include/GL/gl.h"
+
 #include "../include/zbuffer.h"
 #include "msghandling.h"
 ZBuffer* ZB_open(GLint xsize, GLint ysize, GLint mode,
-// GLint nb_colors, GLubyte* color_indexes, GLint* color_table, 
- void* frame_buffer) {
+
+				 void* frame_buffer) {
 	ZBuffer* zb;
 	GLint size;
 
@@ -19,19 +19,20 @@ ZBuffer* ZB_open(GLint xsize, GLint ysize, GLint mode,
 	if (zb == NULL)
 		return NULL;
 
-	zb->xsize = xsize & ~3; //The xsize will ALWAYS be a multiple of four!
+	zb->xsize = xsize & ~3; 
 	zb->ysize = ysize;
-	//zb->mode = mode;
-	//zb->linesize = (xsize * PSZB + 3) & ~3;
+	
+	
 	zb->linesize = (xsize * PSZB);
 
 	switch (mode) {
 #if TGL_FEATURE_32_BITS == 1
-	case ZB_MODE_RGBA:	break;
+	case ZB_MODE_RGBA:
+		break;
 #endif
 #if TGL_FEATURE_16_BITS == 1
 	case ZB_MODE_5R6G5B:
-	break;
+		break;
 #endif
 
 	default:
@@ -65,10 +66,6 @@ error:
 }
 
 void ZB_close(ZBuffer* zb) {
-//#if TGL_FEATURE_8_BITS == 1
-//	if (zb->mode == ZB_MODE_INDEX)
-//		ZB_closeDither(zb);
-//#endif
 
 	if (zb->frame_buffer_allocated)
 		gl_free(zb->pbuf);
@@ -91,13 +88,15 @@ void ZB_resize(ZBuffer* zb, void* frame_buffer, GLint xsize, GLint ysize) {
 
 	gl_free(zb->zbuf);
 	zb->zbuf = gl_malloc(size);
-	if(zb->zbuf == NULL) exit(1);
+	if (zb->zbuf == NULL)
+		exit(1);
 	if (zb->frame_buffer_allocated)
 		gl_free(zb->pbuf);
 
 	if (frame_buffer == NULL) {
 		zb->pbuf = gl_malloc(zb->ysize * zb->linesize);
-		if(!zb->pbuf) exit(1);
+		if (!zb->pbuf)
+			exit(1);
 		zb->frame_buffer_allocated = 1;
 	} else {
 		zb->pbuf = frame_buffer;
@@ -106,49 +105,49 @@ void ZB_resize(ZBuffer* zb, void* frame_buffer, GLint xsize, GLint ysize) {
 }
 
 #if TGL_FEATURE_32_BITS == 1
-inline PIXEL pxReverse32(PIXEL x) {
-
+ PIXEL pxReverse32(PIXEL x) {
 	return
-		// Source is in format: 0xAARRGGBB
-		((x & 0xFF000000) >> 24) | //______AA
-		((x & 0x00FF0000) >> 8) |  //____RR__
-		((x & 0x0000FF00) << 8) |  //__GG____
-		((x & 0x000000FF) << 24);  // BB______
-								   // Return value is in format:  0xBBGGRRAA
+		((x & 0xFF000000) >> 24) | /*______AA*/
+		((x & 0x00FF0000) >> 8) |  /*____RR__*/
+		((x & 0x0000FF00) << 8) |  /*__GG____*/
+		((x & 0x000000FF) << 24);  /* BB______*/
 }
 #endif
 
 static void ZB_copyBuffer(ZBuffer* zb, void* buf, GLint linesize) {
+	GLint y, i;
 #if TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER == 1
 #pragma omp parallel for
-	for (GLint y = 0; y < zb->ysize; y++) {
-		PIXEL* q = zb->pbuf + y * zb->xsize;
-		GLubyte* p1 = buf + y * linesize;
+	for (y = 0; y < zb->ysize; y++) {
+		PIXEL* q;
+		GLubyte* p1;
+		q = zb->pbuf + y * zb->xsize;
+		p1 = buf + y * linesize;
 #if TGL_FEATURE_NO_COPY_COLOR == 1
-		for (GLint i = 0; i < zb->xsize; i++) {
+		for (i = 0; i < zb->xsize; i++) {
 			if ((*(q + i) & TGL_COLOR_MASK) != TGL_NO_COPY_COLOR)
 				*(((PIXEL*)p1) + i) = *(q + i);
 		}
 #else
 		memcpy(p1, q, linesize);
 #endif
-		//p1 += linesize;
-		//q = (PIXEL*)((GLbyte*)q + zb->linesize);
+
+
 	}
 #else
-	for (GLint y = 0; y < zb->ysize; y++) {
-		PIXEL* q = zb->pbuf + y * zb->xsize;
-		GLubyte* p1 = buf + y * linesize;
+	for (y = 0; y < zb->ysize; y++) {
+		PIXEL* q;
+		GLubyte* p1;
+		q = zb->pbuf + y * zb->xsize;
+		p1 = buf + y * linesize;
 #if TGL_FEATURE_NO_COPY_COLOR == 1
-		for (GLint i = 0; i < zb->xsize; i++) {
+		for (i = 0; i < zb->xsize; i++) {
 			if ((*(q + i) & TGL_COLOR_MASK) != TGL_NO_COPY_COLOR)
 				*(((PIXEL*)p1) + i) = *(q + i);
 		}
 #else
 		memcpy(p1, q, linesize);
 #endif
-		//p1 += linesize;
-		//q = (PIXEL*)((GLbyte*)q + zb->linesize);
 	}
 #endif
 }
@@ -170,7 +169,7 @@ static void ZB_copyBuffer(ZBuffer* zb, void* buf, GLint linesize) {
 	p1 = (gb >> 16) | ((v & 0xF8000000) >> 8);\
 }
 
-//This function is never called.
+
 static void ZB_copyFrameBufferRGB32(ZBuffer * zb,
 									void *buf,
 									GLint linesize)
@@ -181,7 +180,7 @@ static void ZB_copyFrameBufferRGB32(ZBuffer * zb,
 
 	q = zb->pbuf;
 	p1 = (GLuint *) buf;
-	//puts("\nBEING CALLED\n");
+	
 	for (y = 0; y < zb->ysize; y++) {
 	p = p1;
 	n = zb->xsize >> 2;
@@ -291,149 +290,27 @@ static void ZB_copyFrameBufferRGB24(ZBuffer * zb,
 void ZB_copyFrameBuffer(ZBuffer* zb, void* buf, GLint linesize) {
 
 	ZB_copyBuffer(zb, buf, linesize);
-	// switch (zb->mode) {
-	/*
-	#ifdef TGL_FEATURE_8_BITS
-		case ZB_MODE_INDEX:
-		ZB_ditherFrameBuffer(zb, buf, linesize >> 1);
-		break;
-	#endif
-	*/
-	/*#ifdef TGL_FEATURE_16_BITS
-		case ZB_MODE_5R6G5B:
-		ZB_copyBuffer(zb, buf, linesize);
-		break;
-	#endif*/
-
-	/*#ifdef TGL_FEATURE_32_BITS
-		case ZB_MODE_RGBA:
-		ZB_copyFrameBufferRGB32(zb, buf, linesize >> 1);
-		break;
-	#endif
-	*/
-	//    default:
-	//	assert(0);
-	//    }
 }
 
-#endif /* TGL_FEATURE_RENDER_BITS == 16 */
+#endif 
+/*^ TGL_FEATURE_RENDER_BITS == 16 */
 
-/*
-
-#if TGL_FEATURE_RENDER_BITS == 24
-
-#define RGB24_TO_RGB16(r, g, b) \
-  ((((r) >> 3) << 11) | (((g) >> 2) << 5) | ((b) >> 3))
-
-// XXX: not optimized
-static void ZB_copyFrameBuffer5R6G5B(ZBuffer * zb,
-									 void *buf, GLint linesize)
-{
-	PIXEL *q;
-	GLushort *p, *p1;
-	GLint y, n;
-
-	q = zb->pbuf;
-	p1 = (GLushort *) buf;
-
-	for (y = 0; y < zb->ysize; y++) {
-	p = p1;
-	n = zb->xsize >> 2;
-	do {
-			p[0] = RGB24_TO_RGB16(q[0], q[1], q[2]);
-			p[1] = RGB24_TO_RGB16(q[3], q[4], q[5]);
-			p[2] = RGB24_TO_RGB16(q[6], q[7], q[8]);
-			p[3] = RGB24_TO_RGB16(q[9], q[10], q[11]);
-		q = (PIXEL *)((GLbyte *)q + 4 * PSZB);
-		p += 4;
-	} while (--n > 0);
-	p1 = (GLushort *)((GLbyte *)p1 + linesize);
-	}
-}
-
-void ZB_copyFrameBuffer(ZBuffer * zb, void *buf,
-			GLint linesize)
-{
-	switch (zb->mode) {
-#ifdef TGL_FEATURE_16_BITS
-	case ZB_MODE_5R6G5B:
-	ZB_copyFrameBuffer5R6G5B(zb, buf, linesize);
-	break;
-#endif
-#ifdef TGL_FEATURE_24_BITS
-	case ZB_MODE_RGB24:
-	ZB_copyBuffer(zb, buf, linesize);
-	break;
-#endif
-	default:
-	assert(0);
-	}
-}
-
-#endif
-*/
-/* TGL_FEATURE_RENDER_BITS == 24
- */
 
 #if TGL_FEATURE_RENDER_BITS == 32
 
 #define RGB32_TO_RGB16(v) (((v >> 8) & 0xf800) | (((v) >> 5) & 0x07e0) | (((v)&0xff) >> 3))
 
-/* XXX: not optimized */
-/*
-static void ZB_copyFrameBuffer5R6G5B(ZBuffer * zb,
-									 void *buf, GLint linesize)
-{
-	PIXEL *q;
-	GLushort *p, *p1;
-	GLint y, n;
 
-	q = zb->pbuf;
-	p1 = (GLushort *) buf;
-
-	for (y = 0; y < zb->ysize; y++) {
-	p = p1;
-	n = zb->xsize >> 2;
-	do {
-			p[0] = RGB32_TO_RGB16(q[0]);
-			p[1] = RGB32_TO_RGB16(q[1]);
-			p[2] = RGB32_TO_RGB16(q[2]);
-			p[3] = RGB32_TO_RGB16(q[3]);
-		q += 4;
-		p += 4;
-	} while (--n > 0);
-	p1 = (GLushort *)((GLbyte *)p1 + linesize);
-	}
-}
-*/
 void ZB_copyFrameBuffer(ZBuffer* zb, void* buf, GLint linesize) {
 	ZB_copyBuffer(zb, buf, linesize);
-	// switch (zb->mode) {
-	/*
-#ifdef TGL_FEATURE_16_BITS
-case ZB_MODE_5R6G5B:
-ZB_copyFrameBuffer5R6G5B(zb, buf, linesize);
-break;
-#endif
-	*/
-	/*
-	#ifdef TGL_FEATURE_32_BITS
-		case ZB_MODE_RGBA:
-		ZB_copyBuffer(zb, buf, linesize);
-		break;
-	#endif
-		default:
-		assert(0);
-		}
-	*/
 }
 
-#endif /* TGL_FEATURE_RENDER_BITS == 32 */
+#endif 
+/* ^TGL_FEATURE_RENDER_BITS == 32 */
 
 /*
  * adr must be aligned on an 'int'
  */
-// Used in 16 bit mode
 static void memset_s(void* adr, GLint val, GLint count) {
 	GLint i, n, v;
 	GLuint* p;
@@ -457,11 +334,10 @@ static void memset_s(void* adr, GLint val, GLint count) {
 		*q++ = val;
 }
 
-// Used in 32 bit mode
+/* Used in 32 bit mode*/
 static void memset_l(void* adr, GLint val, GLint count) {
 	GLint i, n, v;
 	GLuint* p;
-
 	p = adr;
 	v = val;
 	n = count >> 2;
@@ -472,50 +348,15 @@ static void memset_l(void* adr, GLint val, GLint count) {
 		p[3] = v;
 		p += 4;
 	}
-
 	n = count & 3;
 	for (i = 0; i < n; i++)
 		*p++ = val;
 }
 
-/* count must be a multiple of 4 and >= 4 */
-// Gek's note: Should never be used.
-static void memset_RGB24(void* adr, GLint r, GLint v, GLint b, long count) {
-	long i, n;
-	register long v1, v2, v3, *pt = (long*)(adr);
-	GLubyte *p, R = (GLubyte)r, V = (GLubyte)v, B = (GLubyte)b;
-
-	p = (GLubyte*)adr;
-	*p++ = R;
-	*p++ = V;
-	*p++ = B;
-	*p++ = R;
-	*p++ = V;
-	*p++ = B;
-	*p++ = R;
-	*p++ = V;
-	*p++ = B;
-	*p++ = R;
-	*p++ = V;
-	*p++ = B;
-	v1 = *pt++;
-	v2 = *pt++;
-	v3 = *pt++;
-	n = count >> 2;
-	for (i = 1; i < n; i++) {
-		*pt++ = v1;
-		*pt++ = v2;
-		*pt++ = v3;
-	}
-}
-
 void ZB_clear(ZBuffer* zb, GLint clear_z, GLint z, GLint clear_color, GLint r, GLint g, GLint b) {
-	//#if TGL_FEATURE_RENDER_BITS != 24
 	GLuint color;
-	//#endif
 	GLint y;
 	PIXEL* pp;
-
 	if (clear_z) {
 		memset_s(zb->zbuf, z, zb->xsize * zb->ysize);
 	}

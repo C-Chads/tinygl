@@ -18,4 +18,4 @@ $(LIB): $(OBJS)
 clean:
 	rm -f *~ *.o *.a
 .c.o:
-	$(CC) $(CFLAGS) -Wno-uninitialized -c $*.c
+	$(CC) $(CFLAGS_LIB) -c $*.c

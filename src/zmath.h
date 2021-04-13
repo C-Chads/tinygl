@@ -2,9 +2,9 @@
 #define __ZMATH__
 #include "../include/GL/gl.h"
 #include "../include/zfeatures.h"
-#include <stdlib.h>
-#include <string.h> //For memcpy
 #include <math.h>
+#include <stdlib.h>
+#include <string.h> 
 /* Matrix & Vertex */
 
 typedef struct {
@@ -46,8 +46,6 @@ void gl_M4_Mul(M4* c, M4* a, M4* b);
 void gl_M4_MulLeft(M4* c, M4* a);
 void gl_M4_Transpose(M4* a, M4* b);
 void gl_M4_Rotate(M4* c, GLfloat t, GLint u);
-//int gl_V3_Norm(V3* a);
-//int gl_V3_Norm_Fast(V3* a);
 
 
 
@@ -56,46 +54,27 @@ V4 gl_V4_New(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
 
 GLint gl_Matrix_Inv(GLfloat* r, GLfloat* m, GLint n);
 
-/*
-static inline GLfloat fastInvSqrt(float x){
-	GLint i; GLfloat y;
-	memcpy(&i, &x, 4);
-	i = 0x5f3759df - (i>>1);
-	//y = (union{GLint l; GLfloat f; }){i}.f;
-	memcpy(&y, &i, 4);
-	return y * (1.5F - 0.5F * x * y * y);
-}
-*/
+
 #if TGL_FEATURE_FISR == 1
-/*
-inline GLfloat fastInvSqrt(float x){
-	union{GLfloat f; GLint i;} conv;
-	conv.f = x;
-	conv.i = 0x5F1FFFF9 - (conv.i>>1);
-	conv.f *= 0.703952253f * (2.38924456f - x * conv.f * conv.f);
-	return conv.f;
-}*/
-//Defined behavior fastinvsqrt
-static inline GLfloat fastInvSqrt(GLfloat x){
-	GLint i; 
+static GLfloat fastInvSqrt(GLfloat x) {
+	GLint i;
 	GLfloat x2;
 	memcpy(&i, &x, 4);
-	i = 0x5F1FFFF9 - (i>>1);
+	i = 0x5F1FFFF9 - (i >> 1);
 	memcpy(&x2, &i, 4);
 	x2 *= 0.703952253f * (2.38924456f - x * x2 * x2);
 	return x2;
 }
 #endif
 
-
-static inline int gl_V3_Norm_Fast(V3* a) {
+static int gl_V3_Norm_Fast(V3* a) {
 	GLfloat n;
 #if TGL_FEATURE_FISR == 1
-	n = fastInvSqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z); //FISR
-	if(n>1E+3)
+	n = fastInvSqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z); 
+	if (n > 1E+3)
 		return 1;
 #else
-	n = sqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z); //NONFISR
+	n = sqrt(a->X * a->X + a->Y * a->Y + a->Z * a->Z); 
 	if (n == 0)
 		return 1;
 	n = 1.0 / n;
@@ -106,4 +85,4 @@ static inline int gl_V3_Norm_Fast(V3* a) {
 	return 0;
 }
 #endif
-// __ZMATH__
+

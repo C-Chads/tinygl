@@ -38,13 +38,13 @@ ADD_OP(PushName, 1, "%d")
 ADD_OP(PopName, 0, "")
 ADD_OP(LoadName, 1, "%d")
 
-ADD_OP(TexImage2D, 9, 	  "%d %d %d  %d %d %d  %d %d %d")
-ADD_OP(TexImage1D, 8, 	  "%d %d  %d %d %d  %d %d %d")
+ADD_OP(TexImage2D, 9, "%d %d %d  %d %d %d  %d %d %d")
+ADD_OP(TexImage1D, 8, "%d %d  %d %d %d  %d %d %d")
 ADD_OP(CopyTexImage2D, 8, "%d %d %d %d  %d %d %d %d")
 ADD_OP(BindTexture, 2, "%C %d")
-//ADD_OP(TexEnv, 7, "%C %C %C %f %f %f %f")
-//ADD_OP(TexParameter, 7, "%C %C %C %f %f %f %f")
-//ADD_OP(PixelStore, 2, "%C %C")
+
+
+
 
 ADD_OP(ShadeModel, 1, "%C")
 ADD_OP(CullFace, 1, "%C")
@@ -52,7 +52,7 @@ ADD_OP(FrontFace, 1, "%C")
 ADD_OP(PolygonMode, 2, "%C %C")
 
 ADD_OP(CallList, 1, "%d")
-//ADD_OP(Hint, 2, "%C %C")
+
 
 /* special opcodes */
 ADD_OP(EndList, 0, "")
@@ -88,6 +88,5 @@ ADD_OP(DrawPixels, 3, "%d %d %p")
 ADD_OP(PlotPixel, 2, "%d %d")
 ADD_OP(TextSize, 1, "%d")
 ADD_OP(SetEnableSpecular, 1, "%d")
-
 
 #undef ADD_OP

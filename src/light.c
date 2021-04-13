@@ -1,8 +1,6 @@
 #include "msghandling.h"
 #include "zgl.h"
 
-
-
 void glopMaterial(GLParam* p) {
 	GLContext* c = gl_get_context();
 	GLint mode = p[1].i;
@@ -28,19 +26,19 @@ void glopMaterial(GLParam* p) {
 	switch (type) {
 	case GL_EMISSION:
 		for (i = 0; i < 4; i++)
-			m->emission.v[i] = clampf(v[i],0,1);
+			m->emission.v[i] = clampf(v[i], 0, 1);
 		break;
 	case GL_AMBIENT:
 		for (i = 0; i < 4; i++)
-			m->ambient.v[i] = clampf(v[i],0,1);
+			m->ambient.v[i] = clampf(v[i], 0, 1);
 		break;
 	case GL_DIFFUSE:
 		for (i = 0; i < 4; i++)
-			m->diffuse.v[i] = clampf(v[i],0,1);
+			m->diffuse.v[i] = clampf(v[i], 0, 1);
 		break;
 	case GL_SPECULAR:
 		for (i = 0; i < 4; i++)
-			m->specular.v[i] = clampf(v[i],0,1);
+			m->specular.v[i] = clampf(v[i], 0, 1);
 		break;
 	case GL_SHININESS:
 		m->shininess = v[0];
@@ -50,18 +48,18 @@ void glopMaterial(GLParam* p) {
 		break;
 	case GL_AMBIENT_AND_DIFFUSE:
 		for (i = 0; i < 4; i++)
-			m->diffuse.v[i] = clampf(v[i],0,1);
+			m->diffuse.v[i] = clampf(v[i], 0, 1);
 
 		for (i = 0; i < 4; i++)
-			m->ambient.v[i] = clampf(v[i],0,1);
+			m->ambient.v[i] = clampf(v[i], 0, 1);
 		break;
-	
+
 #if TGL_FEATURE_ERROR_CHECK == 1
 	default:
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	//default: return;
+		/* default: return;*/
 #endif
 	}
 }
@@ -83,24 +81,23 @@ void glopLight(GLParam* p) {
 	GLLight* l;
 	GLint i;
 
-	//assert(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS);
+	/* assert(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS);*/
 
 #if TGL_FEATURE_ERROR_CHECK == 1
-	if(!(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS))
+	if (!(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS))
 #define ERROR_FLAG GL_INVALID_OPERATION
 #include "error_check.h"
 
 #else
-//	if(!(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS)) return;
+/*	if(!(light >= GL_LIGHT0 && light < GL_LIGHT0 + MAX_LIGHTS)) return;*/
 #endif
 
-	l = &c->lights[light - GL_LIGHT0];
+		l = &c->lights[light - GL_LIGHT0];
 
 	for (i = 0; i < 4; i++)
-		if(type != GL_POSITION && type != GL_SPOT_DIRECTION && type != GL_SPOT_EXPONENT && 
-		type != GL_SPOT_CUTOFF && 
-		type != GL_LINEAR_ATTENUATION && type != GL_CONSTANT_ATTENUATION && type != GL_QUADRATIC_ATTENUATION)
-			v.v[i] = clampf(p[3 + i].f,0,1);
+		if (type != GL_POSITION && type != GL_SPOT_DIRECTION && type != GL_SPOT_EXPONENT && type != GL_SPOT_CUTOFF && type != GL_LINEAR_ATTENUATION &&
+			type != GL_CONSTANT_ATTENUATION && type != GL_QUADRATIC_ATTENUATION)
+			v.v[i] = clampf(p[3 + i].f, 0, 1);
 		else
 			v.v[i] = p[3 + i].f;
 
@@ -124,7 +121,7 @@ void glopLight(GLParam* p) {
 			l->norm_position.X = pos.X;
 			l->norm_position.Y = pos.Y;
 			l->norm_position.Z = pos.Z;
-			//gl_V3_Norm(&l->norm_position);
+			/* gl_V3_Norm(&l->norm_position);*/
 			gl_V3_Norm_Fast(&l->norm_position);
 		}
 	} break;
@@ -145,7 +142,7 @@ void glopLight(GLParam* p) {
 #define ERROR_FLAG GL_INVALID_VALUE
 #include "error_check.h"
 #else
-	//assert(a == 180 || (a >= 0 && a <= 90));
+		/* assert(a == 180 || (a >= 0 && a <= 90));*/
 #endif
 
 		l->spot_cutoff = a;
@@ -170,7 +167,7 @@ void glopLight(GLParam* p) {
 	}
 }
 
-void glopLightModel( GLParam* p) {
+void glopLightModel(GLParam* p) {
 	GLContext* c = gl_get_context();
 	GLint pname = p[1].i;
 	GLint* v = &p[2].i;
@@ -192,27 +189,23 @@ void glopLightModel( GLParam* p) {
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #endif
-//		tgl_warning("glopLightModel: illegal pname: 0x%x\n", pname);
-		// assert(0);
+	/*
+				tgl_warning("glopLightModel: illegal pname: 0x%x\n", pname);
+		 assert(0);
+	*/
 		break;
 	}
 }
 
-
-
 void gl_enable_disable_light(GLint light, GLint v) {
 	GLContext* c = gl_get_context();
 	GLLight* l = &c->lights[light];
-	//l->enabled = v; //If you don't want the linked list.
-	
 	if (v && !l->enabled) {
-		//Push this light onto the front of the linked list.
 		l->enabled = 1;
 		l->next = c->first_light;
 		c->first_light = l;
 		l->prev = NULL;
 	} else if (!v && l->enabled) {
-		//Pop this light out of the linked list.
 		l->enabled = 0;
 		if (l->prev == NULL)
 			c->first_light = l->next;
@@ -223,17 +216,17 @@ void gl_enable_disable_light(GLint light, GLint v) {
 	}
 }
 
-// FEATURES
-void glSetEnableSpecular(GLint s){
+
+void glSetEnableSpecular(GLint s) {
 	GLParam p[2];
 #include "error_check_no_context.h"
 	p[1].i = s;
 	p[0].op = OP_SetEnableSpecular;
 	gl_add_op(p);
 }
-void glopSetEnableSpecular(GLParam* p){
-	//tgl_warning("\nBeing Called!\n");
-	gl_get_context()->zEnableSpecular = p[1].i; 
+void glopSetEnableSpecular(GLParam* p) {
+	
+	gl_get_context()->zEnableSpecular = p[1].i;
 }
 /* non optimized lightening model */
 void gl_shade_vertex(GLVertex* v) {
@@ -242,7 +235,7 @@ void gl_shade_vertex(GLVertex* v) {
 	GLMaterial* m;
 	GLLight* l;
 	V3 n, s, d;
-	GLfloat dist, tmp, att, dot, dot_spot, dot_spec;
+	GLfloat dist=0, tmp, att, dot, dot_spot, dot_spec;
 	GLint twoside = c->light_model_two_side;
 
 	m = &c->materials[0];
@@ -254,12 +247,12 @@ void gl_shade_vertex(GLVertex* v) {
 	R = m->emission.v[0] + m->ambient.v[0] * c->ambient_light_model.v[0];
 	G = m->emission.v[1] + m->ambient.v[1] * c->ambient_light_model.v[1];
 	B = m->emission.v[2] + m->ambient.v[2] * c->ambient_light_model.v[2];
-	A =  m->diffuse.v[3];
-//LINKED LIST LOOP
+	A = m->diffuse.v[3];
+	
 	for (l = c->first_light; l != NULL; l = l->next) {
-//VECTOR LINEAR SEARCH LOOP
-//for(GLuint i = 0; i < MAX_LIGHTS; i++)
-//	if(c->lights[i].enabled){ l = c->lights+i;
+	
+	
+	
 		GLfloat lR, lB, lG;
 
 		/* ambient */
@@ -269,7 +262,7 @@ void gl_shade_vertex(GLVertex* v) {
 
 		if (l->position.v[3] == 0) {
 			/* light at infinity */
-			// Fixed by Gek, it used to use the unnormalized position?
+			/* Fixed by Gek, it used to use the unnormalized position?*/
 			d.X = l->norm_position.v[0];
 			d.Y = l->norm_position.v[1];
 			d.Z = l->norm_position.v[2];
@@ -280,7 +273,7 @@ void gl_shade_vertex(GLVertex* v) {
 			d.Y = l->position.v[1] - v->ec.v[1];
 			d.Z = l->position.v[2] - v->ec.v[2];
 #if TGL_FEATURE_FISR == 1
-			tmp = fastInvSqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z); //FISR IMPL, MATCHED!
+			tmp = fastInvSqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z); /* FISR IMPL, MATCHED!*/
 			{
 				d.X *= tmp;
 				d.Y *= tmp;
@@ -288,7 +281,6 @@ void gl_shade_vertex(GLVertex* v) {
 			}
 #else
 			dist = sqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z);
-			//dist = 1.0f/tmp;
 			if (dist > 1E-3) {
 				tmp = 1 / dist;
 				d.X *= tmp;
@@ -321,8 +313,8 @@ void gl_shade_vertex(GLVertex* v) {
 						att = att * pow(dot_spot, l->spot_exponent);
 					}
 				}
-				// GEK SAYS TO REMOVE THIS
-				// printf("\nThis should not be being called.");
+				
+				
 			}
 
 			/* specular light */
@@ -332,18 +324,18 @@ void gl_shade_vertex(GLVertex* v) {
 					vcoord.X = v->ec.X;
 					vcoord.Y = v->ec.Y;
 					vcoord.Z = v->ec.Z;
-					//gl_V3_Norm(&vcoord);
+					
 					gl_V3_Norm_Fast(&vcoord);
 					s.X = d.X - vcoord.X;
 					s.Y = d.Y - vcoord.X;
 					s.Z = d.Z - vcoord.X;
 				} else {
-					//BLINN-PHONG SHADING: We're doing lighting calculations in Eye coordinates, this is ViewDir + LightDir
-					s.X = d.X; //+0.0
-					s.Y = d.Y; //+0.0
-					s.Z = d.Z - 1.0; 
+					
+					s.X = d.X; 
+					s.Y = d.Y; 
+					s.Z = d.Z - 1.0;
 				}
-				//dot_spec is dot(surfaceNormal, H)
+				
 				dot_spec = n.X * s.X + n.Y * s.Y + n.Z * s.Z;
 				if (twoside && dot_spec < 0)
 					dot_spec = -dot_spec;
@@ -354,47 +346,46 @@ void gl_shade_vertex(GLVertex* v) {
 #endif
 					dot_spec = clampf(dot_spec, 0, 1);
 #if TGL_FEATURE_FISR == 1
-					tmp = fastInvSqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z); //FISR IMPL, MATCHED!
-					//if (tmp < 1E+3) 
-					{
-						dot_spec = dot_spec * tmp;
-					}
-					// else dot_spec = 0;
+					tmp = fastInvSqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z); 
+					
+					{ dot_spec = dot_spec * tmp; }
+					
 #else
-				//reference implementation.
-					tmp= sqrt(s.X*s.X+s.Y*s.Y+s.Z*s.Z);
-			        if (tmp > 1E-3) {
-			          dot_spec=dot_spec / tmp;
-			        } else dot_spec = 0;
+					
+					tmp = sqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z);
+					if (tmp > 1E-3) {
+						dot_spec = dot_spec / tmp;
+					} else
+						dot_spec = 0;
 #endif
 					/* dot_spec= pow(dot_spec,m->shininess);*/
 #if TGL_FEATURE_SPECULAR_BUFFERS == 1
 					specbuf = specbuf_get_buffer(c, m->shininess_i, m->shininess);
-//Check for GL_OUT_OF_MEMORY
+/* Check for GL_OUT_OF_MEMORY*/
 #if TGL_FEATURE_ERROR_CHECK == 1
 #include "error_check.h"
 #endif
 #else
-					dot_spec= pow(dot_spec,m->shininess);
+					dot_spec = pow(dot_spec, m->shininess);
 #endif
 
 #if TGL_FEATURE_SPECULAR_BUFFERS == 1
 					idx = (GLint)(dot_spec * SPECULAR_BUFFER_SIZE);
 					if (idx > SPECULAR_BUFFER_SIZE)
-						idx = SPECULAR_BUFFER_SIZE; //NOTE by GEK: this is poorly written, it's actually 1 larger.
+						idx = SPECULAR_BUFFER_SIZE; /* NOTE by GEK: this is poorly written, it's actually 1 larger.*/
 					dot_spec = specbuf->buf[idx];
 #endif
 					lR += dot_spec * l->specular.v[0] * m->specular.v[0];
 					lG += dot_spec * l->specular.v[1] * m->specular.v[1];
 					lB += dot_spec * l->specular.v[2] * m->specular.v[2];
-				} // EOF if dot_spec>0
-			}	 // EOF zEnableSpecular
-		}		  // EOF if dot > 0
+				} 
+			}	 
+		}		  
 
 		R += att * lR;
 		G += att * lG;
 		B += att * lB;
-	} // End of light loop.
+	} /* End of light loop.*/
 
 	v->color.v[0] = clampf(R, 0, 1);
 	v->color.v[1] = clampf(G, 0, 1);

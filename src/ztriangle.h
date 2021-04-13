@@ -23,8 +23,8 @@ Things to keep in mind:
 	GLfloat fdx1, fdx2, fdy1, fdy2;
 	GLushort* pz1;
 	PIXEL* pp1;
-	
 
+	GLint part;
 	GLint dx1, dy1, dx2, dy2;
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 	GLint the_y;
@@ -32,7 +32,7 @@ Things to keep in mind:
 	GLint error, derror;
 	GLint x1, dxdy_min, dxdy_max;
 	/* warning: x2 is multiplied by 2^16 */
-	GLint x2, dx2dy2;
+	GLint x2=0, dx2dy2=0;
 
 #ifdef INTERP_Z
 	GLint z1, dzdx, dzdy, dzdl_min, dzdl_max;
@@ -54,145 +54,147 @@ Things to keep in mind:
 
 	/* we sort the vertex with increasing y */
 	if (p1->y < p0->y) {
-		ZBufferPoint *t = p0;
+		ZBufferPoint* t = p0;
 		p0 = p1;
 		p1 = t;
 	}
 	if (p2->y < p0->y) {
-		ZBufferPoint *t = p2;
+		ZBufferPoint* t = p2;
 		p2 = p1;
 		p1 = p0;
 		p0 = t;
 	} else if (p2->y < p1->y) {
-		ZBufferPoint *t = p1;
+		ZBufferPoint* t = p1;
 		p1 = p2;
 		p2 = t;
 	}
-	
 
 	/* we compute dXdx and dXdy for all GLinterpolated values */
-	fdx1 = p1->x - p0->x;//fdx1 first usage (VALUE_FDX1_USED)
-	fdy1 = p1->y - p0->y;//fdy1 first usage (VALUE_FDY1_USED)
+	fdx1 = p1->x - p0->x; 
+	fdy1 = p1->y - p0->y; 
 
 	fdx2 = p2->x - p0->x;
 	fdy2 = p2->y - p0->y;
-	
-	GLfloat fz = fdx1 * fdy2 - fdx2 * fdy1;//fz first usage
+
+	GLfloat fz = fdx1 * fdy2 - fdx2 * fdy1; 
 	/*
 	if (fz == 0)
 		return;
-	fz = 1.0 / fz; //value of fz is used (VALUE_FZ_USED)
+	fz = 1.0 / fz; 
 	*/
-	if(fz != 0.0) fz = 1.0/fz;
-	//for these (VALUE_FZ_USED)
+	if (fz != 0.0)
+		fz = 1.0 / fz;
+	
 	fdx1 *= fz;
 	fdy1 *= fz;
 	fdx2 *= fz;
 	fdy2 *= fz;
-	//and then
-{
-GLfloat d1, d2;
+	
+	{
+		GLfloat d1, d2;
 #ifdef INTERP_Z
-{
-	d1 = p1->z - p0->z; //d1 first usage
-	d2 = p2->z - p0->z;
-	dzdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	dzdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
+		{
+			d1 = p1->z - p0->z; 
+			d2 = p2->z - p0->z;
+			dzdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+			dzdy = (GLint)(fdx1 * d2 - fdx2 * d1);
+		}
 #endif
 
 #ifdef INTERP_RGB
-{
-	d1 = p1->r - p0->r;
-	d2 = p2->r - p0->r;
-	drdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	drdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
-{
-	d1 = p1->g - p0->g;
-	d2 = p2->g - p0->g;
-	dgdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	dgdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
-{
-	d1 = p1->b - p0->b;
-	d2 = p2->b - p0->b;
-	dbdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	dbdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
+		{
+			d1 = p1->r - p0->r;
+			d2 = p2->r - p0->r;
+			drdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+			drdy = (GLint)(fdx1 * d2 - fdx2 * d1);
+		}
+		{
+			d1 = p1->g - p0->g;
+			d2 = p2->g - p0->g;
+			dgdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+			dgdy = (GLint)(fdx1 * d2 - fdx2 * d1);
+		}
+		{
+			d1 = p1->b - p0->b;
+			d2 = p2->b - p0->b;
+			dbdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+			dbdy = (GLint)(fdx1 * d2 - fdx2 * d1);
+		}
 #endif
 
 #ifdef INTERP_ST
-{
-	d1 = p1->s - p0->s;
-	d2 = p2->s - p0->s;
-	dsdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	dsdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
-{
-	d1 = p1->t - p0->t;
-	d2 = p2->t - p0->t;
-	dtdx = (GLint)(fdy2 * d1 - fdy1 * d2);
-	dtdy = (GLint)(fdx1 * d2 - fdx2 * d1);
-}
+		{
+			d1 = p1->s - p0->s;
+			d2 = p2->s - p0->s;
+			dsdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+			dsdy = (GLint)(fdx1 * d2 - fdx2 * d1);
+		}
+		{
+			d1 = p1->t - p0->t;
+			d2 = p2->t - p0->t;
+			dtdx = (GLint)(fdy2 * d1 - fdy1 * d2);
+			dtdy = (GLint)(fdx1 * d2 - fdx2 * d1);
+		}
 #endif
 
 #ifdef INTERP_STZ
-	{
-		GLfloat zedzed;
-		zedzed = (GLfloat)p0->z;
-		p0->sz = (GLfloat)p0->s * zedzed;
-		p0->tz = (GLfloat)p0->t * zedzed;
-		zedzed = (GLfloat)p1->z;
-		p1->sz = (GLfloat)p1->s * zedzed;
-		p1->tz = (GLfloat)p1->t * zedzed;
-		zedzed = (GLfloat)p2->z;
-		p2->sz = (GLfloat)p2->s * zedzed;
-		p2->tz = (GLfloat)p2->t * zedzed;
-	}
-	{
-		d1 = p1->sz - p0->sz;
-		d2 = p2->sz - p0->sz;
-		dszdx = (fdy2 * d1 - fdy1 * d2);
-		dszdy = (fdx1 * d2 - fdx2 * d1);
-	}
-	{
-		d1 = p1->tz - p0->tz;
-		d2 = p2->tz - p0->tz;
-		dtzdx = (fdy2 * d1 - fdy1 * d2);
-		dtzdy = (fdx1 * d2 - fdx2 * d1);
-	}
+		{
+			GLfloat zedzed;
+			zedzed = (GLfloat)p0->z;
+			p0->sz = (GLfloat)p0->s * zedzed;
+			p0->tz = (GLfloat)p0->t * zedzed;
+			zedzed = (GLfloat)p1->z;
+			p1->sz = (GLfloat)p1->s * zedzed;
+			p1->tz = (GLfloat)p1->t * zedzed;
+			zedzed = (GLfloat)p2->z;
+			p2->sz = (GLfloat)p2->s * zedzed;
+			p2->tz = (GLfloat)p2->t * zedzed;
+		}
+		{
+			d1 = p1->sz - p0->sz;
+			d2 = p2->sz - p0->sz;
+			dszdx = (fdy2 * d1 - fdy1 * d2);
+			dszdy = (fdx1 * d2 - fdx2 * d1);
+		}
+		{
+			d1 = p1->tz - p0->tz;
+			d2 = p2->tz - p0->tz;
+			dtzdx = (fdy2 * d1 - fdy1 * d2);
+			dtzdy = (fdx1 * d2 - fdx2 * d1);
+		}
 #endif
-} //EOF d1, d2 lifetimes.
+	} 
 	/* screen coordinates */
 
-	pp1 = (PIXEL*)(zb->pbuf) + zb->xsize * p0->y; //pp1 first usage
+	pp1 = (PIXEL*)(zb->pbuf) + zb->xsize * p0->y; 
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 	the_y = p0->y;
 #endif
 	pz1 = zb->zbuf + p0->y * zb->xsize;
 
 	DRAW_INIT();
-//part used here and down.
-//TODO: #pragma omp parallel for private(a, b, c)
-//Required reading:
-//http://jakascorner.com/blog/2016/06/omp-data-sharing-attributes.html
-//I'd also like to figure out if the main while() loop over raster lines can be OMP parallelized, but I suspect it isn't worth it.
-	ZBufferPoint *pr1, *pr2, *l1, *l2; //BEGINNING OF LIFETIME FOR ZBUFFERPOINT VARS!!!
-	for (GLint part = 0; part < 2; part++) {
+	/*
+	 part used here and down.
+	 TODO: #pragma omp parallel for private(a, b, c)
+	 Required reading:
+	 jakascorner.com/blog/2016/06/omp-data-sharing-attributes.html
+	 I'd also like to figure out if the main while() loop over raster lines can be OMP parallelized, but I suspect it isn't worth it.
+	*/
+	ZBufferPoint *pr1, *pr2, *l1, *l2; 
+	for (part = 0; part < 2; part++) {
 		GLint nb_lines;
 		{
-		register GLint update_left, update_right; //update_left decl
+			register GLint update_left, update_right; 
 			if (part == 0) {
-				if (fz > 0) { //Here! (VALUE_FZ_USED)
-					update_left = 1; //update_left first usage.
+				if (fz > 0) {		 
+					update_left = 1; 
 					update_right = 1;
-					l1 = p0; //MARK l1 first usage
-					l2 = p2; //MARK l2 first usage
-					pr1 = p0; //MARK first usage of pr1
-					pr2 = p1; //MARK first usage pf pr2
+					l1 = p0;  
+					l2 = p2;  
+					pr1 = p0; 
+					pr2 = p1; 
 				} else {
-					update_left = 1; //update_left second usage.
+					update_left = 1; 
 					update_right = 1;
 					l1 = p0;
 					l2 = p1;
@@ -200,31 +202,30 @@ GLfloat d1, d2;
 					pr2 = p2;
 				}
 				nb_lines = p1->y - p0->y;
-			} else { //SECOND PART~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			} else {
 				/* second part */
-				if (fz > 0) { //fz last usage (VALUE_FZ_USED)
-					update_left = 0; //update left third usage.
+				if (fz > 0) {
+					update_left = 0;
 					update_right = 1;
 					pr1 = p1;
 					pr2 = p2;
 				} else {
-					update_left = 1; //4th
+					update_left = 1;
 					update_right = 0;
 					l1 = p1;
 					l2 = p2;
 				}
 				nb_lines = p2->y - p1->y + 1;
-			} //EOF SECOND PART
-
+			}
 			/* compute the values for the left edge */
-			//pr1 and pr2 are not used inside this area.
-			if (update_left) { //5th usage
+			/*pr1 and pr2 are not used inside this area.*/
+			if (update_left) { 
 				{
 					register GLint tmp;
 					dy1 = l2->y - l1->y;
 					dx1 = l2->x - l1->x;
 					if (dy1 > 0)
-						tmp = (dx1 << 16) / dy1; 
+						tmp = (dx1 << 16) / dy1;
 					else
 						tmp = 0;
 					x1 = l1->x;
@@ -265,20 +266,19 @@ GLfloat d1, d2;
 				dtzdl_min = (dtzdy + dtzdx * dxdy_min);
 				dtzdl_max = dtzdl_min + dtzdx;
 #endif
-			} //EOF update left
-			//Is l1 used after update_left?
+			}
 			/* compute values for the right edge */
 
-			if (update_right) { //Update right tested
+			if (update_right) { /*Update right tested*/
 				dx2 = (pr2->x - pr1->x);
-				dy2 = (pr2->y - pr1->y); //LAST USAGE OF PR2
+				dy2 = (pr2->y - pr1->y); /*LAST USAGE OF PR2*/
 				if (dy2 > 0)
 					dx2dy2 = (dx2 << 16) / dy2;
 				else
 					dx2dy2 = 0;
-				x2 = pr1->x << 16; //LAST USAGE OF PR1
-			} //EOF update right
-		} //End of lifetime for ZBufferpoints
+				x2 = pr1->x << 16; /*LAST USAGE OF PR1*/
+			}					   /*EOF update right*/
+		}						   /*End of lifetime for ZBufferpoints*/
 		/* we draw all the scan line of the part */
 
 		while (nb_lines > 0) {
@@ -299,11 +299,11 @@ GLfloat d1, d2;
 				register GLuint s, t;
 #endif
 #ifdef INTERP_STZ
-				//GLfloat sz, tz; //These variables go unused in this draw line function.
+				
 #endif
 
 				n = (x2 >> 16) - x1;
-				//pp = (PIXEL*)((GLbyte*)pp1 + x1 * PS_ZB);
+				
 				pp = (PIXEL*)pp1 + x1;
 #ifdef INTERP_Z
 				pz = pz1 + x1;
@@ -319,8 +319,8 @@ GLfloat d1, d2;
 				t = t1;
 #endif
 #ifdef INTERP_STZ
-//				sz = sz1; //What is SZ used for?
-//				tz = tz1; //What is TZ used for?
+
+
 #endif
 				while (n >= 3) {
 					PUT_PIXEL(0); /*the_x++;*/
@@ -330,14 +330,14 @@ GLfloat d1, d2;
 #ifdef INTERP_Z
 					pz += 4;
 #endif
-//					pp = (PIXEL*)((GLbyte*)pp + 4 * PS_ZB);
+					
 					pp += 4;
 					n -= 4;
 				}
 				while (n >= 0) {
 					PUT_PIXEL(0); /*the_x++;*/
 #ifdef INTERP_Z
-					//pz += 1;
+					
 					pz++;
 #endif
 					/*pp = (PIXEL*)((GLbyte*)pp + PS_ZB);*/
@@ -346,7 +346,7 @@ GLfloat d1, d2;
 				}
 			}
 #else
-			DRAW_LINE(); 
+			DRAW_LINE();
 #endif
 
 			/* left edge */
@@ -394,7 +394,7 @@ GLfloat d1, d2;
 			x2 += dx2dy2;
 
 			/* screen coordinates */
-			//pp1 = (PIXEL*)((GLbyte*)pp1 + zb->linesize);
+			
 			pp1 += zb->xsize;
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 			the_y++;

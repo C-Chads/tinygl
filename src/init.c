@@ -1,18 +1,18 @@
-#include "zgl.h"
 #include "msghandling.h"
+#include "zgl.h"
 GLContext gl_ctx;
 static const GLContext empty_gl_ctx = {0};
 
 static void initSharedState(GLContext* c) {
 	GLSharedState* s = &c->shared_state;
 	s->lists = gl_zalloc(sizeof(GLList*) * MAX_DISPLAY_LISTS);
-	if(!s->lists)
+	if (!s->lists)
 		gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	s->texture_hash_table = gl_zalloc(sizeof(GLTexture*) * TEXTURE_HASH_TABLE_SIZE);
-	if(!s->texture_hash_table)
+	if (!s->texture_hash_table)
 		gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	s->buffers = gl_zalloc(sizeof(GLBuffer*) * MAX_BUFFERS);
-	if(!s->buffers)
+	if (!s->buffers)
 		gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 	alloc_texture(0);
 #include "error_check.h"
@@ -55,10 +55,9 @@ static void endSharedState(GLContext* c) {
 		}
 	}
 	gl_free(s->texture_hash_table);
-	for(i = 0; i < MAX_BUFFERS; i++){
-		if(s->buffers[i])
-		{
-			if(s->buffers[i]->data){
+	for (i = 0; i < MAX_BUFFERS; i++) {
+		if (s->buffers[i]) {
+			if (s->buffers[i]->data) {
 				gl_free(s->buffers[i]->data);
 			}
 			gl_free(s->buffers[i]);
@@ -69,61 +68,90 @@ static void endSharedState(GLContext* c) {
 
 #if TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST == 1
 
-#define TGL_RUNT_UNION_CAST(i) ((union{GLuint l; GLint ii; GLfloat f;}){i})
-#define TGL_FLOAT_ERR(a,b) ((a-b)/b)
-static int TinyGLRuntimeCompatibilityTest(){
+#define TGL_RUNT_UNION_CAST(i)                                                                                                                                 \
+	((union {                                                                                                                                                  \
+		GLuint l;                                                                                                                                              \
+		GLint ii;                                                                                                                                              \
+		GLfloat f;                                                                                                                                             \
+	}){i})
+#define TGL_FLOAT_ERR(a, b) ((a - b) / b)
+static int TinyGLRuntimeCompatibilityTest() {
 	GLfloat t = -0, tf2;
-	GLint t2 = 1<<31;
-	if(TGL_RUNT_UNION_CAST(t2).f != t)
+	GLint t2 = 1 << 31;
+	if (TGL_RUNT_UNION_CAST(t2).f != t)
 		return 1;
 	t2 = 3212836864;
 	t = -1;
-	if(TGL_RUNT_UNION_CAST(t2).f != t)
+	if (TGL_RUNT_UNION_CAST(t2).f != t)
 		return 1;
-	if(((GLint)255<<8) != 65280) return 1;
-	if((GLint)65280>>8 != 255) return 1;
-	if( ((GLint)-1)>>14  != -1 ) return 1;
-	if(((GLuint)255<<8) != 65280) return 1;
-	if((GLuint)65280>>8 != 255) return 1;
-	if(((GLushort)255<<8) != 65280) return 1;
-	if((GLushort)65280>>8 != 255) return 1;
-	if(((GLshort)255<<8) != 65280) return 1;
-	if((GLshort)65280>>8 != -1) return 1;
+	if (((GLint)255 << 8) != 65280)
+		return 1;
+	if ((GLint)65280 >> 8 != 255)
+		return 1;
+	if (((GLint)-1) >> 14 != -1)
+		return 1;
+	if (((GLuint)255 << 8) != 65280)
+		return 1;
+	if ((GLuint)65280 >> 8 != 255)
+		return 1;
+	if (((GLushort)255 << 8) != 65280)
+		return 1;
+	if ((GLushort)65280 >> 8 != 255)
+		return 1;
+	if (((GLshort)255 << 8) != 65280)
+		return 1;
+	if ((GLshort)65280 >> 8 != -1)
+		return 1;
 #if TGL_FEATURE_FISR == 1
 	t = fastInvSqrt(37);
-	tf2 = 1.0/sqrt(37);
-	if(TGL_FLOAT_ERR(t,tf2) > 0.05) return 1;
+	tf2 = 1.0 / sqrt(37);
+	if (TGL_FLOAT_ERR(t, tf2) > 0.05)
+		return 1;
 	t = fastInvSqrt(59);
-	tf2 = 1.0/sqrt(59);
-	if(TGL_FLOAT_ERR(t,tf2) > 0.05) return 1;
+	tf2 = 1.0 / sqrt(59);
+	if (TGL_FLOAT_ERR(t, tf2) > 0.05)
+		return 1;
 	t = fastInvSqrt(1023);
-	tf2 = 1.0/sqrt(1023);
-	if(TGL_FLOAT_ERR(t,tf2) > 0.05) return 1;
+	tf2 = 1.0 / sqrt(1023);
+	if (TGL_FLOAT_ERR(t, tf2) > 0.05)
+		return 1;
 
 	t = fastInvSqrt(10000);
-	tf2 = 1.0/sqrt(10000);
-	if(TGL_FLOAT_ERR(t,tf2) > 0.05) return 1;
+	tf2 = 1.0 / sqrt(10000);
+	if (TGL_FLOAT_ERR(t, tf2) > 0.05)
+		return 1;
 #endif
-	{GLint i;
-		GLuint buf1[10];GLuint buf2[10];
-		for(i = 0; i < 10; i++) buf1[i] = (1023<<i) + i + i%-1;
-		for(i = 0; i < 10; i++) buf2[i] = (14<<i) + i + i%-4;
-		memcpy(buf1,buf2,10*4);
-		for(i = 0; i < 10; i++) if(buf2[i] != buf1[i]) return 1;
+	{
+		GLint i;
+		GLuint buf1[10];
+		GLuint buf2[10];
+		for (i = 0; i < 10; i++)
+			buf1[i] = (1023 << i) + i + i % -1;
+		for (i = 0; i < 10; i++)
+			buf2[i] = (14 << i) + i + i % -4;
+		memcpy(buf1, buf2, 10 * 4);
+		for (i = 0; i < 10; i++)
+			if (buf2[i] != buf1[i])
+				return 1;
 	}
-	if(sizeof(void*) < 4) return 1;
-	//ZALLOC TEST
-	{GLint i, j;
-	for(i = 0; i < 10; i++){
-		GLubyte* data = gl_zalloc(1024); //A kilobyte.
-		if(!data) return 1;
-		for(j = 0; j <1024; j++) if(data[j] != 0) return 1;
-		gl_free(data);
-	}}
+	if (sizeof(void*) < 4)
+		return 1;
+	/* ZALLOC TEST*/
+	{
+		GLint i, j;
+		for (i = 0; i < 10; i++) {
+			GLubyte* data = gl_zalloc(1024); 
+			if (!data)
+				return 1;
+			for (j = 0; j < 1024; j++)
+				if (data[j] != 0)
+					return 1;
+			gl_free(data);
+		}
+	}
 	return 0;
 }
 #endif
-
 
 void glInit(void* zbuffer1) {
 	GLContext* c;
@@ -131,12 +159,14 @@ void glInit(void* zbuffer1) {
 	GLint i;
 	ZBuffer* zbuffer = (ZBuffer*)zbuffer1;
 #if TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST == 1
-	if(TinyGLRuntimeCompatibilityTest()) gl_fatal_error("TINYGL_FAILED_RUNTIME_COMPAT_TEST");
+	if (TinyGLRuntimeCompatibilityTest())
+		gl_fatal_error("TINYGL_FAILED_RUNTIME_COMPAT_TEST");
 #endif
 	gl_ctx = empty_gl_ctx;
 	c = &gl_ctx;
-	if(!c) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
-	
+	if (!c)
+		gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
+
 	c->zb = zbuffer;
 #if TGL_FEATURE_ERROR_CHECK == 1
 	c->error_flag = GL_NO_ERROR;
@@ -151,7 +181,7 @@ void glInit(void* zbuffer1) {
 	v->ymin = 0;
 	v->xsize = zbuffer->xsize;
 	v->ysize = zbuffer->ysize;
-	gl_eval_viewport(c);
+	gl_eval_viewport();
 	/* buffer stuff GL 1.1 */
 	c->drawbuffer = GL_FRONT;
 	c->readbuffer = GL_FRONT;
@@ -160,11 +190,11 @@ void glInit(void* zbuffer1) {
 	/* ztext */
 	c->textsize = 1;
 	/* buffer */
-	c->boundarraybuffer = 0; 
+	c->boundarraybuffer = 0;
 	c->boundvertexbuffer = 0;
-	c->boundcolorbuffer = 0; 
-	c->boundnormalbuffer = 0; 
-	c->boundtexcoordbuffer = 0; 
+	c->boundcolorbuffer = 0;
+	c->boundnormalbuffer = 0;
+	c->boundtexcoordbuffer = 0;
 	/* lists */
 
 	c->exec_flag = 1;
@@ -243,7 +273,7 @@ void glInit(void* zbuffer1) {
 	c->current_cull_face = GL_BACK;
 	c->current_shade_model = GL_SMOOTH;
 	c->cull_face_enabled = 0;
-	
+
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 	c->zb->dostipple = 0;
 	for (GLint i = 0; i < 128; i++)
@@ -278,7 +308,8 @@ void glInit(void* zbuffer1) {
 
 	for (i = 0; i < 3; i++) {
 		c->matrix_stack[i] = gl_zalloc(c->matrix_stack_depth_max[i] * sizeof(M4));
-		if (!(c->matrix_stack[i])) gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
+		if (!(c->matrix_stack[i]))
+			gl_fatal_error("TINYGL_CANNOT_INIT_OOM");
 		c->matrix_stack_ptr[i] = c->matrix_stack[i];
 	}
 
@@ -328,20 +359,21 @@ void glInit(void* zbuffer1) {
 }
 
 void glClose(void) {
-	
-	GLuint i; 
+
+	GLuint i;
 	GLContext* c = gl_get_context();
 	for (i = 0; i < 3; i++) {
 		gl_free(c->matrix_stack[i]);
 	}
 	i = 0;
 #if TGL_FEATURE_SPECULAR_BUFFERS == 1
-	{GLSpecBuf*b,*n = NULL;
-	for(b = c->specbuf_first; b != NULL; b = n) {
-		n = b->next;
-		gl_free(b);
-		i++;
-	}
+	{
+		GLSpecBuf *b, *n = NULL;
+		for (b = c->specbuf_first; b != NULL; b = n) {
+			n = b->next;
+			gl_free(b);
+			i++;
+		}
 	}
 #endif
 	endSharedState(c);

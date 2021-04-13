@@ -1,20 +1,20 @@
 #ifndef _tgl_zgl_h_
 #define _tgl_zgl_h_
 #ifndef NDEBUG
-#define NDEBUG 
+#define NDEBUG
 #endif
 #include "../include/GL/gl.h"
-#include "../include/zfeatures.h"
 #include "../include/zbuffer.h"
+#include "../include/zfeatures.h"
 #include "zmath.h"
 #include <math.h>
 #include <stdlib.h>
-//Needed for memcpy
+
 #include <string.h>
 #ifndef M_PI
 #define M_PI 3.1415926535897932384626433832795
 #endif
-//#define DEBUG
+
 
 enum {
 
@@ -24,21 +24,21 @@ enum {
 
 };
 
-//
+
 #if TGL_FEATURE_GL_POLYGON == 1
-//Large enough for your nice juicy GL_POLYGONs
+
 #define POLYGON_MAX_VERTEX 16
-#else 
-//Just large enough for a quad!
+#else
+
 #define POLYGON_MAX_VERTEX 4
 #endif
 /* Max # of specular light pow buffers */
 #define MAX_SPECULAR_BUFFERS 32
-//#define MAX_SPECULAR_BUFFERS 16
+
 /* # of entries in specular buffer */
 #define SPECULAR_BUFFER_SIZE 512
 /* specular buffer granularity */
-//#define SPECULAR_BUFFER_RESOLUTION 1024
+
 
 #define MAX_MODELVIEW_STACK_DEPTH 32
 #define MAX_PROJECTION_STACK_DEPTH 8
@@ -46,7 +46,6 @@ enum {
 #define MAX_NAME_STACK_DEPTH 16
 #define MAX_TEXTURE_LEVELS 1
 #define MAX_LIGHTS 16
-
 
 #define VERTEX_ARRAY 0x0001
 #define COLOR_ARRAY 0x0002
@@ -59,8 +58,6 @@ enum {
 #define TGL_OFFSET_FILL 0x1
 #define TGL_OFFSET_LINE 0x2
 #define TGL_OFFSET_POINT 0x4
-
-
 
 typedef struct GLSpecBuf {
 	GLint shininess_i;
@@ -84,7 +81,7 @@ typedef struct GLLight {
 	GLfloat cos_spot_cutoff;
 
 	/* we use a linked list to know which are the enabled lights */
-	//Old system based on pointers
+	
 	struct GLLight *next, *prev;
 	GLubyte enabled;
 } GLLight;
@@ -105,7 +102,7 @@ typedef struct GLViewport {
 	V3 scale;
 	V3 trans;
 	GLint xmin, ymin, xsize, ysize;
-//	GLint updated;
+	
 } GLViewport;
 
 typedef union {
@@ -127,7 +124,7 @@ typedef struct GLList {
 } GLList;
 
 typedef struct GLVertex {
-	
+
 	V3 normal;
 	V4 coord;
 	V4 tex_coord;
@@ -158,7 +155,7 @@ typedef struct GLTexture {
 
 /* buffers */
 #define MAX_BUFFERS 2048
-typedef struct GLBuffer{
+typedef struct GLBuffer {
 	void* data;
 	GLuint size;
 } GLBuffer;
@@ -183,7 +180,7 @@ typedef struct GLContext {
 	GLViewport viewport;
 	GLMaterial materials[2];
 	GLVertex vertex[POLYGON_MAX_VERTEX];
-	
+
 	M4 matrix_model_view_inv;
 	M4 matrix_model_projection;
 	V4 ambient_light_model;
@@ -217,8 +214,6 @@ typedef struct GLContext {
 	GLfloat* feedback_ptr;
 #endif
 
-	
-	
 	GLint local_light_model;
 	GLint lighting_enabled;
 	GLint light_model_two_side;
@@ -229,13 +224,11 @@ typedef struct GLContext {
 	GLint current_color_material_type;
 
 	/* textures */
-	
+
 	GLint texture_2d_enabled;
 
-
-
 	/* current list */
-	
+
 	GLint current_op_buffer_index;
 	GLint exec_flag, compile_flag, print_flag;
 	GLuint listbase;
@@ -245,12 +238,9 @@ typedef struct GLContext {
 
 	GLint matrix_stack_depth_max[3];
 
-
 	GLint matrix_model_projection_updated;
 	GLint matrix_model_projection_no_w_transform;
 	GLint apply_texture_matrix;
-
-	
 
 	/* current state */
 	GLint polygon_mode_back;
@@ -261,14 +251,13 @@ typedef struct GLContext {
 	GLint current_cull_face;
 	GLint cull_face_enabled;
 	GLint normalize_enabled;
-	
 
 	/* selection */
 #if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLint render_mode;
-	
+
 	GLint select_size;
-	
+
 	GLint select_overflow;
 	GLint select_hits;
 #endif
@@ -276,9 +265,9 @@ typedef struct GLContext {
 	GLenum drawbuffer;
 	GLenum readbuffer;
 	/* feedback */
-	//render_mode as seen above
-#if TGL_FEATURE_ALT_RENDERMODES == 1
 	
+#if TGL_FEATURE_ALT_RENDERMODES == 1
+
 	GLuint feedback_size;
 	GLint feedback_hits;
 	GLubyte feedback_overflow;
@@ -287,8 +276,6 @@ typedef struct GLContext {
 	GLuint name_stack[MAX_NAME_STACK_DEPTH];
 	GLint name_stack_size;
 #endif
-	
-
 
 	/* clear */
 	GLfloat clear_depth;
@@ -299,16 +286,15 @@ typedef struct GLContext {
 	GLint in_begin;
 	GLint begin_type;
 	GLint vertex_n, vertex_cnt;
-	
 
 	/* opengl 1.1 arrays  */
-	
+
 	GLint vertex_array_size;
 	GLint vertex_array_stride;
 	GLint normal_array_stride;
 	GLint color_array_size;
 	GLint color_array_stride;
-	
+
 	GLint texcoord_array_size;
 	GLint texcoord_array_stride;
 	GLint client_states;
@@ -319,7 +305,7 @@ typedef struct GLContext {
 	GLint offset_states;
 
 	/* opengl blending */
-	// All the settings are in the Zbuffer!
+	
 
 	/* specular buffer. could probably be shared between contexts,
 	  but that wouldn't be 100% thread safe */
@@ -327,9 +313,8 @@ typedef struct GLContext {
 	GLSpecBuf* specbuf_first;
 	GLint specbuf_used_counter;
 	GLint specbuf_num_buffers;
-#endif 
-	GLint zEnableSpecular; // Enable specular lighting
-
+#endif
+	GLint zEnableSpecular; 
 
 	/* raster position */
 	GLint rasterpos_zz;
@@ -338,7 +323,7 @@ typedef struct GLContext {
 	/* text */
 	GLTEXTSIZE textsize;
 	/* buffers */
-	GLint boundarraybuffer; 
+	GLint boundarraybuffer;
 	GLint boundvertexbuffer;
 	GLint boundnormalbuffer;
 	GLint boundcolorbuffer;
@@ -350,12 +335,12 @@ typedef struct GLContext {
 } GLContext;
 
 extern GLContext gl_ctx;
-static inline GLContext* gl_get_context(void) { return &gl_ctx; }
-//void gl_add_op(GLParam* p);
+static GLContext* gl_get_context(void) { return &gl_ctx; }
+
 extern void (*op_table_func[])(GLParam*);
 extern GLint op_table_size[];
 extern void gl_compile_op(GLParam* p);
-static inline void gl_add_op(GLParam* p) {
+static void gl_add_op(GLParam* p) {
 	GLContext* c = gl_get_context();
 #if TGL_FEATURE_ERROR_CHECK == 1
 #include "error_check.h"
@@ -369,30 +354,22 @@ static inline void gl_add_op(GLParam* p) {
 #endif
 	}
 	if (c->compile_flag) {
-		gl_compile_op( p);
+		gl_compile_op(p);
 #if TGL_FEATURE_ERROR_CHECK == 1
 #include "error_check.h"
 #endif
 	}
-	//if (c->print_flag) {
-		//		gl_print_op(stderr, p);
-	//}
 }
 
 /* select.c */
-void gl_add_select( GLuint zmin, GLuint zmax);
-void gl_add_feedback( GLfloat token,
-										GLVertex* v1,
-										GLVertex* v2,
-										GLVertex* v3,
-										GLfloat passthrough_token_value
-);
+void gl_add_select(GLuint zmin, GLuint zmax);
+void gl_add_feedback(GLfloat token, GLVertex* v1, GLVertex* v2, GLVertex* v3, GLfloat passthrough_token_value);
 
 /* clip.c */
 
 #define CLIP_EPSILON (1E-5)
-//Many of Clip.c's functions are inlined.
-static inline GLint gl_clipcode(GLfloat x, GLfloat y, GLfloat z, GLfloat w1) {
+
+static GLint gl_clipcode(GLfloat x, GLfloat y, GLfloat z, GLfloat w1) {
 	GLfloat w;
 
 	w = w1 * (1.0 + CLIP_EPSILON);
@@ -406,7 +383,7 @@ static inline GLint gl_clipcode(GLfloat x, GLfloat y, GLfloat z, GLfloat w1) {
 #define CLIP_ZMIN (1 << 4)
 #define CLIP_ZMAX (1 << 5)
 
-static inline GLfloat clampf(GLfloat a, GLfloat min, GLfloat max) {
+static GLfloat clampf(GLfloat a, GLfloat min, GLfloat max) {
 	if (a < min)
 		return min;
 	else if (a > max)
@@ -416,8 +393,7 @@ static inline GLfloat clampf(GLfloat a, GLfloat min, GLfloat max) {
 }
 
 
-//void gl_transform_to_viewport( GLVertex* v);
-//inline void gl_draw_triangle( GLVertex* p0, GLVertex* p1, GLVertex* p2);
+
 
 /* triangle */
 
@@ -432,33 +408,28 @@ static inline GLfloat clampf(GLfloat a, GLfloat min, GLfloat max) {
 
 
 
-//inline void gl_draw_triangle_clip( GLVertex* p0, GLVertex* p1, GLVertex* p2, GLint clip_bit);
+void gl_draw_triangle(GLVertex* p0, GLVertex* p1, GLVertex* p2);
+void gl_draw_line(GLVertex* p0, GLVertex* p1);
+void gl_draw_point(GLVertex* p0);
 
-void gl_draw_triangle( GLVertex* p0, GLVertex* p1, GLVertex* p2);
-void gl_draw_line( GLVertex* p0, GLVertex* p1);
-void gl_draw_point( GLVertex* p0);
-
-
-void gl_draw_triangle_point( GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
-void gl_draw_triangle_line( GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
-void gl_draw_triangle_fill( GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
-void gl_draw_triangle_select( GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
-void gl_draw_triangle_feedback( GLVertex* p0, GLVertex* p1, GLVertex* p2); //MUST BE FUNCTION POINTER
+void gl_draw_triangle_point(GLVertex* p0, GLVertex* p1, GLVertex* p2);	
+void gl_draw_triangle_line(GLVertex* p0, GLVertex* p1, GLVertex* p2);	
+void gl_draw_triangle_fill(GLVertex* p0, GLVertex* p1, GLVertex* p2);	
+void gl_draw_triangle_select(GLVertex* p0, GLVertex* p1, GLVertex* p2); 
+void gl_draw_triangle_feedback(GLVertex* p0, GLVertex* p1, GLVertex* p2);
 /* matrix.c */
 void gl_print_matrix(const GLfloat* m);
 /*
 void glopLoadIdentity(GLParam *p);
 void glopTranslate(GLParam *p);*/
 
-
-
 /* light.c */
-void gl_enable_disable_light( GLint light, GLint v);
+void gl_enable_disable_light(GLint light, GLint v);
 void gl_shade_vertex(GLVertex* v);
 
 void glInitTextures();
 void glEndTextures();
-GLTexture* alloc_texture( GLint h);
+GLTexture* alloc_texture(GLint h);
 
 /* image_util.c */
 void gl_convertRGB_to_5R6G5B(GLushort* pixmap, GLubyte* rgb, GLint xsize, GLint ysize);
@@ -466,12 +437,12 @@ void gl_convertRGB_to_8A8R8G8B(GLuint* pixmap, GLubyte* rgb, GLint xsize, GLint 
 void gl_resizeImage(GLubyte* dest, GLint xsize_dest, GLint ysize_dest, GLubyte* src, GLint xsize_src, GLint ysize_src);
 void gl_resizeImageNoInterpolate(GLubyte* dest, GLint xsize_dest, GLint ysize_dest, GLubyte* src, GLint xsize_src, GLint ysize_src);
 
-//static GLContext* gl_get_context(void);
+
 
 void gl_fatal_error(char* format, ...);
 
 /* specular buffer "api" */
-GLSpecBuf* specbuf_get_buffer( const GLint shininess_i, const GLfloat shininess);
+GLSpecBuf* specbuf_get_buffer(const GLint shininess_i, const GLfloat shininess);
 
 #ifdef __BEOS__
 void dprintf(const char*, ...);
@@ -497,9 +468,7 @@ void dprintf(const char*, ...);
 /* this clip epsilon is needed to avoid some rounding errors after
    several clipping stages */
 
-
-
-static inline void gl_eval_viewport() {
+static void gl_eval_viewport() {
 	GLContext* c = gl_get_context();
 	GLViewport* v;
 	GLfloat zsize = (1 << (ZB_Z_BITS + ZB_POINT_Z_FRAC_BITS));
@@ -514,6 +483,5 @@ static inline void gl_eval_viewport() {
 	v->scale.Y = -(v->ysize - 0.5) / 2.0;
 	v->scale.Z = -((zsize - 0.5) / 2.0);
 }
-
 
 #endif /* _tgl_zgl_h_ */

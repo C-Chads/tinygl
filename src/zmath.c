@@ -9,45 +9,45 @@
 /* ******* Gestion des matrices 4x4 ****** */
 
 void gl_M4_Id(M4* a) {
-/*
-	GLint i, j;
-#pragma omp simd collapse(2)
-	for (i = 0; i < 4; i++)
-		for (j = 0; j < 4; j++)
-			if (i == j)
-				a->m[i][j] = 1.0;
-			else
-				a->m[i][j] = 0.0;
-*/
-const M4 c = (M4){{
-	{1,0,0,0},
-	{0,1,0,0},
-	{0,0,1,0},
-	{0,0,0,1},}
-	};
-*a = c;
+	/*
+		GLint i, j;
+	#pragma omp simd collapse(2)
+		for (i = 0; i < 4; i++)
+			for (j = 0; j < 4; j++)
+				if (i == j)
+					a->m[i][j] = 1.0;
+				else
+					a->m[i][j] = 0.0;
+	*/
+	const M4 c = (M4){{
+		{1, 0, 0, 0},
+		{0, 1, 0, 0},
+		{0, 0, 1, 0},
+		{0, 0, 0, 1},
+	}};
+	*a = c;
 }
 
 GLint gl_M4_IsId(M4* a) {
-	//GLint i, j;
+	
 	const M4 c = (M4){{
-	{1,0,0,0},
-	{0,1,0,0},
-	{0,0,1,0},
-	{0,0,0,1},}
-	};
-	return (memcmp(a->m,c.m, 16 * sizeof(GLfloat)) == 0);
-/*
-	for (i = 0; i < 4; i++)
-		for (j = 0; j < 4; j++) {
-			if (i == j) {
-				if (a->m[i][j] != 1.0)
+		{1, 0, 0, 0},
+		{0, 1, 0, 0},
+		{0, 0, 1, 0},
+		{0, 0, 0, 1},
+	}};
+	return (memcmp(a->m, c.m, 16 * sizeof(GLfloat)) == 0);
+	/*
+		for (i = 0; i < 4; i++)
+			for (j = 0; j < 4; j++) {
+				if (i == j) {
+					if (a->m[i][j] != 1.0)
+						return 0;
+				} else if (a->m[i][j] != 0.0)
 					return 0;
-			} else if (a->m[i][j] != 0.0)
-				return 0;
-		}
-	return 1;
-*/
+			}
+		return 1;
+	*/
 }
 
 void gl_M4_Mul(M4* c, M4* a, M4* b) {
@@ -109,27 +109,27 @@ void gl_M4_MulV4(V4* a, M4* b, V4* c) {
 
 /* transposition of a 4x4 matrix */
 void gl_M4_Transpose(M4* a, M4* b) {
-{
-	a->m[0][0] = b->m[0][0];
-	a->m[0][1] = b->m[1][0];
-	a->m[0][2] = b->m[2][0];
-	a->m[0][3] = b->m[3][0];
+	{
+		a->m[0][0] = b->m[0][0];
+		a->m[0][1] = b->m[1][0];
+		a->m[0][2] = b->m[2][0];
+		a->m[0][3] = b->m[3][0];
 
-	a->m[1][0] = b->m[0][1];
-	a->m[1][1] = b->m[1][1];
-	a->m[1][2] = b->m[2][1];
-	a->m[1][3] = b->m[3][1];
+		a->m[1][0] = b->m[0][1];
+		a->m[1][1] = b->m[1][1];
+		a->m[1][2] = b->m[2][1];
+		a->m[1][3] = b->m[3][1];
 
-	a->m[2][0] = b->m[0][2];
-	a->m[2][1] = b->m[1][2];
-	a->m[2][2] = b->m[2][2];
-	a->m[2][3] = b->m[3][2];
+		a->m[2][0] = b->m[0][2];
+		a->m[2][1] = b->m[1][2];
+		a->m[2][2] = b->m[2][2];
+		a->m[2][3] = b->m[3][2];
 
-	a->m[3][0] = b->m[0][3];
-	a->m[3][1] = b->m[1][3];
-	a->m[3][2] = b->m[2][3];
-	a->m[3][3] = b->m[3][3];
-}
+		a->m[3][0] = b->m[0][3];
+		a->m[3][1] = b->m[1][3];
+		a->m[3][2] = b->m[2][3];
+		a->m[3][3] = b->m[3][3];
+	}
 }
 
 /* inversion of an orthogonal matrix of type Y=M.X+P */
@@ -258,16 +258,13 @@ void gl_M3_Inv(M3* a, M3* m) {
 	a->m[2][0] = (m->m[1][0] * m->m[2][1] - m->m[1][1] * m->m[2][0]) / det;
 	a->m[2][1] = -(m->m[0][0] * m->m[2][1] - m->m[0][1] * m->m[2][0]) / det;
 	a->m[2][2] = (m->m[0][0] * m->m[1][1] - m->m[0][1] * m->m[1][0]) / det;
-
 }
 
 /* vector arithmetic */
 
-//NEW
 
 
 
-// OLD
 /*
 int gl_V3_Norm(V3* a) {
 	GLfloat n;

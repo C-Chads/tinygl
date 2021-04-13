@@ -33,15 +33,15 @@ GLSpecBuf* specbuf_get_buffer(GLContext* c, const GLint shininess_i, const GLflo
 		/* create new buffer */
 		GLSpecBuf* buf = gl_malloc(sizeof(GLSpecBuf));
 #if TGL_FEATURE_ERROR_CHECK == 1
-		if(!buf)
+		if (!buf)
 #define ERROR_FLAG GL_OUT_OF_MEMORY
 #define RETVAL NULL
 #include "error_check.h"
 #else
-		//if (!buf) gl_fatal_error("GL_OUT_OF_MEMORY");
-		//It will crash a few lines down, just LET IT
+		
+		
 #endif
-		c->specbuf_num_buffers++;
+			c->specbuf_num_buffers++;
 		buf->next = c->specbuf_first;
 		c->specbuf_first = buf;
 		buf->last_used = c->specbuf_used_counter++;
@@ -56,6 +56,5 @@ GLSpecBuf* specbuf_get_buffer(GLContext* c, const GLint shininess_i, const GLflo
 	calc_buf(oldest, shininess);
 	return oldest;
 }
-
 
 #endif

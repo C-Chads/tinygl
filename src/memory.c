@@ -7,8 +7,7 @@
 
 /* modify these functions so that they suit your needs */
 
-
-#include<string.h>
+#include <string.h>
 void gl_free(void* p) { free(p); }
 
 void* gl_malloc(GLint size) { return malloc(size); }

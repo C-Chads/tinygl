@@ -1,5 +1,4 @@
 #include "zgl.h"
-//#include <stdio.h>
 /* glVertex */
 
 void glVertex4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
@@ -26,8 +25,8 @@ void glNormal3f(GLfloat x, GLfloat y, GLfloat z) {
 	GLParam p[4];
 #include "error_check_no_context.h"
 	p[0].op = OP_Normal;
-//NODO: Normalize vector here if it's enabled, so that the display list contains only normalized normals.
-//Redacted because: It would fuck up the matrix math. Dang it!
+	
+	
 	p[1].f = x;
 	p[2].f = y;
 	p[3].f = z;
@@ -35,13 +34,12 @@ void glNormal3f(GLfloat x, GLfloat y, GLfloat z) {
 	gl_add_op(p);
 }
 
-
-void glRectf(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2){
+void glRectf(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2) {
 	glBegin(GL_QUADS);
-	glVertex2f( x1, y1 );
-	glVertex2f( x2, y1 );
-	glVertex2f( x2, y2 );
-	glVertex2f( x1, y2 );
+	glVertex2f(x1, y1);
+	glVertex2f(x2, y1);
+	glVertex2f(x2, y2);
+	glVertex2f(x1, y2);
 	glEnd();
 }
 
@@ -114,11 +112,11 @@ void glEdgeFlag(GLint flag) {
 #define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
-if(flag != GL_TRUE && flag != GL_FALSE)
+	if (flag != GL_TRUE && flag != GL_FALSE)
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #endif
-	p[0].op = OP_EdgeFlag;
+		p[0].op = OP_EdgeFlag;
 	p[1].i = flag;
 
 	gl_add_op(p);
@@ -131,14 +129,14 @@ void glShadeModel(GLint mode) {
 #define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
-	if(mode != GL_FLAT && mode != GL_SMOOTH)
+	if (mode != GL_FLAT && mode != GL_SMOOTH)
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	if(mode != GL_FLAT && mode != GL_SMOOTH) return;
-//Assume that they know what they're doing.
+	if (mode != GL_FLAT && mode != GL_SMOOTH)
+		return;
 #endif
-	p[0].op = OP_ShadeModel;
+		p[0].op = OP_ShadeModel;
 	p[1].i = mode;
 
 	gl_add_op(p);
@@ -149,14 +147,14 @@ void glCullFace(GLint mode) {
 #define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
-	if(!(mode == GL_BACK || mode == GL_FRONT || mode == GL_FRONT_AND_BACK))
+	if (!(mode == GL_BACK || mode == GL_FRONT || mode == GL_FRONT_AND_BACK))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	//assert(mode == GL_BACK || mode == GL_FRONT || mode == GL_FRONT_AND_BACK);
-	//Assume it's alrgiht.
+	/* assert(mode == GL_BACK || mode == GL_FRONT || mode == GL_FRONT_AND_BACK);*/
+	/* Assume it's alrgiht.*/
 #endif
-	p[0].op = OP_CullFace;
+		p[0].op = OP_CullFace;
 	p[1].i = mode;
 
 	gl_add_op(p);
@@ -167,13 +165,13 @@ void glFrontFace(GLint mode) {
 #define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
-	if(!(mode == GL_CCW || mode == GL_CW))
+	if (!(mode == GL_CCW || mode == GL_CW))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	//if(!(mode == GL_CCW || mode == GL_CW)) return;
+	/* if(!(mode == GL_CCW || mode == GL_CW)) return;*/
 #endif
-	mode = (mode != GL_CCW);
+		mode = (mode != GL_CCW);
 
 	p[0].op = OP_FrontFace;
 	p[1].i = mode;
@@ -186,28 +184,26 @@ void glPolygonMode(GLint face, GLint mode) {
 #define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
-if(!(  (face == GL_BACK || face == GL_FRONT || face == GL_FRONT_AND_BACK)&&
-		(mode == GL_POINT || mode == GL_LINE || mode == GL_FILL) )
-  )
+	if (!((face == GL_BACK || face == GL_FRONT || face == GL_FRONT_AND_BACK) && (mode == GL_POINT || mode == GL_LINE || mode == GL_FILL)))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	//assert(face == GL_BACK || face == GL_FRONT || face == GL_FRONT_AND_BACK);
-	//assert(mode == GL_POINT || mode == GL_LINE || mode == GL_FILL);
+	/* assert(face == GL_BACK || face == GL_FRONT || face == GL_FRONT_AND_BACK);*/
+	/* assert(mode == GL_POINT || mode == GL_LINE || mode == GL_FILL);*/
 #endif
-	p[0].op = OP_PolygonMode;
+		p[0].op = OP_PolygonMode;
 	p[1].i = face;
 	p[2].i = mode;
 
 	gl_add_op(p);
 }
 
-void glDepthMask(GLint i){
+void glDepthMask(GLint i) {
 #include "error_check_no_context.h"
-	gl_get_context()->zb->depth_write = (i==GL_TRUE);
+	gl_get_context()->zb->depth_write = (i == GL_TRUE);
 }
 /* glEnable / glDisable */
-//TODO go to glopEnableDisable and add error checking there on values there.
+/* TODO go to glopEnableDisable and add error checking there on values there.*/
 void glEnable(GLint cap) {
 	GLParam p[3];
 #include "error_check_no_context.h"
@@ -236,25 +232,17 @@ void glBegin(GLint mode) {
 #include "error_check_no_context.h"
 	p[0].op = OP_Begin;
 	p[1].i = mode;
-#if TGL_FEATURE_ERROR_CHECK ==1
-//Check for compatibility of selection
-if(mode != GL_POINTS &&
-mode != GL_LINES &&
-mode != GL_LINE_LOOP &&
-mode != GL_LINE_STRIP &&
+#if TGL_FEATURE_ERROR_CHECK == 1
+	
+	if (mode != GL_POINTS && mode != GL_LINES && mode != GL_LINE_LOOP && mode != GL_LINE_STRIP &&
 #if TGL_FEATURE_GL_POLYGON == 1
-mode != GL_POLYGON &&
+		mode != GL_POLYGON &&
 #endif
-mode != GL_TRIANGLES &&
-mode != GL_TRIANGLE_FAN &&
-mode != GL_TRIANGLE_STRIP &&
-mode != GL_QUADS &&
-mode != GL_QUAD_STRIP
-)
+		mode != GL_TRIANGLES && mode != GL_TRIANGLE_FAN && mode != GL_TRIANGLE_STRIP && mode != GL_QUADS && mode != GL_QUAD_STRIP)
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #endif
-	gl_add_op(p);
+		gl_add_op(p);
 }
 
 void glEnd(void) {
@@ -390,16 +378,16 @@ void glMaterialfv(GLint mode, GLint type, GLfloat* v) {
 #define NEED_CONTEXT
 #include "error_check_no_context.h"
 #if TGL_FEATURE_ERROR_CHECK == 1
-	if(!(mode == GL_FRONT || mode == GL_BACK || mode == GL_FRONT_AND_BACK))
+	if (!(mode == GL_FRONT || mode == GL_BACK || mode == GL_FRONT_AND_BACK))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"
 #else
-	//assert(mode == GL_FRONT || mode == GL_BACK || mode == GL_FRONT_AND_BACK);
-#endif 
-	p[0].op = OP_Material;
+	/* assert(mode == GL_FRONT || mode == GL_BACK || mode == GL_FRONT_AND_BACK);*/
+#endif
+		p[0].op = OP_Material;
 	p[1].i = mode;
 	p[2].i = type;
-	n = 4;//This appears to be a hack... to avoid a jump instruction? What the hell?
+	n = 4;  /* This appears to be a hack... to avoid a jump instruction? What the hell?*/
 	if (type == GL_SHININESS)
 		n = 1;
 	for (i = 0; i < 4; i++)
@@ -468,8 +456,6 @@ void glLightModeli(GLint pname, GLint param) {
 	p[0].op = OP_LightModel;
 	p[1].i = pname;
 	p[2].f = (GLfloat)param;
-	//  for(i=0;i<4;i++) p[3+i].f=0;
-	//  for(i=0;i<3;i++) p[3+i].f=0;
 	p[3].f = 0;
 	p[4].f = 0;
 	p[5].f = 0;
@@ -521,7 +507,6 @@ void glClearDepth(GLdouble depth) {
 }
 
 /* textures */
-//TODO Check inputs into glopTexImage2D
 void glTexImage2D(GLint target, GLint level, GLint components, GLint width, GLint height, GLint border, GLint format, GLint type, void* pixels) {
 	GLParam p[10];
 #include "error_check_no_context.h"
@@ -565,33 +550,32 @@ void glBindTexture(GLint target, GLint texture) {
 }
 
 void glTexEnvi(GLint target, GLint pname, GLint param) {
-//	GLParam p[8];
-#include "error_check_no_context.h"
-//	p[0].op = OP_TexEnv;
-//	p[1].i = target;
-//	p[2].i = pname;
-//	p[3].i = param;
-//	p[4].f = 0;
-//	p[5].f = 0;
-//	p[6].f = 0;
-//	p[7].f = 0;
 
-//	gl_add_op(p);
+#include "error_check_no_context.h"
+
+
+
+
+
+
+
+
+
 }
 
 void glTexParameteri(GLint target, GLint pname, GLint param) {
-//	GLParam p[8];
-#include "error_check_no_context.h"
-//	p[0].op = OP_TexParameter;
-//	p[1].i = target;
-//	p[2].i = pname;
-//	p[3].i = param;
-//	p[4].f = 0;
-//	p[5].f = 0;
-//	p[6].f = 0;
-//	p[7].f = 0;
 
-//	gl_add_op(p);
+#include "error_check_no_context.h"
+
+
+
+
+
+
+
+
+
+
 }
 
 /*
@@ -660,14 +644,11 @@ void glCallList(GLuint list) {
 
 	gl_add_op(p);
 }
-
-//TODO: Implement a barrier for worker threads if we ever add multithreading support.
 void glFlush(void) { /* nothing to do */
 }
 
 void glHint(GLint target, GLint mode) {
 #include "error_check_no_context.h"
-	
 }
 
 /* Non standard functions */

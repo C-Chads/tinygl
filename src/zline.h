@@ -39,7 +39,7 @@
 #ifdef INTERP_RGB
 #define RGB(x) x
 #define RGBPIXEL *pp = RGB_TO_PIXEL(r >> 8, g >> 8, b >> 8)
-//#define RGBPIXEL TGL_BLEND_FUNC_RGB(r>>8, g>>8, b>>8, (*pp))
+	
 
 #else /* INTERP_RGB */
 #define RGB(x)
@@ -47,7 +47,7 @@
 #define RGBPIXEL pp[0] = r, pp[1] = g, pp[2] = b
 #else
 #define RGBPIXEL *pp = color
-//#define RGBPIXEL *pp = color
+
 #endif
 #endif /* INTERP_RGB */
 
@@ -58,7 +58,9 @@
 		zz = z >> ZB_POINT_Z_FRAC_BITS;                                                                                                                        \
 		if (ZCMP(zz, *pz)) {                                                                                                                                   \
 			RGBPIXEL;                                                                                                                                          \
-			if(zbdw) {*pz = zz;}                                                                                                                                          \
+			if (zbdw) {                                                                                                                                        \
+				*pz = zz;                                                                                                                                      \
+			}                                                                                                                                                  \
 		}                                                                                                                                                      \
 	}
 #else /* INTERP_Z */

@@ -14,13 +14,9 @@ void glPolygonStipple(void* a) {
 #endif
 }
 
-
-
-void glopViewport( GLParam* p) {
+void glopViewport(GLParam* p) {
 	GLContext* c = gl_get_context();
-	GLint xsize, ysize, 
-			xmin, ymin, 
-			xsize_req, ysize_req;
+	GLint xsize, ysize, xmin, ymin, xsize_req, ysize_req;
 
 	xmin = p[1].i;
 	ymin = p[2].i;
@@ -41,15 +37,15 @@ void glopViewport( GLParam* p) {
 			gl_fatal_error("glViewport: size too small");
 		}
 
-		//tgl_trace("glViewport: %d %d %d %d\n", xmin, ymin, xsize, ysize);
+		
 		c->viewport.xmin = xmin;
 		c->viewport.ymin = ymin;
 		c->viewport.xsize = xsize;
 		c->viewport.ysize = ysize;
 
-		//c->viewport.updated = 1;
-		gl_eval_viewport(c);
-		//c->viewport.updated = 0;
+		
+		gl_eval_viewport();
+		
 	}
 }
 void glBlendFunc(GLenum sfactor, GLenum dfactor) {
@@ -61,12 +57,11 @@ void glBlendFunc(GLenum sfactor, GLenum dfactor) {
 	gl_add_op(p);
 	return;
 }
-void glopBlendFunc( GLParam* p) {
+void glopBlendFunc(GLParam* p) {
 	GLContext* c = gl_get_context();
 	c->zb->sfactor = p[1].i;
 	c->zb->dfactor = p[2].i;
 }
-
 
 void glBlendEquation(GLenum mode) {
 	GLParam p[2];
@@ -75,14 +70,18 @@ void glBlendEquation(GLenum mode) {
 	p[1].i = mode;
 	gl_add_op(p);
 }
-void glopBlendEquation(GLParam* p) {GLContext* c = gl_get_context(); c->zb->blendeq = p[1].i; }
+void glopBlendEquation(GLParam* p) {
+	GLContext* c = gl_get_context();
+	c->zb->blendeq = p[1].i;
+}
 
-void glopPointSize(GLParam* p){
+void glopPointSize(GLParam* p) {
 	GLContext* c = gl_get_context();
 	c->zb->pointsize = p[1].f;
 }
-void glPointSize(GLfloat f){
-	GLParam p[2]; p[0].op = OP_PointSize;
+void glPointSize(GLfloat f) {
+	GLParam p[2];
+	p[0].op = OP_PointSize;
 #include "error_check_no_context.h"
 	p[1].f = f;
 	gl_add_op(p);
@@ -142,7 +141,7 @@ void glopEnableDisable(GLParam* p) {
 		if (code >= GL_LIGHT0 && code < GL_LIGHT0 + MAX_LIGHTS) {
 			gl_enable_disable_light(code - GL_LIGHT0, v);
 		} else {
-			tgl_warning("glEnableDisable: 0x%X not supported.\n",code);
+			tgl_warning("glEnableDisable: 0x%X not supported.\n", code);
 		}
 		break;
 	}
@@ -182,22 +181,22 @@ void glopPolygonMode(GLParam* p) {
 		c->polygon_mode_front = mode;
 		c->polygon_mode_back = mode;
 		break;
-	default:break;
+	default:
+		break;
 	}
 }
 
-
-void glopPolygonOffset( GLParam* p) {
+void glopPolygonOffset(GLParam* p) {
 	GLContext* c = gl_get_context();
 	c->offset_factor = p[1].f;
 	c->offset_units = p[2].f;
 }
 
-GLenum glGetError(){
+GLenum glGetError() {
 #if TGL_FEATURE_ERROR_CHECK == 1
 	GLContext* c = gl_get_context();
 	GLenum eflag = c->error_flag;
-	if(eflag != GL_OUT_OF_MEMORY) //Unrecoverable!
+	if (eflag != GL_OUT_OF_MEMORY) 
 		c->error_flag = GL_NO_ERROR;
 	return eflag;
 #else
@@ -205,12 +204,10 @@ GLenum glGetError(){
 #endif
 }
 
-void glDrawBuffer(GLenum mode){
+void glDrawBuffer(GLenum mode) {
 	GLContext* c = gl_get_context();
 #include "error_check.h"
-	if((mode != GL_FRONT &&
-		mode != GL_NONE) || c->in_begin)
-	{
+	if ((mode != GL_FRONT && mode != GL_NONE) || c->in_begin) {
 #if TGL_FEATURE_ERROR_CHECK == 1
 #define ERROR_FLAG GL_INVALID_OPERATION
 #include "error_check.h"
@@ -221,12 +218,10 @@ void glDrawBuffer(GLenum mode){
 	c->drawbuffer = mode;
 }
 
-void glReadBuffer(GLenum mode){
+void glReadBuffer(GLenum mode) {
 	GLContext* c = gl_get_context();
 #include "error_check.h"
-	if((mode != GL_FRONT &&
-		mode != GL_NONE) || c->in_begin)
-	{
+	if ((mode != GL_FRONT && mode != GL_NONE) || c->in_begin) {
 #if TGL_FEATURE_ERROR_CHECK == 1
 #define ERROR_FLAG GL_INVALID_OPERATION
 #include "error_check.h"
@@ -237,18 +232,11 @@ void glReadBuffer(GLenum mode){
 	c->readbuffer = mode;
 }
 
-//TODO
-void glReadPixels(	GLint x,
- 	GLint y,
- 	GLsizei width,
- 	GLsizei height,
- 	GLenum format,
- 	GLenum type,
- 	void * data){
+
+void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* data) {
 	GLContext* c = gl_get_context();
-	#include "error_check.h"
-	if(c->readbuffer != GL_FRONT ||
-		(format != GL_RGBA && format != GL_RGB && format != GL_DEPTH_COMPONENT) ||
+#include "error_check.h"
+	if (c->readbuffer != GL_FRONT || (format != GL_RGBA && format != GL_RGB && format != GL_DEPTH_COMPONENT) ||
 #if TGL_FEATURE_RENDER_BITS == 32
 		(type != GL_UNSIGNED_INT && type != GL_UNSIGNED_INT_8_8_8_8)
 #elif TGL_FEATURE_RENDER_BITS == 16
@@ -256,8 +244,8 @@ void glReadPixels(	GLint x,
 #else
 #error "Unsupported TGL_FEATURE_RENDER_BITS"
 #endif
-		
-	){
+
+	) {
 #if TGL_FEATURE_ERROR_CHECK
 #define ERROR_FLAG GL_INVALID_OPERATION
 #include "error_check.h"
@@ -265,9 +253,7 @@ void glReadPixels(	GLint x,
 		return;
 #endif
 	}
-	//TODO: implement read pixels.
+	/* TODO: implement read pixels.*/
 }
 
-void glFinish(){
-	return;
-}
+void glFinish() { return; }

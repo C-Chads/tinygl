@@ -8,9 +8,12 @@ void gl_print_matrix(const GLfloat* m) {
 	}
 }
 
-static inline void gl_matrix_update() { GLContext* c = gl_get_context(); c->matrix_model_projection_updated = (c->matrix_mode <= 1); }
+static void gl_matrix_update() {
+	GLContext* c = gl_get_context();
+	c->matrix_model_projection_updated = (c->matrix_mode <= 1);
+}
 
-void glopMatrixMode( GLParam* p) {
+void glopMatrixMode(GLParam* p) {
 	GLContext* c = gl_get_context();
 	GLint mode = p[1].i;
 	switch (mode) {
@@ -23,8 +26,9 @@ void glopMatrixMode( GLParam* p) {
 	case GL_TEXTURE:
 		c->matrix_mode = 2;
 		break;
-	default:break;
-		//assert(0);
+	default:
+		break;
+		
 	}
 }
 
@@ -78,40 +82,38 @@ void glopMultMatrix(GLParam* p) {
 	gl_matrix_update();
 }
 
-void glopPushMatrix( GLParam* p) {
+void glopPushMatrix(GLParam* p) {
 	GLContext* c = gl_get_context();
 	GLint n = c->matrix_mode;
 	M4* m;
 
 #if TGL_FEATURE_ERROR_CHECK == 1
-	if(!((c->matrix_stack_ptr[n] - c->matrix_stack[n] + 1) < c->matrix_stack_depth_max[n]))
-	#define ERROR_FLAG GL_INVALID_OPERATION
-	#include "error_check.h"
+	if (!((c->matrix_stack_ptr[n] - c->matrix_stack[n] + 1) < c->matrix_stack_depth_max[n]))
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"
 #endif
 
-	m = ++c->matrix_stack_ptr[n];
+		m = ++c->matrix_stack_ptr[n];
 
 	gl_M4_Move(&m[0], &m[-1]);
 
 	gl_matrix_update();
 }
 
-void glopPopMatrix( GLParam* p) {
+void glopPopMatrix(GLParam* p) {
 	GLContext* c = gl_get_context();
 	GLint n = c->matrix_mode;
 
-	//assert(c->matrix_stack_ptr[n] > c->matrix_stack[n]);
+	
 
 #if TGL_FEATURE_ERROR_CHECK == 1
-	if(!(c->matrix_stack_ptr[n] > c->matrix_stack[n]))
-	#define ERROR_FLAG GL_INVALID_OPERATION
-	#include "error_check.h"
+	if (!(c->matrix_stack_ptr[n] > c->matrix_stack[n]))
+#define ERROR_FLAG GL_INVALID_OPERATION
+#include "error_check.h"
 #endif
-	c->matrix_stack_ptr[n]--;
+		c->matrix_stack_ptr[n]--;
 	gl_matrix_update();
 }
-
-
 
 void glopRotate(GLParam* p) {
 	GLContext* c = gl_get_context();
@@ -151,14 +153,14 @@ void glopRotate(GLParam* p) {
 		GLfloat cost, sint;
 
 		/* normalize vector */
-		
+
 #if TGL_FEATURE_FISR == 1
-		GLfloat len = u[0]  + u[1] + u[2];
+		GLfloat len = u[0] + u[1] + u[2];
 		if (len == 0.0f)
 			return;
-		len = fastInvSqrt(len); //FISR
+		len = fastInvSqrt(len); /* FISR*/
 #else
-		GLfloat len = u[0] * u[0]  + u[1] * u[1] + u[2] * u[2];
+		GLfloat len = u[0] * u[0] + u[1] * u[1] + u[2] * u[2];
 		if (len == 0.0f)
 			return;
 		len = 1.0f / sqrt(len);

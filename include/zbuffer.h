@@ -7,16 +7,16 @@
 
 #include "zfeatures.h"
 #include "GL/gl.h"
-//#warning stdio is left in!!! remove it!!!
-//#include <stdio.h>
+
+
 #define ZB_Z_BITS 16
 
 #define ZB_POINT_Z_FRAC_BITS 14
-//a "1" in bit FRAC_BITS+1 (starting at zero) = 1.
 
-//This is a complicated as hell fixed point math standard.
 
-//go to zfeatures.h to find out how this stuff is decided
+
+
+
 #define ZB_POINT_S_MIN ( (1<<ZB_POINT_S_FRAC_BITS) )
 #define ZB_POINT_S_MAX ( (1<<(1+TGL_FEATURE_TEXTURE_POW2+ZB_POINT_S_FRAC_BITS))-ZB_POINT_S_MIN )
 #define ZB_POINT_T_MIN ( (1<<ZB_POINT_T_FRAC_BITS) )
@@ -25,14 +25,14 @@
 #define ZB_POINT_T_VALUE (ZB_POINT_T_FRAC_BITS - 4)
 #define ZB_S_MASK ((TGL_FEATURE_TEXTURE_DIM-1)<<(ZB_POINT_S_FRAC_BITS+1))
 #define ZB_T_MASK ((TGL_FEATURE_TEXTURE_DIM-1)<<(ZB_POINT_T_FRAC_BITS+1))
-//PSZSH is 5 at 32 bit, or 4 at 16 bit.
+
 #if ZB_POINT_T_FRAC_BITS == (ZB_POINT_S_FRAC_BITS + TGL_FEATURE_TEXTURE_POW2)
 #define ST_TO_TEXTURE_BYTE_OFFSET(s,t) ( ((s & ZB_S_MASK) | (t & ZB_T_MASK)) >> (ZB_POINT_S_VALUE-PSZSH))
 #else
 #define ST_TO_TEXTURE_BYTE_OFFSET(s,t) ( ((s & ZB_S_MASK)>>(ZB_POINT_S_VALUE-PSZSH)) | ((t & ZB_T_MASK)>>(ZB_POINT_T_VALUE-PSZSH))  )
 #endif
 
-//The corrected mult mask prevents a bug relating to color interp. it's also why the color bit depth is so damn high.
+/*The corrected mult mask prevents a bug relating to color interp. it's also why the color bit depth is so damn high.*/
 #define COLOR_MULT_MASK (0xff0000)
 #define COLOR_CORRECTED_MULT_MASK (0xfe0000)
 #define COLOR_MASK 		(0xffffff)
@@ -54,8 +54,8 @@
 #define RGB_TO_PIXEL(r,g,b) \
 	( COLOR_R_GET16(r) | COLOR_G_GET16(g) | COLOR_B_GET16(b)  )
 #endif
-//This is how textures are sampled. if you want to do some sort of fancy texture filtering,
-//you do it here.
+/*This is how textures are sampled. if you want to do some sort of fancy texture filtering,*/
+/*you do it here.*/
 #define TEXTURE_SAMPLE(texture, s, t)														\
  (*(PIXEL*)( (GLbyte*)texture + 															\
  ST_TO_TEXTURE_BYTE_OFFSET(s,t) 								\
@@ -68,7 +68,7 @@
 #define ZB_NB_COLORS    225 /* number of colors for 8 bit display */
 
 
-//#define TGL_CLAMPI(imp) ( (imp>0) * (COLOR_MASK * (imp>COLOR_MASK) + imp * (!(imp>COLOR_MASK)) )      )
+
 #define TGL_CLAMPI(imp) ( (imp>0)?((imp>COLOR_MASK)?COLOR_MASK:imp):0   )
 
 
@@ -81,7 +81,7 @@
 #define GET_REDDER(p) ((p & 0xff0000))
 #define GET_GREENER(p) ((p & 0xff00)<<8)
 #define GET_BLUEER(p) ((p & 0xff)<<16)
-//These never change, DO NOT CHANGE THESE BASED ON COLOR INTERP BIT DEPTH
+/*These never change, DO NOT CHANGE THESE BASED ON COLOR INTERP BIT DEPTH*/
 #define GET_RED(p) ((p>>16)&0xff)
 #define GET_GREEN(p) ((p>>8)&0xff)
 #define GET_BLUE(p) (p&0xff)
@@ -95,7 +95,7 @@ typedef GLuint PIXEL;
 #define GET_REDDER(p) ((p & 0xF800)<<8)
 #define GET_GREENER(p) ((p & 0x07E0)<<13)
 #define GET_BLUEER(p) ((p & 31)<<19)
-//DO NOT CHANGE THESE BASED ON COLOR INTERP BITDEPTH
+/*DO NOT CHANGE THESE BASED ON COLOR INTERP BITDEPTH*/
 #define GET_RED(p) ((p & 0xF800)>>8)
 #define GET_GREEN(p) ((p & 0x07E0)>>3)
 #define GET_BLUE(p) ((p & 31)<<3)
@@ -129,7 +129,7 @@ typedef GLushort PIXEL;
 #if TGL_FEATURE_BLEND == 1
 #define TGL_BLEND_VARS GLuint zbblendeq = zb->blendeq; GLuint sfactor = zb->sfactor; GLuint dfactor = zb->dfactor;
 
-//SORCERY to achieve 32 bit signed integer clamping
+/*SORCERY to achieve 32 bit signed integer clamping*/
 
 
 #define TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest) 									\
@@ -198,7 +198,7 @@ typedef GLushort PIXEL;
 			}																			\
 		TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest)									\
 	}																					\
-} ///////////////////////////////////////////////////////////////////////////////////////
+} 
 
 #define TGL_BLEND_FUNC_RGB(rr, gg, bb, dest){											\
 	{																					\
@@ -234,7 +234,7 @@ typedef GLushort PIXEL;
 		}																				\
 		TGL_BLEND_SWITCH_CASE(sr,sg,sb,dr,dg,db,dest)									\
 	}																					\
-} ///////////////////////////////////////////////////////////////////////////////////////
+} 
 
 #else
 #define TGL_BLEND_VARS /* a comment */
@@ -245,7 +245,7 @@ typedef GLushort PIXEL;
 
 typedef struct {
 
-    //GLint mode;
+    
     
     GLushort *zbuf;
     PIXEL *pbuf;
@@ -255,9 +255,9 @@ typedef struct {
 	/* point size*/
     GLfloat pointsize;
 
-//    GLint nb_colors;
-//    unsigned char *dctable;
-//    GLint *ctable;
+
+
+
 
     /* opengl polygon stipple*/
 
@@ -286,9 +286,9 @@ typedef struct {
 /* zbuffer.c */
 
 ZBuffer *ZB_open(int xsize,int ysize,int mode,
-//		 GLint nb_colors,
-//		 unsigned char *color_indexes,
-//		 GLint *color_table,
+
+
+
 		 void *frame_buffer);
 
 
@@ -354,9 +354,9 @@ void *gl_zalloc(GLint size);
 #else
 #include<string.h>
 #include<stdlib.h>
-static inline void gl_free(void* p) { free(p); }
-static inline void* gl_malloc(GLint size) { return malloc(size); }
-static inline void* gl_zalloc(GLint size) { return calloc(1, size); }
+static void gl_free(void* p) { free(p); }
+static void* gl_malloc(GLint size) { return malloc(size); }
+static void* gl_zalloc(GLint size) { return calloc(1, size); }
 #endif
 
 #endif /* _tgl_zbuffer_h_ */

@@ -2,8 +2,10 @@
 
 ![tgl logo](tgl_minimal.png)
 
+(Maintainer's note: tinygl is now C89 compliant. Demo code and bonus libraries remain only c99 compliant.)
 
-A major overhaul of Fabrice Bellard's TinyGL (still compiling with -std=c99) to be
+
+A major overhaul of Fabrice Bellard's TinyGL (Now compiling with -std=c89!) to be
 more useful as a software rasterizer.
 
 Now with limited multithreading support
@@ -451,10 +453,8 @@ See `include/zfeatures.h`
 
 This changes too often to maintain documentation here.
 
-To disable or enable the compiletime tests, see include/GL/gl.h
-
-You may need to disable it if you want to compile the library
-even though you failed the compatibility test.
+The compiletime test is now disabled by default since it may not be "liked" by some obscure compilers...
+you can enable it in GL/gl.h
 
 ```c
 //at the top of include/GL/gl.h
@@ -507,93 +507,8 @@ make sure that only ONE of these values is 1.
 
 ## ALSO COMPATIBLE WITH 16 BIT 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## BENCHMARK RESULTS (Old- the library is faster now)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-### CPU: i7-6700 (Gek)
-### OS: Linux Mint Debian Edition
+Todo: add updated benchmarks
 
-at the default settings, 32 bit,
-```c
-#define TGL_FEATURE_ARRAYS         1
-#define TGL_FEATURE_DISPLAYLISTS   1
-#define TGL_FEATURE_LIT_TEXTURES   1
-//NOTE: Polygon Offset does nothing at the moment.
-#define TGL_FEATURE_POLYGON_OFFSET 0
-#define TGL_FEATURE_POLYGON_STIPPLE 0
-//A stipple pattern is 128 bytes in size.
-#define TGL_POLYGON_STIPPLE_BYTES 128
-//A stipple pattern is 2^5 (32) bits wide.
-#define TGL_POLYGON_STIPPLE_POW2_WIDTH 5
-//The stipple pattern mask (the last bits of the screen coordinates used for indexing)
-//The default pattern is 32 bits wide and 32 bits tall, or 4 bytes per row and 32 tall, 4 * 32 = 128 bytes.
-#define TGL_POLYGON_STIPPLE_MASK_X 31
-#define TGL_POLYGON_STIPPLE_MASK_Y 31
-
-//These are features useful for integrating TinyGL with other renderers.
-#define TGL_FEATURE_NO_COPY_COLOR 0
-#define TGL_FEATURE_NO_DRAW_COLOR 0
-#define TGL_FEATURE_FORCE_CLEAR_NO_COPY_COLOR 0
-#define TGL_NO_COPY_COLOR 0xff00ff
-#define TGL_NO_DRAW_COLOR 0xff00ff
-//^ solid debug pink.
-#define TGL_COLOR_MASK 0x00ffffff
-
-//..
-
-#define TGL_FEATURE_16_BITS        0
-#define TGL_FEATURE_32_BITS        1
-```
-
-```
-./model -m monkey3.obj -count 27
-```
-
-Hovers around 55-62 fps at count 27. 
-(I get the exact same performance figures with textures disabled)
-
-```
-./gears
-Low: 731 FPS
-High: 885 FPS
-Average: around 835
-```
-
-```
-./helloworld
-Low: 1178 FPS
-High: 1530 FPS
-Average: around 1380 FPS
-```
-
-```
-./texture
-Low: 476 FPS
-High: 547 FPS
-Average: around 510 FPS
-```
-#### With NO_DRAW_COLOR enabled, otherwise the same
-
-```
-./model -m monkey3.obj -count 24
-```
-
-Raising the count above 25 causes the count to unreliably stay above 50 FPS and never reach 60.
-
-```
-./texture
-Low: 467 FPS
-High: 592 FPS
-Average: around 570 FPS
-```
-Surprising that it actually runs faster
-
-```
-./gears
-Low: 804 FPS
-High: 917 FPS
-Average: around 842 FPS
-```
 
 ### OpenIMGUI Standard
 

@@ -4,8 +4,8 @@
 #ifndef GL_H
 #define GL_H
 
-//Enable TinyGL's Compiletime Compatibility Test (Scroll down)
-#define COMPILETIME_TINYGL_COMPAT_TEST 1
+
+#define COMPILETIME_TINYGL_COMPAT_TEST 0
 
 #define GL_VERSION_1_1 1
 
@@ -730,34 +730,28 @@ typedef GLint 		GLsizei; /* Same as GLint */
 
 
 #if COMPILETIME_TINYGL_COMPAT_TEST == 1
-
-//Test to ensure that these types are the correct size
-//If you get an "array is negative" error, simply change
-//the typedefs above to types which match the sizes tested for here.
-//Note that this library NEEDS a 4-byte float type (IEEE 754) so
-//if you don't have one, TinyGL is incompatible.
-
-//Sizeof cannot be tested directly in #if directives.
-//This won't work:
-//#if (sizeof(GLbyte) != 1)
-//#error "GLbyte is wrong size!"
-//#endif
+/*
+Test to ensure that these types are the correct size
+If you get an "array is negative" error, simply change
+the typedefs above to types which match the sizes tested for here.
+Note that this library NEEDS a 4-byte float type (IEEE 754) so
+if you don't have one, TinyGL is incompatible.
+*/
 extern char TGL_BUILDT_GLbyte[ 1-2*(sizeof(GLbyte) != 1)];
 #ifdef __STDC_IEC_559__
 #if __STDC_IEC_559__ == 0
 #error C99 Compiler Using Non-Compliant Float Type! Compatibility not guaranteed.
 #endif
 #else
-//#warning "Cannot test __STDC_IEC_559__, it is not defined."
+#warning "Cannot test __STDC_IEC_559__, it is not defined."
 #endif
-//extern char __BUILDT_error[ 1-2*(sizeof(GLbyte) != 4)];
 extern char TGL_BUILDT_GLshort[ 1-2*(sizeof(GLshort) != 2)];
 extern char TGL_BUILDT_GLint[ 1-2*(sizeof(GLint) != 4)];
 extern char TGL_BUILDT_GLuint[ 1-2*(sizeof(GLuint) != 4)];
 extern char TGL_BUILDT_GLfloat[ 1-2*(sizeof(GLfloat) != 4)];
 extern char TGL_BUILDT_GLubyte[ 1-2*(sizeof(GLubyte) != 1)];
 extern char TGL_BUILDT_GLushort[ 1-2*(sizeof(GLushort) != 2)];
-//Testing bit shifting on the processor.
+
 extern char TGL_BUILDT_LshiftGLint[ 1-2*(((GLint)255<<8) != 65280)];
 extern char TGL_BUILDT_RshiftGLint[ 1-2*((GLint)65280>>8 != 255)];
 extern char TGL_BUILDT_RshiftGLint2[ 1-2*( ((GLint)-1)>>14  != -1 )];
@@ -769,10 +763,10 @@ extern char TGL_BUILDT_RshiftGLushort[ 1-2*((GLushort)65280>>8 != 255)];
 
 extern char TGL_BUILDT_LshiftGLshort[ 1-2*(((GLshort)255<<8) != 65280)];
 extern char TGL_BUILDT_RshiftGLshort[ 1-2*((GLshort)65280>>8 != -1)];
-//Testing floating point
 
-//extern char TGL_BUILDT_FLOATT1[ 1-2*((TGL_BUILDT_UNION_CAST(TGL_BUILDT_T1_HEX)).f == TGL_BUILDT_T1_FLOAT)];
-//extern char TGL_BUILDT_FLOATT2[ 1-2*((TGL_BUILDT_UNION_CAST(TGL_BUILDT_T2_FLOAT)).l == TGL_BUILDT_T2_HEX)];
+
+
+
 #undef T
 #endif
 /* functions */
@@ -800,12 +794,12 @@ void glReadPixels(	GLint x,
 void glDrawArrays(	GLenum mode,
  					GLint first,
  					GLsizei count);
-//NEW functions added by GEK!!!
-void glSetEnableSpecular(GLint s); //Toggle specular rendering (Speedup!!!)
-void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize); //Get the raw data of a texture!
-void glDrawText(const GLubyte* text, GLint x, GLint y, GLuint pixel); //Blit 8x8 text to he screen
-void glTextSize(GLTEXTSIZE mode); //Set text size
-void glPlotPixel(GLint x, GLint y, GLuint pixel); //plot a pixel to the screen.
+
+void glSetEnableSpecular(GLint s); 
+void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize); 
+void glDrawText(const GLubyte* text, GLint x, GLint y, GLuint pixel); 
+void glTextSize(GLTEXTSIZE mode); 
+void glPlotPixel(GLint x, GLint y, GLuint pixel); 
 
 #define PROTO_GL1(name)				\
 void gl ## name ## 1f(GLfloat);	\
@@ -967,7 +961,7 @@ void glBufferData(	GLenum target,
 				 	GLsizei size,
 				 	const void * data,
 				 	GLenum usage);
-//Bonus ducks! OpenGL Buffer objects.
+
 void glBindBufferAsArray(GLenum target, GLuint buffer, GLenum type, GLint size, GLint stride);
 
 /* opengl 1.2 polygon offset */

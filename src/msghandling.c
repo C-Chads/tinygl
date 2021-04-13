@@ -1,11 +1,9 @@
+#include "msghandling.h"
 #include "../include/GL/gl.h"
 #include "zgl.h"
-#include "msghandling.h"
 #include <stdarg.h>
 
-//#define NDEBUG
 
-//TinyC doesnt like my stdio.
 #ifdef __TINYC__
 #define NO_DEBUG_OUTPUT
 #endif
@@ -63,7 +61,4 @@ void gl_fatal_error(char* format, ...) {
 #else
 	exit(1);
 #endif
-	
 }
-
-
