@@ -68,22 +68,17 @@ static void endSharedState(GLContext* c) {
 
 #if TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST == 1
 
-#define TGL_RUNT_UNION_CAST(i)                                                                                                                                 \
-	((union {                                                                                                                                                  \
-		GLuint l;                                                                                                                                              \
-		GLint ii;                                                                                                                                              \
-		GLfloat f;                                                                                                                                             \
-	}){i})
 #define TGL_FLOAT_ERR(a, b) ((a - b) / b)
 static int TinyGLRuntimeCompatibilityTest() {
 	GLfloat t = -0, tf2;
 	GLint t2 = 1 << 31;
-	if (TGL_RUNT_UNION_CAST(t2).f != t)
-		return 1;
+	memcpy(&tf2, &t2, 4);
+	if (tf2 != t) return 1;
 	t2 = 3212836864;
 	t = -1;
-	if (TGL_RUNT_UNION_CAST(t2).f != t)
-		return 1;
+	memcpy(&tf2, &t2, 4);
+	if (tf2 != t)return 1;
+	
 	if (((GLint)255 << 8) != 65280)
 		return 1;
 	if ((GLint)65280 >> 8 != 255)

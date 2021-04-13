@@ -444,21 +444,7 @@ void gl_fatal_error(char* format, ...);
 /* specular buffer "api" */
 GLSpecBuf* specbuf_get_buffer(const GLint shininess_i, const GLfloat shininess);
 
-#ifdef __BEOS__
-void dprintf(const char*, ...);
 
-#else /* !BEOS */
-
-#ifdef DEBUG
-
-#define dprintf(format, args...) tgl_warning("In '%s': " format "\n", __FUNCTION__, ##args);
-
-#else
-
-#define dprintf(format, args...)
-
-#endif
-#endif /* !BEOS */
 
 /* glopXXX functions */
 
