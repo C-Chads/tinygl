@@ -25,12 +25,9 @@ void glNormal3f(GLfloat x, GLfloat y, GLfloat z) {
 	GLParam p[4];
 #include "error_check_no_context.h"
 	p[0].op = OP_Normal;
-	
-	
 	p[1].f = x;
 	p[2].f = y;
 	p[3].f = z;
-
 	gl_add_op(p);
 }
 
@@ -55,15 +52,6 @@ void glColor4f(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
 	p[2].f = g;
 	p[3].f = b;
 	p[4].f = a;
-	/* direct convertion to GLinteger to go faster if no shading */
-	/*
-	p[5].ui = (GLuint) (r * (ZB_POINT_RED_MAX - ZB_POINT_RED_MIN) +
-							  ZB_POINT_RED_MIN);
-	p[6].ui = (GLuint) (g * (ZB_POINT_GREEN_MAX - ZB_POINT_GREEN_MIN) +
-							  ZB_POINT_GREEN_MIN);
-	p[7].ui = (GLuint) (b * (ZB_POINT_BLUE_MAX - ZB_POINT_BLUE_MIN) +
-							  ZB_POINT_BLUE_MIN);
-	*/
 	p[5].ui = (((GLuint)(r * COLOR_CORRECTED_MULT_MASK) + COLOR_MIN_MULT) & COLOR_MASK);
 	p[6].ui = (((GLuint)(g * COLOR_CORRECTED_MULT_MASK) + COLOR_MIN_MULT) & COLOR_MASK);
 	p[7].ui = (((GLuint)(b * COLOR_CORRECTED_MULT_MASK) + COLOR_MIN_MULT) & COLOR_MASK);
