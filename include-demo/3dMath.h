@@ -4,7 +4,6 @@
 
 #ifndef CHAD_MATH_H
 #define CHAD_MATH_H
-//#define CHAD_MATH_NO_ALIGN
 #ifndef CHAD_MATH_NO_ALIGN
 #include <stdalign.h>
 #define CHAD_ALIGN alignas(16)
@@ -22,16 +21,17 @@ typedef struct {CHAD_ALIGN int d[3];} ivec3;
 typedef struct {CHAD_ALIGN f_ d[4];} vec4;
 typedef struct {CHAD_ALIGN f_ d[16];} mat4;
 
-//Collision detection
-//These Algorithms return the penetration vector into
-//the shape in the first argument
-//With depth of penetration in element 4
-//if depth of penetration is zero or lower then there is no penetration.
+/*Collision detection
+These Algorithms return the penetration vector into
+the shape in the first argument
+With depth of penetration in element 4
+if depth of penetration is zero or lower then there is no penetration.
+*/
 typedef struct{
 	vec4 c;
 	vec3 e;
 }aabb;
-typedef aabb colshape; //c.d[3] determines if it's a sphere or box. 0 or less = box, greater than 0 = sphere
+typedef aabb colshape; /*c.d[3] determines if it's a sphere or box. 0 or less = box, greater than 0 = sphere*/
 
 
 
@@ -41,14 +41,14 @@ static inline mat4 scalemat4( vec4 s){
 	mat4 ret;
 	for(int i = 1; i < 16; i++)
 		ret.d[i]= 0.0;
-	ret.d[0*4 + 0] = s.d[0]; //x scale
-	ret.d[1*4 + 1] = s.d[1]; //y scale
-	ret.d[2*4 + 2] = s.d[2]; //z scale
-	ret.d[3*4 + 3] = s.d[3]; //w scale
+	ret.d[0*4 + 0] = s.d[0]; 
+	ret.d[1*4 + 1] = s.d[1]; 
+	ret.d[2*4 + 2] = s.d[2]; 
+	ret.d[3*4 + 3] = s.d[3]; 
 	return ret;
 }
 
-static inline int invmat4( mat4 m, mat4* invOut) //returns 1 if successful
+static inline int invmat4( mat4 m, mat4* invOut) /*returns 1 if successful*/
 {
     mat4 inv;
     f_ det;
@@ -216,11 +216,10 @@ static inline mat4 rotate( vec3 rotation){
 	rm.d[0*4 + 2] = cosf(a)*sinf(b)*cosf(c)+sinf(a)*sinf(c);
 	rm.d[1*4 + 2] = sinf(a)*sinf(b)*cosf(c)-cosf(a)*sinf(c);
 	rm.d[2*4 + 2] = cosf(b)*cosf(c);
-	//the other parts
 	rm.d[0*4 + 3] = 0;
 	rm.d[1*4 + 3] = 0;
 	rm.d[2*4 + 3] = 0;
-	rm.d[3*4 + 3] = 1; //the bottom right corner of the matrix.
+	rm.d[3*4 + 3] = 1; /*the bottom right corner of the matrix.*/
 	rm.d[3*4 + 0] = 0;
 	rm.d[3*4 + 1] = 0;
 	rm.d[3*4 + 2] = 0;
@@ -311,21 +310,21 @@ static inline mat4 multm4( mat4 a,  mat4 b){
 #pragma omp simd
 	for(int i = 0; i < 4; i++)
 	for(int j = 0; j < 4; j++)
-		ret.d[i*4 + j] = dotv4( //j is the ROW of the target, i is the COLUMN.
-			getrow(a, j), //we retrieve the same ROW as our ROW INDEX.
-			getcol(b, i) //we retrieve the same COLUMN as our COLUMN INDEX.
+		ret.d[i*4 + j] = dotv4( /*j is the ROW of the target, i is the COLUMN.*/
+			getrow(a, j), /*we retrieve the same ROW as our ROW INDEX.*/
+			getcol(b, i) /*we retrieve the same COLUMN as our COLUMN INDEX.*/
 		);
 	return ret;
 }
 static inline vec4 mat4xvec4( mat4 t,  vec4 v){
 	vec4 vr;
-	//Getting a ROW of the matrix and dotting it with the COLUMN VECTOR to get
-	// ONE ROW of the output COLUMN VECTOR- one float.
+	/*
+	Getting a ROW of the matrix and dotting it with the COLUMN VECTOR to get
+	 ONE ROW of the output COLUMN VECTOR- one float.*/
 	vr.d[0] = 	t.d[0*4] * v.d[0] + 
 				t.d[1*4] * v.d[1] +
 				t.d[2*4] * v.d[2] +
 				t.d[3*4] * v.d[3];
-	//The next one.
 	vr.d[1] = 	t.d[0*4+1] * v.d[0] +
 				t.d[1*4+1] * v.d[1] + 
 				t.d[2*4+1] * v.d[2] + 
@@ -393,9 +392,9 @@ static inline vec4 subv4( vec4 a,  vec4 b){
 }
 static inline vec3 reflect( vec3 in,  vec3 norm){
 	return 
-	addv3(in, //I +
-		scalev3(-2.0*dotv3(norm, in), //-2.0 * dotv3(norm,in) * 
-			norm //N
+	addv3(in, 
+		scalev3(-2.0*dotv3(norm, in),
+			norm 
 		)
 	);
 }
@@ -440,13 +439,15 @@ static inline mat4 lookAt( vec3 eye,  vec3 at,  vec3 up){
 	cw.d[3*4+3] = 1;
 	return cw;
 }
+/*
+Collision detection
 
-//Collision detection
-//These Algorithms return the penetration vector into
-//the shape in the first argument
-//With depth of penetration in element 4
-//if depth of penetration is zero or lower then there is no penetration.
-static inline vec4 spherevsphere( vec4 s1,  vec4 s2){ //x,y,z,radius
+These Algorithms return the penetration vector into
+the shape in the first argument
+With depth of penetration in element 4
+if depth of penetration is zero or lower then there is no penetration.
+*/
+static inline vec4 spherevsphere( vec4 s1,  vec4 s2){ 
 	vec4 ret;
 	vec3 diff = subv3(
 				downv4(s2),
@@ -481,7 +482,7 @@ static inline int boxvboxbool (aabb b1, aabb b2){
 		}
 		return 1;
 }
-static inline vec4 boxvbox( aabb b1,  aabb b2){ //Just points along the minimum separating axis, Nothing fancy.
+static inline vec4 boxvbox( aabb b1,  aabb b2){ /*Just points along the minimum separating axis, Nothing fancy.*/
 	vec4 ret = (vec4){
 		.d[0]=0,
 		.d[1]=0,
@@ -563,8 +564,8 @@ static inline vec4 spherevaabb( vec4 sph,  aabb box){
 		};
 		
 }
-//end of chad math impl
 
-//END Math_Library.h~~~~~~~~~~~~~~~~~~~~
+
+/*END Math_Library.h~~~~~~~~~~~~~~~~~~~~*/
 
 #endif
