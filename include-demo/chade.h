@@ -63,22 +63,24 @@ typedef struct{
 	unsigned long n_assets;
 } ChadWorld;
 
-void initChadWorld(ChadWorld* w){
+static inline void initChadWorld(ChadWorld* w){
 	*w = (ChadWorld){0};
+	w->world.ms = 9000;/*plenty fast*/
+	w->world.g = (vec3){{0,-10,0}};/*plenty realistic*/
 }
 
-void stepChadWorld(ChadWorld* world){
+static inline void stepChadWorld(ChadWorld* world){
 	stepPhysWorld(&world->world, 1);
 }
 /*Called at the beginning of every frame before the split.*/
-void syncChadWorld(ChadWorld* world){
+static inline void syncChadWorld(ChadWorld* world){
 	memcpy(world->ents, world->ents_phys, sizeof(ChadEntity) * world->n_ents);
 }
 /*invoked every single time that an object is added or removed*/
-void prepChadWorld(ChadWorld* world){
+static inline void prepChadWorld(ChadWorld* world){
 GLuint i;
 	if(world->world.bodies) free(world->world.bodies);
-	world->world.bodies = malloc(sizeof(phys_body*) * world->n_ents);
+	world->world.bodies = calloc(1,sizeof(phys_body*) * world->n_ents);
 	/*Bodies is an array of pointers.*/
 	for(i = 0; i < world->n_ents; i++){
 		world->world.bodies[i] = &world->ents_phys[i].body;
@@ -86,16 +88,16 @@ GLuint i;
 	syncChadWorld(world);
 }
 
-void ChadWorld_AddEntity(ChadWorld* world, ChadEntity ent){
+static inline void ChadWorld_AddEntity(ChadWorld* world, ChadEntity ent){
 	world->ents_phys = realloc(world->ents_phys, sizeof(ChadEntity) * (world->n_ents++));
 	world->ents_phys[world->n_ents-1] = ent;
 	prepChadWorld(world);
 }
 
-void ChadWorld_RemoveEntity(ChadWorld* world, GLuint index){
+static inline void ChadWorld_RemoveEntity(ChadWorld* world, GLuint index){
 	ChadEntity* old_ents_phys = world->ents_phys;
 	if(world->n_ents <= index) return; /*Bad index*/
-	world->ents_phys = malloc((--world->n_ents) * sizeof(ChadEntity));
+	world->ents_phys = calloc(1,(--world->n_ents) * sizeof(ChadEntity));
 	for(unsigned int i = 0; i < world->n_ents+1; i++) /**/
 	{
 		
@@ -104,18 +106,16 @@ void ChadWorld_RemoveEntity(ChadWorld* world, GLuint index){
 		else if(i==index) continue; /*Skip.*/
 		else if(i > index) /*Gets moved back a position.*/
 			world->ents_phys[i-1] = old_ents_phys[i];
-			
 	}
 	free(old_ents_phys);
 	prepChadWorld(world);
 }
 
 
-void renderChadWorld(ChadWorld* world){
+static inline void renderChadWorld(ChadWorld* world){
 	GLuint i; 
 	/*The user will already have set up the viewport, the camera, and the lights.*/
 	for(i = 0; i < world->n_ents; i++){
-		if(world->ents[i] == NULL) continue; /*Empty spot.*/
 		glPushMatrix();
 			/*build the transformation matrix*/
 			glTranslatef(world->ents[i].body.v.d[0],

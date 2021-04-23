@@ -130,6 +130,9 @@ static inline void stepPhysWorld(phys_world* world, const int collisioniter){
 			body->shape.c.d[2] = bodypos.d[2];
 			body->v = addv3(body->v, body->a);
 			body->v = addv3(body->v, world->g);
+			while(dotv3(body->v, body->v) > world->ms) {
+				body->v = scalev3(0.9, body->v);
+			}
 		}
 	//Resolve collisions (if any)
 	for(int iter = 0; iter < collisioniter; iter++)
