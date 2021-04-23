@@ -7,7 +7,6 @@ typedef struct {
 	mat4 localt; //Local Transform.
 	vec3 v; //velocity
 	vec3 a; //Body specific acceleration, combined with gravity
-	void* d; //User defined pointer.
 	f_ mass; //0 means kinematic, or static. Defaults to zero.
 	f_ bounciness; //default 0, put portion of displacement into velocity.
 	f_ airfriction; //default 1, multiplied by velocity every time timestep.
@@ -33,7 +32,6 @@ static inline void initPhysBody(phys_body* body){
 	body->airfriction = 1.0;
 	body->a = (vec3){.d[0] = 0,.d[1] = 0,.d[2] = 0};
 	body->localt = identitymat4();
-	body->d = NULL;
 }
 static inline mat4 getPhysBodyRenderTransform(phys_body* body){
 	return multm4(
@@ -47,14 +45,14 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 	if(a->mass > 0 || b->mass > 0){ //Perform a preliminary check. Do we even have to do anything?
 		/*We must do shit*/
 	} else {return;}
-	//Optimized for branch prediction.
+	/*Optimized for branch prediction.*/
 	vec4 penvec = (vec4){
 		.d[0]=0,
 		.d[1]=0,
 		.d[2]=0,
 		.d[3]=0
 	};
-	//Check if the two bodies are colliding.
+	/*Check if the two bodies are colliding.*/
 	if(a->shape.c.d[3] > 0 && b->shape.c.d[3] > 0) //Both Spheres!
 	{
 		penvec = spherevsphere(a->shape.c, b->shape.c);
@@ -85,12 +83,11 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 	f_ adisplacefactor = b->mass / (a->mass + b->mass);
 	vec3 comvel;
 	if(!(a->mass > 0)) {
-		adisplacefactor = 0; bdisplacefactor = 1;comvel = (vec3){{0,0,0}};
+		adisplacefactor = 0; bdisplacefactor = 1;
 	}else if(!(b->mass > 0)) {
-		bdisplacefactor = 0; adisplacefactor = 1;comvel = (vec3){{0,0,0}};
-	}else{
-		comvel = addv3( scalev3(bdisplacefactor, a->v), scalev3(adisplacefactor, b->v));
+		bdisplacefactor = 0; adisplacefactor = 1;
 	}
+	comvel = addv3( scalev3(bdisplacefactor, a->v), scalev3(adisplacefactor, b->v));
 	if(a->mass > 0){
 		vec4 displacea = scalev4(-adisplacefactor, penvec);
 		vec3 a_relvel = subv3(a->v, comvel);

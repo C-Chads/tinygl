@@ -30,13 +30,13 @@ typedef struct{
 	facedef* faces;
 }objraw;
 typedef struct{
-	int npoints; //Number of points.
+	long npoints; //Number of points.
 	vec3* d; //Triangles (Same winding as in the file)
 	vec3* n; //Normals
 	vec3* t; //Texture Cordinates
 	vec3* c; //colors
 }model;
-objraw initobjraw(){
+static inline objraw initobjraw(){
 	return (objraw){
 		.npos=0,
 		.nnorm=0,
@@ -49,7 +49,7 @@ objraw initobjraw(){
 		.faces=NULL
 	};
 }
-model initmodel(){
+static inline model initmodel(){
 	return (model){
 		.npoints=0,
 		.d=NULL,
@@ -58,20 +58,20 @@ model initmodel(){
 		.c=NULL
 	};
 }
-void freeobjraw(objraw* o){
+static inline void freeobjraw(objraw* o){
 	free(o->positions);
 	free(o->texcoords);
 	free(o->normals);
 	free(o->colors);
 	free(o->faces);
 }
-void freemodel(model* o){
+static inline void freemodel(model* o){
 	free(o->d);
 	free(o->t);
 	free(o->n);
 	free(o->c);
 }
-model tobj_tomodel(objraw* raw){
+static inline model tobj_tomodel(objraw* raw){
 	if(!raw || raw->faces == NULL)
 	{
 		puts("\nAttempted to convert empty model... Aborting...\n");
@@ -83,7 +83,7 @@ model tobj_tomodel(objraw* raw){
 	if(raw->normals)ret.n=malloc(sizeof(vec3) * raw->nfaces);
 	if(raw->texcoords)ret.t=malloc(sizeof(vec3) * raw->nfaces);
 	if(raw->colors)ret.c=malloc(sizeof(vec3) * raw->nfaces);
-	long long unsigned int piter = 0;
+	long piter = 0;
 	long long unsigned int niter = 0;
 	long long unsigned int titer = 0;
 	long long unsigned int citer = 0;
@@ -127,7 +127,6 @@ model tobj_tomodel(objraw* raw){
 			}
 		}
 	}
-	//printf("\ntobj_tomodel completed.\n");
 	if(ret.npoints != piter){
 		printf("\nBAD DATA!!! ABORTING...\n");
 		exit(1);
@@ -135,7 +134,7 @@ model tobj_tomodel(objraw* raw){
 	return ret;
 }
 //Only loads 
-objraw tobj_load(const char* fn){
+static inline objraw tobj_load(const char* fn){
 	FILE* f;
 	f = fopen(fn, "r");
 	objraw retval = initobjraw();
