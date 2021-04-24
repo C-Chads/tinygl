@@ -98,9 +98,8 @@ static long strfind(const char* text, const char* subtext){
 			si++; 
 			if(subtext[si] == '\0') return (ti - st)+1;
 		}else {
-			si = 0;
-			if(text[ti] == subtext[si])si++; /*Minor case.*/
-			if(subtext[si] == '\0') return (ti - st);
+			if(subtext[si] == '\0') return (ti - st)+1;
+			ti-=si;si = 0;
 		}
 	}
 	return -1;
