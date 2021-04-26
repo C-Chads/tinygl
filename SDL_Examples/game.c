@@ -346,7 +346,7 @@ int main(int argc, char** argv) {
 			abort();
 		} else {
 			m = tobj_tomodel(&omodel);
-			printf("\nHas %d points.\n", m.npoints);
+			printf("\nHas %ld points.\n", m.npoints);
 			modelDisplayList = createModelDisplayList(m.d, m.npoints, m.c, m.n, m.t);
 			freemodel(&m);
 		}
