@@ -511,7 +511,7 @@ static inline vec4 boxvbox( aabb b1,  aabb b2){ /*Just points along the minimum 
 	vec3 axispen[2];
 	axispen[0] = subv3(b1max,b2min);
 	axispen[1] = subv3(b1min,b2max);
-	ret.d[3] = axispen[0].d[0];
+	ret.d[3] = fabs(axispen[0].d[0]);
 	ret.d[0] = axispen[0].d[0];
 	for(int i = 1; i < 6; i++){
 		if(fabs(axispen[i/3].d[i%3]) < fabs(ret.d[3])){
