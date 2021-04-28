@@ -4,6 +4,11 @@
 
 #ifndef CHAD_MATH_H
 #define CHAD_MATH_H
+
+#ifdef __TINYC__
+#define CHAD_MATH_NO_ALIGN
+#endif
+
 #ifndef CHAD_MATH_NO_ALIGN
 #include <stdalign.h>
 #define CHAD_ALIGN alignas(16)

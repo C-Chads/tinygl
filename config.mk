@@ -3,6 +3,7 @@
 
 CC= clang
 #CC=gcc
+#CC=tcc
 #uncomment the following line for compiling the lib using tinyc.
 #note that the demos will fail to build with tinyc, but you can 
 #-link- to tinygl built with tinyc using gcc.
