@@ -21,13 +21,13 @@ static inline GLuint loadRGBTexture(unsigned char* buf, unsigned int w, unsigned
 
 static inline GLuint createModelDisplayList(
 	vec3* points, GLuint npoints, vec3* colors, vec3* normals, vec3* texcoords) {
-	GLuint ret = 0;
+	GLuint i, ret = 0;
 	if (!points)
 		return 0;
 	ret = glGenLists(1);
 	glNewList(ret, GL_COMPILE);
 	glBegin(GL_TRIANGLES);
-	for (GLuint i = 0; i < npoints; i++) {
+	for (i = 0; i < npoints; i++) {
 		if (colors) {
 			glColor3f(colors[i].d[0], colors[i].d[1], colors[i].d[2]);
 		}
