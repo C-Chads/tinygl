@@ -16,7 +16,7 @@ typedef struct{
 	vec3 g; //gravity
 	phys_body** bodies;
 	f_ ms; //max speed
-	int nbodies; //number of bodies
+	long nbodies; //number of bodies
 } phys_world;
 
 
@@ -42,11 +42,12 @@ static inline mat4 getPhysBodyRenderTransform(phys_body* body){
 
 //Check for and, if necessary, resolve colliding bodies.
 static inline void resolveBodies(phys_body* a, phys_body* b){
+	vec4 penvec; vec3 penvecnormalized, comvel; f_ friction, bdisplacefactor, adisplacefactor;
 	if(a->mass > 0 || b->mass > 0){ //Perform a preliminary check. Do we even have to do anything?
 		/*We must do shit*/
 	} else {return;}
 	/*Optimized for branch prediction.*/
-	vec4 penvec = (vec4){
+	penvec = (vec4){
 		.d[0]=0,
 		.d[1]=0,
 		.d[2]=0,
@@ -74,24 +75,24 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 	}
 #endif
 	if(penvec.d[3] <= 0) return; //No penetration detected, or invalid configuration.
-	vec3 penvecnormalized = scalev3(1.0/penvec.d[3], downv4(penvec)); //the penetration vector points into B...
-	f_ friction = a->friction * b->friction;
+	penvecnormalized = scalev3(1.0/penvec.d[3], downv4(penvec)); //the penetration vector points into B...
+	friction = a->friction * b->friction;
 	//We now have the penetration vector. There is a penetration.
 	//determine how much each should be displaced by.
 	//The penvec points INTO A and is of length penvec.d[3]
-	f_ bdisplacefactor = a->mass / (a->mass + b->mass);
-	f_ adisplacefactor = b->mass / (a->mass + b->mass);
-	vec3 comvel;
+	bdisplacefactor = a->mass / (a->mass + b->mass);
+	adisplacefactor = b->mass / (a->mass + b->mass);
 	if(!(a->mass > 0)) {
 		adisplacefactor = 0; bdisplacefactor = 1;
 	}else if(!(b->mass > 0)) {
 		bdisplacefactor = 0; adisplacefactor = 1;
 	}
 	comvel = addv3( scalev3(bdisplacefactor, a->v), scalev3(adisplacefactor, b->v));
-	if(a->mass > 0){
-		vec4 displacea = scalev4(-adisplacefactor, penvec);
-		vec3 a_relvel = subv3(a->v, comvel);
-		vec3 a_planarvel = subv3(a_relvel,
+	if(a->mass > 0){ 
+		vec4 displacea; vec3 a_relvel, a_planarvel; 
+		displacea = scalev4(-adisplacefactor, penvec);
+		a_relvel = subv3(a->v, comvel);
+		a_planarvel = subv3(a_relvel,
 								 scalev3(
 								 	dotv3(a_relvel, penvecnormalized),
 								 	penvecnormalized
@@ -103,25 +104,26 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		a->v = addv3( comvel, scalev3(1-friction, a_planarvel) ); //The center of mass velocity, plus a portion of coplanar velocity.
 		a->v = addv3(a->v, scalev3( a->bounciness, downv4(displacea) ) );
 	}
-	if(b->mass > 0){
-		vec4 displaceb = scalev4(bdisplacefactor, penvec);
-		vec3 b_relvel = subv3(b->v, comvel);
-		vec3 b_planarvel = subv3(b_relvel,  //brelvel - portion of brelvel in the direction of penvecnormalized
+	if(b->mass > 0){ 
+		vec4 displaceb; vec3 b_relvel, b_planarvel;
+		displaceb = scalev4(bdisplacefactor, penvec);
+		b_relvel = subv3(b->v, comvel);
+		b_planarvel = subv3(b_relvel,  //brelvel - portion of brelvel in the direction of penvecnormalized
 									scalev3(
 										dotv3(b_relvel, penvecnormalized), //the component in that direction
 										penvecnormalized //that direction
 									)
 								);
-#pragma omp simd
-		for(int i = 0; i < 3; i++)
-			b->shape.c.d[i] += displaceb.d[i];
+		b->shape.c.d[0] += displaceb.d[0];
+		b->shape.c.d[1] += displaceb.d[1];
+		b->shape.c.d[2] += displaceb.d[2];
 		b->v = addv3(comvel, scalev3(1-friction, b_planarvel) ); //The center of mass velocity, plus a portion of coplanar velocity.
 		b->v = addv3(b->v, scalev3( b->bounciness, downv4(displaceb) ) );
 	}
 }
 
-static inline void stepPhysWorld(phys_world* world, const int collisioniter){
-	for(int i = 0; i < world->nbodies; i++)
+static inline void stepPhysWorld(phys_world* world, const long collisioniter){
+	for(long i = 0; i < world->nbodies; i++)
 		if(world->bodies[i] && world->bodies[i]->mass > 0){
 			phys_body* body = world->bodies[i];
 			vec3 bodypos = addv3(downv4(body->shape.c),body->v);
@@ -135,11 +137,11 @@ static inline void stepPhysWorld(phys_world* world, const int collisioniter){
 			}
 		}
 	//Resolve collisions (if any)
-	for(int iter = 0; iter < collisioniter; iter++)
-	for(int i = 0; i < (int)(world->nbodies-1); i++)
-	if(world->bodies[i])
-	for(int j = i+1; j < (int)world->nbodies; j++)
-	if(world->bodies[j])
-		resolveBodies(world->bodies[i], world->bodies[j]);
+	for(long iter = 0; iter < collisioniter; iter++)
+	for(long i = 0; i < (long)(world->nbodies-1); i++)
+		if(world->bodies[i])
+		for(long j = i+1; j < (long)world->nbodies; j++)
+		if(world->bodies[j])
+			resolveBodies(world->bodies[i], world->bodies[j]);
 }
 #endif

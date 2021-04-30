@@ -78,7 +78,7 @@ static inline void syncChadWorld(ChadWorld* world){
 }
 /*invoked every single time that an object is added or removed*/
 static inline void prepChadWorld(ChadWorld* world){
-GLuint i;
+unsigned long i;
 	if(world->world.bodies) free(world->world.bodies);
 	world->world.bodies = calloc(1,sizeof(phys_body*) * world->n_ents);
 	/*Bodies is an array of pointers.*/
@@ -98,7 +98,7 @@ static inline void ChadWorld_RemoveEntity(ChadWorld* world, GLuint index){
 	ChadEntity* old_ents_phys = world->ents_phys;
 	if(world->n_ents <= index) return; /*Bad index*/
 	world->ents_phys = calloc(1,(--world->n_ents) * sizeof(ChadEntity));
-	for(unsigned int i = 0; i < world->n_ents+1; i++) /**/
+	for(unsigned long i = 0; i < world->n_ents+1; i++) /**/
 	{
 		
 		if(i < index)
@@ -113,7 +113,7 @@ static inline void ChadWorld_RemoveEntity(ChadWorld* world, GLuint index){
 
 
 static inline void renderChadWorld(ChadWorld* world){
-	GLuint i; 
+	unsigned long i; 
 	/*The user will already have set up the viewport, the camera, and the lights.*/
 	for(i = 0; i < world->n_ents; i++){
 		glPushMatrix();
