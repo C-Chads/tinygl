@@ -10,6 +10,7 @@ Written by Gek (DMHSW) in 2020
 
 #ifndef TOBJ_PARSE_H
 #define TOBJ_PARSE_H
+/*TODO: fix.*/
 #include "3dMath.h"
 #include <stdio.h>
 #include <string.h>

@@ -4,14 +4,22 @@
 
 #ifndef CHAD_MATH_H
 #define CHAD_MATH_H
+/* Default behavior- compatibility.
+
+*/
+#ifndef CHAD_MATH_NO_ALIGN
+#define CHAD_MATH_NO_ALIGN
+#endif
 
 #ifdef __TINYC__
 #define CHAD_MATH_NO_ALIGN
 #endif
 
+
 #ifndef CHAD_MATH_NO_ALIGN
 #include <stdalign.h>
 #define CHAD_ALIGN alignas(16)
+#warning "Chad math library compiling with alignas of 16, malloc and realloc MUST return 16-byte-aligned pointers."
 #else
 #define CHAD_ALIGN /*a comment*/
 #endif

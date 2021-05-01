@@ -81,7 +81,15 @@ the maximum number of vertices in a polygon is defined in zgl.h
 
 #define TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER 0
 
-#define TGL_FEATURE_ALIGNAS 1
+/*
+!!!!!WARNING!!!!!
+TGL_FEATURE_ALIGNAS assumes that the implementation's malloc (AND REALLOC) are 16-byte aligned.
+
+Disabled by default for compatibility- you should only enable this if you KNOW that the target ALWAYS
+returns 16-byte aligned pointers.
+*/
+
+#define TGL_FEATURE_ALIGNAS 0
 /*
 Optimization hint- cost of branching.
 0- branching has zero cost, avoid extraneous code.
