@@ -17,6 +17,7 @@ typedef struct{
 	phys_body** bodies;
 	f_ ms; //max speed
 	long nbodies; //number of bodies
+	char is_2d; //is this a 2-dimensional simulation?
 } phys_world;
 
 
@@ -125,6 +126,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 static inline void stepPhysWorld(phys_world* world, const long collisioniter){
 	for(long i = 0; i < world->nbodies; i++)
 		if(world->bodies[i] && world->bodies[i]->mass > 0){
+			unsigned long n_scale_iter = 0;
 			phys_body* body = world->bodies[i];
 			vec3 bodypos = addv3(downv4(body->shape.c),body->v);
 			body->shape.c.d[0] = bodypos.d[0];
@@ -132,9 +134,10 @@ static inline void stepPhysWorld(phys_world* world, const long collisioniter){
 			body->shape.c.d[2] = bodypos.d[2];
 			body->v = addv3(body->v, body->a);
 			body->v = addv3(body->v, world->g);
-			while(dotv3(body->v, body->v) > world->ms) {
-				body->v = scalev3(0.9, body->v);
+			while(dotv3(body->v, body->v) > world->ms && n_scale_iter < 100) {
+				body->v = scalev3(0.9, body->v); n_scale_iter++;
 			}
+			if(world->is_2d) body->shape.c.d[2] = 0;
 		}
 	//Resolve collisions (if any)
 	for(long iter = 0; iter < collisioniter; iter++)
