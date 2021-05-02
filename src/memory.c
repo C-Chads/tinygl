@@ -2,6 +2,10 @@
  * Memory allocator for TinyGL
  */
 
+static inline void required_for_compilation_(){
+	return;
+}
+
 #if TGL_FEATURE_CUSTOM_MALLOC == 1
 #include "zgl.h"
 
