@@ -97,7 +97,7 @@ static long strfind(const char* text, const char* subtext){
 		if(text[ti] == subtext[si]) {
 			si++; 
 			if(subtext[si] == '\0') return (ti - st)+1;
-		}else {
+		}else{
 			if(subtext[si] == '\0') return (ti - st)+1;
 			ti-=si;si = 0;
 		}
