@@ -24,5 +24,9 @@ include in the files history information documenting your changes.
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+For the SDL Examples.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 This program uses SDL 1.2, which is licensed under the GNU Lesser General Public Library, version 2.1.
 You can find a copy of this license at https://www.gnu.org/licenses/lgpl-2.1.en.html
