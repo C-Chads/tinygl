@@ -7,7 +7,7 @@ all: $(LIB) SDL_Examples
 $(LIB):
 	cd src && $(MAKE) && cd ..
 	cp src/*.a ./lib/
-
+#hello
 
 SDL_Examples: $(LIB)
 	cd SDL_Examples && $(MAKE) && cd ..
