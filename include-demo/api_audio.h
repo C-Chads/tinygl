@@ -15,7 +15,6 @@ HOW TO BUILD THINGS USING THIS LIBRARY
 
 */
 #define USE_MIXER
-#define USE_MP3=
 
 #include <stdio.h>
 #include <stdlib.h>
