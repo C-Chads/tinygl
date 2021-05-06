@@ -75,7 +75,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		puts("\nInvalid configuration. Error.\n");
 	}
 #endif
-	if(penvec.d[3] <= 0) return; //No penetration detected, or invalid configuration.
+	if(penvec.d[3] <= 0.0){return;}//No penetration detected, or invalid configuration.
 	penvecnormalized = scalev3(1.0/penvec.d[3], downv4(penvec)); //the penetration vector points into B...
 	friction = a->friction * b->friction;
 	//We now have the penetration vector. There is a penetration.
@@ -89,7 +89,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		bdisplacefactor = 0; adisplacefactor = 1;
 	}
 	comvel = addv3( scalev3(bdisplacefactor, a->v), scalev3(adisplacefactor, b->v));
-	if(a->mass > 0){ 
+	if(a->mass > 0){
 		vec4 displacea; vec3 a_relvel, a_planarvel; 
 		displacea = scalev4(-adisplacefactor, penvec);
 		a_relvel = subv3(a->v, comvel);
@@ -102,10 +102,10 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		a->shape.c.d[0] += displacea.d[0];
 		a->shape.c.d[1] += displacea.d[1];
 		a->shape.c.d[2] += displacea.d[2];
-		a->v = addv3( comvel, scalev3(1-friction, a_planarvel) ); //The center of mass velocity, plus a portion of coplanar velocity.
+		a->v = addv3( comvel, scalev3(friction, a_planarvel) ); //The center of mass velocity, plus a portion of coplanar velocity.
 		a->v = addv3(a->v, scalev3( a->bounciness, downv4(displacea) ) );
 	}
-	if(b->mass > 0){ 
+	if(b->mass > 0){
 		vec4 displaceb; vec3 b_relvel, b_planarvel;
 		displaceb = scalev4(bdisplacefactor, penvec);
 		b_relvel = subv3(b->v, comvel);
@@ -118,7 +118,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		b->shape.c.d[0] += displaceb.d[0];
 		b->shape.c.d[1] += displaceb.d[1];
 		b->shape.c.d[2] += displaceb.d[2];
-		b->v = addv3(comvel, scalev3(1-friction, b_planarvel) ); //The center of mass velocity, plus a portion of coplanar velocity.
+		b->v = addv3(comvel, scalev3(friction, b_planarvel) ); //The center of mass velocity, plus a portion of coplanar velocity.
 		b->v = addv3(b->v, scalev3( b->bounciness, downv4(displaceb) ) );
 	}
 }
@@ -137,14 +137,18 @@ static inline void stepPhysWorld(phys_world* world, const long collisioniter){
 			while(dotv3(body->v, body->v) > world->ms && n_scale_iter < 100) {
 				body->v = scalev3(0.9, body->v); n_scale_iter++;
 			}
-			if(world->is_2d) body->shape.c.d[2] = 0;
+			if(world->is_2d) {body->shape.c.d[2] = 0;}
+			
 		}
+	
 	//Resolve collisions (if any)
 	for(long iter = 0; iter < collisioniter; iter++)
-	for(long i = 0; i < (long)(world->nbodies-1); i++)
-		if(world->bodies[i])
-		for(long j = i+1; j < (long)world->nbodies; j++)
-		if(world->bodies[j])
-			resolveBodies(world->bodies[i], world->bodies[j]);
+	for(long i = 0; i < (long)(world->nbodies-1); i++){
+		if(world->bodies[i]){
+			for(long j = i+1; j < (long)world->nbodies; j++)
+				if(world->bodies[j])
+					resolveBodies(world->bodies[i], world->bodies[j]);
+		}
+	}
 }
 #endif
