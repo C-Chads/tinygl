@@ -97,6 +97,10 @@ static inline long ChadWorld_AddEntity(ChadWorld* world, ChadEntity* ent){
 		if(world->ents[i] == NULL){
 			world->ents[i] = ent;
 			world->world.bodies[i] = &ent->body;
+			if(world->n_ents <= i){
+				world->n_ents = i + 1;
+				world->world.nbodies = i+1;
+			}
 			return i;
 		}
 	}
@@ -104,9 +108,16 @@ static inline long ChadWorld_AddEntity(ChadWorld* world, ChadEntity* ent){
 
 }
 
-static inline void ChadWorld_RemoveEntity(ChadWorld* world, unsigned long index){
-	if(index < (unsigned long)world->max_ents && index > 0)
-		{world->ents[index] = NULL;world->world.bodies[index] = NULL;}
+static inline void ChadWorld_RemoveEntityByPointer(ChadWorld* world,  ChadEntity* ent){
+	for(long i = 0; i < world->max_ents; i++)
+		if(world->ents[i] == ent) {
+			world->ents[i] = NULL;
+			world->world.bodies[i] = NULL;
+		}
+	//recalculate n_ents
+	for(long i = 0; i < world->max_ents; i++)
+		if(world->ents[i]) 
+			{world->n_ents = i + 1;world->world.nbodies = i+1;}
 }
 
 
@@ -117,9 +128,10 @@ static inline void renderChadWorld(ChadWorld* world){
 		if(world->ents[i]){
 			glPushMatrix();
 				/*build the transformation matrix*/
-				glTranslatef(world->ents[i]->body.v.d[0],
-							world->ents[i]->body.v.d[1],
-							world->ents[i]->body.v.d[2]);
+				glTranslatef(	world->ents[i]->body.shape.c.d[0],
+								world->ents[i]->body.shape.c.d[1],
+								world->ents[i]->body.shape.c.d[2]
+							);
 				glMultMatrixf(world->ents[i]->body.localt.d);
 				/*Render that shizzle!*/
 				glCallList(
