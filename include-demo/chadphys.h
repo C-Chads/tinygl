@@ -47,6 +47,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 	if(a->mass > 0 || b->mass > 0){ //Perform a preliminary check. Do we even have to do anything?
 		/*We must do shit*/
 	} else {return;}
+	if(a->mass < -0 || b->mass < -0) return; /*ERROR- for the branch predictor, that is...*/
 	/*Optimized for branch prediction.*/
 	penvec = (vec4){
 		.d[0]=0,
