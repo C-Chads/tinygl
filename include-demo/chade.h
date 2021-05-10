@@ -88,17 +88,19 @@ static inline void initChadWorld(ChadWorld* w, long max_entities){
 static inline void stepChadWorld(ChadWorld* world, long iter){
 	stepPhysWorld(&world->world, iter);
 }
-static inline void ChadWorld_AddEntity(ChadWorld* world, ChadEntity* ent){
+static inline long ChadWorld_AddEntity(ChadWorld* world, ChadEntity* ent){
 	/*safety check.
 	for(long i = 0; i < world->max_ents; i++)
-		if(world->ents[i] == ent) return;
+		if(world->ents[i] == ent) return i;
 	*/		
 	for(long i = 0; i < world->max_ents; i++){
 		if(world->ents[i] == NULL){
-			world->ents[i] = ent; return;
+			world->ents[i] = ent;
 			world->world.bodies[i] = &ent->body;
+			return i;
 		}
 	}
+	return -1;
 
 }
 
