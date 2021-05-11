@@ -94,12 +94,16 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		vec4 displacea; vec3 a_relvel, a_planarvel; 
 		displacea = scalev4(-adisplacefactor, penvec);
 		a_relvel = subv3(a->v, comvel);
-		a_planarvel = subv3(a_relvel,
+		float test = dotv3(a_relvel, penvecnormalized);
+		if(test > 0)
+			a_planarvel = subv3(a_relvel,
 								 scalev3(
 								 	dotv3(a_relvel, penvecnormalized),
 								 	penvecnormalized
 								 )
 								);
+		else
+			a_planarvel = a_relvel;
 		a->shape.c.d[0] += displacea.d[0];
 		a->shape.c.d[1] += displacea.d[1];
 		a->shape.c.d[2] += displacea.d[2];
@@ -110,12 +114,16 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		vec4 displaceb; vec3 b_relvel, b_planarvel;
 		displaceb = scalev4(bdisplacefactor, penvec);
 		b_relvel = subv3(b->v, comvel);
-		b_planarvel = subv3(b_relvel,  //brelvel - portion of brelvel in the direction of penvecnormalized
+		float test = dotv3(b_relvel, penvecnormalized); //the component in that direction
+		if(test < 0)
+			b_planarvel = subv3(b_relvel,  //brelvel - portion of brelvel in the direction of penvecnormalized
 									scalev3(
 										dotv3(b_relvel, penvecnormalized), //the component in that direction
 										penvecnormalized //that direction
 									)
 								);
+		else
+			b_planarvel = b_relvel;
 		b->shape.c.d[0] += displaceb.d[0];
 		b->shape.c.d[1] += displaceb.d[1];
 		b->shape.c.d[2] += displaceb.d[2];

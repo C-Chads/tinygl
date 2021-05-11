@@ -169,7 +169,6 @@ static void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width, GLin
 	glVertex3f(r1 * cos(0), r1 * sin(0), -width * 0.5);
 
 	glEnd();
-
 	/* draw inside radius cylinder */
 	if (override_drawmodes == 1)
 		glBegin(GL_LINES);
