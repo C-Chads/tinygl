@@ -98,7 +98,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		if(test > 0)
 			a_planarvel = subv3(a_relvel,
 								 scalev3(
-								 	dotv3(a_relvel, penvecnormalized),
+								 	test,
 								 	penvecnormalized
 								 )
 								);
@@ -118,7 +118,7 @@ static inline void resolveBodies(phys_body* a, phys_body* b){
 		if(test < 0)
 			b_planarvel = subv3(b_relvel,  //brelvel - portion of brelvel in the direction of penvecnormalized
 									scalev3(
-										dotv3(b_relvel, penvecnormalized), //the component in that direction
+										test, //the component in that direction
 										penvecnormalized //that direction
 									)
 								);
