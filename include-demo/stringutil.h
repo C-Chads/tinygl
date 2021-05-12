@@ -11,6 +11,10 @@
 #define STRUTIL_ALLOC(s) malloc(s)
 #endif
 
+#ifndef STRUTIL_CALLOC
+#define STRUTIL_CALLOC(n,s) calloc(n,s)
+#endif
+
 #ifndef STRUTIL_FREE
 #define STRUTIL_FREE(s) free(s)
 #endif
@@ -383,10 +387,10 @@ static strll tokenize(char* alloced_text, const char* token){
 	while(current_token_location > -1){
 		char* temp = strcatalloc(alloced_text+ current_token_location + len_token, "");
 		current->text = str_null_terminated_alloc(alloced_text,current_token_location);
-		free(alloced_text);
+		STRUTIL_FREE(alloced_text);
 		alloced_text = temp;
 		current_token_location = strfind(alloced_text, token);
-		current->right = calloc(1, sizeof(strll));
+		current->right = STRUTIL_CALLOC(1, sizeof(strll));
 		current = current->right;
 	}
 	return result;
