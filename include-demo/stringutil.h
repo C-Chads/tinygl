@@ -372,6 +372,7 @@ static char* str_repl_allocf(char* text, char* subtext, char* replacement){
 typedef struct strll{
 	char* text;
 	unsigned long identification;
+	void* data;
 	struct strll* right;
 	struct strll* child;
 	struct strll* left;
@@ -393,6 +394,7 @@ static strll tokenize(char* alloced_text, const char* token){
 		current->right = STRUTIL_CALLOC(1, sizeof(strll));
 		current = current->right;
 	}
+	STRUTIL_FREE(alloced_text);
 	return result;
 }
 
