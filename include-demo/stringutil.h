@@ -386,7 +386,7 @@ static strll* consume_child_bytes(strll* current_node, unsigned long nbytes){
 	current_node->text = str_null_terminated_alloc(text_old, nbytes);
 	child_old = current_node->child;
 	current_node->child = STRUTIL_CALLOC(1, sizeof(strll));
-	current_node->child->child = child_old;
+	current_node->child->right = child_old;
 	current_node->child->text = strcatalloc(text_old + nbytes, "");
 	STRUTIL_FREE(text_old);
 	return current_node->child;
@@ -398,7 +398,7 @@ static strll* consume_left_bytes(strll* current_node, unsigned long nbytes){
 	current_node->text = str_null_terminated_alloc(text_old, nbytes);
 	left_old = current_node->left;
 	current_node->left = STRUTIL_CALLOC(1, sizeof(strll));
-	current_node->left->left = left_old;
+	current_node->left->right = left_old;
 	current_node->left->text = strcatalloc(text_old + nbytes, "");
 	STRUTIL_FREE(text_old);
 	return current_node->left;
