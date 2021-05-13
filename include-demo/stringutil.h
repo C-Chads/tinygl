@@ -378,6 +378,23 @@ typedef struct strll{
 	struct strll* left;
 }strll;
 
+/*Make Child*/
+static strll* consume_until(strll* current_node, const char* find_me, const char delete_findable){
+	long loc;
+	loc = strfind(current_node->text, find_me);
+	if(loc < 0){ /*Nothing to do!*/
+		return current_node;
+	}
+	/*loc was not -1.*/
+	current_node->child = STRUTIL_CALLOC(1, sizeof(strll));
+	current_node->right = STRUTIL_CALLOC(1, sizeof(strll));
+	current_node->child->text = str_null_terminated_alloc(current_node->text,loc + (delete_findable?strlen(find_me):0));
+	current_node->right->text = strcatalloc(current_node->text + loc + strlen(find_me),"");
+	STRUTIL_FREE(current_node->text);
+	current_node->text = NULL;
+	return current_node->right;
+}
+
 static strll tokenize(char* alloced_text, const char* token){
 	strll result = {0}; strll* current;
 	long current_token_location;
