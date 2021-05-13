@@ -380,14 +380,16 @@ typedef struct strll{
 
 /*Make Child*/
 static strll* consume_until(strll* current_node, const char* find_me, const char delete_findable){
-	long loc;
+	long loc; strll* right_old;
 	loc = strfind(current_node->text, find_me);
 	if(loc < 0){ /*Nothing to do!*/
 		return current_node;
 	}
 	/*loc was not -1.*/
 	current_node->child = STRUTIL_CALLOC(1, sizeof(strll));
+	right_old = current_node->right;
 	current_node->right = STRUTIL_CALLOC(1, sizeof(strll));
+	current_node->right->right = right_old;
 	current_node->child->text = str_null_terminated_alloc(current_node->text,loc + (delete_findable?strlen(find_me):0));
 	current_node->right->text = strcatalloc(current_node->text + loc + strlen(find_me),"");
 	STRUTIL_FREE(current_node->text);
