@@ -422,7 +422,8 @@ static void parent_right_node(strll* current_node){
 	strll* right_right;  
 	strll* top = current_node;
 	if(current_node->right == NULL) return; /*Nothing to do!*/
-	right_right = current_node->right->right;
+	right_right = top->right->right;
+	top->right->right = NULL;
 	if(current_node->child){
 		current_node = current_node->child;
 		for(;current_node->right != NULL;current_node = current_node->right){};
@@ -430,7 +431,7 @@ static void parent_right_node(strll* current_node){
 		current_node->right = top->right;
 		top->right = right_right;
 	} else {
-		current_node->child = top->right;
+		top->child = top->right;
 		top->right = right_right;
 	}
 	
@@ -442,6 +443,7 @@ static void left_parent_right_node(strll* current_node){
 	strll* top = current_node;
 	if(current_node->right == NULL) return; /*Nothing to do!*/
 	right_right = current_node->right->right;
+	top->right->right = NULL;
 	if(current_node->child){
 		current_node = current_node->left;
 		for(;current_node->right != NULL;current_node = current_node->right){};
