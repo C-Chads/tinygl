@@ -423,21 +423,25 @@ static void parent_right_node(strll* current_node){
 	strll* top = current_node;
 	if(current_node->right == NULL) return; /*Nothing to do!*/
 	right_right = current_node->right->right;
-	for(;current_node->child != NULL;current_node = current_node->child){};
+	current_node = current_node->child;
+	if(!current_node) return;
+	for(;current_node->right != NULL;current_node = current_node->right){};
 	/*we are now on the last child.*/
-	current_node->child = top->right;
+	current_node->right = top->right;
 	top->right = right_right;
 }
 
-/*Add the right node to the list of lefthand children.*/
+/*Append the right node to the list of lefthand children.*/
 static void left_parent_right_node(strll* current_node){
 	strll* right_right;  
 	strll* top = current_node;
 	if(current_node->right == NULL) return; /*Nothing to do!*/
 	right_right = current_node->right->right;
-	for(;current_node->left != NULL;current_node = current_node->left){};
-	/*we are now on the last left.*/
-	current_node->left = top->right;
+	current_node = current_node->left;
+	if(!current_node) return;
+	for(;current_node->right != NULL;current_node = current_node->right){};
+	/*we are now on the last child.*/
+	current_node->right = top->right;
 	top->right = right_right;
 }
 
