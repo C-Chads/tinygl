@@ -423,12 +423,17 @@ static void parent_right_node(strll* current_node){
 	strll* top = current_node;
 	if(current_node->right == NULL) return; /*Nothing to do!*/
 	right_right = current_node->right->right;
-	current_node = current_node->child;
-	if(!current_node) return;
-	for(;current_node->right != NULL;current_node = current_node->right){};
-	/*we are now on the last child.*/
-	current_node->right = top->right;
-	top->right = right_right;
+	if(current_node->child){
+		current_node = current_node->child;
+		for(;current_node->right != NULL;current_node = current_node->right){};
+		/*we are now on the last child.*/
+		current_node->right = top->right;
+		top->right = right_right;
+	} else {
+		current_node->child = top->right;
+		top->right = right_right;
+	}
+	
 }
 
 /*Append the right node to the list of lefthand children.*/
@@ -437,12 +442,16 @@ static void left_parent_right_node(strll* current_node){
 	strll* top = current_node;
 	if(current_node->right == NULL) return; /*Nothing to do!*/
 	right_right = current_node->right->right;
-	current_node = current_node->left;
-	if(!current_node) return;
-	for(;current_node->right != NULL;current_node = current_node->right){};
-	/*we are now on the last child.*/
-	current_node->right = top->right;
-	top->right = right_right;
+	if(current_node->child){
+		current_node = current_node->left;
+		for(;current_node->right != NULL;current_node = current_node->right){};
+		/*we are now on the last child.*/
+		current_node->right = top->right;
+		top->right = right_right;
+	} else {
+		current_node->left = top->right;
+		top->right = right_right;
+	}
 }
 
 static strll* consume_until(strll* current_node, const char* find_me, const char delete_findable){
