@@ -134,7 +134,7 @@ Optimization hint- cost of branching.
 /*Test the compatibility of the target platform at glInit() time.*/
 #define TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST 1
 
-#define TINYGL_VERSION 0.8
+#define TINYGL_VERSION 1.0
 
 #endif 
 /* _tgl_features_h_ */
