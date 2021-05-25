@@ -35,7 +35,9 @@ TinyGL is written in pure C99, and requires very few functions from the C standa
 
 ## How portable?
 
-* TinyGL still compiles under bellard's Tiny C Compiler. (Note: SDL examples cannot be compiled with tcc, but the raw demos can.)
+* TinyGL still compiles under bellard's Tiny C Compiler.
+
+The SDL examples are now confirmed building with TCC, using TinyCC built from the latest source.
 
 * TinyGL has been compiled for the Nintendo 3DS (proof of concept in another repository)
 
