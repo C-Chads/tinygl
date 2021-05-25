@@ -1,11 +1,7 @@
 # TinyGL
 
 ![tgl logo](tgl_minimal.png)
-
-(Maintainer's note: tinygl is now C89 compliant. Demo code and bonus libraries remain only c99 compliant.)
-
-
-A major overhaul of Fabrice Bellard's TinyGL (Now compiling with -std=c89!) to be
+A major overhaul of Fabrice Bellard's TinyGL to be
 more useful as a software rasterizer.
 
 Now with limited multithreading support
