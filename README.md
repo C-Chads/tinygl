@@ -187,6 +187,10 @@ The changelog is as such:
 * Implemented compiletime toggles for GL_SELECT and GL_FEEDBACK which significantly
 boosts performance. Also, implemented GL_FEEDBACK.
 
+* Accept PR from RobLoach to add Cmake support
+
+
+
 Note that this Softrast **is not GL 1.1 compliant** and does not constitute a complete GL implementation.
 
 You *will* have to tweak your code to work with this library. That said, once you have, it will run anywhere that you can get
