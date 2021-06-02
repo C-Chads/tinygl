@@ -1,0 +1,85 @@
+I will teach you here how to integrate TinyGL into almost any project.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Method 1: Organized or "I'm a master software architect"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+step 1: Copy the src directory into your project, and name it something like "src_tinygl"
+
+step 2: copy the contents of the include folder to your project's include folder, exactly one level above
+		the aformentioned src directory.
+
+step 2.5: If you are using an alternate directory structure, adjust the includes.
+
+step 3: copy and alter the config.mk file into your project directory above the src_tinygl directory.
+		You should modify the CC and CFLAGS to suit your project.
+
+step 4: add a step in your main project makefile to cd into the src_tinygl directory and `make -B`
+
+step 5: add a step in your main project makefile to copy libTinyGL.a from src_tinygl to the aforementioned "lib" directory.
+
+step 6: Compile your programs by including from the include directory 
+		(relative pathing is probably easiest, but you can do -Isystem)
+		and linking to libTinyGL.a
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Method 2: "One big program!" or "help I don't have ar in my toolchain!!!!"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+step 1: Place everything in 'src' from this repository in a single folder.
+step 2: Place everything from 'include' into a single folder.
+step 3: adjust the #includes in all files so that they point to the correct target files.
+			This will likely be an iterative process of compiling, 
+			seeing an error message about a missing include, and fixing it.
+			
+step 4 v1: Compile all relevant C source files into your "one big program". No need for a ".a" statically linked library.
+			you must link against the C standard library and specifically '-lm' for the math library.
+step 4 v2: Compile all relevant C source files into objects, and then use them later. You do not have to specify any linkages.
+			In your final binary, you must link against the standard library and -lm.
+
+
+Note that ar is just a tool which merges object files into convenient archives. ar is not needed to build TinyGL.
+
+Whatever you're using to compile C source files will compile TinyGL.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Q&A
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+What can I use TinyGL for?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) Graphics library replacement. Who needs GPUs, am i right?
+2) Cross platform code. TinyGL should run unmodified on almost any platform with a conformant floating point
+	implementation and 32 bit integer types. 
+3) Serverside rendering. Put TinyGL in a program running on a server and stream the video over the network. Who needs X?
+4) Pre-rendered graphics. Since TinyGL runs entirely on the CPU, it is very easy to customize its pipeline to create
+	unique and interesting things. TinyGL 
+5) Porting programs written for OpenGL. TinyGL is *NOT* a standards-compliant OpenGL implementation, and
+	will never be. TinyGL is NOT OpenGL and should not be confused with it.
+	That said, since TinyGL's API is very *similar* to OpenGL's API,
+	and since TinyGL will run on even the most obscure and inane architectures...
+	once you port C code to using TinyGL, it is almost automatically usable on almost any device you can imagine.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TinyGL uses too much memory?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The library's defaults for the maximum number of textures, display lists, lights, and so-on are optimized for platforms
+with abundant memory. Configure these and other defaults in 'zgl.h' or 'zfeatures.h'
+
+Consider also reducing the texture size from the default 256x256 to 64x64 or 32x32 (for that N64 vibe) if you're desparate.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I use 16 bit color?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+see zfeatures.h, you will have to modify these lines for full 16 bit compatibility:
+
+These lines are setup for 32 bit color,if you are going to use the NO_DRAW_COLOR or NO_COPY_COLOR then
+you should set these differently:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#define TGL_NO_COPY_COLOR 0xff00ff
+#define TGL_NO_DRAW_COLOR 0xff00ff
+/* solid debug pink.*/
+#define TGL_COLOR_MASK 0x00ffffff
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+These lines configure the actual color bit depth:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#define TGL_FEATURE_16_BITS        0
+#define TGL_FEATURE_32_BITS        1
