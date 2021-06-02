@@ -22,10 +22,10 @@ a replacement gl_malloc(), gl_zalloc(), and gl_free() in memory.c
 #define TGL_FEATURE_CUSTOM_MALLOC 0
 
 /*
-Use Fast Inverse Square Root. Toggleable because it's actually slower,
+Use Fast Inverse Square Root. Toggleable because it's actually slower on some platforms,
 And because some systems may have float types which are incompatible with it.
 */
-#define TGL_FEATURE_FISR 1
+#define TGL_FEATURE_FISR 0
 
 #define TGL_FEATURE_ARRAYS         1
 
