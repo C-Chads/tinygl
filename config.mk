@@ -1,7 +1,8 @@
 #####################################################################
 # C compiler
 
-CC= clang
+#CC= clang
+CC=cc
 #CC=gcc
 #CC=tcc
 #uncomment the following line for compiling the lib using tinyc.
