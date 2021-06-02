@@ -54,8 +54,10 @@ These are the C standard library includes used in the RAW DEMOS.
 #include <string.h>
 #include <stdarg.h>
 ```
-If your system supports it, the library can also take advantage of `alignas` to get SIMD support,
+If your system supports it, the library can also take advantage of `alignas` to get improved SIMD support,
 which can be disabled in zfeatures. This adds a dependency to `stdalign.h` but greatly increases vertex processing speed.
+
+(This is disabled by default for maximum portability)
 
 If you are unsure if your target platform can support TinyGL, compile it with the buildtime and runtime tests enabled (They are, by default)
 
@@ -69,7 +71,7 @@ The SDL examples have been tested building on Debian 10 and Windows 10, while ti
 the "Chad Math Library" has been included (CC0, public domain) for your programming needs.
 
 it is simd accelerated on supported platforms, but it contains ZERO platform-specific code- it relies on an optimizing
-compiler to get vectorized ops.
+compiler to get vectorized ops. SIMD acceleration is improved by enabling alignas.
 
 NOTE: There are graphical artifacts visible in these gifs which have been corrected in this version of the library.
 
