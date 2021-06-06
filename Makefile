@@ -1,5 +1,7 @@
 
 LIB = lib/libTinyGL.a
+LIBDIR= /usr/local/lib/
+INCDIR= /usr/local/lib/
 
 all: $(LIB) RDMOS
 	@echo Done!
@@ -7,6 +9,11 @@ all: $(LIB) RDMOS
 $(LIB):
 	cd src && $(MAKE) && cd ..
 	cp src/*.a ./lib/
+
+install: $(LIB)
+	cp $(LIB) $(LIBDIR)
+	mkdir $(INCDIR)/tinygl
+	cp include/* $(INCDIR)/tinygl
 
 SDL_Examples: $(LIB)
 	@echo "These demos require SDL 1.2 to compile."
