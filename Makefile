@@ -1,7 +1,8 @@
 
-LIB = lib/libTinyGL.a
-LIBDIR= /usr/local/lib/
-INCDIR= /usr/local/lib/
+LIBNAME=libTinyGL.a
+LIB=lib/$(LIBNAME)
+LIBDIR=/usr/local/lib
+INCDIR=/usr/local/include
 
 all: $(LIB) RDMOS
 	@echo Done!
@@ -12,8 +13,12 @@ $(LIB):
 
 install: $(LIB)
 	cp $(LIB) $(LIBDIR)
-	mkdir $(INCDIR)/tinygl
-	cp include/* $(INCDIR)/tinygl
+	mkdir $(INCDIR)/tinygl || echo "You installed before?"
+	cp -r include/* $(INCDIR)/tinygl
+
+uninstall:
+	rm -f $(LIBDIR)/$(LIBNAME)
+	rm -rf $(INCDIR)/tinygl
 
 SDL_Examples: $(LIB)
 	@echo "These demos require SDL 1.2 to compile."
