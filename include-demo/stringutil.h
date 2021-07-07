@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-
+#include <stddef.h>
 
 #ifndef STRUTIL_ALLOC
 #define STRUTIL_ALLOC(s) malloc(s)
@@ -178,7 +178,7 @@ GEK'S SIMPLE TEXT COMPRESSION SCHEMA
 */
 static char* strencodealloc(const char* inbuf, const char** tokens, unsigned long ntokens, char esc, char tokmark){
 	unsigned long lenin;
-	char c; unsigned long i = 0; unsigned long j;
+	unsigned long i = 0; unsigned long j;
 	char c_str[512];
 	char* out = NULL;
 
@@ -494,7 +494,7 @@ static strll tokenize(char* alloced_text, const char* token){
 }
 
 static strll* parse_matched(strll* current_node, const char* tl, const char* tr){
-	strll* current_child; strll* child_old; strll* right_old;
+	strll* child_old; strll* right_old;
 	long current_tl_location; long counter = 1;
 	long current_tr_location; long start_tl_location;
 	long len_tl;
@@ -518,7 +518,6 @@ static strll* parse_matched(strll* current_node, const char* tl, const char* tr)
 	if(current_tl_location == -1){
 		return current_node;
 	}
-	current_child = current_node->child;
 	child_old = current_node->child;
 	current_node->child = STRUTIL_CALLOC(1, sizeof(strll));
 	current_node->child->right = child_old;
