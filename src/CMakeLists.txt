@@ -36,7 +36,7 @@ if(TINYGL_BUILD_STATIC)
     LIBRARY DESTINATION ${LIB_DIR}
     ARCHIVE DESTINATION ${LIB_DIR})
   if(NOT MSVC)
-    target_compile_options(tinygl PRIVATE "-Wall")
+    target_compile_options(tinygl PRIVATE -O3 -DNDEBUG -pedantic -march=native -Wall)
   endif(NOT MSVC)
 endif(TINYGL_BUILD_STATIC)
 
@@ -47,6 +47,9 @@ if(TINYGL_BUILD_STATIC)
     RUNTIME DESTINATION ${BIN_DIR}
     LIBRARY DESTINATION ${LIB_DIR}
     ARCHIVE DESTINATION ${LIB_DIR})
+  if(NOT MSVC)
+    target_compile_options(tinygl-static PRIVATE -O3 -DNDEBUG -pedantic -march=native -Wall)
+  endif(NOT MSVC)
 endif(TINYGL_BUILD_STATIC)
 
 # Local Variables:

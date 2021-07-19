@@ -79,47 +79,47 @@ NOTE: There are graphical artifacts visible in these gifs which have been correc
 
 Without Polygon Stipple:
 
-![GIF Video of demo](capture.gif)
+![GIF Video of demo](doc/capture.gif)
 
 With Polygon Stipple:
 
-![GIF Video of demo](capture2.gif)
+![GIF Video of demo](doc/capture2.gif)
 
 Hello World test:
 
-![model loading demo](helloworld.gif)
+![model loading demo](doc/helloworld.gif)
 
 Texturing Test: 
 
-![Screenshot of Texture test](texture_test.png)
+![Screenshot of Texture test](doc/texture_test.png)
 
 Model loading tests:
 
-![model loading demo](model2_lit.gif)
+![model loading demo](doc/model2_lit.gif)
 
-![model loading demo](model_lit.gif)
+![model loading demo](doc/model_lit.gif)
 
 Without lighting: 
 
-![model loading demo](model2.gif)
+![model loading demo](doc/model2.gif)
 
-![model loading demo](model.gif)
+![model loading demo](doc/model.gif)
 
 This is a demo of the NO_DRAW_COLOR feature. Notice that the object appears to have a hole in it.
 
-![model loading demo](model_hole.gif)
+![model loading demo](doc/model_hole.gif)
 
 Blending:
 
-![model loading demo](blend.gif)
+![model loading demo](doc/blend.gif)
 
 Specular:
 
-![GIF Video of demo](specular.gif)
+![GIF Video of demo](doc/specular.gif)
 
 OpenIMGUI standard demo:
 
-![OpenIMGUI](menu.gif)
+![OpenIMGUI](doc/menu.gif)
 
 TinyGL 0.8 (c) 1997-2021 Fabrice Bellard, C-Chads, Gek (see License, it's free software)
 
