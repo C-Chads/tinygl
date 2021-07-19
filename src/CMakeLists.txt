@@ -1,0 +1,58 @@
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+set(tinygl_srcs
+  accum.c
+  api.c
+  arrays.c
+  clear.c
+  clip.c
+  get.c
+  image_util.c
+  init.c
+  light.c
+  list.c
+  matrix.c
+  memory.c
+  misc.c
+  msghandling.c
+  select.c
+  specbuf.c
+  texture.c
+  vertex.c
+  zbuffer.c
+  zline.c
+  zmath.c
+  zpostprocess.c
+  zraster.c
+  ztext.c
+  ztriangle.c
+  )
+
+if(TINYGL_BUILD_STATIC)
+  add_library(tinygl SHARED ${tinygl_srcs})
+  target_include_directories(tinygl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+  install(TARGETS tinygl
+    RUNTIME DESTINATION ${BIN_DIR}
+    LIBRARY DESTINATION ${LIB_DIR}
+    ARCHIVE DESTINATION ${LIB_DIR})
+  if(NOT MSVC)
+    target_compile_options(tinygl PRIVATE "-Wall")
+  endif(NOT MSVC)
+endif(TINYGL_BUILD_STATIC)
+
+if(TINYGL_BUILD_STATIC)
+  add_library(tinygl-static STATIC ${tinygl_srcs})
+  target_include_directories(tinygl-static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+  install(TARGETS tinygl-static
+    RUNTIME DESTINATION ${BIN_DIR}
+    LIBRARY DESTINATION ${LIB_DIR}
+    ARCHIVE DESTINATION ${LIB_DIR})
+endif(TINYGL_BUILD_STATIC)
+
+# Local Variables:
+# tab-width: 8
+# mode: cmake
+# indent-tabs-mode: t
+# End:
+# ex: shiftwidth=2 tabstop=8
+
