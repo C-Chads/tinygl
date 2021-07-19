@@ -16,6 +16,9 @@ if(SDL_FOUND)
       add_executable(${DEMO_NAME} ${DEMO}.c)
       target_link_libraries(${DEMO_NAME} ${TINYGL_LIB} ${M_LIBRARY} ${SDL_LIBRARY})
       target_include_directories(${DEMO_NAME} PUBLIC ${SDL_INCLUDE_DIR})
+      if(NOT MSVC)
+	target_compile_options(${DEMO_NAME} PRIVATE -O3 -DNDEBUG -pedantic -march=native -Wall)
+      endif(NOT MSVC)
     endforeach()
 
     set(TINYGL_RESOURCES
