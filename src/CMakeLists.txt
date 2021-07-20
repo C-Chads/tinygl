@@ -28,7 +28,7 @@ set(tinygl_srcs
   ztriangle.c
   )
 
-if(TINYGL_BUILD_STATIC)
+if(TINYGL_BUILD_SHARED)
   add_library(tinygl SHARED ${tinygl_srcs})
   target_include_directories(tinygl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)
   install(TARGETS tinygl
@@ -36,9 +36,9 @@ if(TINYGL_BUILD_STATIC)
     LIBRARY DESTINATION ${LIB_DIR}
     ARCHIVE DESTINATION ${LIB_DIR})
   if(NOT MSVC)
-    target_compile_options(tinygl PRIVATE -O3 -DNDEBUG -pedantic -march=native -Wall)
+    target_compile_options(tinygl PRIVATE -O3 -DNDEBUG -pedantic -march=native -Wall -Wno-unused-function)
   endif(NOT MSVC)
-endif(TINYGL_BUILD_STATIC)
+endif(TINYGL_BUILD_SHARED)
 
 if(TINYGL_BUILD_STATIC)
   add_library(tinygl-static STATIC ${tinygl_srcs})
@@ -48,7 +48,7 @@ if(TINYGL_BUILD_STATIC)
     LIBRARY DESTINATION ${LIB_DIR}
     ARCHIVE DESTINATION ${LIB_DIR})
   if(NOT MSVC)
-    target_compile_options(tinygl-static PRIVATE -O3 -DNDEBUG -pedantic -march=native -Wall)
+    target_compile_options(tinygl-static PRIVATE -O3 -DNDEBUG -pedantic -march=native -Wall -Wno-unused-function)
   endif(NOT MSVC)
 endif(TINYGL_BUILD_STATIC)
 
