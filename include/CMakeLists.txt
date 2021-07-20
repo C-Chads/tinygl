@@ -5,4 +5,4 @@ set(zhdrs
 
 install(FILES ${zhdrs} DESTINATION ${INCLUDE_DIR})
 
-install(FILES TTGL/gl.h DESTINATION ${INCLUDE_DIR}/TGL)
+install(FILES TGL/gl.h DESTINATION ${INCLUDE_DIR}/TGL)
