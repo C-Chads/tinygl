@@ -1,5 +1,5 @@
 #include "msghandling.h"
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 #include "zgl.h"
 #include <stdarg.h>
 

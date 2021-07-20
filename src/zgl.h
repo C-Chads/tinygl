@@ -3,7 +3,7 @@
 #ifndef NDEBUG
 #define NDEBUG
 #endif
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 #include "../include/zbuffer.h"
 #include "../include/zfeatures.h"
 #include "zmath.h"

@@ -1,4 +1,4 @@
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 #include "../include/zbuffer.h"
 #include "font8x8_basic.h"
 #include "zgl.h"

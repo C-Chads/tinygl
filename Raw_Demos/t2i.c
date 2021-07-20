@@ -17,7 +17,7 @@
 
 
 //Doesn't drag in anything.
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 
 //Doesn't drag in anything.
 #include "../include/zbuffer.h"

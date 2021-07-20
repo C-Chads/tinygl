@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../include-demo/stb_image.h"
 #define CHAD_MATH_IMPL

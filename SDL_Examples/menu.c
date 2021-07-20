@@ -12,7 +12,7 @@ Demo of Gek's proposed Open Immediate Mode Gui Standard
 #include <stdlib.h>
 #include <string.h>
 
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 
 #include "../include/zbuffer.h"
 #define CHAD_API_IMPL

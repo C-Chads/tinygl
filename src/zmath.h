@@ -1,6 +1,6 @@
 #ifndef __ZMATH__
 #define __ZMATH__
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 #include "../include/zfeatures.h"
 #include <math.h>
 #include <stdlib.h>

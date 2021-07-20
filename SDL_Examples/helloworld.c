@@ -1,12 +1,12 @@
 //#define PLAY_MUSIC
 
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 //#include <GL/glu.h>
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 
 #include "../include/zbuffer.h"
 #define CHAD_API_IMPL

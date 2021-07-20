@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 #include "../src/font8x8_basic.h"
 #include "../include-demo/stringutil.h"
 

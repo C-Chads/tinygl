@@ -272,7 +272,7 @@ This is how you use TinyGL in a program:
 ```c
 //First you have to include
 //(Note that you must either link against libTinyGL.a or compile it in the same compilation unit as your program)
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 #include "../include/zbuffer.h"
 
 /*
@@ -458,10 +458,10 @@ See `include/zfeatures.h`
 This changes too often to maintain documentation here.
 
 The compiletime test is now disabled by default since it may not be "liked" by some obscure compilers...
-you can enable it in GL/gl.h
+you can enable it in TGL/gl.h
 
 ```c
-//at the top of include/GL/gl.h
+//at the top of include/TGL/gl.h
 //Enable TinyGL's Compiletime Compatibility Test (Scroll down)
 #define COMPILETIME_TINYGL_COMPAT_TEST 1
 ```

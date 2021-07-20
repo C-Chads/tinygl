@@ -2,7 +2,7 @@
 #include "3dMath.h"
 
 #include "chadphys.h"
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 #include "../include/zbuffer.h"
 #include "api_audio.h"
 #include "tobjparse.h"

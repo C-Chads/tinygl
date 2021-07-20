@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../include/GL/gl.h"
+#include "../include/TGL/gl.h"
 
 #include "../include/zbuffer.h"
 #define CHAD_API_IMPL
