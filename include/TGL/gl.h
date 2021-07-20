@@ -1,10 +1,14 @@
-/*
- * The following constants come from Mesa
- */
 #ifndef GL_H
 #define GL_H
 
+/* Uncomment the following to prefix the OpenGL
+ * function names with t to avoid conflicts with
+ * system OpenGL definitions */
+/* #define TGL_PREFIX 1 */
 
+/*
+ * The following constants come from Mesa
+ */
 #define COMPILETIME_TINYGL_COMPAT_TEST 0
 
 #define GL_VERSION_1_1 1
@@ -764,11 +768,163 @@ extern char TGL_BUILDT_RshiftGLushort[ 1-2*((GLushort)65280>>8 != 255)];
 extern char TGL_BUILDT_LshiftGLshort[ 1-2*(((GLshort)255<<8) != 65280)];
 extern char TGL_BUILDT_RshiftGLshort[ 1-2*((GLshort)65280>>8 != -1)];
 
-
-
-
 #undef T
 #endif
+
+#ifdef TGL_PREFIX
+#  define TGL_PREFIX_STR t
+#  define TGL_CONCAT2(a, b) a ## b
+#  define TGL_CONCAT(a, b) TGL_CONCAT2(a,b)
+#  define TGL_ADD_PREFIX(b) TGL_CONCAT(TGL_PREFIX_STR,b)
+
+#  define glEnable		TGL_ADD_PREFIX(glEnable)
+#  define glDisable		TGL_ADD_PREFIX(glDisable)
+#  define glShadeModel		TGL_ADD_PREFIX(glShadeModel)
+#  define glCullFace		TGL_ADD_PREFIX(glCullFace)
+#  define glPolygonMode		TGL_ADD_PREFIX(glPolygonMode)
+#  define glBegin		TGL_ADD_PREFIX(glBegin)
+#  define glEnd			TGL_ADD_PREFIX(glEnd)
+#  define glRectf		TGL_ADD_PREFIX(glRectf)
+#  define glDrawBuffer		TGL_ADD_PREFIX(glDrawBuffer)
+#  define glReadBuffer		TGL_ADD_PREFIX(glReadBuffer)
+#  define glReadPixels		TGL_ADD_PREFIX(glReadPixels)
+#  define glDrawArrays		TGL_ADD_PREFIX(glDrawArrays)
+#  define glSetEnableSpecular	TGL_ADD_PREFIX(glSetEnableSpecular)
+#  define glGetTexturePixmap	TGL_ADD_PREFIX(glGetTexturePixmap)
+#  define glDrawText		TGL_ADD_PREFIX(glDrawText)
+#  define glTextSize		TGL_ADD_PREFIX(glTextSize)
+#  define glPlotPixel		TGL_ADD_PREFIX(glPlotPixel)
+#  define glEdgeFlag		TGL_ADD_PREFIX(glEdgeFlag)
+#  define glMatrixMode		TGL_ADD_PREFIX(glMatrixMode)
+#  define glLoadMatrixf		TGL_ADD_PREFIX(glLoadMatrixf)
+#  define glLoadIdentity	TGL_ADD_PREFIX(glLoadIdentity)
+#  define glMultMatrixf		TGL_ADD_PREFIX(glMultMatrixf)
+#  define glPushMatrix		TGL_ADD_PREFIX(glPushMatrix)
+#  define glPopMatrix		TGL_ADD_PREFIX(glPopMatrix)
+#  define glRotatef		TGL_ADD_PREFIX(glRotatef)
+#  define glTranslatef		TGL_ADD_PREFIX(glTranslatef)
+#  define glScalef		TGL_ADD_PREFIX(glScalef)
+#  define glViewport		TGL_ADD_PREFIX(glViewport)
+#  define glFrustum		TGL_ADD_PREFIX(glFrustum)
+#  define glGenLists		TGL_ADD_PREFIX(glGenLists)
+#  define glIsList		TGL_ADD_PREFIX(glIsList)
+#  define glNewList		TGL_ADD_PREFIX(glNewList)
+#  define glEndList		TGL_ADD_PREFIX(glEndList)
+#  define glCallList		TGL_ADD_PREFIX(glCallList)
+#  define glCallLists		TGL_ADD_PREFIX(glCallLists)
+#  define glListBase		TGL_ADD_PREFIX(glListBase)
+#  define glDeleteList		TGL_ADD_PREFIX(glDeleteList)
+#  define glDeleteLists		TGL_ADD_PREFIX(glDeleteLists)
+#  define glClear		TGL_ADD_PREFIX(glClear)
+#  define glClearColor		TGL_ADD_PREFIX(glClearColor)
+#  define glClearDepth		TGL_ADD_PREFIX(glClearDepth)
+#  define glFeedbackBuffer	TGL_ADD_PREFIX(glFeedbackBuffer)
+#  define glPassThrough		TGL_ADD_PREFIX(glPassThrough)
+#  define glRenderMode		TGL_ADD_PREFIX(glRenderMode)
+#  define glSelectBuffer	TGL_ADD_PREFIX(glSelectBuffer)
+#  define glInitNames		TGL_ADD_PREFIX(glInitNames)
+#  define glPushName		TGL_ADD_PREFIX(glPushName)
+#  define glPopName		TGL_ADD_PREFIX(glPopName)
+#  define glLoadName		TGL_ADD_PREFIX(glLoadName)
+#  define glGenTextures		TGL_ADD_PREFIX(glGenTextures)
+#  define glDeleteTextures	TGL_ADD_PREFIX(glDeleteTextures)
+#  define glBindTexture		TGL_ADD_PREFIX(glBindTexture)
+#  define glTexImage2D		TGL_ADD_PREFIX(glTexImage2D)
+#  define glTexImage1D		TGL_ADD_PREFIX(glTexImage1D)
+#  define glCopyTexImage2D	TGL_ADD_PREFIX(glCopyTexImage2D)
+#  define glTexEnvi		TGL_ADD_PREFIX(glTexEnvi)
+#  define glTexParameteri	TGL_ADD_PREFIX(glTexParameteri)
+#  define glAreTexturesResident	TGL_ADD_PREFIX(glAreTexturesResident)
+#  define glIsTexture		TGL_ADD_PREFIX(glIsTexture)
+#  define glMaterialfv		TGL_ADD_PREFIX(glMaterialfv)
+#  define glMaterialf		TGL_ADD_PREFIX(glMaterialf)
+#  define glColorMaterial	TGL_ADD_PREFIX(glColorMaterial)
+#  define glLightfv		TGL_ADD_PREFIX(glLightfv)
+#  define glLightf		TGL_ADD_PREFIX(glLightf)
+#  define glLightModeli		TGL_ADD_PREFIX(glLightModeli)
+#  define glLightModelfv	TGL_ADD_PREFIX(glLightModelfv)
+#  define glFlush		TGL_ADD_PREFIX(glFlush)
+#  define glFinish		TGL_ADD_PREFIX(glFinish)
+#  define glHint		TGL_ADD_PREFIX(glHint)
+#  define glGetIntegerv		TGL_ADD_PREFIX(glGetIntegerv)
+#  define glGetFloatv		TGL_ADD_PREFIX(glGetFloatv)
+#  define glGetString		TGL_ADD_PREFIX(glGetString)
+#  define glGetError		TGL_ADD_PREFIX(glGetError)
+#  define glFrontFace		TGL_ADD_PREFIX(glFrontFace)
+#  define glEnableClientState	TGL_ADD_PREFIX(glEnableClientState)
+#  define glDisableClientState	TGL_ADD_PREFIX(glDisableClientState)
+#  define glArrayElement	TGL_ADD_PREFIX(glArrayElement)
+#  define glVertexPointer	TGL_ADD_PREFIX(glVertexPointer)
+#  define glColorPointer	TGL_ADD_PREFIX(glColorPointer)
+#  define glNormalPointer	TGL_ADD_PREFIX(glNormalPointer)
+#  define glTexCoordPointer	TGL_ADD_PREFIX(glTexCoordPointer)
+#  define glGenBuffers		TGL_ADD_PREFIX(glGenBuffers)
+#  define glDeleteBuffers	TGL_ADD_PREFIX(glDeleteBuffers)
+#  define glBindBuffer		TGL_ADD_PREFIX(glBindBuffer)
+#  define glIsBuffer		TGL_ADD_PREFIX(glIsBuffer)
+#  define glMapBuffer		TGL_ADD_PREFIX(glMapBuffer)
+#  define glBufferData		TGL_ADD_PREFIX(glBufferData)
+#  define glBindBufferAsArray	TGL_ADD_PREFIX(glBindBufferAsArray)
+#  define glPolygonOffset	TGL_ADD_PREFIX(glPolygonOffset)
+#  define glBlendFunc		TGL_ADD_PREFIX(glBlendFunc)
+#  define glBlendEquation	TGL_ADD_PREFIX(glBlendEquation)
+#  define glDepthMask		TGL_ADD_PREFIX(glDepthMask)
+#  define glPointSize		TGL_ADD_PREFIX(glPointSize)
+#  define glRasterPos2f		TGL_ADD_PREFIX(glRasterPos2f)
+#  define glRasterPos3f		TGL_ADD_PREFIX(glRasterPos3f)
+#  define glRasterPos4f		TGL_ADD_PREFIX(glRasterPos4f)
+#  define glRasterPos2fv	TGL_ADD_PREFIX(glRasterPos2fv)
+#  define glRasterPos3fv	TGL_ADD_PREFIX(glRasterPos3fv)
+#  define glRasterPos4fv	TGL_ADD_PREFIX(glRasterPos4fv)
+#  define glDrawPixels		TGL_ADD_PREFIX(glDrawPixels)
+#  define glPixelZoom		TGL_ADD_PREFIX(glPixelZoom)
+#  define glPostProcess		TGL_ADD_PREFIX(glPostProcess)
+#  define glPolygonStipple	TGL_ADD_PREFIX(glPolygonStipple)
+#  define glDebug		TGL_ADD_PREFIX(glDebug)
+#  define glInit		TGL_ADD_PREFIX(glInit)
+#  define glClose		TGL_ADD_PREFIX(glClose)
+#  define glVertex2f		TGL_ADD_PREFIX(glVertex2f)
+#  define glVertex2d		TGL_ADD_PREFIX(glVertex2d)
+#  define glVertex2fv		TGL_ADD_PREFIX(glVertex2fv)
+#  define glVertex2dv		TGL_ADD_PREFIX(glVertex2dv)
+#  define glVertex3f		TGL_ADD_PREFIX(glVertex3f)
+#  define glVertex3d		TGL_ADD_PREFIX(glVertex3d)
+#  define glVertex3fv		TGL_ADD_PREFIX(glVertex3fv)
+#  define glVertex3dv		TGL_ADD_PREFIX(glVertex3dv)
+#  define glVertex4f		TGL_ADD_PREFIX(glVertex4f)
+#  define glVertex4d		TGL_ADD_PREFIX(glVertex4d)
+#  define glVertex4fv		TGL_ADD_PREFIX(glVertex4fv)
+#  define glVertex4dv		TGL_ADD_PREFIX(glVertex4dv)
+#  define glColor3f		TGL_ADD_PREFIX(glColor3f)
+#  define glColor3d		TGL_ADD_PREFIX(glColor3d)
+#  define glColor3fv		TGL_ADD_PREFIX(glColor3fv)
+#  define glColor3dv		TGL_ADD_PREFIX(glColor3dv)
+#  define glColor4f		TGL_ADD_PREFIX(glColor4f)
+#  define glColor4d		TGL_ADD_PREFIX(glColor4d)
+#  define glColor4fv		TGL_ADD_PREFIX(glColor4fv)
+#  define glColor4dv		TGL_ADD_PREFIX(glColor4dv)
+#  define glNormal3f		TGL_ADD_PREFIX(glNormal3f)
+#  define glNormal3d		TGL_ADD_PREFIX(glNormal3d)
+#  define glNormal3fv		TGL_ADD_PREFIX(glNormal3fv)
+#  define glNormal3dv		TGL_ADD_PREFIX(glNormal3dv)
+#  define glTexCoord1f		TGL_ADD_PREFIX(glTexCoord1f)
+#  define glTexCoord1d		TGL_ADD_PREFIX(glTexCoord1d)
+#  define glTexCoord1fv		TGL_ADD_PREFIX(glTexCoord1fv)
+#  define glTexCoord1dv		TGL_ADD_PREFIX(glTexCoord1dv)
+#  define glTexCoord2f		TGL_ADD_PREFIX(glTexCoord2f)
+#  define glTexCoord2d		TGL_ADD_PREFIX(glTexCoord2d)
+#  define glTexCoord2fv		TGL_ADD_PREFIX(glTexCoord2fv)
+#  define glTexCoord2dv		TGL_ADD_PREFIX(glTexCoord2dv)
+#  define glTexCoord3f		TGL_ADD_PREFIX(glTexCoord3f)
+#  define glTexCoord3d		TGL_ADD_PREFIX(glTexCoord3d)
+#  define glTexCoord3fv		TGL_ADD_PREFIX(glTexCoord3fv)
+#  define glTexCoord3dv		TGL_ADD_PREFIX(glTexCoord3dv)
+#  define glTexCoord4f		TGL_ADD_PREFIX(glTexCoord4f)
+#  define glTexCoord4d		TGL_ADD_PREFIX(glTexCoord4d)
+#  define glTexCoord4fv		TGL_ADD_PREFIX(glTexCoord4fv)
+#  define glTexCoord4dv		TGL_ADD_PREFIX(glTexCoord4dv)
+#endif
+
 /* functions */
 
 void glEnable(GLint code);
@@ -801,43 +957,56 @@ void glDrawText(const GLubyte* text, GLint x, GLint y, GLuint pixel);
 void glTextSize(GLTEXTSIZE mode); 
 void glPlotPixel(GLint x, GLint y, GLuint pixel); 
 
-#define PROTO_GL1(name)				\
-void gl ## name ## 1f(GLfloat);	\
-void gl ## name ## 1d(GLdouble);	\
-void gl ## name ## 1fv(GLfloat *);		\
-void gl ## name ## 1dv(GLdouble *);
+void glVertex2f(GLfloat ,GLfloat);
+void glVertex2d(GLdouble ,GLdouble);
+void glVertex2fv(GLfloat *);
+void glVertex2dv(GLdouble *);
 
-#define PROTO_GL2(name)				\
-void gl ## name ## 2f(GLfloat ,GLfloat);	\
-void gl ## name ## 2d(GLdouble ,GLdouble);	\
-void gl ## name ## 2fv(GLfloat *);		\
-void gl ## name ## 2dv(GLdouble *);
+void glVertex3f(GLfloat ,GLfloat ,GLfloat);
+void glVertex3d(GLdouble ,GLdouble ,GLdouble);
+void glVertex3fv(GLfloat *);
+void glVertex3dv(GLdouble *);
 
-#define PROTO_GL3(name)				\
-void gl ## name ## 3f(GLfloat ,GLfloat ,GLfloat);	\
-void gl ## name ## 3d(GLdouble ,GLdouble ,GLdouble);	\
-void gl ## name ## 3fv(GLfloat *);		\
-void gl ## name ## 3dv(GLdouble *);
+void glVertex4f(GLfloat ,GLfloat ,GLfloat, GLfloat );
+void glVertex4d(GLdouble ,GLdouble ,GLdouble, GLdouble );
+void glVertex4fv(GLfloat *);
+void glVertex4dv(GLdouble *);
 
-#define PROTO_GL4(name)				\
-void gl ## name ## 4f(GLfloat ,GLfloat ,GLfloat, GLfloat );	\
-void gl ## name ## 4d(GLdouble ,GLdouble ,GLdouble, GLdouble );	\
-void gl ## name ## 4fv(GLfloat *);		\
-void gl ## name ## 4dv(GLdouble *);
+void glColor3f(GLfloat ,GLfloat ,GLfloat);
+void glColor3d(GLdouble ,GLdouble ,GLdouble);
+void glColor3fv(GLfloat *);
+void glColor3dv(GLdouble *);
 
-PROTO_GL2(Vertex)
-PROTO_GL3(Vertex)
-PROTO_GL4(Vertex)
+void glColor4f(GLfloat ,GLfloat ,GLfloat, GLfloat );
+void glColor4d(GLdouble ,GLdouble ,GLdouble, GLdouble );
+void glColor4fv(GLfloat *);
+void glColor4dv(GLdouble *);
 
-PROTO_GL3(Color)
-PROTO_GL4(Color)
+void glNormal3f(GLfloat ,GLfloat ,GLfloat);
+void glNormal3d(GLdouble ,GLdouble ,GLdouble);
+void glNormal3fv(GLfloat *);
+void glNormal3dv(GLdouble *);
 
-PROTO_GL3(Normal)
+void glTexCoord1f(GLfloat);
+void glTexCoord1d(GLdouble);
+void glTexCoord1fv(GLfloat *);
+void glTexCoord1dv(GLdouble *);
 
-PROTO_GL1(TexCoord)
-PROTO_GL2(TexCoord)
-PROTO_GL3(TexCoord)
-PROTO_GL4(TexCoord)
+void glTexCoord2f(GLfloat ,GLfloat);
+void glTexCoord2d(GLdouble ,GLdouble);
+void glTexCoord2fv(GLfloat *);
+void glTexCoord2dv(GLdouble *);
+
+void glTexCoord3f(GLfloat ,GLfloat ,GLfloat);
+void glTexCoord3d(GLdouble ,GLdouble ,GLdouble);
+void glTexCoord3fv(GLfloat *);
+void glTexCoord3dv(GLdouble *);
+
+void glTexCoord4f(GLfloat ,GLfloat ,GLfloat, GLfloat );
+void glTexCoord4d(GLdouble ,GLdouble ,GLdouble, GLdouble );
+void glTexCoord4fv(GLfloat *);
+void glTexCoord4dv(GLdouble *);
+
 
 void glEdgeFlag(GLint flag);
 
