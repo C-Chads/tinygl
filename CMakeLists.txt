@@ -41,6 +41,8 @@ add_subdirectory(include)
 # Examples
 if(TINYGL_BUILD_EXAMPLES)
 
+  enable_testing()
+
   # These deliberately do not depend on SDL.  TODO - these could be used to
   # drive a "make test" system to check the correct functioning of the library
   # after compilation...
