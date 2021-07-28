@@ -2,4 +2,12 @@
 *.creator*
 *.files
 *.includes
+
+# Ignore build outputs
 build
+src/*.o
+src/*.a
+Raw_Demos/bigfont
+Raw_Demos/gears
+Raw_Demos/t2i
+lib/*.a
