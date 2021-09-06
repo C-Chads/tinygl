@@ -115,7 +115,10 @@ void ZB_resize(ZBuffer* zb, void* frame_buffer, GLint xsize, GLint ysize) {
 #endif
 
 static void ZB_copyBuffer(ZBuffer* zb, void* buf, GLint linesize) {
-	GLint y, i;
+	GLint y;
+#if TGL_FEATURE_NO_COPY_COLOR == 1
+	GLint i;
+#endif
 #if TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER == 1
 #pragma omp parallel for
 	for (y = 0; y < zb->ysize; y++) {

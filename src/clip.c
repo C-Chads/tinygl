@@ -206,7 +206,9 @@ void gl_draw_line(GLVertex* p1, GLVertex* p2) {
 /*Triangles*/
 
 static void updateTmp(GLVertex* q, GLVertex* p0, GLVertex* p1, GLfloat t) { 
+#if TGL_OPTIMIZATION_HINT_BRANCH_COST < 1
 	GLContext* c = gl_get_context();
+#endif
 	{
 
 		q->color.v[0] = p0->color.v[0] + (p1->color.v[0] - p0->color.v[0]) * t;

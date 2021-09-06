@@ -371,7 +371,7 @@ int main(int argc, char** argv) {
 	SDL_WM_SetCaption(argv[0], 0);
 
 	// initialize TinyGL:
-	int mode;
+	// int mode;
 	switch (screen->format->BitsPerPixel) {
 	case 8:
 		fprintf(stderr, "ERROR: Palettes are currently not supported.\n");
@@ -379,16 +379,16 @@ int main(int argc, char** argv) {
 		return 1;
 	case 16:
 		// fprintf(stderr,"\nUnsupported by maintainer!!!");
-		mode = ZB_MODE_5R6G5B;
+		// mode = ZB_MODE_5R6G5B;
 		// return 1;
 		break;
 	case 24:
 		fprintf(stderr, "\nUnsupported by maintainer!!!");
-		mode = ZB_MODE_RGB24;
+		// mode = ZB_MODE_RGB24;
 		return 1;
 		break;
 	case 32:
-		mode = ZB_MODE_RGBA;
+		// mode = ZB_MODE_RGBA;
 		break;
 	default:
 		return 1;

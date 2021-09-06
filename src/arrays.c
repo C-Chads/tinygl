@@ -96,7 +96,9 @@ static GLint create_buffer(GLint handle) {
 
 void glGenBuffers(GLsizei n, GLuint* buffers) {
 	GLint i;
+#if TGL_FEATURE_ERROR_CHECK == 1
 	GLContext* c = gl_get_context();
+#endif
 #include "error_check.h"
 	if (n > MAX_BUFFERS)
 		goto error;
@@ -126,7 +128,9 @@ error:
 }
 void glDeleteBuffers(GLsizei n, const GLuint* buffers) {
 	GLint i;
+#if TGL_FEATURE_ERROR_CHECK == 1
 	GLContext* c = gl_get_context();
+#endif
 #include "error_check.h"
 	for (i = 0; i < n; i++)
 		free_buffer(buffers[i]);

@@ -32,7 +32,9 @@ GLboolean glAreTexturesResident(GLsizei n, const GLuint* textures, GLboolean* re
 	return retval;
 }
 GLboolean glIsTexture(GLuint texture) {
+#if TGL_FEATURE_ERROR_CHECK == 1
 	GLContext* c = gl_get_context();
+#endif
 #define RETVAL GL_FALSE
 #include "error_check.h"
 	if (find_texture(texture))
@@ -42,8 +44,8 @@ GLboolean glIsTexture(GLuint texture) {
 
 void* glGetTexturePixmap(GLint text, GLint level, GLint* xsize, GLint* ysize) {
 	GLTexture* tex;
-	GLContext* c = gl_get_context();
 #if TGL_FEATURE_ERROR_CHECK == 1
+	GLContext* c = gl_get_context();
 	if (!(text >= 0 && level < MAX_TEXTURE_LEVELS))
 #define ERROR_FLAG GL_INVALID_ENUM
 #define RETVAL NULL
@@ -153,11 +155,11 @@ void glDeleteTextures(GLint n, const GLuint* textures) {
 }
 
 void glopBindTexture(GLParam* p) {
-	GLint target = p[1].i;
 	GLint texture = p[2].i;
 	GLTexture* t;
 	GLContext* c = gl_get_context();
 #if TGL_FEATURE_ERROR_CHECK == 1
+	GLint target = p[1].i;
 	if (!(target == GL_TEXTURE_2D && target > 0))
 #define ERROR_FLAG GL_INVALID_ENUM
 #include "error_check.h"

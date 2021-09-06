@@ -24,7 +24,7 @@ void glopTextSize(GLParam* p) {
 	GLContext* c = gl_get_context();
 	c->textsize = p[1].ui;
 } 
-static void renderchar(GLbyte* bitmap, GLint _x, GLint _y, GLuint p) {
+static void renderchar(GLubyte* bitmap, GLint _x, GLint _y, GLuint p) {
 	GLint x, y, i, j;
 	GLint set;
 	GLContext* c = gl_get_context();

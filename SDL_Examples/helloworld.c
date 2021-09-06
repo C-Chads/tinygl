@@ -186,7 +186,7 @@ int main(int argc, char** argv) {
 
 	// initialize TinyGL:
 	// unsigned int pitch;
-	int mode;
+	// int mode;
 	if (!noSDL)
 		switch (screen->format->BitsPerPixel) {
 		case 8:
@@ -196,18 +196,18 @@ int main(int argc, char** argv) {
 		case 16:
 
 			// fprintf(stderr,"\nUnsupported by maintainer!!!");
-			mode = ZB_MODE_5R6G5B;
+			// mode = ZB_MODE_5R6G5B;
 			// return 1;
 			break;
 		case 24:
 
 			fprintf(stderr, "\nUnsupported by maintainer!!!");
-			mode = ZB_MODE_RGB24;
+			// mode = ZB_MODE_RGB24;
 			return 1;
 			break;
 		case 32:
 
-			mode = ZB_MODE_RGBA;
+			// mode = ZB_MODE_RGBA;
 			break;
 		default:
 			return 1;

@@ -1,9 +1,9 @@
 #include "zgl.h"
 
 GLint glRenderMode(GLint mode) {
+#if TGL_FEATURE_ALT_RENDERMODES == 1
 	GLContext* c = gl_get_context();
 	GLint result = 0;
-#if TGL_FEATURE_ALT_RENDERMODES == 1
 	switch (c->render_mode) {
 	case GL_RENDER:
 		break;

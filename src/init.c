@@ -1,7 +1,7 @@
 #include "msghandling.h"
 #include "zgl.h"
 GLContext gl_ctx;
-static const GLContext empty_gl_ctx = {0};
+static const GLContext empty_gl_ctx = {{{{{0}}}}};
 
 static void initSharedState(GLContext* c) {
 	GLSharedState* s = &c->shared_state;
@@ -74,7 +74,7 @@ static int TinyGLRuntimeCompatibilityTest() {
 	GLint t2 = 1 << 31;
 	memcpy(&tf2, &t2, 4);
 	if (tf2 != t) return 1;
-	t2 = 3212836864;
+	t2 = 3212836864u;
 	t = -1;
 	memcpy(&tf2, &t2, 4);
 	if (tf2 != t)return 1;
