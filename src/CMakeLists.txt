@@ -36,7 +36,10 @@ if(TINYGL_BUILD_SHARED)
     LIBRARY DESTINATION ${LIB_DIR}
     ARCHIVE DESTINATION ${LIB_DIR})
   if(NOT MSVC)
-    target_compile_options(tinygl PRIVATE -O3 -DNDEBUG -pedantic -march=native -Wall -Wno-unused-function)
+    target_compile_options(tinygl PRIVATE -O3 -DNDEBUG -pedantic -Wall -Wno-unused-function)
+    if(NOT CMAKE_CROSSCOMPILING)
+      target_compile_options(tinygl PRIVATE -march=native)
+    endif(NOT CMAKE_CROSSCOMPILING)
   endif(NOT MSVC)
 endif(TINYGL_BUILD_SHARED)
 
@@ -48,7 +51,10 @@ if(TINYGL_BUILD_STATIC)
     LIBRARY DESTINATION ${LIB_DIR}
     ARCHIVE DESTINATION ${LIB_DIR})
   if(NOT MSVC)
-    target_compile_options(tinygl-static PRIVATE -O3 -DNDEBUG -pedantic -march=native -Wall -Wno-unused-function)
+    target_compile_options(tinygl-static PRIVATE -O3 -DNDEBUG -pedantic -Wall -Wno-unused-function)
+    if(NOT CMAKE_CROSSCOMPILING)
+      target_compile_options(tinygl-static PRIVATE -march=native)
+    endif(NOT CMAKE_CROSSCOMPILING)
   endif(NOT MSVC)
 endif(TINYGL_BUILD_STATIC)
 
