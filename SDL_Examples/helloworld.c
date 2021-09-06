@@ -17,7 +17,7 @@
 #else
 typedef unsigned char uchar;
 #endif
-#include <SDL/SDL.h>
+#include <SDL.h>
 int noSDL = 0;
 int do2 = 0;
 #ifndef M_PI

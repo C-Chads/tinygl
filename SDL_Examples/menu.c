@@ -23,7 +23,7 @@ Demo of Gek's proposed Open Immediate Mode Gui Standard
 #else
 typedef unsigned char uchar;
 #endif
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 // Gek's OpenIMGUI standard.
 #define OPENIMGUI_IMPL

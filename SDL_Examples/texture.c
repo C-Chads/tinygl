@@ -23,7 +23,7 @@ typedef unsigned char uchar;
 #endif
 #define STB_IMAGE_IMPLEMENTATION
 #include "../include-demo/stb_image.h"
-#include <SDL/SDL.h>
+#include <SDL.h>
 int noSDL = 0;
 int doPostProcess = 0;
 

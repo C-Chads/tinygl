@@ -19,7 +19,7 @@
 #else
 typedef unsigned char uchar;
 #endif
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <time.h>
 int noSDL = 0;
 int doblend = 0;
