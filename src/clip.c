@@ -113,7 +113,9 @@ static void GLinterpolate(GLVertex* q, GLVertex* p0, GLVertex* p1, GLfloat t) {
 	q->pc.Y = p0->pc.Y + (p1->pc.Y - p0->pc.Y) * t;
 	q->pc.Z = p0->pc.Z + (p1->pc.Z - p0->pc.Z) * t;
 	q->pc.W = p0->pc.W + (p1->pc.W - p0->pc.W) * t;
+#ifdef _OPENMP
 #pragma omp simd
+#endif
 	for (i = 0; i < 3; i++)
 		q->color.v[i] = p0->color.v[i] + (p1->color.v[i] - p0->color.v[i]) * t;
 }

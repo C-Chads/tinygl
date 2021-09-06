@@ -11,7 +11,9 @@
 void gl_M4_Id(M4* a) {
 	/*
 		GLint i, j;
+	#ifdef _OPENMP
 	#pragma omp simd collapse(2)
+	#endif
 		for (i = 0; i < 4; i++)
 			for (j = 0; j < 4; j++)
 				if (i == j)
@@ -53,7 +55,9 @@ GLint gl_M4_IsId(M4* a) {
 void gl_M4_Mul(M4* c, M4* a, M4* b) {
 	GLint i, j, k;
 	GLfloat s;
+#ifdef _OPENMP
 #pragma omp simd
+#endif
 	for (i = 0; i < 4; i++)
 		for (j = 0; j < 4; j++) {
 			s = 0.0;
@@ -72,7 +76,9 @@ void gl_M4_MulLeft(M4* c, M4* b) {
 	/*memcpy(&a, c, 16*sizeof(GLfloat));
 	 */
 	a = *c;
+#ifdef _OPENMP
 #pragma omp simd
+#endif
 	for (i = 0; i < 4; i++)
 		for (j = 0; j < 4; j++) {
 			s = 0.0;
@@ -136,7 +142,9 @@ void gl_M4_Transpose(M4* a, M4* b) {
 void gl_M4_InvOrtho(M4* a, M4 b) {
 	GLint i, j;
 	GLfloat s;
+#ifdef _OPENMP
 #pragma omp simd
+#endif
 	for (i = 0; i < 3; i++)
 		for (j = 0; j < 3; j++)
 			a->m[i][j] = b.m[j][i];
@@ -147,7 +155,9 @@ void gl_M4_InvOrtho(M4* a, M4 b) {
 
 	for (i = 0; i < 3; i++) {
 		s = 0;
+#ifdef _OPENMP
 #pragma omp simd
+#endif
 		for (j = 0; j < 3; j++)
 			s -= b.m[j][i] * b.m[j][3];
 		a->m[i][3] = s;
@@ -162,7 +172,9 @@ GLint Matrix_Inv(GLfloat* r, GLfloat* m, GLint n) {
 	GLfloat max, tmp, t;
 
 	/*  */
+#ifdef _OPENMP
 #pragma omp simd
+#endif
 	for (i = 0; i < n * n; i++)
 		r[i] = 0;
 	for (i = 0; i < n; i++)
@@ -184,7 +196,9 @@ GLint Matrix_Inv(GLfloat* r, GLfloat* m, GLint n) {
 
 		/* permutation des lignes j et k */
 		if (k != j) {
+#ifdef _OPENMP
 #pragma omp simd
+#endif
 			for (i = 0; i < n; i++) {
 				tmp = m[j * n + i];
 				m[j * n + i] = m[k * n + i];
@@ -198,7 +212,9 @@ GLint Matrix_Inv(GLfloat* r, GLfloat* m, GLint n) {
 
 		/* multiplication de la ligne j par 1/max */
 		max = 1 / max;
+#ifdef _OPENMP
 #pragma omp simd
+#endif
 		for (i = 0; i < n; i++) {
 			m[j * n + i] *= max;
 			r[j * n + i] *= max;
