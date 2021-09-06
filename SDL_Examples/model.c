@@ -27,9 +27,9 @@ int doblend = 0;
 #define M_PI 3.14159265
 #endif
 
-vec3 campos = (vec3){.d[0] = 0, .d[1] = 0, .d[2] = -3};
-vec3 camforw = (vec3){.d[0] = 0, .d[1] = 0, .d[2] = -1};
-vec3 camup = (vec3){.d[0] = 0, .d[1] = 1, .d[2] = 0};
+vec3 campos = {.d[0] = 0, .d[1] = 0, .d[2] = -3};
+vec3 camforw = {.d[0] = 0, .d[1] = 0, .d[2] = -1};
+vec3 camup = {.d[0] = 0, .d[1] = 1, .d[2] = 0};
 uint wasdstate[4] = {0, 0, 0, 0};
 const float mouseratiox = 1.0 / 300.0f;
 const float mouseratioy = 1.0 / 300.0f;
@@ -82,8 +82,8 @@ void rotateCamera() {
 	camup = normalizev3(crossv3(right, camforw));
 
 	// Perform the rotation about the Y axis last.
-	static const vec3 UP = (vec3){{0, 1, 0}};
-	static const vec3 DOWN = (vec3){{0, -1, 0}};
+	static const vec3 UP = {{0, 1, 0}};
+	static const vec3 DOWN = {{0, -1, 0}};
 	if (dotv3(UP, camup) < 0) {
 		camforw = normalizev3(rotatev3(camforw, DOWN, -a.d[1]));
 		camup = normalizev3(rotatev3(camup, DOWN, -a.d[1]));

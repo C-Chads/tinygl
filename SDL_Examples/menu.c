@@ -156,8 +156,8 @@ int omg_textbox(float x, float y, const char* text, int textsize, int sucks, flo
 }
 
 int haveclicked = 0; // For our toggleable movable button.
-vec3 tbcoords = (vec3){{0.4, 0.4, 0}};
-vec3 slidcoords = (vec3){{0.1, 0.8, 0}};
+vec3 tbcoords = {{0.4, 0.4, 0}};
+vec3 slidcoords = {{0.1, 0.8, 0}};
 float slidmoffset = 0;
 int slidersliding = 0; // Is the slider being slid?
 void draw() {
