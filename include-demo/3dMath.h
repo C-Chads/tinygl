@@ -320,7 +320,9 @@ static inline vec4 getcol( mat4 a,  uint index){
 }
 static inline mat4 multm4( mat4 a,  mat4 b){
 	mat4 ret;
+#ifdef _OPENMP
 #pragma omp simd
+#endif
 	for(int i = 0; i < 4; i++)
 	for(int j = 0; j < 4; j++)
 		ret.d[i*4 + j] = dotv4( /*j is the ROW of the target, i is the COLUMN.*/

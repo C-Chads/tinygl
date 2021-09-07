@@ -232,7 +232,9 @@ void glopCopyTexImage2D(GLParam* p) {
 	im->ysize = TGL_FEATURE_TEXTURE_DIM;
 	/* TODO implement the scaling and stuff that the GL spec says it should have.*/
 #if TGL_FEATURE_MULTITHREADED_COPY_TEXIMAGE_2D == 1
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for (j = 0; j < h; j++)
 		for (i = 0; i < w; i++) {
 			data[i + j * w] = c->zb->pbuf[((i + x) % (c->zb->xsize)) + ((j + y) % (c->zb->ysize)) * (c->zb->xsize)];

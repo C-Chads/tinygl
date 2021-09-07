@@ -1,4 +1,5 @@
 find_package(SDL QUIET)
+find_package(OpenMP QUIET)
 
 if(SDL_FOUND)
 
@@ -14,7 +15,7 @@ if(SDL_FOUND)
     foreach(DEMO ${demo_names})
       set(DEMO_NAME "sdl_${DEMO}")
       add_executable(${DEMO_NAME} ${DEMO}.c)
-      target_link_libraries(${DEMO_NAME} ${TINYGL_LIB} ${M_LIBRARY} ${SDL_LIBRARY})
+      target_link_libraries(${DEMO_NAME} PRIVATE ${TINYGL_LIB} ${M_LIBRARY} ${SDL_LIBRARY})
       target_include_directories(${DEMO_NAME} PUBLIC ${SDL_INCLUDE_DIR})
       if(NOT MSVC)
         target_compile_options(${DEMO_NAME} PRIVATE -O3 -DNDEBUG -pedantic -Wall)
@@ -22,6 +23,9 @@ if(SDL_FOUND)
           target_compile_options(tinygl PRIVATE -march=native)
         endif(NOT CMAKE_CROSSCOMPILING)
       endif(NOT MSVC)
+      if(OPENMP_C_FOUND)
+        target_link_libraries(${DEMO_NAME} PRIVATE OpenMP::OpenMP_C)
+      endif(OPENMP_C_FOUND)
     endforeach()
 
     set(TINYGL_RESOURCES

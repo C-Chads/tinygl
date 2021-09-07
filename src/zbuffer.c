@@ -117,7 +117,9 @@ void ZB_resize(ZBuffer* zb, void* frame_buffer, GLint xsize, GLint ysize) {
 static void ZB_copyBuffer(ZBuffer* zb, void* buf, GLint linesize) {
 	GLint y, i;
 #if TGL_FEATURE_MULTITHREADED_ZB_COPYBUFFER == 1
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for (y = 0; y < zb->ysize; y++) {
 		PIXEL* q;
 		GLubyte* p1;
