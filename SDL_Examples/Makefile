@@ -10,7 +10,7 @@ LIB= ../lib/libTinyGL.a
 SDL_LIBS= -lSDL 
 #for MinGW users:
 #SDL_LIBS= -lmingw32 -lSDLmain -lSDL 
-
+BINDIR=/usr/local/bin
 
 #SDL_MIXERLIBS= -lSDL_mixer -lmad -logg -lmikmod -logg -DPLAY_MUSIC
 SDL_MIXERLIBS= 
@@ -29,3 +29,6 @@ game:
 	$(CC) game.c $(LIB) -o game $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) $(SDL_LIBS) $(SDL_MIXERLIBS) -lm
 gears:
 	$(CC) gears.c $(LIB) -o gears $(GL_INCLUDES) $(GL_LIBS) $(CFLAGS) $(SDL_LIBS) $(SDL_MIXERLIBS) -lm
+
+install_tglgears: gears
+	cp gears $(BINDIR)/tglgears

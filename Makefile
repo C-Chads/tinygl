@@ -3,6 +3,7 @@ LIBNAME=libTinyGL.a
 LIB=lib/$(LIBNAME)
 LIBDIR=/usr/local/lib
 INCDIR=/usr/local/include
+BINDIR=/usr/local/bin
 
 all: $(LIB) RDMOS
 	@echo Done!
@@ -23,6 +24,10 @@ uninstall:
 SDL_Examples: $(LIB)
 	@echo "These demos require SDL 1.2 to compile."
 	cd SDL_Examples && $(MAKE) && cd ..
+
+tglgears: $(LIB)
+	@echo "These demos require SDL 1.2 to compile."
+	cd SDL_Examples && $(MAKE) install_tglgears && cd ..
 
 RDMOS: $(LIB)
 	@echo "Building the RAW DEMOS. These do not require anything special on your system, so they should succeed."
