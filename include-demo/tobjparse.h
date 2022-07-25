@@ -141,8 +141,6 @@ static inline objraw tobj_load(const char* fn){
 	objraw retval = initobjraw();
 	if(f){
 		char line[2048];line[2047]=0;
-		//int read = 0;
-
 #define TOBJ_PUSH(type, vec, n, val){vec = realloc(vec, sizeof(type) * (n+1)); vec[n++] = val;}
 		while(fgets(line, 2047, f)){
 			vec3 val = {0};
@@ -152,70 +150,49 @@ static inline objraw tobj_load(const char* fn){
 			if(line[0] == 'v' && line[1] == ' ' && (strlen(line) > 4)){
 				TOBJ_PUSH(vec3, retval.positions, retval.npos, val);
 				char* t = line+2;
-				//sb_last(retval.positions).d[0] = atof(t);
 				retval.positions[retval.npos-1].d[0] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				//sb_last(retval.positions).d[1] = atof(t);
 				retval.positions[retval.npos-1].d[1] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				//sb_last(retval.positions).d[2] = atof(t);
 				retval.positions[retval.npos-1].d[2] = atof(t);
 			}
 			if(line[0] == 'v' && line[1] == 't' && (strlen(line) > 4)){
-				//read = sscanf(line,"vt %f %f",&val.d[0],&val.d[1]);
-				//sb_push(retval.texcoords, val);
 				TOBJ_PUSH(vec3, retval.texcoords, retval.ntexcoords, val);
 				char* t = line+3;
-				//sb_last(retval.texcoords).d[0] = atof(t);
 				retval.texcoords[retval.ntexcoords-1].d[0] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				//sb_last(retval.texcoords).d[1] = -atof(t);
 				retval.texcoords[retval.ntexcoords-1].d[1] = -atof(t);
-				
 			}
 			if(line[0] == 'v' && line[1] == 'c' && (strlen(line) > 4)){
-				//read=sscanf(line,"vc %f %f %f",&val.d[0],&val.d[1],&val.d[2]);
-				//sb_push(retval.colors, val);
 				TOBJ_PUSH(vec3, retval.colors, retval.ncolors, val);
 				char* t = line+3;
-				//sb_last(retval.colors).d[0] = atof(t);
 				retval.colors[retval.ncolors-1].d[0] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				//sb_last(retval.colors).d[1] = atof(t);
 				retval.colors[retval.ncolors-1].d[1] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				//sb_last(retval.colors).d[2] = atof(t);
 				retval.colors[retval.ncolors-1].d[2] = atof(t);
-				//printf("\nvc Read: %d",read);
-				
 			}
 			if(line[0] == 'v' && line[1] =='n' && (strlen(line) > 4)){
-				//read=sscanf(line,"vn %f %f %f",&val.d[0],&val.d[1],&val.d[2]);
-				//printf("\nn Read: %d",read);
-				//sb_push(retval.normals, val);
 				TOBJ_PUSH(vec3, retval.normals, retval.nnorm, val);
 				char* t = line+3;
-				//sb_last(retval.normals).d[0] = atof(t);
 				retval.normals[retval.nnorm-1].d[0] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				//sb_last(retval.normals).d[1] = atof(t);
 				retval.normals[retval.nnorm-1].d[1] = atof(t);
 				while(!isspace(*t) && *t != '\0')t++;
 				if(*t == '\0')continue;
 				t++;
-				//sb_last(retval.normals).d[2] = atof(t);
 				retval.normals[retval.nnorm-1].d[2] = atof(t);
 			}
 			if(line[0] == 'f' && (strlen(line) > 4)){
