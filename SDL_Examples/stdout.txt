@@ -1,0 +1,42 @@
+
+RMASK IS 16711680
+GMASK IS 65280
+BMASK IS 255
+AMASK IS 0
+RSHIFT IS 16
+GSHIFT IS 8
+BSHIFT IS 0
+ASHIFT IS 0
+
+Version string:
+1.0 TinyGLv1.0 Compiled using GCC 12.2.0
+Vendor string:
+Fabrice Bellard, Gek, and the C-Chads
+Renderer string:
+TinyGL
+Extensions string:
+TGL_TEXTURE TGL_SMOOTHSHADING TGL_LIGHTING TGL_OPTIMIZATION_HINT_BRANCH_COST=2 TGL_FEATURE_ARRAYS TGL_FEATURE_DISPLAYLISTS TGL_FEATURE_OPTIMIZED_TEXTURE_ACCESS TGL_FEATURE_TEXTURE_POW2=8 TGL_FEATURE_LIT_TEXTURES TGL_FEATURE_BLEND TGL_FEATURE_32_BITS TGL_FEATURE_TINYGL_RUNTIME_COMPAT_TEST TGL_FEATURE_MULTI_THREADED TGL_FEATURE_MULTI_THREADED_POST_PROCESS TGL_FEATURE_MULTITHREADED_DRAWPIXELS TGL_FEATURE_MULTITHREADED_COPY_TEXIMAGE_2D TGL_BUFFER_EXT TGL_SOFTWARE_ACCELERATED
+License string:
+Copyright notice:
+
+ (C) 1997-2021 Fabrice Bellard, Gek (DMHSW), C-Chads
+
+ This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+   arising from the use of this software.
+
+ Permission is granted to anyone to use this software for any purpose,
+ including commercial applications, and to alter it and redistribute it
+ freely, subject to the following restrictions:
+
+ 1. The origin of this software must not be misrepresented; you must not
+    claim that you wrote the original software. If you use this software
+    in a product, an acknowledgment in the product and its documentation 
+    *is* required.
+ 2. Altered source versions must be plainly marked as such, and must not be
+    misrepresented as being the original software.
+ 3. This notice may not be removed or altered from any source distribution.
+
+If you redistribute modified sources, I would appreciate that you
+include in the files history information documenting your changes.99 frames in 5.010000 secs, 19.760479 frames per second.
+25 frames in 1.275000 secs, 19.607843 frames per second.
