@@ -7,9 +7,9 @@ ALL_T= gears texture model helloworld menu game
 LIB= ../lib/libTinyGL.a
 
 #For GCC on good OSes:
-#SDL_LIBS= -lSDL 
+SDL_LIBS= -lSDL 
 #for MinGW users:
-SDL_LIBS= -lmingw32 -lSDLmain -lSDL 
+#SDL_LIBS= -lmingw32 -lSDLmain -lSDL 
 BINDIR=/usr/local/bin
 
 SDL_MIXERLIBS= -lSDL_mixer -lmad -logg -lmikmod -logg -DPLAY_MUSIC
