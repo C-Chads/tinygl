@@ -31,6 +31,9 @@
 #endif
 
 
+
+
+
 static char* strcatalloc(const char* s1, const char* s2){
 	char* d = NULL; d = STRUTIL_ALLOC(strlen(s1) + strlen(s2) + 1);
 	if(d){
@@ -81,6 +84,8 @@ static char* str_null_terminated_alloc(const char* in, unsigned int len){
 	return d;
 }
 
+
+
 static unsigned int strprefix(const char *pre, const char *str)
 {
 		unsigned long lenpre = strlen(pre),
@@ -109,6 +114,31 @@ static long strfind(const char* text, const char* subtext){
 	return -1;
 }
 
+
+static int str_inplace_repl_alloc(
+	char** inbuf,
+	char* replaceme,
+	char* replacewith
+){
+	long loc;
+	char* buf = *inbuf;
+	if(!(buf)) return 0;
+	loc = strfind(buf, replaceme);
+	if(loc == -1) return 0;
+	/*step 1- grab the before portion and make it into its own buffer.*/
+	buf = str_null_terminated_alloc(*inbuf, loc);			if(!buf) goto error;
+	/*step 2- add on the replacing text*/
+	strcatallocf1(buf, replacewith); 						if(!buf) goto error;
+	/*step 3- add on the after portion*/
+	strcatallocf1(buf,(*inbuf) + loc + strlen(replaceme));	if(!buf) goto error;
+	/*step 4- write the char* back*/
+	inbuf[0] = buf;
+	return 1;
+
+	error:;
+	*inbuf = NULL;
+	return 0; /*error.*/
+}
 
 static unsigned long read_until_terminator(FILE* f, char* buf, const unsigned long buflen, char terminator){
 	unsigned long i = 0;
