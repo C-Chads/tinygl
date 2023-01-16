@@ -402,6 +402,9 @@ static char* str_repl_allocf(char* text, char* subtext, char* replacement){
 typedef struct strll{
 	char* text;
 	unsigned long identification;
+	unsigned long linenum;
+	unsigned long colnum;
+	char* filename;
 	void* data;
 	struct strll* right;
 	struct strll* child;
