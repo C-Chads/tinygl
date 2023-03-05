@@ -144,8 +144,8 @@ void glopDrawPixels(GLParam* p) {
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-	for (sy = 0; sy < h; sy++)
-		for (sx = 0; sx < w; sx++) {
+	for (sy = h; --sy; sy)
+		for (sx = w; --sx; sx) {
 			PIXEL col = d[sy * w + sx];
 			V4 rastoffset;
 			rastoffset.v[0] = rastpos.v[0] + (GLfloat)sx * pzoomx;
@@ -178,8 +178,8 @@ void glopDrawPixels(GLParam* p) {
 					}
 		}
 #else
-	for (sy = 0; sy < h; sy++)
-		for (sx = 0; sx < w; sx++) {
+	for (sy = h; --sy; sy)
+		for (sx = w; --sx; sx) {
 			PIXEL col = d[sy * w + sx];
 			V4 rastoffset;
 			rastoffset.v[0] = rastpos.v[0] + (GLfloat)sx * pzoomx;
