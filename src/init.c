@@ -235,7 +235,8 @@ void glInit(void* zbuffer1) {
 	c->color_material_enabled = 0;
 
 	/* textures */
-	glInitTextures(c);
+	/*glInitTextures(c);*/
+	glInitTextures(); //Bug Fix!
 
 	/* blending */
 	c->zb->enable_blend = 0;
