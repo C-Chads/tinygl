@@ -33,7 +33,7 @@ And because some systems may have float types which are incompatible with it.
 
 #define TGL_FEATURE_LIT_TEXTURES   1
 /*Enable the patternized "discard"-ing of pixels.*/
-#define TGL_FEATURE_POLYGON_STIPPLE 0
+#define TGL_FEATURE_POLYGON_STIPPLE 1
 /*Enable the use of GL_SELECT and GL_FEEDBACK*/
 #define TGL_FEATURE_ALT_RENDERMODES 0
 /*
@@ -63,7 +63,7 @@ the maximum number of vertices in a polygon is defined in zgl.h
 /*Prevent ZB_copyFrameBuffer from copying certain colors.*/
 #define TGL_FEATURE_NO_COPY_COLOR 0
 /*Don't draw (texture mapped) pixels whose color is the NO_DRAW_COLOR*/
-#define TGL_FEATURE_NO_DRAW_COLOR 0
+#define TGL_FEATURE_NO_DRAW_COLOR 1
 /*Regardless of the current clear color, always clear using the NO_COPY_COLOR*/
 #define TGL_FEATURE_FORCE_CLEAR_NO_COPY_COLOR 0
 #define TGL_NO_COPY_COLOR 0xff00ff
