@@ -27,6 +27,8 @@ int noSDL = 0;
 #define M_PI 3.14159265
 #endif
 int override_drawmodes = 0;
+int stipple = 0;
+int lighting = 1;
 GLubyte stipplepattern[128] = {0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55,
 							   0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55,
 
@@ -233,11 +235,11 @@ void initScene() {
 	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
 	glEnable(GL_CULL_FACE);
 
-	glEnable(GL_LIGHT0);
+	if(lighting)glEnable(GL_LIGHT0);
 	// glEnable(GL_DEPTH_TEST);
 
-	glEnable(GL_POLYGON_STIPPLE);
-	//	glDisable(GL_POLYGON_STIPPLE);
+	if(stipple)	glEnable(GL_POLYGON_STIPPLE);
+	else glDisable(GL_POLYGON_STIPPLE);
 	glPolygonStipple(stipplepattern);
 	glPointSize(10.0f);
 	glTextSize(GL_TEXT_SIZE24x24);
@@ -274,7 +276,7 @@ int main(int argc, char** argv) {
 	int winSizeX = 640;
 	int winSizeY = 480;
 	unsigned int fps = 0;
-	unsigned int flat = 0;
+	unsigned int flat = 1;
 	unsigned int setenspec = 1;
 	unsigned int dotext = 1;
 	unsigned int blending = 0;
@@ -290,6 +292,14 @@ int main(int argc, char** argv) {
 				fps = strtoull(argv[i], 0, 10);
 			if (!strcmp(argv[i], "-flat"))
 				flat = 1;
+			if(!strcmp(argv[i], "-nostipple"))
+				stipple=0;
+			if(!strcmp(argv[i], "-stipple"))
+				stipple=1;
+			if(!strcmp(argv[i], "-lighting"))
+				lighting=1;
+			if(!strcmp(argv[i], "-nolighting"))
+				lighting=0;
 			if (!strcmp(argv[i], "-smooth"))
 				flat = 0;
 			if (!strcmp(argv[i], "-blend"))
@@ -419,7 +429,10 @@ int main(int argc, char** argv) {
 	// glDisable(GL_DEPTH_TEST);
 
 	// glDisable( GL_LIGHTING );
-	glEnable(GL_LIGHTING);
+	if(lighting)
+		glEnable(GL_LIGHTING);
+	else
+		glDisable( GL_LIGHTING );	
 	// glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
 	glBlendEquation(GL_FUNC_ADD);
 	if (blending) {
