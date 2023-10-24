@@ -6,6 +6,7 @@ more useful as a software rasterizer.
 
 Now with limited multithreading support
 
+
 ## Tightly tweaked and tuned for performance
 
 The library has been tightly tuned using valgrind, perf stat, and other tools.
