@@ -272,7 +272,7 @@ void glInit(void* zbuffer1) {
 
 #if TGL_FEATURE_POLYGON_STIPPLE == 1
 	c->zb->dostipple = 0;
-	for (GLint i = 0; i < 128; i++)
+	for (i = 0; i < 128; i++)
 		c->zb->stipplepattern[i] = 0xFF;
 #endif
 	/* clear */
